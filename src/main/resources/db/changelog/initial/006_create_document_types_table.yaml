@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006
+      author: Daniyar
+      changes:
+        - createTable:
+            tableName: document_types
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+

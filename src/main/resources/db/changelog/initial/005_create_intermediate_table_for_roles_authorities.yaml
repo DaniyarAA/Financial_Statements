@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005
+      author: Daniyar
+      changes:
+        - createTable:
+            tableName: roles_authorities
+            columns:
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_role_id_to_auth
+                    references: roles(id)
+              - column:
+                  name: authority_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_authority_id_to_roles
+                    references: authorities(id)

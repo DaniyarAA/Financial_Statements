@@ -1,0 +1,135 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007
+      author: Daniyar
+      changes:
+        - createTable:
+            tableName: companies
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: inn
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: director_inn
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: login
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ecp
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: kabinet_salyk
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: kabinet_salyk_password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tax_mode
+                  type: varchar(75)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: opf
+                  type: varchar(75)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: district_gns
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: socfund_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: registration_number_mj
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: okpo
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: director
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ked
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: email_password
+                  type: varchar(255)
+              - column:
+                  name: phone
+                  type: varchar(30)
+              - column:
+                  name: esf
+                  type: varchar(255)
+              - column:
+                  name: esf_password
+                  type: varchar(255)
+              - column:
+                  name: kkm
+                  type: varchar(255)
+              - column:
+                  name: kkm_password
+                  type: varchar(255)
+              - column:
+                  name: fresh_1c
+                  type: varchar(255)
+              - column:
+                  name: fresh_1c_password
+                  type: varchar(255)
+              - column:
+                  name: ettn
+                  type: varchar(255)
+              - column:
+                  name: ettn_password
+                  type: varchar(255)
+
+

@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009
+      author: Daniyar
+      changes:
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time
+                  type: time
+                  constraints:
+                    nullable: false
+              - column:
+                  name: document_type_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_tasks_document_type_id
+                    references: document_types(id)
+                    nullable: false
+              - column:
+                  name: assigned_to
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_tasks_user_id
+                    references: users(id)
+                    nullable: false
+              - column:
+                  name: company_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_tasks_company_id
+                    references: companies(id)
+                    nullable: false

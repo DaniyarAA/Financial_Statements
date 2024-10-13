@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Daniyar:014
+--changeset Daniyar:015
 INSERT INTO companies (name, inn, director_inn, login, password, ecp, kabinet_salyk, kabinet_salyk_password, tax_mode, opf, district_gns, socfund_number, registration_number_mj, okpo, director, ked, email, email_password, phone, esf, esf_password, kkm, kkm_password, fresh_1c, fresh_1c_password, ettn, ettn_password) VALUES
 ('ОсОО "Технопарк"', '123457890162', '123456759012', 'technopark_login', '$2a$12$VY85Li9r92YdICRF3njFfeJJN3zsdzDLJKfaD5E7XZGMzxD6Kcumy', 'ecp_data1', 'salyk_cabinet_tech', 'salyk_password1', 'Упрощенная', 'ОсОО', 'ГНС Первомайского района', '00123456', 'MJ123456', '567890123', 'Иванов Иван', 'KED001', 'technopark@mail.com', 'email_password1', '+996555123456', 'esf_tech', 'esf_password1', 'kkm_tech', 'kkm_password1', '1c_tech', '1c_password1', 'ettn_tech', 'ettn_password1'),
 ('ОсОО "ЭнергоПлюс"', '987543210948', '987654321098', 'energoplus_login', '$2a$12$VY85Li9r92YdICRF3njFfeJJN3zsdzDLJKfaD5E7XZGMzxD6Kcumy', 'ecp_data2', 'salyk_cabinet_energy', 'salyk_password2', 'Общая', 'ОсОО', 'ГНС Ленинского района', '00123457', 'MJ123457', '567890124', 'Петров Петр', 'KED002', 'energoplus@mail.com', 'email_password2', '+996555654321', 'esf_energy', 'esf_password2', 'kkm_energy', 'kkm_password2', '1c_energy', '1c_password2', 'ettn_energy', 'ettn_password2'),

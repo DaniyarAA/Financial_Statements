@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
@@ -16,21 +17,37 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Обезателно для запонения !")
     private String name;
+    @NotBlank(message = "Обезателно для запонения !")
     private String inn;
+    @NotBlank(message = "Обезателно для запонения !")
     private String directorInn;
+    @NotBlank(message = "Обезателно для запонения !")
     private String login;
+    @NotBlank(message = "Обезателно для запонения !")
     private String password;
+    @NotBlank(message = "Обезателно для запонения !")
     private String ecp;
+    @NotBlank(message = "Обезателно для запонения !")
     private String kabinetSalyk;
+    @NotBlank(message = "Обезателно для запонения !")
     private String kabinetSalykPassword;
+    @NotBlank(message = "Обезателно для запонения !")
     private String taxMode;
+    @NotBlank(message = "Обезателно для запонения !")
     private String opf;
+    @NotBlank(message = "Обезателно для запонения !")
     private String districtGns;
+    @NotBlank(message = "Обезателно для запонения !")
     private String socfundNumber;
+    @NotBlank(message = "Обезателно для запонения !")
     private String registrationNumberMj;
+    @NotBlank(message = "Обезателно для запонения !")
     private String okpo;
+    @NotBlank(message = "Обезателно для запонения !")
     private String director;
+    @NotBlank(message = "Обезателно для запонения !")
     private String ked;
     private String email;
     private String emailPassword;

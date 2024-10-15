@@ -3,14 +3,14 @@ server:
 spring:
   application:
     name: FinancialStatement
-  mvc:
-    static-path-pattern: /static/**
+#  mvc:
+#    static-path-pattern: /static/**
 
   # ------------- DataBases
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: ad123min
+    password: qwe
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

@@ -1,5 +1,5 @@
 server:
-  port: 8089
+  port: 8088
 spring:
   application:
     name: FinancialStatement
@@ -9,8 +9,8 @@ spring:
   # ------------- DataBases
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: ad123min
+    username: abdyrakhman
+    password: 12345
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

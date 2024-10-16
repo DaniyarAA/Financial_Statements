@@ -39,8 +39,10 @@ public class Company {
     private String esfPassword;
     private String kkm;
     private String kkmPassword;
+
     @Column(name = "fresh_1c")
     private String fresh1c;
+
     @Column(name = "fresh_1c_password")
     private String fresh1cPassword;
     private String ettn;

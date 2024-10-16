@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests(request -> request
 //                        .requestMatchers(HttpMethod.GET,"/company/**").hasRole("ADMIN")
-//                        загатовка для валидации Company пример
+//                        заготовка для валидации Company пример
                         .anyRequest().permitAll());
         return http.build();
     }

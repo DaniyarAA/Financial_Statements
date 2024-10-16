@@ -33,25 +33,25 @@ public class CompanyController {
     }
 
     @GetMapping("all")
-    public String all(Model model) {
+    public String getAll(Model model) {
         model.addAttribute("list", companyService.getAllCompanies());
         return "company/all";
     }
 
     @GetMapping("{companyId}")
-    public String get(@PathVariable Long companyId, Model model) {
+    public String getById(@PathVariable Long companyId, Model model) {
         model.addAttribute("company", companyService.findById(companyId));
         return "company/company";
     }
 
     @GetMapping("edit/{companyId}")
-    public String update(@PathVariable Long companyId, Model model) {
+    public String updateById(@PathVariable Long companyId, Model model) {
         model.addAttribute("company", companyService.findById(companyId));
         return "company/edit";
     }
 
     @PostMapping("edit/{companyId}")
-    public String update(@PathVariable Long companyId, @Valid CompanyDto company, BindingResult bindingResult, Model model) {
+    public String updateById(@PathVariable Long companyId, @Valid CompanyDto company, BindingResult bindingResult, Model model) {
         company.setId(companyId);
         if (bindingResult.hasErrors()) {
             model.addAttribute("company", company);
@@ -63,7 +63,7 @@ public class CompanyController {
     }
 
     @PostMapping("delete/{companyId}")
-    public String delete(@PathVariable Long companyId) {
+    public String deleteById(@PathVariable Long companyId) {
         companyService.deleteCompany(companyId);
         return "redirect:/company/all";
     }

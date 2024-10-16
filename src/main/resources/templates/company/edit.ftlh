@@ -15,9 +15,8 @@
             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                    value="${(_csrf.token)!'csrf-token'}"/>
         </#if>
-        <input type="hidden" name="id" value="${company.id?if_exists}"/>
         <fieldset class="border p-4 mb-4">
-            <legend class="w-auto">Обезательные Данные</legend>
+            <legend class="w-auto">Обязательные данные</legend>
             <div class="form-group">
                 <label for="name">Название компании:</label>
                 <input type="text" id="name" name="name" class="form-control" value="${company.name?if_exists}">

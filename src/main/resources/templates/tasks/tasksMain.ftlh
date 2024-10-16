@@ -2,8 +2,39 @@
 <#import "../layout.ftlh" as registerForm>
 
 <@registerForm.layout>
-    <div class="container mt-5" style="color: white">
+    <div class="container font-weight-bold text-black mt-5" style="color: white">
         <h2 class="text-center mb-4">Таски</h2>
+
+        <div class="mb-4">
+            <label for="statusFilter" class="font-weight-bold text-black mb-1">Статус:</label>
+            <select id="statusFilter" class="form-select mb-2" onchange="taskFiltering()">
+                <option value="">Все</option>
+                <option value="сдан">Сдан</option>
+                <option value="не сдан">Не сдан</option>
+                <option value="просрочен">Просрочен</option>
+            </select>
+
+            <label for="documentTypeFilter" class="font-weight-bold text-black mb-1">Тип документа:</label>
+            <select id="documentTypeFilter" class="form-select  mb-2" onchange="taskFiltering()">
+                <option value="">Все</option>
+                <option value="161 форма">161 форма</option>
+                <option value="ЕН отчет">ЕН отчет</option>
+                <option value="Косвенный налог">Косвенный налог</option>
+                <option value="Единый налог (расчет)">Единый налог (расчет)</option>
+                <option value="Декларация расчет на прибыль">Декларация расчет на прибыль</option>
+                <option value="Инвест">Инвест</option>
+                <option value="Импорт косв">Импорт косв</option>
+                <option value="Мусор">Мусор</option>
+                <option value="Статком">Статком</option>
+                <option value="ЭСФ">ЭСФ</option>
+                <option value="ЭСФ контроль">ЭСФ контроль</option>
+                <option value="НДС">НДС</option>
+                <option value="НСП">НСП</option>
+            </select>
+
+            <label for="dateFilter" class="font-weight-bold text-black mb-1">Срок выполнения:</label>
+            <input type="date" id="dateFilter" class="form-control mb-2" onchange="taskFiltering()">
+        </div>
 
         <table class="table table-hover table-bordered">
             <thead class="table-dark">
@@ -16,11 +47,10 @@
                 <th scope="col">Бухгалтер</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="taskTableBody">
             <#list tasks as task>
-                <tr>
-                    <th scope="row"><a href="/tasks/${task.id}" class="btn btn-sm btn-warning">${task.id}</a>
-                    </th>
+                <tr class="task-row" data-status="${task.status}" data-document-type="${task.documentTypeName}" data-date="${task.date}">
+                    <th scope="row"><a href="/tasks/${task.id}" class="btn btn-sm btn-warning">${task.id}</a></th>
                     <td>${task.status}</td>
                     <td>${task.date}</td>
                     <td>${task.time}</td>
@@ -31,4 +61,5 @@
             </tbody>
         </table>
     </div>
+<script src="/js/taskFiltering.js"></script>
 </@registerForm.layout>

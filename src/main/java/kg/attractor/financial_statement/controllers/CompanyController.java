@@ -10,18 +10,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/company")
+@RequestMapping("company")
 @RequiredArgsConstructor
 public class CompanyController {
     private final CompanyService companyService;
 
-    @GetMapping("/create")
+    @GetMapping("create")
     public String create(Model model) {
         model.addAttribute("company", new CompanyDto());
         return "company/create";
     }
 
-    @PostMapping("/create")
+    @PostMapping("create")
     public String create(@Valid CompanyDto companyDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("company", companyDto);
@@ -32,26 +32,27 @@ public class CompanyController {
         return "redirect:/company/all";
     }
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public String all(Model model) {
         model.addAttribute("list", companyService.getAllCompanies());
         return "company/all";
     }
 
-    @GetMapping("/get/{companyId}")
+    @GetMapping("{companyId}")
     public String get(@PathVariable Long companyId, Model model) {
         model.addAttribute("company", companyService.findById(companyId));
         return "company/company";
     }
 
-    @GetMapping("/edit/{companyId}")
+    @GetMapping("edit/{companyId}")
     public String update(@PathVariable Long companyId, Model model) {
         model.addAttribute("company", companyService.findById(companyId));
         return "company/edit";
     }
 
-    @PostMapping("/edit")
-    public String update(@Valid CompanyDto company, BindingResult bindingResult, Model model) {
+    @PostMapping("edit/{companyId}")
+    public String update(@PathVariable Long companyId, @Valid CompanyDto company, BindingResult bindingResult, Model model) {
+        company.setId(companyId);
         if (bindingResult.hasErrors()) {
             model.addAttribute("company", company);
             model.addAttribute("errors", bindingResult);
@@ -61,14 +62,14 @@ public class CompanyController {
         return "redirect:/company/all";
     }
 
-    @PostMapping("/delete")
-    public String delete(@RequestParam Long companyId) {
+    @PostMapping("delete/{companyId}")
+    public String delete(@PathVariable Long companyId) {
         companyService.deleteCompany(companyId);
         return "redirect:/company/all";
     }
 
     @GetMapping("/delete")
-    public  String deletePage(Model model){
+    public String deletePage(Model model){
         model.addAttribute("list", companyService.getAllCompanies());
         return "company/delete";
     }

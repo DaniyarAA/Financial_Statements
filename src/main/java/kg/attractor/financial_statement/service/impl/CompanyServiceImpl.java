@@ -111,7 +111,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     private Company convertToEntity(CompanyDto companyDto) {
         return Company.builder()
-                .id(companyDto.getId())
                 .name(companyDto.getName())
                 .inn(companyDto.getInn())
                 .directorInn(companyDto.getDirectorInn())

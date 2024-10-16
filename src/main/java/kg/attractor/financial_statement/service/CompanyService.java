@@ -1,21 +1,17 @@
 package kg.attractor.financial_statement.service;
 
-import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.dto.CompanyDto;
 
 import java.util.List;
 
 public interface CompanyService {
-    void createCompany(Company company);
+    void createCompany(CompanyDto company);
 
+    CompanyDto findById(Long companyId);
 
-
-    Company findById(Long companyId);
-
-    void editCompany(Company company);
-
-    boolean checkAuthorityForDelete(String name);
+    void editCompany(CompanyDto company);
 
     void deleteCompany(Long companyId);
 
-    List<Company> getAllCompanies();
+    List<CompanyDto> getAllCompanies();
 }

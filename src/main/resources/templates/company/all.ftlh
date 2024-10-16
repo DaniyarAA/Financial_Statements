@@ -22,42 +22,46 @@
         .card-body p {
             font-size: 1rem;
         }
+        .main-title{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <h1 class="main-title">Список Компании</h1>
     <div class="row">
         <#list list as company>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h2 class="card-title">${company.name!}</h2>
+                        <h2 class="card-title">Наименование компании: ${company.name!}</h2>
                         <p><strong>ИНН:</strong> ${company.inn!}</p>
-                        <p><strong>ИНН директора:</strong> ${company.directorInn!}</p>
+                        <p><strong>ИНН руководителя:</strong> ${company.directorInn!}</p>
                         <p><strong>Логин:</strong> ${company.login!}</p>
                         <p><strong>Пароль:</strong> ${company.password!}</p>
                         <p><strong>ЭЦП:</strong> ${company.ecp!}</p>
-                        <p><strong>Кабинет налоговиков:</strong> ${company.kabinetSalyk!}</p>
-                        <p><strong>Пароль кабинета налоговиков:</strong> ${company.kabinetSalykPassword!}</p>
-                        <p><strong>Налоговый режим:</strong> ${company.taxMode!}</p>
-                        <p><strong>Организационно-правовая форма:</strong> ${company.opf!}</p>
+                        <p><strong>Salyk.kg логин:</strong> ${company.kabinetSalyk!}</p>
+                        <p><strong>Salyk.kg пароль:</strong> ${company.kabinetSalykPassword!}</p>
+                        <p><strong>Режим налогооблажения:</strong> ${company.taxMode!}</p>
+                        <p><strong>ОПФ:</strong> ${company.opf!}</p>
                         <p><strong>Район ГНС:</strong> ${company.districtGns!}</p>
                         <p><strong>Номер социального фонда:</strong> ${company.socfundNumber!}</p>
-                        <p><strong>Регистрационный номер МЖ:</strong> ${company.registrationNumberMj!}</p>
+                        <p><strong>Регистрационный номер МЮ:</strong> ${company.registrationNumberMj!}</p>
                         <p><strong>ОКПО:</strong> ${company.okpo!}</p>
-                        <p><strong>Директор:</strong> ${company.director!}</p>
+                        <p><strong>ФИО руководителя:</strong> ${company.director!}</p>
                         <p><strong>КЭД:</strong> ${company.ked!}</p>
-                        <p><strong>Email:</strong> ${company.email!}</p>
-                        <p><strong>Пароль Email:</strong> ${company.emailPassword!}</p>
+                        <p><strong>Почта:</strong> ${company.email!}</p>
+                        <p><strong>Пароль от почты:</strong> ${company.emailPassword!}</p>
                         <p><strong>Телефон:</strong> ${company.phone!}</p>
-                        <p><strong>ЭСФ:</strong> ${company.esf!}</p>
-                        <p><strong>Пароль ЭСФ:</strong> ${company.esfPassword!}</p>
-                        <p><strong>ККМ:</strong> ${company.kkm!}</p>
-                        <p><strong>Пароль ККМ:</strong> ${company.kkmPassword!}</p>
-                        <p><strong>Свежая 1С:</strong> ${company.fresh1c!}</p>
-                        <p><strong>Пароль свежей 1С:</strong> ${company.fresh1cPassword!}</p>
-                        <p><strong>ЭТТН:</strong> ${company.ettn!}</p>
-                        <p><strong>Пароль ЭТТН:</strong> ${company.ettnPassword!}</p>
+                        <p><strong>ЭСФ логин:</strong> ${company.esf!}</p>
+                        <p><strong>ЭСФ пароль:</strong> ${company.esfPassword!}</p>
+                        <p><strong>ККМ логин:</strong> ${company.kkm!}</p>
+                        <p><strong>ККМ пароль:</strong> ${company.kkmPassword!}</p>
+                        <p><strong>1С Фреш логин:</strong> ${company.fresh1c!}</p>
+                        <p><strong>1С Фреш пароль:</strong> ${company.fresh1cPassword!}</p>
+                        <p><strong>ЭТТН логин:</strong> ${company.ettn!}</p>
+                        <p><strong>ЭТТН пароль:</strong> ${company.ettnPassword!}</p>
                     </div>
                 </div>
             </div>

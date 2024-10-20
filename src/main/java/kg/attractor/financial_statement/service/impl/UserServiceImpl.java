@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -38,9 +39,9 @@ public class UserServiceImpl implements UserService {
                 .birthday(userDto.getBirthday())
                 .roles(new ArrayList<>())
                 .build();
-             // .avatar("static/user.png")
-             // .registrationDate(userDto.getRegistrationDate())
-             // .isActive(userDto.isActive())
+        // .avatar("static/user.png")
+        // .registrationDate(userDto.getRegistrationDate())
+        // .isActive(userDto.isActive())
         Role role = roleService.getRoleById(userDto.getRoleId());
         newUser.getRoles().add(role);
         role.getUsers().add(newUser);
@@ -57,14 +58,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByLogin(String login) {
-       User user = userRepository.findByLogin(login)
-               .orElseThrow(() -> new UsernameNotFoundException("user not found"));
-       return convertToUserDto(user);
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        return convertToUserDto(user);
     }
 
     @Override
     public void updateUser(Long id, EditUserDto userDto) {
-        User user = userRepository.findById(id).orElseThrow(()->
+        User user = userRepository.findById(id).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
@@ -80,10 +81,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::convertToUserDto)
-                .toList();
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDto = new ArrayList<>();
+
+        for (User user : users) {
+            userDto.add(convertToUserDto(user));
+        }
+        userDto.sort(Comparator.comparing(UserDto::getId));
+
+        return userDto;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package kg.attractor.financial_statement.controllers;
+package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.CompanyDto;

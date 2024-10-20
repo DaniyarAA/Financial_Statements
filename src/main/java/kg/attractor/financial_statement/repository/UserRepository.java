@@ -3,6 +3,8 @@ package kg.attractor.financial_statement.repository;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByLogin(String login);
+    Optional<User> findByLogin(String login);
 }

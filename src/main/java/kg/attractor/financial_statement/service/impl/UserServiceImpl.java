@@ -1,10 +1,11 @@
 package kg.attractor.financial_statement.service.impl;
 
+import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.repository.RoleRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
+import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
 
     @Override
@@ -33,15 +34,14 @@ public class UserServiceImpl implements UserService {
                 .surname(userDto.getSurname())
                 .login(userDto.getLogin())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                // .avatar("static/user.png")
                 .enabled(true)
-                // .registrationDate(userDto.getRegistrationDate())
-                // .isActive(userDto.isActive())
                 .birthday(userDto.getBirthday())
                 .roles(new ArrayList<>())
                 .build();
-        Role role = roleRepository.findById(userDto.getRoleId())
-                .orElseThrow();
+             // .avatar("static/user.png")
+             // .registrationDate(userDto.getRegistrationDate())
+             // .isActive(userDto.isActive())
+        Role role = roleService.getRoleById(userDto.getRoleId());
         newUser.getRoles().add(role);
         role.getUsers().add(newUser);
         userRepository.save(newUser);
@@ -50,33 +50,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        return userRepository.findById(id)
-                .stream()
-                .map(this::convertToUserDto)
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return convertToUserDto(user);
     }
 
     @Override
     public UserDto getUserByLogin(String login) {
-        return userRepository.findByLogin(login)
-                .stream()
-                .map(this::convertToUserDto)
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+       User user = userRepository.findByLogin(login)
+               .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+       return convertToUserDto(user);
     }
 
     @Override
-    public void updateUser(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId()).orElseThrow();
+    public void updateUser(Long id, EditUserDto userDto) {
+        User user = userRepository.findById(id).orElseThrow(()->
+                new UsernameNotFoundException("User not found"));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setLogin(userDto.getLogin());
         user.setBirthday(userDto.getBirthday());
-//        user.setRoles(new ArrayList<>());
-//        roleRepository.findById()TODO логика для выбора ролей и присвоения юзеру
-        //TODO user.setAvatar(userDto.getAvatar());
-        //TODO user.setIsActive(userDto.isActive());
         userRepository.save(user);
     }
 
@@ -91,6 +84,11 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(this::convertToUserDto)
                 .toList();
+    }
+
+    @Override
+    public boolean checkIfUserExists(String login) {
+        return userRepository.findByLogin(login).isPresent();
     }
 
     private UserDto convertToUserDto(User user) {

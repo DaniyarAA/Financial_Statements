@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.RoleDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.service.RoleService;
@@ -50,27 +51,22 @@ public class AdminController {
         return "admin/users";
     }
 
-    @GetMapping("edit/{id}")
+    @GetMapping("user/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        UserDto userDto = userService.getUserById(id);
         List<RoleDto> roles = roleService.getAll();
-        model.addAttribute("userDto", userDto);
+        model.addAttribute("editUserDto", userService.getUserById(id));
         model.addAttribute("roles", roles);
         return "admin/edit_user";
     }
 
-    @PostMapping("edit/{id}")
-    public String updateUser(@PathVariable("id") Long id, @Valid UserDto userDto, BindingResult bindingResult, Model model) {
+    @PostMapping("user/edit/{id}")
+    public String editUser(@PathVariable("id") Long id, @Valid EditUserDto userDto, BindingResult bindingResult, Model model) {
+        List<RoleDto> roles = roleService.getAll();
+        model.addAttribute("editUserDto",  userService.getUserById(id));
         if (bindingResult.hasErrors()) {
-            List<RoleDto> roles = roleService.getAll();
-            model.addAttribute("roles", roles);
             return "admin/edit_user";
         }
-        userService.updateUser( userDto);
+        userService.updateUser(id, userDto);
         return "redirect:/admin/users";
     }
-
-
-
-
 }

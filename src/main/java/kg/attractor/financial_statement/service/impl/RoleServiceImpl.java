@@ -25,6 +25,16 @@ public class RoleServiceImpl implements RoleService {
                 .toList();
     }
 
+    @Override
+    public Role getRoleById(Long id){
+        return roleRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public RoleDto getRoleByName(String name){
+        return convertToDto(roleRepository.findByRoleName(name).orElseThrow());
+    }
+
     private RoleDto convertToDto(Role role) {
         return RoleDto.builder()
                 .id(role.getId())

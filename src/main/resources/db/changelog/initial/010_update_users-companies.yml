@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010
+      author: Aktan
+      changes:
+        - createTable:
+            tableName: users_companies
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_users-companies_user_id
+                    references: users(id)
+                    nullable: true
+              - column:
+                  name: company_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_users-companies_company_id
+                    references: companies(id)
+                    nullable: true
+        - dropColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: assigned_to
+              - column:
+                  name: company_id
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: user_company_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_tasks_user_company_id
+                    references: users_companies(id)
+                    nullable: false
+

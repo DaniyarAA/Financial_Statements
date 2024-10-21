@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Daniyar:014
+--changeset Daniyar:015
 INSERT INTO users_roles (user_id, role_id) VALUES
 ((SELECT id FROM users WHERE login = 'alexey_ivanov'), (SELECT id FROM roles WHERE role = 'ROLE_ADMIN')),
 ((SELECT id FROM users WHERE login = 'maria_petrova'), (SELECT id FROM roles WHERE role = 'ROLE_MANAGER')),

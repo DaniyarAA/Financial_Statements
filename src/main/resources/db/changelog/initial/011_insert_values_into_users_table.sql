@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Daniyar:010
+--changeset Daniyar:011
 --passwords: 123
 INSERT INTO users (name, surname, birthday, login, password, enabled) VALUES
 ('Алексей', 'Иванов', '1990-01-15', 'alexey_ivanov', '$2a$12$VY85Li9r92YdICRF3njFfeJJN3zsdzDLJKfaD5E7XZGMzxD6Kcumy', true),

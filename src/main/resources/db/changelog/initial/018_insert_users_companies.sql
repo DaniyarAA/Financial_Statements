@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Aktan:108
+--changeset Aktan:018
 insert into users_companies(user_id, company_id)
 values
         ((SELECT id FROM users WHERE login = 'dmitry_popov'), (SELECT id FROM companies WHERE name = 'ОсОО "Технопарк"')),

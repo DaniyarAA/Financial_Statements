@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Daniyar:017
+--changeset Daniyar:019
 INSERT INTO tasks (status, date, time, document_type_id, user_company_id)
 VALUES
     ('Не сдан', '2024-10-31', '09:00:00',

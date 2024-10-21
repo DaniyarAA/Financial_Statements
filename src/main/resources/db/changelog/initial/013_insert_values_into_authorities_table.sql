@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Daniyar:012
+--changeset Daniyar:013
 INSERT INTO authorities (authority) VALUES
 ('VIEW_COMPANIES'),
 ('CREATE_COMPANIES'),

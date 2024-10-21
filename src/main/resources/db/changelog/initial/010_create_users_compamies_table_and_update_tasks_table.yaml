@@ -8,21 +8,21 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
               - column:
                   name: user_id
-                  type: bigint
+                  type: BIGINT
                   constraints:
                     foreignKeyName: fk_users-companies_user_id
                     references: users(id)
                     nullable: true
               - column:
                   name: company_id
-                  type: bigint
+                  type: BIGINT
                   constraints:
                     foreignKeyName: fk_users-companies_company_id
                     references: companies(id)
@@ -39,9 +39,8 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_company_id
-                  type: bigint
+                  type: BIGINT
                   constraints:
                     foreignKeyName: fk_tasks_user_company_id
                     references: users_companies(id)
                     nullable: false
-

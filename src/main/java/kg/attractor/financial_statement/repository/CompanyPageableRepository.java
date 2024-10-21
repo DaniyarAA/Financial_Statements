@@ -1,9 +1,9 @@
 package kg.attractor.financial_statement.repository;
 
 import kg.attractor.financial_statement.entity.Company;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, Long> {
+public interface CompanyPageableRepository extends PagingAndSortingRepository<Company, Long> {
 }

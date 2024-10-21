@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.userdetails.UserCache;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +30,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Collection<Role> roles = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignedTo")
-    private List<Task> tasks;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserCompany> userCompanies;
 }

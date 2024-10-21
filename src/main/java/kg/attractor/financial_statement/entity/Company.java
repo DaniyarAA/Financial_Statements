@@ -39,13 +39,15 @@ public class Company {
     private String esfPassword;
     private String kkm;
     private String kkmPassword;
+
     @Column(name = "fresh_1c")
     private String fresh1c;
+
     @Column(name = "fresh_1c_password")
     private String fresh1cPassword;
     private String ettn;
     private String ettnPassword;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-    private List<Task> tasks;
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<UserCompany> usersCompany;
 }

@@ -1,0 +1,222 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    background-color: #f7f7f7;
+}
+
+.user-form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+    position: relative;
+}
+.user-form-container h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+.user-form-container img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+.user-form-container label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #666;
+}
+.user-form-container input[type="text"],
+.user-form-container input[type="date"],
+.user-form-container select,
+.user-form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.user-form-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.user-form-container button:hover {
+    background-color: #45a049;
+}
+.delete-icon, .archive-icon {
+    position: absolute;
+    top: 10px;
+    cursor: pointer;
+}
+.delete-icon {
+    right: 10px;
+}
+.archive-icon {
+    left: 10px;
+}
+.status {
+    color: green;
+    font-weight: bold;
+}
+.icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ddd;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+.user-form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+    position: relative;
+}
+.user-form-container h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.user-form-container label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #666;
+}
+.user-form-container input[type="text"],
+.user-form-container input[type="date"],
+.user-form-container input[type="password"],
+.user-form-container select,
+.user-form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.user-form-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.user-form-container button:hover {
+    background-color: #45a049;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.view-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.icon {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.icon:hover {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.user-list-container {
+    margin: 20px;
+}
+
+.user-list-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.user-table {
+    width: 100%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.user-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info span {
+    font-size: 14px;
+}
+
+.user-action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.edit-button, .add-user-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.edit-button {
+    background-color: #4CAF50;
+}
+
+.add-user-button {
+    background-color: #008CBA;
+}
+
+.edit-button:hover, .add-user-button:hover {
+    background-color: #45a049;
+}
+
+.disabled {
+    color: #888;
+}

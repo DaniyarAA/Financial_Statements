@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Daniyar:016
+--changeset Daniyar:017
 INSERT INTO document_types (name) VALUES
 ('161 форма'),
 ('ЕН отчет'),

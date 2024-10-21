@@ -26,14 +26,10 @@ public class Task {
     @JoinColumn(name = "document_type_id")
     private DocumentType documentType;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_to")
-    private User assignedTo;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
     private List<Report> reports;
+
+    @ManyToOne
+    @JoinColumn(name = "user_company_id", referencedColumnName = "id")
+    private UserCompany userCompany;
 }

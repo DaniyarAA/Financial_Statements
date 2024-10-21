@@ -48,6 +48,6 @@ public class Company {
     private String ettn;
     private String ettnPassword;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-    private List<Task> tasks;
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<UserCompany> usersCompany;
 }

@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +94,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByLogin(login).isPresent();
     }
 
+    @Override
+    public UserForTaskDto getUserForTaskDto(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found for id: " + id));
+        return convertToUserForTaskDto(user);
+    }
+
+
     private UserDto convertToUserDto(User user) {
         return UserDto
                 .builder()
@@ -109,8 +118,12 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    @Override
-    public UserForTaskDto getUserForTaskDto(Long id) {
-        return null;
+
+    private UserForTaskDto convertToUserForTaskDto(User user) {
+        return UserForTaskDto.builder()
+                .login(user.getLogin())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .build();
     }
 }

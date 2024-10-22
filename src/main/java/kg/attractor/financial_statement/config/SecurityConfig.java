@@ -33,9 +33,9 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
-                        .requestMatchers("/tasks/**").hasRole("ACCOUNTANT")
+                        .requestMatchers("/tasks/**").hasAuthority("ACCOUNTANT")
 
                         .requestMatchers("/companies/**").authenticated()
                         .anyRequest().permitAll());

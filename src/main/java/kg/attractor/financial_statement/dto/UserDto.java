@@ -34,10 +34,9 @@ public class UserDto {
             message = "Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ")
     private String password;
 
-    private LocalDate registrationDate;
+    private LocalDate registerDate;
 
-    private boolean isActive;
-  //  private String avatar;
+    private String avatar;
     private boolean enabled;
 
     @NotNull(message = "Заполните дату рождения сотрулника!")

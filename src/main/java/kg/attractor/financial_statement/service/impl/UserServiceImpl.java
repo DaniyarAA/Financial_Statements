@@ -2,7 +2,6 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
-import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.RoleService;
@@ -37,14 +36,10 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .enabled(true)
                 .birthday(userDto.getBirthday())
-                .roles(new ArrayList<>())
+                .role(roleService.getRoleById(userDto.getRoleId()))
+                .avatar("static/user.png")
+                .registerDate(userDto.getRegisterDate())
                 .build();
-        // .avatar("static/user.png")
-        // .registrationDate(userDto.getRegistrationDate())
-        // .isActive(userDto.isActive())
-        Role role = roleService.getRoleById(userDto.getRoleId());
-        newUser.getRoles().add(role);
-        role.getUsers().add(newUser);
         userRepository.save(newUser);
 
     }
@@ -107,10 +102,9 @@ public class UserServiceImpl implements UserService {
                 .password(user.getPassword())
                 .birthday(user.getBirthday())
                 .enabled(user.isEnabled())
-                .registrationDate(LocalDate.now())
-                //.avatar("static/user.png")
-                //.roleId(user.getRoles())
-                //.roles/.registerDate/.avatar/.
+                .registerDate(LocalDate.now())
+                .avatar("static/user.png")
+                .roleId(user.getRole().getId())
                 .build();
     }
 }

@@ -48,6 +48,8 @@ public class Company {
     private String ettn;
     private String ettnPassword;
 
+    private boolean isDeleted;
+
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<UserCompany> usersCompany;
 }

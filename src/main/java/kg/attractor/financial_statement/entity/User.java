@@ -26,9 +26,12 @@ public class User {
     private String password;
     private boolean enabled;
     private LocalDate birthday;
+    private String avatar;
+    private LocalDate registerDate;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Collection<Role> roles = new ArrayList<>();
+    @ManyToOne
+    @PrimaryKeyJoinColumn(name = "role_id")
+    private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserCompany> userCompanies;

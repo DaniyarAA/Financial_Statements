@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import kg.attractor.financial_statement.dto.DocumentTypeDto;
 import kg.attractor.financial_statement.entity.DocumentType;
 import kg.attractor.financial_statement.repository.DocumentTypeRepository;
 import kg.attractor.financial_statement.service.DocumentTypeService;
@@ -7,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,4 +24,31 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 .orElseThrow(() -> new NoSuchElementException("No document found for id " + id));
         return documentType.getName();
     }
+
+    @Override
+    public List<DocumentTypeDto> getAllDocumentTypes() {
+        List<DocumentType> documentTypes = documentTypeRepository.findAll();
+        return convertToDtoList(documentTypes);
+    }
+
+    @Override
+    public DocumentType getDocumentTypeById(Long documentTypeId) {
+        return documentTypeRepository.findById(documentTypeId)
+                .orElseThrow(() -> new NoSuchElementException("Document type not found for id " + documentTypeId));
+    }
+
+    private DocumentTypeDto convertToDto(DocumentType documentType) {
+        return DocumentTypeDto.builder()
+                .id(documentType.getId())
+                .name(documentType.getName())
+                .build();
+    }
+
+    private List<DocumentTypeDto> convertToDtoList(List<DocumentType> documentTypes) {
+        return documentTypes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
 }

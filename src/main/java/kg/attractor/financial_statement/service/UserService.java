@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.dto.UserForTaskDto;
+import kg.attractor.financial_statement.entity.User;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface UserService {
     UserDto getUserByLogin(String login);
 
     void updateUser(Long id, EditUserDto userDto);
+
+    User getUserModelByLogin(String userLogin);
 }

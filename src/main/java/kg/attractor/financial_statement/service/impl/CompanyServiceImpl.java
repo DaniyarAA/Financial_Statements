@@ -76,6 +76,12 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public Company getCompanyById(Long companyId) {
+        return companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("No such company found"));
+    }
+
     private CompanyDto convertToDto(Company company) {
         return CompanyDto.builder()
                 .id(company.getId())

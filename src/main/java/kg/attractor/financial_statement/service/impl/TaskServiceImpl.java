@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
                 .date(task.getDate())
                 .time(task.getTime())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
-                .user(userService.getUserForTaskDto(task.getAssignedTo().getId()))
+//                .user(userService.getUserForTaskDto(task.getAssignedTo().getId()))
                 .build();
     }
 }

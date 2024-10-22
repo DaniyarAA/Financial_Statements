@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.RoleService;
@@ -106,5 +107,10 @@ public class UserServiceImpl implements UserService {
                 .avatar("static/user.png")
                 .roleId(user.getRole().getId())
                 .build();
+    }
+
+    @Override
+    public UserForTaskDto getUserForTaskDto(Long id) {
+        return null;
     }
 }

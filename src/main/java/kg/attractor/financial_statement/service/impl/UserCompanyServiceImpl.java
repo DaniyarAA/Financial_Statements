@@ -1,6 +1,8 @@
 package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.TaskCreateDto;
+import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserCompanyRepository;
 import kg.attractor.financial_statement.service.CompanyService;
@@ -22,15 +24,17 @@ public class UserCompanyServiceImpl implements UserCompanyService {
         String userLogin = taskCreateDto.getUserLogin();
         Long companyId = taskCreateDto.getCompanyId();
 
-//        boolean isExists = userCompanyRepository.existsByUserAndCompany(userLogin, companyId);
-//
-//        if (!isExists) {
-//            UserCompany userCompany = new UserCompany();
-//            userCompany.setUser(userService.getUserModelByLogin(userLogin));
-//            userCompany.setCompany(companyService.getCompanyById(companyId));
-//
-//            userCompanyRepository.save(userCompany);
-//        }
+        User user = userService.getUserModelByLogin(userLogin);
+        Company company = companyService.getCompanyById(companyId);
+        boolean isExists = userCompanyRepository.existsByUserAndCompany(user, company);
+
+        if (!isExists) {
+            UserCompany userCompany = new UserCompany();
+            userCompany.setUser(userService.getUserModelByLogin(userLogin));
+            userCompany.setCompany(companyService.getCompanyById(companyId));
+
+            userCompanyRepository.save(userCompany);
+        }
 
         return null;
     }

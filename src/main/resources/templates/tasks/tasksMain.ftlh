@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
-<#import "../layout.ftlh" as registerForm>
+<#import "../layout.ftlh" as main>
 
-<@registerForm.layout>
+<@main.layout>
     <div class="container font-weight-bold text-black mt-5" style="color: white">
         <h2 class="text-center mb-4">Таски</h2>
 
@@ -62,4 +62,4 @@
         </table>
     </div>
 <script src="/js/taskFiltering.js"></script>
-</@registerForm.layout>
+</@main.layout>

@@ -37,6 +37,10 @@ public class TaskServiceImpl implements TaskService {
         LocalTime time = LocalTime.now();
 
         Task task = convertToEntity(taskCreateDto, login, date, time);
+
+        if (task.getUserCompany() != null) {
+            //logic
+        }
         Task newTask = taskRepository.save(task);
         return newTask.getId();
     }

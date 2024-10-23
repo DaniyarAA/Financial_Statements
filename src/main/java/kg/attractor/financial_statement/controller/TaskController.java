@@ -32,22 +32,34 @@ public class TaskController {
         return "tasks/tasksMain";
     }
 
-    @GetMapping("tasks/create")
-    public String getCreateTaskForm(@Valid TaskCreateDto taskCreateDto,
-                                    BindingResult bindingResult,
-                                    Model model,
-                                    Authentication authentication) {
+    @GetMapping("create")
+    public String getCreateTaskForm(
+            Model model,
+            Authentication authentication
+    ) {
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        model.addAttribute("documentTypeDtos", documentTypeDtos);
+        model.addAttribute("taskCreateDto", new TaskCreateDto());
+
+        return "tasks/create";
+    }
+
+    @PostMapping("create")
+    public String createTask(
+            @Valid TaskCreateDto taskCreateDto,
+            BindingResult bindingResult,
+            Model model,
+            Authentication authentication
+    ) {
         if (bindingResult.hasErrors() ) {
             List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
-
             model.addAttribute("documentTypeDtos", documentTypeDtos);
             model.addAttribute("taskCreateDto", taskCreateDto);
+
             return "tasks/create";
         }
-
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
+        return "redirect:/tasks/" + id;
 
-        return "redirect:/vacancies/" + id;
-        //доделать надо
     }
 }

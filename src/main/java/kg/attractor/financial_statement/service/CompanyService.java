@@ -5,7 +5,7 @@ import kg.attractor.financial_statement.dto.CompanyDto;
 import java.util.List;
 
 public interface CompanyService {
-    void createCompany(CompanyDto company);
+    void createCompany(CompanyDto company,String login);
 
     CompanyDto findById(Long companyId);
 

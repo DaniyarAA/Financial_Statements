@@ -10,7 +10,7 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">Редактирование Компании</h1>
-    <form action="/company/edit" method="post">
+    <form action="/company/edit/${company.id}" method="post">
         <#if _csrf??>
             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                    value="${(_csrf.token)!'csrf-token'}"/>

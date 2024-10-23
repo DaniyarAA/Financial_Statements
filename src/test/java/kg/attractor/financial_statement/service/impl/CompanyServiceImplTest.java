@@ -2,7 +2,11 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
+import kg.attractor.financial_statement.repository.UserCompanyRepository;
+import kg.attractor.financial_statement.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +32,12 @@ public class CompanyServiceImplTest {
 
     @InjectMocks
     private CompanyServiceImpl companyService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private UserCompanyRepository companyUserRepository;
 
 
     @Test
@@ -94,11 +104,26 @@ public class CompanyServiceImplTest {
                 .ettnPassword("fdsfsf.pas")
                 .build();
 
-        Mockito.when(companyRepository.save(any(Company.class))).thenReturn(company);
+        User user = User.builder()
+                .id(1L)
+                .login("babySharkDODO@gmail.com")
+                .password("password")
+                .build();
 
-        companyService.createCompany(companyDto);
+        UserCompany userCompany = UserCompany.builder()
+                .user(user)
+                .company(company)
+                .build();
+
+        Mockito.when(companyRepository.save(any(Company.class))).thenReturn(company);
+        Mockito.when(userRepository.findByLogin(anyString())).thenReturn(Optional.of(user));
+        Mockito.when(companyUserRepository.save(any(UserCompany.class))).thenReturn(userCompany);
+
+        companyService.createCompany(companyDto, "babySharkDODO@gmail.com");
 
         Mockito.verify(companyRepository, times(1)).save(any(Company.class));
+        Mockito.verify(userRepository, times(1)).findByLogin("babySharkDODO@gmail.com");
+        Mockito.verify(companyUserRepository, times(1)).save(any(UserCompany.class));
     }
 
     @Test
@@ -227,9 +252,9 @@ public class CompanyServiceImplTest {
 
     @Test
     void deleteCompany() {
-        Mockito.doNothing().when(companyRepository).deleteById(anyLong());
+        Mockito.doNothing().when(companyRepository).changeIsDeleted(anyLong(), eq(Boolean.TRUE));
         companyService.deleteCompany(1L);
-        Mockito.verify(companyRepository, times(1)).deleteById(1L);
+        Mockito.verify(companyRepository, times(1)).changeIsDeleted(1L, Boolean.TRUE);
     }
 
     @Test
@@ -296,7 +321,7 @@ public class CompanyServiceImplTest {
                 .ettnPassword("fdsfksf.pas")
                 .build();
 
-        Mockito.when(companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        Mockito.when(companyRepository.findByIsDeleted(Boolean.FALSE)).thenReturn(Arrays.asList(company1, company2));
 
         List<CompanyDto> result = companyService.getAllCompanies();
 

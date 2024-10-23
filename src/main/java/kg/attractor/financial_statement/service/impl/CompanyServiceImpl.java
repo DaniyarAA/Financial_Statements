@@ -2,10 +2,15 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
+import kg.attractor.financial_statement.repository.UserCompanyRepository;
+import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +22,14 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
+    private final UserCompanyRepository companyUserRepository;
 
     @Override
-    public void createCompany(CompanyDto companyDto) {
+    public void createCompany(CompanyDto companyDto,String login) {
         Company company = convertToEntity(companyDto);
-        companyRepository.save(company);
+        Company companyCreated = companyRepository.save(company);
+        createdUserCompany(companyCreated,login);
     }
 
     @Override
@@ -67,13 +75,22 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void deleteCompany(Long companyId) {
-        companyRepository.deleteById(companyId);
+        companyRepository.changeIsDeleted(companyId,Boolean.TRUE);
     }
 
     @Override
     public List<CompanyDto> getAllCompanies() {
-        List<Company> companyList = companyRepository.findAll();
+        List<Company> companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
         return companyList.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    private void createdUserCompany(Company company,String login) {
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        UserCompany userCompany = new UserCompany();
+        userCompany.setCompany(company);
+        userCompany.setUser(user);
+        companyUserRepository.save(userCompany);
     }
 
     private CompanyDto convertToDto(Company company) {

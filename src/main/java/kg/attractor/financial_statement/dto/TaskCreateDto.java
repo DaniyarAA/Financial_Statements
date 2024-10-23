@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -14,10 +15,11 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskCreateDto {
-//    private LocalDate date;
-//    private LocalTime time;
-
     private Long documentTypeId;
     private String userLogin;
     private Long companyId;
+    private Long statusId;
+
+    private LocalDateTime from;
+    private LocalDateTime to;
 }

@@ -1,11 +1,8 @@
 package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
-import kg.attractor.financial_statement.dto.DocumentTypeDto;
-import kg.attractor.financial_statement.dto.TaskCreateDto;
-import kg.attractor.financial_statement.dto.TaskDto;
-import kg.attractor.financial_statement.service.DocumentTypeService;
-import kg.attractor.financial_statement.service.TaskService;
+import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,6 +21,9 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
     private final DocumentTypeService documentTypeService;
+    private final UserService userService;
+    private final TaskStatusService taskStatusService;
+    private final CompanyService companyService;
 
     @GetMapping
     public String getTasks(Model model) {
@@ -40,6 +40,13 @@ public class TaskController {
             Authentication authentication
     ) {
         List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<UserDto> userDtos = userService.getAllUsers();
+        List<CompanyDto> companyDtos = companyService.getAllCompanies();
+        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
+
+        model.addAttribute("userDtos", userDtos);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("taskStatusDtos", taskStatusDtos);
         model.addAttribute("documentTypeDtos", documentTypeDtos);
         model.addAttribute("taskCreateDto", new TaskCreateDto());
 

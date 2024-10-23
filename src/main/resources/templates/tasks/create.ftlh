@@ -12,14 +12,49 @@
             <div class="mb-3">
                 <label for="category" class="form-label">Тип документа</label>
                 <select class="form-select" id="documentType" name="documentTypeId">
-                    <#if categories??>
+                    <#if documentTypeDtos??>
                         <#list documentTypeDtos as documentType>
                             <option value="${documentType.id}">${documentType.name}</option>
                         </#list>
                     <#else>
 
                     </#if>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Назначить</label>
+                <select class="form-select" id="user" name="userId">
+                    <#if userDtos??>
+                        <#list userDtos as user>
+                            <option value="${user.id}">${user.login}</option>
+                        </#list>
+                    <#else>
 
+                    </#if>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Компания</label>
+                <select class="form-select" id="company" name="companyId">
+                    <#if companyDtos??>
+                        <#list companyDtos as company>
+                            <option value="${company.id}">${company.name}</option>
+                        </#list>
+                    <#else>
+
+                    </#if>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Статус</label>
+                <select class="form-select" id="company" name="companyId">
+                    <#if taskStatusDtos??>
+                        <#list taskStatusDtos as taskStatus>
+                            <option value="${taskStatus.id}">${taskStatus.name}</option>
+                        </#list>
+                    <#else>
+
+                    </#if>
                 </select>
             </div>
 

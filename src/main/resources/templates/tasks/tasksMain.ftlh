@@ -41,19 +41,19 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Статус</th>
-                <th scope="col">Дата</th>
-                <th scope="col">Время</th>
+                <th scope="col">С</th>
+                <th scope="col">По</th>
                 <th scope="col">Тип документа</th>
                 <th scope="col">Бухгалтер</th>
             </tr>
             </thead>
             <tbody id="taskTableBody">
             <#list tasks as task>
-                <tr class="task-row" data-status="${task.status}" data-document-type="${task.documentTypeName}" data-date="${task.date}">
+                <tr class="task-row" data-status="${task.statusId}" data-document-type="${task.documentTypeName}">
                     <th scope="row"><a href="/tasks/${task.id}" class="btn btn-sm btn-warning">${task.id}</a></th>
-                    <td>${task.status}</td>
-                    <td>${task.date}</td>
-                    <td>${task.time}</td>
+                    <td>${task.statusId}</td>
+                    <td>${dateUtils.formatDateTime(task.from, "dd.MM.yyyy")}</td>
+                    <td>${dateUtils.formatDateTime(task.to, "dd.MM.yyyy")}</td>
                     <td>${task.documentTypeName}</td>
                     <td>${task.user.name} ${task.user.surname}</td>
                 </tr>

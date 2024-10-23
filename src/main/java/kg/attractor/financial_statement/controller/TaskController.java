@@ -6,6 +6,7 @@ import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.service.DocumentTypeService;
 import kg.attractor.financial_statement.service.TaskService;
+import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ public class TaskController {
         List<TaskDto> tasks = taskService.getAllTasks();
 
         model.addAttribute("tasks", tasks);
+        model.addAttribute("dateUtils", new DateUtils());
         return "tasks/tasksMain";
     }
 

@@ -55,6 +55,9 @@ public class TaskServiceImpl implements TaskService {
     private TaskDto convertToDto(Task task) {
         return TaskDto.builder()
                 .id(task.getId())
+                .statusId(task.getTaskStatus().getName())
+                .from(task.getFrom())
+                .to(task.getTo())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
                 .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
                 .build();

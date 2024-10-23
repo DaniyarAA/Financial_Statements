@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -18,9 +19,8 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String status;
-    private LocalDate date;
-    private LocalTime time;
+    private LocalDateTime from;
+    private LocalDateTime to;
 
     @ManyToOne
     @JoinColumn(name = "document_type_id")
@@ -32,4 +32,9 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "user_company_id", referencedColumnName = "id")
     private UserCompany userCompany;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private TaskStatus taskStatus;
+
 }

@@ -47,8 +47,6 @@ public class TaskServiceImpl implements TaskService {
 
     private Task convertToEntity(TaskCreateDto taskCreateDto, String login, LocalDate date, LocalTime time) {
         Task task = new Task();
-        task.setDate(date);
-        task.setTime(time);
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDto(taskCreateDto));
         return task;
@@ -57,9 +55,6 @@ public class TaskServiceImpl implements TaskService {
     private TaskDto convertToDto(Task task) {
         return TaskDto.builder()
                 .id(task.getId())
-                .status(task.getStatus())
-                .date(task.getDate())
-                .time(task.getTime())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
                 .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
                 .build();

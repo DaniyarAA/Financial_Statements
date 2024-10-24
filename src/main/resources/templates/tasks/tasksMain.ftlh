@@ -52,8 +52,8 @@
                 <tr class="task-row" data-status="${task.statusId}" data-document-type="${task.documentTypeName}">
                     <th scope="row"><a href="/tasks/${task.id}" class="btn btn-sm btn-warning">${task.id}</a></th>
                     <td>${task.statusId}</td>
-                    <td>${dateUtils.formatDateTime(task.from, "dd.MM.yyyy")}</td>
-                    <td>${dateUtils.formatDateTime(task.to, "dd.MM.yyyy")}</td>
+                    <td>${dateUtils.formatDateTime(task.startDateTime, "dd.MM.yyyy")}</td>
+                    <td>${dateUtils.formatDateTime(task.endDateTime, "dd.MM.yyyy")}</td>
                     <td>${task.documentTypeName}</td>
                     <td>${task.user.name} ${task.user.surname}</td>
                 </tr>

@@ -3,9 +3,7 @@ package kg.attractor.financial_statement.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -19,8 +17,12 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime from;
-    private LocalDateTime to;
+
+    @Column(name = "start_datetime")
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_datetime")
+    private LocalDateTime endDateTime;
 
     @ManyToOne
     @JoinColumn(name = "document_type_id")
@@ -36,5 +38,4 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "status_id")
     private TaskStatus taskStatus;
-
 }

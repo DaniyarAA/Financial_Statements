@@ -14,12 +14,12 @@ databaseChangeLog:
                     foreignKeyName: fk_tasks_status
                     references: task_statuses(id)
               - column:
-                  name: from
+                  name: start_datetime
                   type: timestamp
                   constraints:
                     nullable: true
               - column:
-                  name: to
+                  name: end_datetime
                   type: timestamp
                   constraints:
                     nullable: true

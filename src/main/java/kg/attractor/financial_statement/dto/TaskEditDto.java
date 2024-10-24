@@ -16,6 +16,6 @@ public class TaskEditDto {
     private Long documentTypeId;
     private String userLogin;
     private Long companyId;
-    private LocalDateTime to;
-    private LocalDateTime from;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 }

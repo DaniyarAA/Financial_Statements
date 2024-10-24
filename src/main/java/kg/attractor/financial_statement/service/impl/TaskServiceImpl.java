@@ -56,8 +56,8 @@ public class TaskServiceImpl implements TaskService {
         return TaskDto.builder()
                 .id(task.getId())
                 .statusId(task.getTaskStatus().getName())
-                .from(task.getFrom())
-                .to(task.getTo())
+                .startDateTime(task.getStartDateTime())
+                .endDateTime(task.getEndDateTime())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
                 .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
                 .build();

@@ -13,11 +13,12 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class TaskDto {
     private Long id;
     private String statusId;
-    private LocalDateTime from;
-    private LocalDateTime to;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private String documentTypeName;
     private UserForTaskDto user;
 }

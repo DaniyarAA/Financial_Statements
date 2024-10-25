@@ -1,7 +1,7 @@
 package kg.attractor.financial_statement.service.impl;
 
-import kg.attractor.financial_statement.dto.EditUserDto;
-import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.RoleService;
@@ -38,21 +38,27 @@ public class UserServiceImpl implements UserService {
                 .birthday(userDto.getBirthday())
                 .role(roleService.getRoleById(userDto.getRoleId()))
                 .avatar("static/user.png")
-                .registerDate(userDto.getRegisterDate())
+                .registerDate(LocalDate.now())
                 .build();
         userRepository.save(newUser);
 
     }
 
     @Override
-    public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDto getUserDtoById(Long id) {
+        User user = getUserById(id);
         return convertToUserDto(user);
     }
 
+
     @Override
-    public UserDto getUserByLogin(String login) {
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserDto getUserDtoByLogin(String login) {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
         return convertToUserDto(user);
@@ -75,7 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
+    public List<UserDto> getAllDtoUsers() {
         List<User> users = userRepository.findAll();
         List<UserDto> userDto = new ArrayList<>();
 
@@ -102,9 +108,19 @@ public class UserServiceImpl implements UserService {
                 .password(user.getPassword())
                 .birthday(user.getBirthday())
                 .enabled(user.isEnabled())
-                .registerDate(LocalDate.now())
+                .registerDate(user.getRegisterDate())
                 .avatar("static/user.png")
                 .roleId(user.getRole().getId())
+                .roleDto(convertToRole(roleService.getRoleById(user.getRole().getId())))
+               // .userCompanyDtoList(getCompanyListByUserDtoId(user.getId()))
                 .build();
     }
+
+    private RoleDto convertToRole(Role role) {
+        return RoleDto.builder()
+                .id(role.getId())
+                .roleName(role.getRoleName())
+                .build();
+    }
+
 }

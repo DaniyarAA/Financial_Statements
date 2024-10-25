@@ -46,7 +46,7 @@ public class AdminController {
 
     @GetMapping("users")
     public String getAllUsers(Model model) {
-        List<UserDto> users = userService.getAllUsers();
+        List<UserDto> users = userService.getAllDtoUsers();
         model.addAttribute("users", users);
         return "admin/users";
     }
@@ -54,7 +54,7 @@ public class AdminController {
     @GetMapping("user/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
         List<RoleDto> roles = roleService.getAll();
-        model.addAttribute("editUserDto", userService.getUserById(id));
+        model.addAttribute("editUserDto", userService.getUserDtoById(id));
         model.addAttribute("roles", roles);
         return "admin/edit_user";
     }
@@ -62,7 +62,7 @@ public class AdminController {
     @PostMapping("user/edit/{id}")
     public String editUser(@PathVariable("id") Long id, @Valid EditUserDto userDto, BindingResult bindingResult, Model model) {
         List<RoleDto> roles = roleService.getAll();
-        model.addAttribute("editUserDto",  userService.getUserById(id));
+        model.addAttribute("editUserDto",  userService.getUserDtoById(id));
         if (bindingResult.hasErrors()) {
             return "admin/edit_user";
         }

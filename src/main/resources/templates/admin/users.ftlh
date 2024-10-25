@@ -19,9 +19,13 @@
                 <tr class="user-row">
                     <td class="user-info">
                         <span>#${user.id}.${user.name} ${user.surname}</span>
-                        <span>Reg: ${user.registrationDate}</span>
-<#--                        <span>Role: ${user.getRoleId()}</span>-->
-<#--                        <span class="${user.isActive ? 'active' : 'disabled'}">${user.isActive ? 'Active' : 'Disabled'} ${user.role.name}</span>-->
+                        <span>Reg: ${user.registerDate}</span>
+                        <#if user.enabled == true>
+                            <span>Active</span>
+                        <#else >
+                            <span>Disabled</span>
+                        </#if>
+                        <span>Role: ${user.roleDto.roleName}</span>
                     </td>
                     <td class="user-action-buttons">
                         <button class="edit-button" onclick="window.location.href='/admin/user/edit/${user.id}'">✏️</button>

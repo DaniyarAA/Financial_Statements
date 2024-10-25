@@ -14,7 +14,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
     text-align: center;
-    position: relative;
+    margin: 100px auto 0;
 }
 .user-form-container h2 {
     font-size: 20px;
@@ -120,6 +120,46 @@ body {
     cursor: pointer;
 }
 .user-form-container button:hover {
+    background-color: #45a049;
+}
+
+.login-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+    margin: 100px auto 0;
+}
+.login-container h2 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #555;
+}
+.login-container img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.login-container button:hover {
     background-color: #45a049;
 }
 

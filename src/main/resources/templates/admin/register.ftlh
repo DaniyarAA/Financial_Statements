@@ -26,11 +26,12 @@
             <@spring.showErrors  "<br>" "error text-danger" />
 
             <label for="roleId">Роль:</label>
-                <@spring.bind "userDto.roleId"/>
+                <@spring.bind "userDto.roleDto.id"/>
                 <select class="form-select ${spring.status.error?string('is-invalid', '')}"
                         id="roleId" name="${spring.status.expression}">
-                    <option value="ROLE_ACCOUNTANT" ${(spring.stringStatusValue == "ROLE_ACCOUNTANT"?string)?string("selected", "")}>Бухгалтер</option>
-                    <option value="ROLE_MANAGER" ${(spring.stringStatusValue == "ROLE_MANAGER"?string)?string("selected", "")}>Менеджер</option>
+                    <option value="1" ${(spring.stringStatusValue == '2'?string)?string("selected", "")}>Бухгалтер</option>
+                    <option value="2" ${(spring.stringStatusValue == '3'?string)?string("selected", "")}>Менеджер</option>
+                    <option value="3" ${(spring.stringStatusValue == '4'?string)?string("selected", "")}>Админ</option>
                 </select>
                 <#if spring.status.error>
                     <div class="invalid-feedback">
@@ -42,12 +43,6 @@
 
             <label for="birthday">Дата рождения:</label>
             <input type="date" id="birthday" name="birthday" required>
-
-<#--            <label for="avatar">Аватар:</label>-->
-<#--            <input type="file" id="avatar" name="avatar" accept="image/*">TODO логика для аватарки-->
-
-            <label for="isActive">Активен:</label>
-            <input type="checkbox" id="isActive" name="isActive" checked>
 
             <button type="submit">Создать пользователя</button>
         </form>

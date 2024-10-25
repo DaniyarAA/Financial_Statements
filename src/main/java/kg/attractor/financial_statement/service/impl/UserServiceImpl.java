@@ -1,9 +1,12 @@
 package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
+import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final CompanyService companyService;
 
 
     @Override
@@ -36,7 +40,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .enabled(true)
                 .birthday(userDto.getBirthday())
-                .role(roleService.getRoleById(userDto.getRoleId()))
+                .role(roleService.getRoleById(userDto.getRoleDto().getId()))
                 .avatar("static/user.png")
                 .registerDate(LocalDate.now())
                 .build();
@@ -66,8 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(Long id, EditUserDto userDto) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new UsernameNotFoundException("User not found"));
+        User user = getUserById(id);
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setLogin(userDto.getLogin());
@@ -82,20 +85,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllDtoUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDto = new ArrayList<>();
-
-        for (User user : users) {
-            userDto.add(convertToUserDto(user));
-        }
-        userDto.sort(Comparator.comparing(UserDto::getId));
-
-        return userDto;
+        return userRepository.findAll().stream()
+                .map(this::convertToUserDto)
+                .sorted(Comparator.comparing(UserDto::getId))
+                .toList();
     }
 
     @Override
     public boolean checkIfUserExists(String login) {
         return userRepository.findByLogin(login).isPresent();
+    }
+
+    private List<CompanyDto> getCompaniesByUserId(Long userId) {
+        User user = getUserById(userId);
+        return user.getUserCompanies().stream()
+                .map(UserCompany::getCompany)
+                .map(companyService::convertToDto)
+                .toList();
     }
 
     private UserDto convertToUserDto(User user) {
@@ -110,16 +116,8 @@ public class UserServiceImpl implements UserService {
                 .enabled(user.isEnabled())
                 .registerDate(user.getRegisterDate())
                 .avatar("static/user.png")
-                .roleId(user.getRole().getId())
-                .roleDto(convertToRole(roleService.getRoleById(user.getRole().getId())))
-               // .userCompanyDtoList(getCompanyListByUserDtoId(user.getId()))
-                .build();
-    }
-
-    private RoleDto convertToRole(Role role) {
-        return RoleDto.builder()
-                .id(role.getId())
-                .roleName(role.getRoleName())
+                .roleDto(roleService.convertToDto(user.getRole()))
+                .companies(getCompaniesByUserId(user.getId()))
                 .build();
     }
 

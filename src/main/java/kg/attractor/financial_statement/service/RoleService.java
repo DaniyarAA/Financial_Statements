@@ -11,4 +11,6 @@ public interface RoleService {
     Role getRoleById(Long id);
 
     RoleDto getRoleByName(String name);
+
+    RoleDto convertToDto(Role role);
 }

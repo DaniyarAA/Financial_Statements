@@ -76,7 +76,8 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    private CompanyDto convertToDto(Company company) {
+    @Override
+    public CompanyDto convertToDto(Company company) {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())

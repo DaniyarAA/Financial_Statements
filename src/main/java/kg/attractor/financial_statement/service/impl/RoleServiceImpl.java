@@ -35,7 +35,8 @@ public class RoleServiceImpl implements RoleService {
         return convertToDto(roleRepository.findByRoleName(name).orElseThrow());
     }
 
-    private RoleDto convertToDto(Role role) {
+    @Override
+    public RoleDto convertToDto(Role role) {
         return RoleDto.builder()
                 .id(role.getId())
                 .roleName(role.getRoleName())

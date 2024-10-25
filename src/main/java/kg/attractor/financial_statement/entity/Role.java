@@ -20,6 +20,9 @@ public class Role {
     @Column(name = "role")
     private String roleName;
 
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
+    private Collection<Authority> authorities;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
     private List<User> users;
 }

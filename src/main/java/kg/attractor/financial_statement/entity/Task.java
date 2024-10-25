@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,18 +19,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start_datetime")
-    private LocalDateTime startDateTime;
-
-    @Column(name = "end_datetime")
-    private LocalDateTime endDateTime;
-
     @ManyToOne
     @JoinColumn(name = "document_type_id")
     private DocumentType documentType;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
-    private List<Report> reports;
 
     @ManyToOne
     @JoinColumn(name = "user_company_id", referencedColumnName = "id")
@@ -38,4 +30,19 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "status_id")
     private TaskStatus taskStatus;
+
+    @Column(name = "start_datetime")
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_datetime")
+    private LocalDateTime endDateTime;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
+
+    @Column(name = "description")
+    private String description;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
+    private List<Report> reports;
 }

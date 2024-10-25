@@ -1,21 +1,36 @@
 --liquibase formatted sql
 --changeset Aktan:030
 insert into task_statuses(name)
-values ('Сдан'),
-        ('Не сдан'),
-        ('Просрочен');
+values ('Нужно сделать'),
+       ('В процессе'),
+       ('Готов'),
+       ('Отправлен в налоговую'),
+       ('На проверке'),
+       ('Сдан');
 
 update tasks
-set status_id = (select id from task_statuses where name = 'Не сдан')
-where tasks.status = 'Не сдан';
+set status_id = (select id from task_statuses where name = 'Нужно сделать')
+where tasks.status = 'Нужно сделать';
+
+update tasks
+set status_id = (select id from task_statuses where name = 'В процессе')
+where tasks.status = 'В процессе';
+
+update tasks
+set status_id = (select id from task_statuses where name = 'Готов')
+where tasks.status = 'Готов';
+
+update tasks
+set status_id = (select id from task_statuses where name = 'Отправлен в налоговую')
+where tasks.status = 'Отправлен в налоговую';
+
+update tasks
+set status_id = (select id from task_statuses where name = 'На проверке')
+where tasks.status = 'На проверке';
 
 update tasks
 set status_id = (select id from task_statuses where name = 'Сдан')
 where tasks.status = 'Сдан';
-
-update tasks
-set status_id = (select id from task_statuses where name = 'Просрочен')
-where tasks.status = 'Просрочен';
 
 update tasks
 set "start_datetime" = to_timestamp(concat(tasks.date, ' ', tasks.time), 'YYYY-MM-DD HH24:MI:SS');

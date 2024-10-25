@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -44,4 +45,10 @@ public class UserDto {
 
     @NotNull(message = "Выберите роль для сотрулника!")
     private Long roleId;
+
+    private RoleDto roleDto;
+
+    private String notes;
+
+    private List<UserCompanyDto> userCompanyDtoList;
 }

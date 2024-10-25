@@ -29,6 +29,8 @@ public class User {
     private String avatar;
     private LocalDate registerDate;
 
+    private String notes;
+
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "role_id")
     private Role role;

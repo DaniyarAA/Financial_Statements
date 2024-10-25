@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +22,12 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     public List<TaskStatusDto> getAllTaskStatuses() {
         List<TaskStatus> taskStatuses = taskStatusRepository.findAll();
         return convertToDtoList(taskStatuses);
+    }
+
+    @Override
+    public TaskStatus getTaskStatusById(Long statusId) {
+        return taskStatusRepository.findById(statusId)
+                .orElseThrow(() -> new NoSuchElementException("Task status not found: " + statusId));
     }
 
     private List<TaskStatusDto> convertToDtoList(List<TaskStatus> taskStatuses) {

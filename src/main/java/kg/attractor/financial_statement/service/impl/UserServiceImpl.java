@@ -78,6 +78,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserModelById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for id:" + userId));
+    }
+
+    @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

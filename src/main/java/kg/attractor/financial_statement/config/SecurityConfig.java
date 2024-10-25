@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -23,15 +25,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                .httpBasic(Customizer.withDefaults())
                 .formLogin(form ->
-                        form.loginPage("/auth/login")
-                                .loginProcessingUrl("/auth/login")
+                        form.loginPage("/login")
+                                .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/")
-                                .failureUrl("/auth/login?error=true")
+                                .failureUrl("/login?error=true")
                                 .permitAll())
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
+                .httpBasic(withDefaults())
+                .csrf(withDefaults())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
 

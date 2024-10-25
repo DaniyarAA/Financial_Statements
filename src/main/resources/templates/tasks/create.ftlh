@@ -23,7 +23,7 @@
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">Назначить</label>
-                <select class="form-select" id="user" name="userId">
+                <select class="form-select" id="user" name="appointToUserId">
                     <#if userDtos??>
                         <#list userDtos as user>
                             <option value="${user.id}">${user.login}</option>
@@ -47,7 +47,7 @@
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">Статус</label>
-                <select class="form-select" id="company" name="companyId">
+                <select class="form-select" id="taskStatus" name="taskStatusId">
                     <#if taskStatusDtos??>
                         <#list taskStatusDtos as taskStatus>
                             <option value="${taskStatus.id}">${taskStatus.name}</option>

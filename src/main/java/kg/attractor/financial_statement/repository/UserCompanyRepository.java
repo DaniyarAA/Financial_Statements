@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface UserCompanyRepository extends JpaRepository<UserCompany, Long> {
     Optional<UserCompany> findByUserLoginAndCompanyId(String userLogin, Long companyId);
     boolean existsByUserAndCompany(User user, Company company);
+
+    Optional<UserCompany> findByUserIdAndCompanyId(Long appointToUserId, Long companyId);
 }

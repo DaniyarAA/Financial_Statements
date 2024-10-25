@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,21 +23,46 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     private final CompanyService companyService;
     @Override
     public UserCompany findUserCompanyByTaskCreateDto(TaskCreateDto taskCreateDto) {
-        String userLogin = taskCreateDto.getUserLogin();
+        Long userId = taskCreateDto.getAppointToUserId();
         Long companyId = taskCreateDto.getCompanyId();
 
-        User user = userService.getUserModelByLogin(userLogin);
+        User user = userService.getUserModelById(userId);
         Company company = companyService.getCompanyById(companyId);
         boolean isExists = userCompanyRepository.existsByUserAndCompany(user, company);
 
         if (!isExists) {
             UserCompany userCompany = new UserCompany();
-            userCompany.setUser(userService.getUserModelByLogin(userLogin));
+            userCompany.setUser(userService.getUserModelById(userId));
             userCompany.setCompany(companyService.getCompanyById(companyId));
 
-            userCompanyRepository.save(userCompany);
+            UserCompany newUserCompany = userCompanyRepository.save(userCompany);
+            return newUserCompany;
+        }   else {
+            return userCompanyRepository.findByUserIdAndCompanyId(taskCreateDto.getAppointToUserId(), taskCreateDto.getCompanyId())
+                    .orElseThrow(() -> new NoSuchElementException("User company not found with companyId: " + taskCreateDto.getCompanyId() + " and userId: " + taskCreateDto.getAppointToUserId()));
+
         }
 
-        return null;
+    }
+
+    @Override
+    public UserCompany findUserCompanyByTaskCreateDtoAndLogin(TaskCreateDto taskCreateDto, String login) {
+        Long companyId = taskCreateDto.getCompanyId();
+
+        User user = userService.getUserModelByLogin(login);
+        Company company = companyService.getCompanyById(companyId);
+        boolean isExists = userCompanyRepository.existsByUserAndCompany(user, company);
+
+        if (!isExists) {
+            UserCompany userCompany = new UserCompany();
+            userCompany.setUser(user);
+            userCompany.setCompany(company);
+
+            UserCompany newUserCompany = userCompanyRepository.save(userCompany);
+            return newUserCompany;
+        } else {
+            return userCompanyRepository.findByUserIdAndCompanyId(taskCreateDto.getAppointToUserId(), taskCreateDto.getCompanyId())
+                    .orElseThrow(() -> new NoSuchElementException("User company not found with companyId: " + taskCreateDto.getCompanyId() + " and userId: " + taskCreateDto.getAppointToUserId()));
+        }
     }
 }

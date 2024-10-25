@@ -25,4 +25,6 @@ public interface UserService {
     void updateUser(Long id, EditUserDto userDto);
 
     User getUserModelByLogin(String userLogin);
+
+    User getUserModelById(Long userId);
 }

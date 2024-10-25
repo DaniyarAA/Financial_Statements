@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 
 public class TaskCreateDto {
     private Long documentTypeId;
-    private String userLogin;
+    private Long appointToUserId;
     private Long companyId;
-    private Long statusId;
+    private Long taskStatusId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 }

@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/company")
@@ -34,9 +35,29 @@ public class CompanyController {
         return "redirect:/company/all";
     }
 
-    @GetMapping("/all")
-    public String getAll(Model model) {
-        model.addAttribute("list", companyService.getAllCompanies());
+    @GetMapping("/all/")
+    public String getAll(
+            @RequestParam(required = false, defaultValue = "0") Long companyId,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            Model model) {
+
+        List<CompanyDto> allCompanies = companyService.getAllCompanies();
+        int totalCompanies = allCompanies.size();
+        int start = page * size;
+        int end = Math.min(start + size, totalCompanies);
+
+        model.addAttribute("list", allCompanies.subList(start, end));
+        model.addAttribute("companyId", companyId);
+
+        if (companyId == 0) {
+            model.addAttribute("company", new CompanyDto());
+        } else {
+            model.addAttribute("company", companyService.findById(companyId));
+        }
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
         return "company/all";
     }
 

@@ -7,65 +7,75 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .card {
-            margin: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .card-title {
-            font-size: 1.5rem;
-        }
-        .card-body p {
-            font-size: 1rem;
-        }
-        .main-title{
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
+<header>
+
+
+</header>
 <div class="container">
-    <h1 class="main-title">Список Компании</h1>
     <div class="row">
-        <#list list as company>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title">Наименование компании: ${company.name!}</h2>
-                        <p><strong>ИНН:</strong> ${company.inn!}</p>
-                        <p><strong>ИНН руководителя:</strong> ${company.directorInn!}</p>
-                        <p><strong>Логин:</strong> ${company.login!}</p>
-                        <p><strong>Пароль:</strong> ${company.password!}</p>
-                        <p><strong>ЭЦП:</strong> ${company.ecp!}</p>
-                        <p><strong>Salyk.kg логин:</strong> ${company.kabinetSalyk!}</p>
-                        <p><strong>Salyk.kg пароль:</strong> ${company.kabinetSalykPassword!}</p>
-                        <p><strong>Режим налогооблажения:</strong> ${company.taxMode!}</p>
-                        <p><strong>ОПФ:</strong> ${company.opf!}</p>
-                        <p><strong>Район ГНС:</strong> ${company.districtGns!}</p>
-                        <p><strong>Номер социального фонда:</strong> ${company.socfundNumber!}</p>
-                        <p><strong>Регистрационный номер МЮ:</strong> ${company.registrationNumberMj!}</p>
-                        <p><strong>ОКПО:</strong> ${company.okpo!}</p>
-                        <p><strong>ФИО руководителя:</strong> ${company.director!}</p>
-                        <p><strong>КЭД:</strong> ${company.ked!}</p>
-                        <p><strong>Почта:</strong> ${company.email!}</p>
-                        <p><strong>Пароль от почты:</strong> ${company.emailPassword!}</p>
-                        <p><strong>Телефон:</strong> ${company.phone!}</p>
-                        <p><strong>ЭСФ логин:</strong> ${company.esf!}</p>
-                        <p><strong>ЭСФ пароль:</strong> ${company.esfPassword!}</p>
-                        <p><strong>ККМ логин:</strong> ${company.kkm!}</p>
-                        <p><strong>ККМ пароль:</strong> ${company.kkmPassword!}</p>
-                        <p><strong>1С Фреш логин:</strong> ${company.fresh1c!}</p>
-                        <p><strong>1С Фреш пароль:</strong> ${company.fresh1cPassword!}</p>
-                        <p><strong>ЭТТН логин:</strong> ${company.ettn!}</p>
-                        <p><strong>ЭТТН пароль:</strong> ${company.ettnPassword!}</p>
-                    </div>
+            <div class="col-md-3">
+                <div class="list-group">
+                    <a href="/company/all/?companyId=0&page=0" class="list-group-item list-group-item-action <#if companyId == 0>active</#if>">Название</a>
+                    <#list list as item>
+                        <a href="/company/all/?companyId=${item.id}&page=${currentPage}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
+                    </#list>
+                </div>
+                <div class="mt-3">
+                    <#if 0 < currentPage>
+                        <a href="/company/all/?companyId=${companyId}&page=${currentPage - 1}" class="btn btn-secondary">Назад</a>
+                    </#if>
+                    <#if currentPage < totalPages - 1>
+                        <a href="/company/all/?companyId=${companyId}&page=${currentPage + 1}" class="btn btn-secondary">Вперёд</a>
+                    </#if>
                 </div>
             </div>
-        </#list>
+
+        <div class="col-md-9">
+            <#if company?? && company.id?has_content>
+                <h2 class="mt-3 mb-3 text-center">Наименование компании: ${company.name!}</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>ИНН:</strong> ${company.inn!}</li>
+                            <li class="list-group-item"><strong>ИНН руководителя:</strong> ${company.directorInn!}</li>
+                            <li class="list-group-item"><strong>Логин:</strong> ${company.login!}</li>
+                            <li class="list-group-item"><strong>Пароль:</strong> ${company.password!}</li>
+                            <li class="list-group-item"><strong>ЭЦП:</strong> ${company.ecp!}</li>
+                            <li class="list-group-item"><strong>Salyk.kg логин:</strong> ${company.kabinetSalyk!}</li>
+                            <li class="list-group-item"><strong>Salyk.kg пароль:</strong> ${company.kabinetSalykPassword!}</li>
+                            <li class="list-group-item"><strong>Режим налогооблажения:</strong> ${company.taxMode!}</li>
+                            <li class="list-group-item"><strong>ОПФ:</strong> ${company.opf!}</li>
+                            <li class="list-group-item"><strong>Район ГНС:</strong> ${company.districtGns!}</li>
+                            <li class="list-group-item"><strong>Номер социального фонда:</strong> ${company.socfundNumber!}</li>
+                            <li class="list-group-item"><strong>Регистрационный номер МЮ:</strong> ${company.registrationNumberMj!}</li>
+                            <li class="list-group-item"><strong>ОКПО:</strong> ${company.okpo!}</li>
+                            <li class="list-group-item"><strong>ФИО руководителя:</strong> ${company.director!}</li>
+                            <li class="list-group-item"><strong>КЭД:</strong> ${company.ked!}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Почта:</strong> ${company.email!}</li>
+                            <li class="list-group-item"><strong>Пароль от почты:</strong> ${company.emailPassword!}</li>
+                            <li class="list-group-item"><strong>Телефон:</strong> ${company.phone!}</li>
+                            <li class="list-group-item"><strong>ЭСФ логин:</strong> ${company.esf!}</li>
+                            <li class="list-group-item"><strong>ЭСФ пароль:</strong> ${company.esfPassword!}</li>
+                            <li class="list-group-item"><strong>ККМ логин:</strong> ${company.kkm!}</li>
+                            <li class="list-group-item"><strong>ККМ пароль:</strong> ${company.kkmPassword!}</li>
+                            <li class="list-group-item"><strong>1С Фреш логин:</strong> ${company.fresh1c!}</li>
+                            <li class="list-group-item"><strong>1С Фреш пароль:</strong> ${company.fresh1cPassword!}</li>
+                            <li class="list-group-item"><strong>ЭТТН логин:</strong> ${company.ettn!}</li>
+                            <li class="list-group-item"><strong>ЭТТН пароль:</strong> ${company.ettnPassword!}</li>
+                        </ul>
+                    </div>
+                </div>
+            <#else>
+                <p class="text-muted mt-3">Выберите компанию для отображения подробной информации.</p>
+            </#if>
+        </div>
+
     </div>
 </div>
 </body>

@@ -74,8 +74,8 @@ body {
     align-items: center;
     justify-content: center;
     background-color: #ddd;
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     margin: 0 auto;
 }
@@ -167,6 +167,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    text-align: center;
+    max-width: 100%;
     padding: 10px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -222,12 +224,25 @@ body {
 }
 
 .user-info {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 200px 150px 70px 170px;
+    align-items: center;
 }
 
 .user-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 14px;
+}
+
+.user-detail {
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.user-status {
+    font-weight: bold;
 }
 
 .user-action-buttons {
@@ -245,10 +260,6 @@ body {
     margin-left: 10px;
 }
 
-.edit-button {
-    background-color: #4CAF50;
-}
-
 .add-user-button {
     background-color: #008CBA;
 }
@@ -259,4 +270,49 @@ body {
 
 .disabled {
     color: #888;
+}
+.pagination{
+    padding-left: 40%;
+}
+
+.hidden {
+    display: none;
+}
+
+.user-tile-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.user-tile {
+    background-color: white;
+    padding: 10px;
+    border-radius: 3px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.user-tile-info {
+    display: grid;
+    grid-template-columns: 150px 110px 80px 190px 50px;
+    align-items: center;
+}
+
+.user-tile-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+}
+
+.edit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
 }

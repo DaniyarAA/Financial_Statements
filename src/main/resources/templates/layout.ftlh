@@ -16,7 +16,7 @@
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                 crossorigin="anonymous"></script>
         <title>Financial Statement</title>
-        <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/styles.css">
     </head>
     <body>
     <div class="container">

@@ -2,11 +2,7 @@ package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.userdetails.UserCache;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter

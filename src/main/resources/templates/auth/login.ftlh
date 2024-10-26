@@ -1,7 +1,11 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
     <div class="login-container">
-        <h2>Добро Пожаловать, Олег</h2>
+        <h2>Добро Пожаловать
+            <#if (username??)>
+                ${username}
+            </#if>
+        </h2>
         <img src="/static/user.png" alt="User Icon">
         <form id="login-form" action="/auth/login" method="post">
 

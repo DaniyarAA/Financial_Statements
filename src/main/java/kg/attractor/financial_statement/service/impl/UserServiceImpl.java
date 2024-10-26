@@ -1,5 +1,7 @@
 package kg.attractor.financial_statement.service.impl;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -101,6 +104,22 @@ public class UserServiceImpl implements UserService {
                 .map(UserCompany::getCompany)
                 .map(companyService::convertToDto)
                 .toList();
+    }
+
+    @Override
+    public String getUsernameByCookie(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        String username = null;
+        if (cookies != null) {
+            username = Arrays.stream(cookies).sequential()
+                    .filter(cookie -> "username".equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst()
+                    .map(this::getUserDtoByLogin)
+                    .map(UserDto::getName)
+                    .orElse(null);
+        }
+        return username;
     }
 
     private UserDto convertToUserDto(User user) {

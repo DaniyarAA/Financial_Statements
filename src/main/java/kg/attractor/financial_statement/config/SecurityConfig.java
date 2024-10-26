@@ -16,8 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-
+    private final CustomAuthSuccessHandler authSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,7 +26,7 @@ public class SecurityConfig {
                 .formLogin(form ->
                         form.loginPage("/auth/login")
                                 .loginProcessingUrl("/auth/login")
-                                .defaultSuccessUrl("/")
+                                .successHandler(authSuccessHandler)
                                 .failureUrl("/auth/login?error=true")
                                 .permitAll())
                 .logout(logout -> logout

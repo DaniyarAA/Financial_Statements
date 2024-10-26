@@ -1,6 +1,5 @@
 package kg.attractor.financial_statement.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.service.UserService;
@@ -18,7 +17,9 @@ public class AuthController {
 
     @GetMapping("login")
     public String login(HttpServletRequest request, Model model) {
-        model.addAttribute("username", userService.getUsernameByCookie(request));
+        UserDto userDto = userService.getUserDtoByCookie(request);
+        model.addAttribute("username", userDto.getName());
+        model.addAttribute("avatar", userDto.getAvatar());
         return "auth/login";
     }
 }

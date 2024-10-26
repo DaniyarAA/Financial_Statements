@@ -9,6 +9,7 @@ import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -70,13 +74,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(Long id, EditUserDto userDto) {
+    public void updateUser(Long id, EditUserDto userDto) throws IOException {
+        if (!validateImageType(userDto.getAvatar())) {
+            throw new IOException("Неподдерживаемый формат файла. Поддерживаются только jpg, jpeg, webp и png.");
+        }
         User user = getUserById(id);
+        String avatar = FileUtils.uploadFile(userDto.getAvatar());
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setLogin(userDto.getLogin());
+        user.setAvatar(avatar);
         user.setBirthday(userDto.getBirthday());
         userRepository.save(user);
+    }
+
+    private boolean validateImageType(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null &&
+                (contentType.equals("image/jpeg")
+                        || contentType.equals("image/jpg")
+                        || contentType.equals("image/webp")
+                        || contentType.equals("image/png"));
     }
 
     @Override
@@ -107,19 +125,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getUsernameByCookie(HttpServletRequest request){
+    public UserDto getUserDtoByCookie(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
-        String username = null;
+        UserDto userDto = new UserDto();
         if (cookies != null) {
-            username = Arrays.stream(cookies).sequential()
+            userDto = Arrays.stream(cookies).sequential()
                     .filter(cookie -> "username".equals(cookie.getName()))
                     .map(Cookie::getValue)
                     .findFirst()
                     .map(this::getUserDtoByLogin)
-                    .map(UserDto::getName)
                     .orElse(null);
         }
-        return username;
+        return userDto;
     }
 
     private UserDto convertToUserDto(User user) {
@@ -133,7 +150,7 @@ public class UserServiceImpl implements UserService {
                 .birthday(user.getBirthday())
                 .enabled(user.isEnabled())
                 .registerDate(user.getRegisterDate())
-                .avatar("static/user.png")
+                .avatar(user.getAvatar())
                 .roleDto(roleService.convertToDto(user.getRole()))
                 .companies(getCompaniesByUserId(user.getId()))
                 .build();

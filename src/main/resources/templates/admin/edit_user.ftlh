@@ -10,6 +10,7 @@
             <span class="delete-icon">🗑️</span>
 
             <h2>Редактирование пользователя: ${editUserDto.name} ${editUserDto.surname}</h2>
+            <input type="file" name="avatar">
 
             <#--            <img src="${userDto.avatar?string('https://via.placeholder.com/80')}" alt="User Icon">TODO логика для фото юзера-->
 

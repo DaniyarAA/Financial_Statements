@@ -2,11 +2,15 @@
 <@layout.layout ; spring>
     <div class="login-container">
         <h2>Добро Пожаловать
-            <#if (username??)>
+            <#if username??>
                 ${username}
             </#if>
         </h2>
-        <img src="/static/user.png" alt="User Icon">
+        <#if avatar??>
+            <img src="/api/files/download/${avatar}" id="avatar" alt="avatar" class="profile-info-avatar-img">
+        <#else >
+            <img src="/static/user.png" alt="User Icon">
+        </#if>
         <form id="login-form" action="/auth/login" method="post">
 
             <!-- CSRF -->

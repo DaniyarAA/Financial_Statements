@@ -316,3 +316,10 @@ body {
     cursor: pointer;
     margin-top: 10px;
 }
+.profile-info-avatar-img{
+    width: 186px;
+    height: 186px;
+    margin-top: 2px;
+    border-radius: 50%;
+    object-fit: cover;
+}

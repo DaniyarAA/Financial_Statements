@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -60,11 +62,20 @@ public class AdminController {
 
     @PostMapping("user/edit/{id}")
     public String editUser(@PathVariable("id") Long id, @Valid EditUserDto userDto, BindingResult bindingResult, Model model) {
-        model.addAttribute("editUserDto",  userService.getUserDtoById(id));
         if (bindingResult.hasErrors()) {
+            model.addAttribute("editUserDto", userService.getUserDtoById(id));
+            model.addAttribute("roles", roleService.getAll());
             return "admin/edit_user";
         }
-        userService.updateUser(id, userDto);
-        return "redirect:/admin/users";
+        try {
+            userService.updateUser(id, userDto);
+            return "redirect:/admin/users";
+        } catch (IOException e){
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("editUserDto", userService.getUserDtoById(id));
+            model.addAttribute("roles", roleService.getAll());
+            return "admin/edit_user";
+        }
+
     }
 }

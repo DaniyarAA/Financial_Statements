@@ -7,6 +7,8 @@ import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
+
 
 public interface UserService {
     void registerUser(UserDto user);
@@ -15,7 +17,7 @@ public interface UserService {
     User getUserById(Long id);
 
     UserDto getUserDtoByLogin(String login);
-    void updateUser(Long id, EditUserDto user);
+    void updateUser(Long id, EditUserDto user) throws IOException;
     void deleteUser(Long id);
     //List<UserDto> getAllDtoUsers();
 
@@ -23,5 +25,5 @@ public interface UserService {
 
     boolean checkIfUserExists(String login);
 
-    String getUsernameByCookie(HttpServletRequest request);
+    UserDto getUserDtoByCookie(HttpServletRequest request);
 }

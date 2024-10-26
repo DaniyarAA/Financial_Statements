@@ -1,8 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.*;
-import kg.attractor.financial_statement.entity.Company;
-import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
@@ -11,13 +9,13 @@ import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -84,11 +82,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllDtoUsers() {
-        return userRepository.findAll().stream()
-                .map(this::convertToUserDto)
-                .sorted(Comparator.comparing(UserDto::getId))
-                .toList();
+    public Page<UserDto> getAllDtoUsers(Pageable pageable) {
+      Page<User> users = userRepository.findAll(pageable);
+      var list = users.get()
+              .map(this::convertToUserDto)
+              .toList();
+      return new PageImpl<>(list, pageable, users.getTotalElements());
     }
 
     @Override

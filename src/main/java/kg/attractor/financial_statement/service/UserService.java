@@ -3,8 +3,9 @@ package kg.attractor.financial_statement.service;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface UserService {
     void registerUser(UserDto user);
@@ -15,7 +16,9 @@ public interface UserService {
     UserDto getUserDtoByLogin(String login);
     void updateUser(Long id, EditUserDto user);
     void deleteUser(Long id);
-    List<UserDto> getAllDtoUsers();
+    //List<UserDto> getAllDtoUsers();
+
+    Page<UserDto> getAllDtoUsers(Pageable pageable);
 
     boolean checkIfUserExists(String login);
 }

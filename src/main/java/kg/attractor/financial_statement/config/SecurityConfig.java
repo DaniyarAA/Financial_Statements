@@ -32,11 +32,16 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/create/role").hasAuthority("CREATE_ROLE")
+                        .requestMatchers("/admin/users").hasAuthority("VIEW_USER")
+                        .requestMatchers("/admin/register").hasAuthority("CREATE_USER")
+                        .requestMatchers("/admin/user/edit/").hasAuthority("EDIT_USER")
 
-                        .requestMatchers("/tasks/**").hasRole("ACCOUNTANT")
+                        .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
+                        .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
+                        .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")
+                        .requestMatchers("/company/delete").hasAuthority("DELETE_COMPANY")
 
-                        .requestMatchers("/companies/**").authenticated()
                         .anyRequest().permitAll());
         return http.build();
     }

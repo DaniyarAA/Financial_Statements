@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.financial_statement.dto.CreateRoleDto;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.RoleDto;
 import kg.attractor.financial_statement.dto.UserDto;
@@ -40,9 +41,15 @@ public class AdminController {
             model.addAttribute("roles", roleService.getAll());
             return "admin/register";
         }
+        try {
+            userService.registerUser(userDto);
+            return "redirect:/";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("roles", roleService.getAll());
+            model.addAttribute("error", e.getMessage());
+            return "admin/register";
+        }
 
-        userService.registerUser(userDto);
-        return "redirect:/";
     }
 
     @GetMapping("users")
@@ -77,5 +84,21 @@ public class AdminController {
             return "admin/edit_user";
         }
 
+    }
+
+    @GetMapping("create/role")
+    public String createRole(Model model) {
+        model.addAttribute("createRoleDto", new CreateRoleDto());
+        return "admin/create_role";
+    }
+
+    @PostMapping("create/role")
+    public String createRole(@Valid CreateRoleDto roleDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("createRoleDto", roleDto);
+            return "admin/create_role";
+        }
+        roleService.createNewRole(roleDto);
+        return "redirect:/admin/users";
     }
 }

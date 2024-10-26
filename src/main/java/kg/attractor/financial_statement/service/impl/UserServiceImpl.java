@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(UserDto userDto) {
+        validateBirthday(userDto.getBirthday());
         User newUser = User.builder()
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
@@ -51,6 +52,14 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.save(newUser);
 
+    }
+
+    private void validateBirthday(LocalDate birthday) {
+        if(birthday.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Человек еще не родился");
+        } else if (birthday.isAfter(LocalDate.now().minusYears(18))){
+            throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
+        }
     }
 
     @Override
@@ -78,6 +87,7 @@ public class UserServiceImpl implements UserService {
         if (!validateImageType(userDto.getAvatar())) {
             throw new IOException("Неподдерживаемый формат файла. Поддерживаются только jpg, jpeg, webp и png.");
         }
+        validateBirthday(userDto.getBirthday());
         User user = getUserById(id);
         String avatar = FileUtils.uploadFile(userDto.getAvatar());
         user.setName(userDto.getName());

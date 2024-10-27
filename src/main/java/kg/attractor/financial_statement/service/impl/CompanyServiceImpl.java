@@ -8,12 +8,15 @@ import kg.attractor.financial_statement.repository.CompanyRepository;
 import kg.attractor.financial_statement.repository.UserCompanyRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -26,10 +29,10 @@ public class CompanyServiceImpl implements CompanyService {
     private final UserCompanyRepository companyUserRepository;
 
     @Override
-    public void createCompany(CompanyDto companyDto,String login) {
+    public void createCompany(CompanyDto companyDto, String login) {
         Company company = convertToEntity(companyDto);
         Company companyCreated = companyRepository.save(company);
-        createdUserCompany(companyCreated,login);
+        createdUserCompany(companyCreated, login);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void deleteCompany(Long companyId) {
-        companyRepository.changeIsDeleted(companyId,Boolean.TRUE);
+        companyRepository.changeIsDeleted(companyId, Boolean.TRUE);
     }
 
     @Override
@@ -84,7 +87,123 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    private void createdUserCompany(Company company,String login) {
+    @Override
+    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
+        String companyIdStr = data.get("companyId");
+        String fieldToEdit = data.get("field");
+        String newValue = data.get("value");
+
+        if (companyIdStr == null || fieldToEdit == null || newValue == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid input data."));
+        }
+
+        long companyId;
+        try {
+            companyId = Long.parseLong(companyIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid company ID."));
+        }
+
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("Company not found"));
+
+        switch (fieldToEdit) {
+            case "email":
+                if (EmailValidator.isValidEmail(newValue)) {
+                    company.setEmail(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format."));
+                }
+                break;
+            case "password":
+                company.setPassword(newValue);
+                break;
+            case "phone":
+                company.setPhone(newValue);
+                break;
+            case "esf":
+                company.setEsf(newValue);
+                break;
+            case "esfPassword":
+                company.setEsfPassword(newValue);
+                break;
+            case "kkm":
+                company.setKkm(newValue);
+                break;
+            case "kkmPassword":
+                company.setKkmPassword(newValue);
+                break;
+            case "fresh1c":
+                company.setFresh1c(newValue);
+                break;
+            case "fresh1cPassword":
+                company.setFresh1cPassword(newValue);
+                break;
+            case "ettn":
+                company.setEttn(newValue);
+                break;
+            case "ettnPassword":
+                company.setEttnPassword(newValue);
+                break;
+            case "name":
+                company.setName(newValue);
+                break;
+            case "companyInn":
+                company.setInn(newValue);
+                break;
+            case "directorInn":
+                company.setDirectorInn(newValue);
+                break;
+            case "login":
+                company.setLogin(newValue);
+                break;
+            case "ecp":
+                company.setEcp(newValue);
+                break;
+            case "kabinetSalyk":
+                company.setKabinetSalyk(newValue);
+                break;
+            case "kabinetSalykPassword":
+                company.setKabinetSalykPassword(newValue);
+                break;
+            case "taxMode":
+                company.setTaxMode(newValue);
+                break;
+            case "opf":
+                company.setOpf(newValue);
+                break;
+            case "districtGns":
+                company.setDistrictGns(newValue);
+                break;
+            case "socfundNumber":
+                company.setSocfundNumber(newValue);
+                break;
+            case "registrationNumberMj":
+                company.setRegistrationNumberMj(newValue);
+                break;
+            case "okpo":
+                company.setOkpo(newValue);
+                break;
+            case "director":
+                company.setDirector(newValue);
+                break;
+            case "ked":
+                company.setKed(newValue);
+                break;
+            case "isDeleted":
+                company.setDeleted(Boolean.parseBoolean(newValue)); // assuming newValue is a String representation of a boolean
+                break;
+            default:
+                return ResponseEntity.badRequest().body(Map.of("message", "Unknown field to edit."));
+        }
+
+
+        companyRepository.save(company);
+
+        return ResponseEntity.ok(Map.of("message", "Company updated successfully."));
+    }
+
+    private void createdUserCompany(Company company, String login) {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
         UserCompany userCompany = new UserCompany();

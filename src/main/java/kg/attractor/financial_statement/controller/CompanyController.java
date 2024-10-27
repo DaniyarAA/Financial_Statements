@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.service.CompanyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/company")
@@ -71,6 +73,12 @@ public class CompanyController {
     public String updateById(@PathVariable Long companyId, Model model) {
         model.addAttribute("company", companyService.findById(companyId));
         return "company/edit";
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data) {
+        return companyService.editByOne(data);
     }
 
     @PostMapping("/edit/{companyId}")

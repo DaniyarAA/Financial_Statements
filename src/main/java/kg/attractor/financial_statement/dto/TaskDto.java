@@ -1,10 +1,12 @@
 package kg.attractor.financial_statement.dto;
 
+import kg.attractor.financial_statement.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,4 +23,9 @@ public class TaskDto {
     private LocalDateTime endDateTime;
     private String documentTypeName;
     private UserForTaskDto user;
+    private CompanyForTaskDto company;
+
+    private BigDecimal amount;
+    private String description;
+
 }

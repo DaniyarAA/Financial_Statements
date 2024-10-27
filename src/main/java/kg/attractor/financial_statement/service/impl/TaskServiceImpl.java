@@ -5,10 +5,7 @@ import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
-import kg.attractor.financial_statement.service.TaskService;
-import kg.attractor.financial_statement.service.TaskStatusService;
-import kg.attractor.financial_statement.service.UserCompanyService;
-import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +30,7 @@ public class TaskServiceImpl implements TaskService {
     private final DocumentTypeServiceImpl documentTypeService;
     private final UserCompanyService userCompanyService;
     private final TaskStatusService taskStatusService;
+    private final CompanyService companyService;
 
     @Override
     public List<TaskDto> getAllTasks() {
@@ -107,6 +105,10 @@ public class TaskServiceImpl implements TaskService {
                 .endDateTime(task.getEndDateTime())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
                 .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
+
+                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+                .amount(task.getAmount())
+                .description(task.getDescription())
                 .build();
     }
 }

@@ -64,6 +64,8 @@ public class TaskController {
         model.addAttribute("page", page);
         model.addAttribute("size", size);
 
+        model.addAttribute("dateUtils", new DateUtils());
+
         return "tasks/tasksPage";
     }
 

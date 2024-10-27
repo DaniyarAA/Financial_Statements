@@ -14,8 +14,8 @@
                     <input type="hidden" name="size" id="size" value="${size!9}"/>
 
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="category" class="sr-only">Типы документов</label>
-                        <select id="category" name="category" class="form-control">
+                        <label for="documentType" class="sr-only">Типы документов</label>
+                        <select id="documentType" name="documentType" class="form-control">
                             <option value="">Все типы</option>
                             <#list documentTypeDto as doc>
                                 <option value="${doc.id}">${doc.name}</option>
@@ -24,8 +24,8 @@
                     </div>
 
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="category" class="sr-only">Статусы</label>
-                        <select id="category" name="category" class="form-control">
+                        <label for="taskStatus" class="sr-only">Статусы</label>
+                        <select id="taskStatus" name="taskStatus" class="form-control">
                             <option value="">Все статусы</option>
                             <#list taskStatusDtos as status>
                                 <option value="${status.id}">${status.name}</option>
@@ -47,49 +47,59 @@
                 <div class="col-md-4 mb-4">
                     <div class="card bg-dark text-white h-100">
                         <div class="card-body">
-                            <h5 class="card-title">${task.user.getName()} ${task.user.getSurname()}</h5>
-                            <p class="card-text">${task.get}</p>
-                            <p class="card-text"><@spring.message 'vacancy.vacancies_main.responses'/>: ${v.quantityOfResponses}</p>
-                            <p class="card-text"><@spring.message 'vacancy.vacancies_main.updated'/>: ${dateUtils.formatDateTime(v.updatedTime, "dd/MM/yyyy")}</p>
-                            <a href="/vacancies/${v.id}" class="btn btn-outline-light w-100"><@spring.message 'vacancy.vacancies_main.more_info'/></a>
+                            <h5 class="card-title">${task.user.name} ${task.user.surname}</h5>
+                            <p class="card-text">${task.company.name}</p>
+                            <p class="card-text">ИНН: ${task.company.inn}</p>
+                            <p class="card-text">Тип документа: ${task.documentTypeName}</p>
+                            <p class="card-text">От: ${dateUtils.formatDateTime(task.startDateTime, "dd.MM.yyyy")}</p>
+                            <p class="card-text">Сумма: ${task.amount}</p>
+                            <#if task.description??>
+                                <p class="card-text">Описание: ${task.getDescription()}</p>
+                            </#if>
                         </div>
                     </div>
                 </div>
             </#list>
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
-            <nav>
-                <ul class="pagination">
-                    <#if vacancies.hasPrevious()>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=${vacancies.number}&size=${vacancies.size}&sort=${sort}&direction=${direction}<#if categoryId??>&category=${categoryId!""}</#if>" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    </#if>
-
-                    <#list 0..(vacancies.totalPages - 1) as i>
-                        <#if i == vacancies.number>
-                            <li class="page-item active">
-                                <span class="page-link">${i + 1}</span>
-                            </li>
-                        <#else>
+        <#if taskDtos.content?has_content>
+            <div class="d-flex justify-content-center mt-4">
+                <nav>
+                    <ul class="pagination">
+                        <#if taskDtos.hasPrevious()>
                             <li class="page-item">
-                                <a class="page-link" href="?page=${i+1}&size=${vacancies.size}&sort=${sort}&direction=${direction}<#if categoryId??>&category=${categoryId!""}</#if>">${i + 1}</a>
+                                <a class="page-link" href="?page=${taskDtos.number}<#if documentTypeId??>&documentType=${documentTypeId!""}</#if><#if taskStatusId??>&taskStatus=${taskStatusId!""}</#if>&size=${taskDtos.size}&sort=${sort}&direction=${direction}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
                             </li>
                         </#if>
-                    </#list>
 
-                    <#if vacancies.hasNext()>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=${vacancies.number + 2}&size=${vacancies.size}&sort=${sort}&direction=${direction}<#if categoryId??>&category=${categoryId!""}</#if>" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </#if>
-                </ul>
-            </nav>
-        </div>
+                        <#list 0..(taskDtos.totalPages - 1) as i>
+                            <#if i == taskDtos.number>
+                                <li class="page-item active">
+                                    <span class="page-link">${i + 1}</span>
+                                </li>
+                            <#else>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=${i+1}<#if documentTypeId??>&documentType=${documentTypeId!""}</#if><#if taskStatusId??>&taskStatus=${taskStatusId!""}</#if>&size=${taskDtos.size}&sort=${sort}&direction=${direction}">${i + 1}</a>
+                                </li>
+                            </#if>
+                        </#list>
+
+                        <#if taskDtos.hasNext()>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=${taskDtos.number + 2}<#if documentTypeId??>&documentType=${documentTypeId!""}</#if><#if taskStatusId??>&taskStatus=${taskStatusId!""}</#if>&size=${taskDtos.size}&sort=${sort}&direction=${direction}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </#if>
+                    </ul>
+                </nav>
+            </div>
+        <#else>
+            <div class="d-flex justify-content-center mt-4">
+                <p>Список пуст</p>
+            </div>
+        </#if>
     </div>
 </@main.layout>

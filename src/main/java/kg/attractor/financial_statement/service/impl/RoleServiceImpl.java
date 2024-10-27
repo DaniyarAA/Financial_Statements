@@ -56,4 +56,9 @@ public class RoleServiceImpl implements RoleService {
         authorities.forEach(authority -> authority.getRoles().add(role));
         roleRepository.save(role);
     }
+
+    @Override
+    public boolean checkIfRoleNameExists(String roleName) {
+        return roleRepository.findByRoleName(roleName).isPresent();
+    }
 }

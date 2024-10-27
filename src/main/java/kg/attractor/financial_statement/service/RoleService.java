@@ -16,4 +16,6 @@ public interface RoleService {
     RoleDto convertToDto(Role role);
 
     void createNewRole(CreateRoleDto createRoleDto);
+
+    boolean checkIfRoleNameExists(String roleName);
 }

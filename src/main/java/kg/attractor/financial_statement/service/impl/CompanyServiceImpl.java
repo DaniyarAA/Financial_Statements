@@ -14,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -29,10 +31,23 @@ public class CompanyServiceImpl implements CompanyService {
     private final UserCompanyRepository companyUserRepository;
 
     @Override
-    public void createCompany(CompanyDto companyDto, String login) {
+    public ResponseEntity<Map<String, String>> createCompany(
+            CompanyDto companyDto, String login, BindingResult bindingResult) {
+
+        if (bindingResult != null && bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         Company company = convertToEntity(companyDto);
         Company companyCreated = companyRepository.save(company);
+
         createdUserCompany(companyCreated, login);
+
+        return ResponseEntity.ok(Map.of("message", "Company created successfully"));
     }
 
     @Override

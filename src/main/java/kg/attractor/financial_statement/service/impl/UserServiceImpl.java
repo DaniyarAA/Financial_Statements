@@ -95,6 +95,7 @@ public class UserServiceImpl implements UserService {
         user.setLogin(userDto.getLogin());
         user.setAvatar(avatar);
         user.setBirthday(userDto.getBirthday());
+        user.setRole(roleService.getRoleById(userDto.getRoleDto().getId()));
         userRepository.save(user);
     }
 
@@ -109,7 +110,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = getUserById(id);
+        user.setEnabled(false);
+        userRepository.save(user);
     }
 
     @Override

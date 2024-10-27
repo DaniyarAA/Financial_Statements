@@ -20,22 +20,15 @@ import java.util.Map;
 public class CompanyController {
     private final CompanyService companyService;
 
-    @GetMapping("/create")
-    public String create(Model model) {
-        model.addAttribute("company", new CompanyDto());
-        return "company/create";
+    @PostMapping("/create")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> create(
+            @Valid CompanyDto companyDto,
+            BindingResult bindingResult,
+            Principal principal) {
+        return companyService.createCompany(companyDto, principal.getName(),bindingResult);
     }
 
-    @PostMapping("/create")
-    public String create(@Valid CompanyDto companyDto, BindingResult bindingResult, Model model, Principal principal) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("company", companyDto);
-            model.addAttribute("errors", bindingResult);
-            return "company/create";
-        }
-        companyService.createCompany(companyDto,principal.getName());
-        return "redirect:/company/all";
-    }
 
     @GetMapping("/all/")
     public String getAll(
@@ -69,28 +62,10 @@ public class CompanyController {
         return "company/company";
     }
 
-    @GetMapping("/edit/{companyId}")
-    public String updateById(@PathVariable Long companyId, Model model) {
-        model.addAttribute("company", companyService.findById(companyId));
-        return "company/edit";
-    }
-
     @PostMapping("/edit")
     @ResponseBody
     public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data) {
         return companyService.editByOne(data);
-    }
-
-    @PostMapping("/edit/{companyId}")
-    public String updateById(@PathVariable Long companyId, @Valid CompanyDto company, BindingResult bindingResult, Model model) {
-        company.setId(companyId);
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("company", company);
-            model.addAttribute("errors", bindingResult);
-            return "company/edit";
-        }
-        companyService.editCompany(company);
-        return "redirect:/company/all";
     }
 
     @PostMapping("/delete")

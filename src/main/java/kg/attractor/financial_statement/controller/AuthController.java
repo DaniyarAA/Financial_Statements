@@ -18,8 +18,10 @@ public class AuthController {
     @GetMapping("login")
     public String login(HttpServletRequest request, Model model) {
         UserDto userDto = userService.getUserDtoByCookie(request);
-        model.addAttribute("username", userDto.getName());
-        model.addAttribute("avatar", userDto.getAvatar());
+        if (userDto != null) {
+            model.addAttribute("username", userDto.getName());
+            model.addAttribute("avatar", userDto.getAvatar());
+        }
         return "auth/login";
     }
 }

@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -33,4 +34,6 @@ public class EditUserDto {
 
     @Valid
     private RoleDto roleDto;
+
+    private List<CompanyDto> companies;
 }

@@ -10,8 +10,9 @@
                 </#if>
 
                 <div class="form-group mb-3">
-                    <label for="roleName" class="form-label fw-semibold">Название роли:</label>
-                    <input type="text" id="roleName" name="roleName" class="form-control" required>
+                    Название роли
+                    <@spring.formInput "createRoleDto.roleName" 'id="form3Example3cg" class="form-control form-control-lg"' />
+                    <@spring.showErrors  "<br>" "error text-danger" />
                 </div>
 
                 <h3 class="h5 mb-3">Выберите права доступа:</h3>
@@ -95,7 +96,12 @@
                         </div>
                     </div>
                 </div>
-
+                <#if createRoleDto.authorityIds ? has_content>
+                    <#else >
+                        <span class="text-danger">
+                            Выберите хотя бы одно полномочие
+                        </span>
+                </#if>
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-success">Создать</button>
                 </div>

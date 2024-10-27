@@ -19,13 +19,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-document.getElementById('roleId').addEventListener('change', function () {
-    if (this.value === 'create_new_role') {
-        const modal = new bootstrap.Modal(document.getElementById('createRoleModal'));
-        modal.show();
-    }
-});
-
 function deleteUser(userId) {
     if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
         fetch('/admin/user/delete/' + userId, {

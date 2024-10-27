@@ -65,6 +65,9 @@
                       <#else>placeholder= "Добавьте заметки для пользователя" </#if>>
 
             </textarea>
+            <#if error??>
+                <b class="text-danger text-center mb-3">${error}</b>
+            </#if>
             <button type="submit">Сохранить</button>
         </form>
     </div>

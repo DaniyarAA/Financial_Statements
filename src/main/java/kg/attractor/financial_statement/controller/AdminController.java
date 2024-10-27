@@ -79,7 +79,7 @@ public class AdminController {
         try {
             userService.updateUser(id, userDto);
             return "redirect:/admin/users";
-        } catch (IOException e){
+        } catch (IOException | IllegalArgumentException e){
             model.addAttribute("error", e.getMessage());
             model.addAttribute("editUserDto", userService.getUserDtoById(id));
             model.addAttribute("roles", roleService.getAll());

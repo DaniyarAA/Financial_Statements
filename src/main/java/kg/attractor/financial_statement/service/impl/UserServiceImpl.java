@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -84,19 +85,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(Long id, EditUserDto userDto) throws IOException {
-        if (!validateImageType(userDto.getAvatar())) {
-            throw new IOException("Неподдерживаемый формат файла. Поддерживаются только jpg, jpeg, webp и png.");
-        }
         validateBirthday(userDto.getBirthday());
         User user = getUserById(id);
-        String avatar = FileUtils.uploadFile(userDto.getAvatar());
+        updateAvatarIfPresent(userDto, user);
+        updateLoginIfChanged(userDto, user);
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
-        user.setLogin(userDto.getLogin());
-        user.setAvatar(avatar);
         user.setBirthday(userDto.getBirthday());
         user.setRole(roleService.getRoleById(userDto.getRoleDto().getId()));
         userRepository.save(user);
+    }
+
+
+    private void updateAvatarIfPresent(EditUserDto userDto, User user) throws IOException {
+        MultipartFile avatarFile = userDto.getAvatar();
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            if (!validateImageType(avatarFile)) {
+                throw new IllegalArgumentException("Неподдерживаемый формат файла. Поддерживаются только jpg, jpeg, webp и png.");
+            }
+            user.setAvatar(FileUtils.uploadFile(avatarFile));
+        }
+    }
+
+    private void updateLoginIfChanged(EditUserDto userDto, User user) {
+        String newLogin = userDto.getLogin();
+        if (!Objects.equals(newLogin, user.getLogin())) {
+            if (checkIfUserExists(newLogin)) {
+                throw new IllegalArgumentException("Пользователь с таким логином уже существует");
+            }
+            user.setLogin(newLogin);
+        }
     }
 
     private boolean validateImageType(MultipartFile file) {

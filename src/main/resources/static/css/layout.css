@@ -9,23 +9,23 @@ body {
 
 .navbar {
     padding: 10px 20px;
-    color: #fff;
+    color: #000;
 }
 
 .navbar-brand span {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #fff;
+    color: #000;
 }
 
 .navbar-nav .nav-link {
     font-weight: bold;
     font-size: 1.1rem;
-    color: #fff !important;
+    color: #000 !important;
 }
 
 .navbar-nav .nav-link:hover {
-    color: #ddd !important;
+    color: #000 !important;
 }
 
 .btn-outline-light {
@@ -43,36 +43,34 @@ main {
     flex: 1;
     margin-bottom: 100px;
 }
-
 .pagination {
-    background-color: #6c757d;
+    background-color: #4CAF50;
     padding: 10px;
     border-radius: 5px;
 }
 
 .pagination .page-link {
     color: #fff;
-    background-color: #6c757d;
+    background-color: #4CAF50;
     border: none;
 }
 
 .pagination .page-link:hover {
-    background-color: #5a6268;
+    background-color: #45a049;
     color: #fff;
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #343a40;
-    border-color: #343a40;
+    background-color: #388E3C;
+    border-color: #388E3C;
     color: #fff;
 }
 
 .pagination .page-item.disabled .page-link {
-    color: #ddd;
-    background-color: #6c757d;
-    border-color: #6c757d;
+    color: #a5d6a7;
+    background-color: #4CAF50;
+    border-color: #4CAF50;
 }
-
 
 footer {
     background-color: #000;

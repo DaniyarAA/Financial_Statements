@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="/static/css/styles.css">
     </head>
     <body>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #6DF700;">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #6DF700; color: black">
 
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">

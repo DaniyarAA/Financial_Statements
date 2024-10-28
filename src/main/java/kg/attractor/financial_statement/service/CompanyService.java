@@ -1,6 +1,8 @@
 package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
+import kg.attractor.financial_statement.dto.CompanyForTaskDto;
+import kg.attractor.financial_statement.entity.Company;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -19,4 +21,10 @@ public interface CompanyService {
     List<CompanyDto> getAllCompanies();
 
     ResponseEntity<Map<String, String>> editByOne(Map<String, String> data);
+
+    CompanyDto convertToDto(Company company);
+
+    Company getCompanyById(Long companyId);
+
+    CompanyForTaskDto getCompanyForTaskDto(Long id);
 }

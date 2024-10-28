@@ -24,7 +24,7 @@
                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                 crossorigin="anonymous"></script>
         <title>Financial Statement</title>
-        <link rel="stylesheet" href="/static/css/styles.css">
+        <link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #6DF700; color: black">
@@ -71,7 +71,7 @@
                             <a class="nav-link" href="/admin/register">Регистрация</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/companies">Компании</a>
+                            <a class="nav-link" href="/company/all/">Компании</a>
                         </li>
                         <div class="d-flex align-items-center">
                             <a class="btn btn-outline-success ms-3" href="/login">Войти</a>

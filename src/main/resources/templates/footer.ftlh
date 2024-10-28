@@ -15,7 +15,7 @@
         <p>
             <a href="/admin/users" class="text-white">Пользователи</a> |
             <a href="/tasks" class="text-white">Таски</a> |
-            <a href="/companies" class="text-white">Компании</a>
+            <a href="/company/all/" class="text-white">Компании</a>
         </p>
     </div>
 </footer>

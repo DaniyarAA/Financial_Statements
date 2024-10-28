@@ -58,35 +58,38 @@
         </div>
     </div>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination mt-5">
-            <li class="page-item <#if !users.hasPrevious()>disabled</#if>">
-                <a class="page-link" href="?page=${users.number - 1}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item <#if !users.hasPrevious()>disabled</#if>">
+                    <a class="page-link" href="?page=${users.number - 1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
 
-            <#assign startPage = users.number + 1 - 1>
-            <#if startPage < 1>
-                <#assign startPage = 1>
-            </#if>
-
-            <#list startPage..(startPage + 2) as i>
-                <#if i <= users.totalPages>
-                    <li class="page-item <#if (i - 1) == users  .number>active</#if>">
-                        <a class="page-link" href="?page=${i - 1}">${i}</a>
-                    </li>
+                <#assign startPage = users.number + 1 - 1>
+                <#if startPage < 1>
+                    <#assign startPage = 1>
                 </#if>
-            </#list>
 
+                <!-- Display only 3 page links at a time -->
+                <#list startPage..(startPage + 2) as i>
+                    <#if i <= users.totalPages>
+                        <li class="page-item <#if (i - 1) == users.number>active</#if>">
+                            <a class="page-link" href="?page=${i - 1}">${i}</a>
+                        </li>
+                    </#if>
+                </#list>
 
-            <li class="page-item <#if !users.hasNext()>disabled</#if>">
-                <a class="page-link" href="?page=${users.number + 1}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                <li class="page-item <#if !users.hasNext()>disabled</#if>">
+                    <a class="page-link" href="?page=${users.number + 1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
 
     <script src="/static/js/script.js"></script>
 

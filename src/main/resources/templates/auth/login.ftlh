@@ -9,7 +9,7 @@
         <#if avatar??>
             <img src="/api/files/download/${avatar}" id="avatar" alt="avatar" class="profile-info-avatar-img">
         <#else >
-            <img src="/static/user.png" alt="User Icon">
+            <img src="/user.png" alt="User Icon">
         </#if>
         <form id="login-form" action="/login" method="post">
 

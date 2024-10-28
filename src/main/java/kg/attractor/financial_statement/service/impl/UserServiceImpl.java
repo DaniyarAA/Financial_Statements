@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -152,6 +154,28 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+    @Override
+    public List<UserDto> getAllUsers() {
+        return convertToDtoList(userRepository.findAll());
+    }
+
+    @Override
+    public UserForTaskDto getUserForTaskDto(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found for id: " + id));
+        return convertToUserForTaskDto(user);
+    }
+
+    @Override
+    public User getUserByLogin(String userLogin) {
+        return userRepository.findByLogin(userLogin)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    private List<UserDto> convertToDtoList(List<User> users) {
+        return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
+    }
+
     private UserDto convertToUserDto(User user) {
         return UserDto
                 .builder()
@@ -166,6 +190,14 @@ public class UserServiceImpl implements UserService {
                 .avatar(user.getAvatar())
                 .roleDto(roleService.convertToDto(user.getRole()))
                 .companies(getCompaniesByUserId(user.getId()))
+                .build();
+    }
+
+    private UserForTaskDto convertToUserForTaskDto(User user) {
+        return UserForTaskDto.builder()
+                .login(user.getLogin())
+                .name(user.getName())
+                .surname(user.getSurname())
                 .build();
     }
 

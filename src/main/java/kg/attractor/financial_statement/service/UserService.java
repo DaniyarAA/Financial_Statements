@@ -3,11 +3,13 @@ package kg.attractor.financial_statement.service;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public interface UserService {
@@ -26,4 +28,10 @@ public interface UserService {
     boolean checkIfUserExists(String login);
 
     UserDto getUserDtoByCookie(HttpServletRequest request);
+
+    List<UserDto> getAllUsers();
+
+    UserForTaskDto getUserForTaskDto(Long id);
+
+    User getUserByLogin(String login);
 }

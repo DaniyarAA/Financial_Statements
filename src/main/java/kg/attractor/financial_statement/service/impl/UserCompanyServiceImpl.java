@@ -26,13 +26,13 @@ public class UserCompanyServiceImpl implements UserCompanyService {
         Long userId = taskCreateDto.getAppointToUserId();
         Long companyId = taskCreateDto.getCompanyId();
 
-        User user = userService.getUserModelById(userId);
+        User user = userService.getUserById(userId);
         Company company = companyService.getCompanyById(companyId);
         boolean isExists = userCompanyRepository.existsByUserAndCompany(user, company);
 
         if (!isExists) {
             UserCompany userCompany = new UserCompany();
-            userCompany.setUser(userService.getUserModelById(userId));
+            userCompany.setUser(userService.getUserById(userId));
             userCompany.setCompany(companyService.getCompanyById(companyId));
 
             UserCompany newUserCompany = userCompanyRepository.save(userCompany);
@@ -49,7 +49,7 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     public UserCompany findUserCompanyByTaskCreateDtoAndLogin(TaskCreateDto taskCreateDto, String login) {
         Long companyId = taskCreateDto.getCompanyId();
 
-        User user = userService.getUserModelByLogin(login);
+        User user = userService.getUserByLogin(login);
         Company company = companyService.getCompanyById(companyId);
         boolean isExists = userCompanyRepository.existsByUserAndCompany(user, company);
 

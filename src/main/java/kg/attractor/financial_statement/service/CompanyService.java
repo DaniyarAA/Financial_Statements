@@ -1,13 +1,14 @@
 package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
-import kg.attractor.financial_statement.dto.CompanyForTaskDto;
-import kg.attractor.financial_statement.entity.Company;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CompanyService {
-    void createCompany(CompanyDto company);
+    ResponseEntity<Map<String, String>> createCompany(CompanyDto company, String login, BindingResult bindingResult);
 
     CompanyDto findById(Long companyId);
 
@@ -17,9 +18,5 @@ public interface CompanyService {
 
     List<CompanyDto> getAllCompanies();
 
-    CompanyDto convertToDto(Company company);
-
-    CompanyForTaskDto getCompanyForTaskDto(Long id);
-
-    Company getCompanyById(Long companyId);
+    ResponseEntity<Map<String, String>> editByOne(Map<String, String> data);
 }

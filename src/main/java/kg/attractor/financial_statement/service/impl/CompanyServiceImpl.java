@@ -1,15 +1,24 @@
 package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
-import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
+import kg.attractor.financial_statement.repository.UserCompanyRepository;
+import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -18,11 +27,27 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
+    private final UserCompanyRepository companyUserRepository;
 
     @Override
-    public void createCompany(CompanyDto companyDto) {
+    public ResponseEntity<Map<String, String>> createCompany(
+            CompanyDto companyDto, String login, BindingResult bindingResult) {
+
+        if (bindingResult != null && bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         Company company = convertToEntity(companyDto);
-        companyRepository.save(company);
+        Company companyCreated = companyRepository.save(company);
+
+        createdUserCompany(companyCreated, login);
+
+        return ResponseEntity.ok(Map.of("message", "Company created successfully"));
     }
 
     @Override
@@ -68,17 +93,141 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void deleteCompany(Long companyId) {
-        companyRepository.deleteById(companyId);
+        companyRepository.changeIsDeleted(companyId, Boolean.TRUE);
     }
 
     @Override
     public List<CompanyDto> getAllCompanies() {
-        List<Company> companyList = companyRepository.findAll();
+        List<Company> companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
         return companyList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public CompanyDto convertToDto(Company company) {
+    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
+        String companyIdStr = data.get("companyId");
+        String fieldToEdit = data.get("field");
+        String newValue = data.get("value");
+
+        if (companyIdStr == null || fieldToEdit == null || newValue == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid input data."));
+        }
+
+        long companyId;
+        try {
+            companyId = Long.parseLong(companyIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid company ID."));
+        }
+
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("Company not found"));
+
+        switch (fieldToEdit) {
+            case "email":
+                if (EmailValidator.isValidEmail(newValue)) {
+                    company.setEmail(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format."));
+                }
+                break;
+            case "password":
+                company.setPassword(newValue);
+                break;
+            case "phone":
+                company.setPhone(newValue);
+                break;
+            case "esf":
+                company.setEsf(newValue);
+                break;
+            case "esfPassword":
+                company.setEsfPassword(newValue);
+                break;
+            case "kkm":
+                company.setKkm(newValue);
+                break;
+            case "kkmPassword":
+                company.setKkmPassword(newValue);
+                break;
+            case "fresh1c":
+                company.setFresh1c(newValue);
+                break;
+            case "fresh1cPassword":
+                company.setFresh1cPassword(newValue);
+                break;
+            case "ettn":
+                company.setEttn(newValue);
+                break;
+            case "ettnPassword":
+                company.setEttnPassword(newValue);
+                break;
+            case "name":
+                company.setName(newValue);
+                break;
+            case "companyInn":
+                company.setInn(newValue);
+                break;
+            case "directorInn":
+                company.setDirectorInn(newValue);
+                break;
+            case "login":
+                company.setLogin(newValue);
+                break;
+            case "ecp":
+                company.setEcp(newValue);
+                break;
+            case "kabinetSalyk":
+                company.setKabinetSalyk(newValue);
+                break;
+            case "kabinetSalykPassword":
+                company.setKabinetSalykPassword(newValue);
+                break;
+            case "taxMode":
+                company.setTaxMode(newValue);
+                break;
+            case "opf":
+                company.setOpf(newValue);
+                break;
+            case "districtGns":
+                company.setDistrictGns(newValue);
+                break;
+            case "socfundNumber":
+                company.setSocfundNumber(newValue);
+                break;
+            case "registrationNumberMj":
+                company.setRegistrationNumberMj(newValue);
+                break;
+            case "okpo":
+                company.setOkpo(newValue);
+                break;
+            case "director":
+                company.setDirector(newValue);
+                break;
+            case "ked":
+                company.setKed(newValue);
+                break;
+            case "isDeleted":
+                company.setDeleted(Boolean.parseBoolean(newValue)); // assuming newValue is a String representation of a boolean
+                break;
+            default:
+                return ResponseEntity.badRequest().body(Map.of("message", "Unknown field to edit."));
+        }
+
+
+        companyRepository.save(company);
+
+        return ResponseEntity.ok(Map.of("message", "Company updated successfully."));
+    }
+
+    private void createdUserCompany(Company company, String login) {
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        UserCompany userCompany = new UserCompany();
+        userCompany.setCompany(company);
+        userCompany.setUser(user);
+        companyUserRepository.save(userCompany);
+    }
+
+    private CompanyDto convertToDto(Company company) {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
@@ -108,26 +257,6 @@ public class CompanyServiceImpl implements CompanyService {
                 .fresh1cPassword(company.getFresh1cPassword())
                 .ettn(company.getEttn())
                 .ettnPassword(company.getEttnPassword())
-                .build();
-    }
-
-    @Override
-    public CompanyForTaskDto getCompanyForTaskDto(Long id) {
-        Company company = companyRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No such company found with id: " + id));
-        return convertToCompanyForTaskDto(company);
-    }
-
-    @Override
-    public Company getCompanyById(Long companyId) {
-        return companyRepository.findById(companyId)
-                .orElseThrow(() -> new NoSuchElementException("No such company found"));
-    }
-
-    private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
-        return CompanyForTaskDto.builder()
-                .name(company.getName())
-                .inn(company.getInn())
                 .build();
     }
 

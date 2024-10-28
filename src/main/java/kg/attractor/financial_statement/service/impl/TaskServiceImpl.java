@@ -63,24 +63,39 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
         System.out.println("login: " + taskCreateDto.getAppointToUserId());
+        LocalDate now = LocalDate.now();
 
         if (taskCreateDto.getDocumentTypeId().equals(1L)) {
-            LocalDate now = LocalDate.now();
 
             if (now.getDayOfMonth() == 1) {
                 taskCreateDto.setStartDateTime(now.atStartOfDay());
-
                 int lastDayOfCurrentMonth = now.getMonth().length(now.isLeapYear());
                 LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(lastDayOfCurrentMonth);
                 taskCreateDto.setEndDateTime(lastDayOfCurrentMonthDate.atTime(23, 59, 59));
             } else {
                 LocalDate firstDayOfNextMonth = now.plusMonths(1).withDayOfMonth(1);
                 taskCreateDto.setStartDateTime(firstDayOfNextMonth.atStartOfDay());
-
                 int lastDayOfNextMonth = firstDayOfNextMonth.getMonth().length(firstDayOfNextMonth.isLeapYear());
                 LocalDate lastDayOfNextMonthDate = firstDayOfNextMonth.withDayOfMonth(lastDayOfNextMonth);
                 taskCreateDto.setEndDateTime(lastDayOfNextMonthDate.atTime(23, 59, 59));
             }
+        } else if (taskCreateDto.getDocumentTypeId().equals(2L)) {
+            int currentQuarter = (now.getMonthValue() - 1) / 3 + 1;
+            LocalDate quarterStart;
+            LocalDate quarterEnd;
+
+            if (now.getDayOfMonth() == 1) {
+                quarterStart = now.withMonth((currentQuarter - 1) * 3 + 1).withDayOfMonth(1);
+            } else {
+                currentQuarter = currentQuarter == 4 ? 1 : currentQuarter + 1;
+                int startMonth = (currentQuarter - 1) * 3 + 1;
+                quarterStart = LocalDate.of(now.getYear() + (currentQuarter == 1 ? 1 : 0), startMonth, 1);
+            }
+
+            quarterEnd = quarterStart.plusMonths(2).withDayOfMonth(quarterStart.plusMonths(2).getMonth().length(quarterStart.plusMonths(2).isLeapYear()));
+
+            taskCreateDto.setStartDateTime(quarterStart.atStartOfDay());
+            taskCreateDto.setEndDateTime(quarterEnd.atTime(23, 59, 59));
         }
 
         Task task;

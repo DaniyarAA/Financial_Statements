@@ -3,8 +3,6 @@ server:
 spring:
   application:
     name: FinancialStatement
-  mvc:
-    static-path-pattern: /static/**
 
   # ------------- DataBases
   datasource:

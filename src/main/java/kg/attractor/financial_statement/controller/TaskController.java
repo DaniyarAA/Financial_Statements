@@ -27,7 +27,7 @@ public class TaskController {
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
 
-    @GetMapping
+    @GetMapping("test")
     public String getTasks(Model model) {
         List<TaskDto> tasks = taskService.getAllTasks();
 
@@ -36,7 +36,7 @@ public class TaskController {
         return "tasks/tasksMain";
     }
 
-    @GetMapping("test")
+    @GetMapping()
     public String getPageTasks(
             Model model,
             @RequestParam(value = "page", defaultValue = "1") int page,

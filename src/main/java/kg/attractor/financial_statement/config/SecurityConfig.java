@@ -24,10 +24,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form ->
-                        form.loginPage("/auth/login")
-                                .loginProcessingUrl("/auth/login")
+                        form.loginPage("/login")
+                                .loginProcessingUrl("/login")
                                 .successHandler(authSuccessHandler)
-                                .failureUrl("/auth/login?error=true")
+                                .failureUrl("/login?error=true")
                                 .permitAll())
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
@@ -35,7 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/create/role").hasAuthority("CREATE_ROLE")
                         .requestMatchers("/admin/users").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/register").hasAuthority("CREATE_USER")
-                        .requestMatchers("/admin/user/edit/").hasAuthority("EDIT_USER")
+                        .requestMatchers("/admin/user/edit/**").hasAuthority("EDIT_USER")
 
                         .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")

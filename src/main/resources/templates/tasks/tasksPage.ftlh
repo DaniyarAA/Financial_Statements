@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="form-group mx-sm-3 mb-2">
-                        <button type="button" id="applyFiltersBtn" class="btn btn-primary" onclick="this.form.submit()">
+                        <button type="button" id="applyFiltersBtn" class="btn btn-success" onclick="this.form.submit()">
                             Сохранить фильтры
                         </button>
                     </div>
@@ -45,14 +45,33 @@
         <div class="row" style="margin-top: 40px;">
             <#list taskDtos.content as task>
                 <div class="col-md-4 mb-4">
-                    <div class="card bg-dark text-white h-100">
+                    <div class="card bg-light text-dark h-100">
                         <div class="card-body">
                             <h5 class="card-title">${task.user.name} ${task.user.surname}</h5>
                             <p class="card-text">${task.company.name}</p>
                             <p class="card-text">ИНН: ${task.company.inn}</p>
                             <p class="card-text">Тип документа: ${task.documentTypeName}</p>
-                            <p class="card-text">От: ${dateUtils.formatDateTime(task.startDateTime, "dd.MM.yyyy")}</p>
-                            <p class="card-text">Сумма: ${task.amount}</p>
+                            <p class="card-text">От:
+                                <#if task.startDateTime??>
+                                    ${dateUtils.formatDateTime(task.startDateTime, "dd.MM.yyyy")}
+                                <#else>
+                                 Не указано
+                                </#if>
+                                 До:
+                                <#if task.endDateTime??>
+                                    ${dateUtils.formatDateTime(task.endDateTime, "dd.MM.yyyy")}
+
+                                <#else>
+                                    Не указано
+                                </#if>
+                            </p>
+                            <p class="card-text">Сумма:
+                                <#if task.amount??>
+                                ${task.amount}
+                                <#else>
+                                    Не указано
+                                </#if>
+                            </p>
                             <#if task.description??>
                                 <p class="card-text">Описание: ${task.getDescription()}</p>
                             </#if>

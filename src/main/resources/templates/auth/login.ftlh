@@ -11,7 +11,7 @@
         <#else >
             <img src="/static/user.png" alt="User Icon">
         </#if>
-        <form id="login-form" action="/auth/login" method="post">
+        <form id="login-form" action="/login" method="post">
 
             <!-- CSRF -->
             <#if _csrf??>

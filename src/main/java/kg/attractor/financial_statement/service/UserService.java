@@ -1,30 +1,29 @@
 package kg.attractor.financial_statement.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDto;
-import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.io.IOException;
+
 
 public interface UserService {
+    void registerUser(UserDto user);
+    UserDto getUserDtoById(Long id);
+
+    User getUserById(Long id);
+
+    UserDto getUserDtoByLogin(String login);
+    void updateUser(Long id, EditUserDto user) throws IOException;
+    void deleteUser(Long id);
+    //List<UserDto> getAllDtoUsers();
+
+    Page<UserDto> getAllDtoUsers(Pageable pageable);
+
     boolean checkIfUserExists(String login);
 
-    UserForTaskDto getUserForTaskDto(Long id);
-
-    void registerUser(UserDto userDto);
-
-    void deleteUser(Long id);
-
-    List<UserDto> getAllUsers();
-
-    UserDto getUserById(Long id);
-
-    UserDto getUserByLogin(String login);
-
-    void updateUser(Long id, EditUserDto userDto);
-
-    User getUserModelByLogin(String userLogin);
-
-    User getUserModelById(Long userId);
+    UserDto getUserDtoByCookie(HttpServletRequest request);
 }

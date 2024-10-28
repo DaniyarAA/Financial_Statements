@@ -1,7 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
-import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.repository.CompanyRepository;
 import kg.attractor.financial_statement.service.CompanyService;
@@ -78,26 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company getCompanyById(Long companyId) {
-        return companyRepository.findById(companyId)
-                .orElseThrow(() -> new NoSuchElementException("No such company found"));
-    }
-
-    @Override
-    public CompanyForTaskDto getCompanyForTaskDto(Long id) {
-        Company company = companyRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No such company found with id: " + id));
-        return convertToCompanyForTaskDto(company);
-    }
-
-    private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
-        return CompanyForTaskDto.builder()
-                .name(company.getName())
-                .inn(company.getInn())
-                .build();
-    }
-
-    private CompanyDto convertToDto(Company company) {
+    public CompanyDto convertToDto(Company company) {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())

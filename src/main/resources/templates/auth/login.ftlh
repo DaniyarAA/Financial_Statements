@@ -1,36 +1,32 @@
-<#import "../layout.ftlh" as loginForm>
-<#import "/spring.ftl" as spring>
+<#import '../layout.ftlh' as layout>
+<@layout.layout ; spring>
+    <div class="login-container">
+        <h2>Добро Пожаловать
+            <#if username??>
+                ${username}
+            </#if>
+        </h2>
+        <#if avatar??>
+            <img src="/api/files/download/${avatar}" id="avatar" alt="avatar" class="profile-info-avatar-img">
+        <#else >
+            <img src="/static/user.png" alt="User Icon">
+        </#if>
+        <form id="login-form" action="/auth/login" method="post">
 
-<@loginForm.layout>
-    <div class="container mt-5">
-        <div class="card p-4 bg-dark text-white" style="width: 350px; margin: 0 auto;">
-            <div class="text-center mb-4">
-                <h2 class="mt-2">Exam9</h2>
+            <!-- CSRF -->
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="text" id="form2Example1" class="form-control" name="username" placeholder="Login"/>
+                <label class="form-label" for="form2Example1"></label>
             </div>
-
-            <form id="loginForm" action="/login" method="post">
-                <#if _csrf??>
-                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                           value="${(_csrf.token)!'csrf-token'}"/>
-
-                </#if>
-                <div class="mb-3">
-                    <input type="text" id="form2Example1" class="form-control" name="username"/>
-
-                    <label class="form-label" for="form2Example1">ID</label>
-
-                </div>
-
-                <div class="mb-3">
-                    <input type="password" id="form2Example2" class="form-control" name="password"/>
-
-                    <label class="form-label" for="form2Example2">Password</label>
-
-                </div>
-
-                <button type="submit" class="btn btn-outline-light w-100">Sign in</button>
-            </form>
-        </div>
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="password" id="form2Example2" class="form-control" name="password" placeholder="Password"/>
+                <label class="form-label" for="form2Example2"></label>
+            </div>
+            <button type="submit">Войти</button>
+        </form>
     </div>
-</@loginForm.layout>
-
+</@layout.layout>

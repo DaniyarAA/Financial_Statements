@@ -103,7 +103,7 @@ public class TaskController {
             return "tasks/create";
         }
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
-        return "redirect:/tasks/" + id;
+        return "redirect:/tasks";
 
     }
 }

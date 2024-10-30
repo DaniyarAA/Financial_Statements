@@ -116,6 +116,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDtoAndLogin(taskCreateDto, login));
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
+        task.setDescription(taskCreateDto.getDescription());
         task.setStartDateTime(taskCreateDto.getStartDateTime());
         task.setEndDateTime(taskCreateDto.getEndDateTime());
 
@@ -127,6 +128,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDto(taskCreateDto));
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
+        task.setDescription(taskCreateDto.getDescription());
         task.setStartDateTime(taskCreateDto.getStartDateTime());
         task.setEndDateTime(taskCreateDto.getEndDateTime());
 

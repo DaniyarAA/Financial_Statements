@@ -93,7 +93,7 @@ public class TaskServiceImpl implements TaskService {
             taskCreateDto.setEndDateTime(quarterEnd.atTime(23, 59, 59));
         }
 
-        else if (taskCreateDto.getDocumentTypeId().equals(13L)) {
+        else if (taskCreateDto.getDocumentTypeId().equals(12L)) {
             if (now.getDayOfMonth() == 1) {
                 taskCreateDto.setStartDateTime(now.atStartOfDay());
                 LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(now.lengthOfMonth());

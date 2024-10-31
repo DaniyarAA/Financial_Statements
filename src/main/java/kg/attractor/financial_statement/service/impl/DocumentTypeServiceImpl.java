@@ -37,10 +37,21 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 .orElseThrow(() -> new NoSuchElementException("Document type not found for id " + documentTypeId));
     }
 
+    @Override
+    public List<DocumentTypeDto> getFilteredDocumentTypes() {
+        List<DocumentType> allDocumentTypes = documentTypeRepository.findAll();
+
+        return allDocumentTypes.stream()
+                .filter(DocumentType::isOptional)
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     private DocumentTypeDto convertToDto(DocumentType documentType) {
         return DocumentTypeDto.builder()
                 .id(documentType.getId())
                 .name(documentType.getName())
+                .isOptional(documentType.isOptional())
                 .build();
     }
 
@@ -49,6 +60,4 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
-
-
 }

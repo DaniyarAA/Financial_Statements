@@ -74,7 +74,7 @@ public class TaskController {
             Model model,
             Authentication authentication
     ) {
-        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
         List<UserDto> userDtos = userService.getAllUsers();
         List<CompanyDto> companyDtos = companyService.getAllCompanies();
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();

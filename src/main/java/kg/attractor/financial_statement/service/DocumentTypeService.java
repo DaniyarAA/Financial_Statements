@@ -11,4 +11,6 @@ public interface DocumentTypeService {
     List<DocumentTypeDto> getAllDocumentTypes();
 
     DocumentType getDocumentTypeById(Long documentTypeId);
+
+    List<DocumentTypeDto> getFilteredDocumentTypes();
 }

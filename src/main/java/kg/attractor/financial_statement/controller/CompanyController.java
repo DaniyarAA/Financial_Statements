@@ -43,12 +43,13 @@ public class CompanyController {
         int end = Math.min(start + size, totalCompanies);
 
         model.addAttribute("list", allCompanies.subList(start, end));
-        model.addAttribute("companyId", companyId);
 
-        if (companyId == 0) {
-            model.addAttribute("company", new CompanyDto());
-        } else {
+        if (companyId != 0) {
             model.addAttribute("company", companyService.findById(companyId));
+            model.addAttribute("companyId", companyId);
+        } else {
+            model.addAttribute("company", allCompanies.getFirst());
+            model.addAttribute("companyId", allCompanies.getFirst().getId());
         }
 
         model.addAttribute("currentPage", page);

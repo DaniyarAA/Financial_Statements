@@ -48,19 +48,19 @@ public class CompanyServiceImpl implements CompanyService {
 
         createdUserCompany(companyCreated, login);
 
-        return ResponseEntity.ok(Map.of("message", "Company created successfully"));
+        return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }
 
     @Override
     public CompanyDto findById(Long companyId) {
-        Company company = companyRepository.findById(companyId).orElseThrow(() -> new NoSuchElementException("Invalid company ID"));
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         return convertToDto(company);
     }
 
     @Override
     public void editCompany(CompanyDto company) {
         Company company1 = companyRepository.findById(company.getId())
-                .orElseThrow(() -> new NoSuchElementException("Invalid company ID"));
+                .orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         company1.setName(company.getName());
         company1.setInn(company.getInn());
         company1.setDirectorInn(company.getDirectorInn());
@@ -110,29 +110,29 @@ public class CompanyServiceImpl implements CompanyService {
         String newValue = data.get("value");
 
         if (companyIdStr == null || fieldToEdit == null || newValue == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid input data."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
         }
 
         long companyId;
         try {
             companyId = Long.parseLong(companyIdStr);
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid company ID."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
         }
 
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new NoSuchElementException("Company not found"));
+                .orElseThrow(() -> new NoSuchElementException("Компания не найдена !"));
 
         switch (fieldToEdit) {
             case "email":
                 if (EmailValidator.isValidEmail(newValue)) {
                     company.setEmail(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format."));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Email !"));
                 }
                 break;
-            case "password":
-                company.setPassword(newValue);
+            case "emailPassword":
+                company.setEmailPassword(newValue);
                 break;
             case "phone":
                 company.setPhone(newValue);
@@ -173,6 +173,9 @@ public class CompanyServiceImpl implements CompanyService {
             case "login":
                 company.setLogin(newValue);
                 break;
+            case "password":
+                company.setPassword(newValue);
+                break;
             case "ecp":
                 company.setEcp(newValue);
                 break;
@@ -206,22 +209,19 @@ public class CompanyServiceImpl implements CompanyService {
             case "ked":
                 company.setKed(newValue);
                 break;
-            case "isDeleted":
-                company.setDeleted(Boolean.parseBoolean(newValue)); // assuming newValue is a String representation of a boolean
-                break;
             default:
-                return ResponseEntity.badRequest().body(Map.of("message", "Unknown field to edit."));
+                return ResponseEntity.badRequest().body(Map.of("message", "Неизвестное значение редактирования !"));
         }
 
 
         companyRepository.save(company);
 
-        return ResponseEntity.ok(Map.of("message", "Company updated successfully."));
+        return ResponseEntity.ok(Map.of("message", "Компания Успешно отредактирована."));
     }
 
     private void createdUserCompany(Company company, String login) {
         User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден ошибка создания user-company!"));
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);

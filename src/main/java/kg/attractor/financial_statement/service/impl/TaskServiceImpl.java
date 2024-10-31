@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -58,6 +59,11 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         return tasksPage.map(this::convertToDto);
+    }
+
+    @Override
+    public List<TaskDto> getTaskDtosForUserAndMonth(User user, Integer month) {
+        return null;
     }
 
     @Override

@@ -6,6 +6,7 @@ import kg.attractor.financial_statement.entity.UserCompany;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,4 +15,7 @@ public interface UserCompanyRepository extends JpaRepository<UserCompany, Long> 
     boolean existsByUserAndCompany(User user, Company company);
 
     Optional<UserCompany> findByUserIdAndCompanyId(Long appointToUserId, Long companyId);
+
+    List<UserCompany> findByUserIdAndCompanyIdIn(Long userId, List<Long> companyIds);
+
 }

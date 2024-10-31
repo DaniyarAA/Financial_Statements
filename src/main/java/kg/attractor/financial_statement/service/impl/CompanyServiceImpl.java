@@ -9,6 +9,7 @@ import kg.attractor.financial_statement.repository.CompanyRepository;
 import kg.attractor.financial_statement.repository.UserCompanyRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,8 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
-    private final UserCompanyRepository companyUserRepository;
+    private final UserCompanyRepository userCompanyRepository;
+    private final UserCompanyService userCompanyService;
 
     @Override
     public ResponseEntity<Map<String, String>> createCompany(
@@ -225,7 +227,7 @@ public class CompanyServiceImpl implements CompanyService {
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);
-        companyUserRepository.save(userCompany);
+        userCompanyRepository.save(userCompany);
     }
 
     @Override
@@ -273,6 +275,28 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such company found with id: " + id));
         return convertToCompanyForTaskDto(company);
+    }
+
+    @Override
+    public List<CompanyForTaskDto> getAllCompaniesForUser(User user) {
+        Long userId = user.getId();
+
+        List<UserCompany> userCompanies = userCompanyRepository.findByUserIdAndCompanyIdIn(
+                userId,
+                companyRepository.findAll().stream().map(Company::getId).collect(Collectors.toList())
+        );
+
+        List<Long> userCompanyIds = userCompanies.stream()
+                .map(userCompany -> userCompany.getCompany().getId())
+                .collect(Collectors.toList());
+
+        List<Company> companies = companyRepository.findAllById(userCompanyIds);
+
+        return convertToCompanyForTaskDtoList(companies);
+    }
+
+    private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
+        return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }
 
     private Company convertToEntity(CompanyDto companyDto) {

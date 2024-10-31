@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -105,5 +106,22 @@ public class TaskController {
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
         return "redirect:/tasks";
 
+    }
+
+    @GetMapping("dashboard")
+    public String getDashboardPage(
+            Model model,
+            Authentication authentication,
+            @RequestParam Integer month
+    ) {
+        if (authentication == null) {
+            return "redirect:/login";
+        }
+        String userLogin = authentication.getName();
+        User user = userService.getUserByLogin(userLogin);
+
+        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
+        List<TaskDto> taskDtos = taskService.getTaskDtosForUserAndMonth(user, month);
+        return "tasks/dashboard";
     }
 }

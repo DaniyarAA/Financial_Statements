@@ -6,12 +6,13 @@ import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
-import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
+import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +32,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final CompanyService companyService;
+    private final UserCompanyService userCompanyService;
 
 
     @Override
@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         return user.getUserCompanies().stream()
                 .map(UserCompany::getCompany)
-                .map(companyService::convertToDto)
+                .map(userCompanyService::convertToCompanyToCompanyDto)
                 .toList();
     }
 

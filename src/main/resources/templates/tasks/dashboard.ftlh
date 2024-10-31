@@ -4,46 +4,34 @@
 <@main.layout>
     <div class="container-fluid mt-4">
         <div class="row">
-            <!-- Sidebar for Company List -->
-            <div class="col-md-3 col-lg-2 bg-light border-right">
-                <h5 class="p-3">Компании</h5>
-                <div class="list-group">
-                    <#list companyDtos as company>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            ${company.name}
-                        </a>
-                    </#list>
-                </div>
-            </div>
-
-            <!-- Main Content Area -->
-            <div class="col-md-9 col-lg-10">
-                <h5>Задачи</h5>
+            <div class="col-md-12">
+                <h5>Задачи по компаниям и месяцам</h5>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th scope="col">Месяц</th>
-                            <#list companyDtos as company>
-                                <th scope="col">${company.name}</th>
+                            <th scope="col">Компании</th>
+                            <#list monthsMap?keys as yearMonth>
+                                <th scope="col">${monthsMap[yearMonth]}</th>
                             </#list>
                         </tr>
                         </thead>
                         <tbody>
-                        <#list tasksByYearMonthAndCompany?keys as yearMonth>
+                        <#list companyDtos as company>
                             <tr>
-                                <td></td>
-                                <#list companyDtos as company>
+                                <td>${company.name} ${company.id}</td>
+                                <#list monthsMap?keys as yearMonth>
                                     <td>
                                         <#if tasksByYearMonthAndCompany[yearMonth]?? && tasksByYearMonthAndCompany[yearMonth][company.id]??>
                                             <#list tasksByYearMonthAndCompany[yearMonth][company.id] as task>
                                                 <div class="task">
-                                                    <span class="badge badge-pill badge-info">${task.company.name}</span>
+                                                    <span class="badge badge-pill badge-info">${task.documentTypeName}</span>
                                                 </div>
                                             </#list>
                                         <#else>
-                                            No tasks
+                                            Нет задач
                                         </#if>
+
                                     </td>
                                 </#list>
                             </tr>

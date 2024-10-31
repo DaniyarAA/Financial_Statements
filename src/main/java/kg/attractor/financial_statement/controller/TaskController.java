@@ -155,6 +155,13 @@ public class TaskController {
                         LinkedHashMap::new
                 ));
 
+        tasksByYearMonthAndCompany.forEach((yearMonth, companyTasks) -> {
+            System.out.println("YearMonth: " + yearMonth);
+            companyTasks.forEach((companyId, tasks) -> {
+                System.out.println("Company ID: " + companyId + ", Tasks: " + tasks);
+            });
+        });
+
 
         model.addAttribute("monthsMap", monthsMap);
         model.addAttribute("companyDtos", companyDtos);

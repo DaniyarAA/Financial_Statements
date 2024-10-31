@@ -333,6 +333,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
         return CompanyForTaskDto.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .inn(company.getInn())
                 .build();

@@ -62,7 +62,7 @@ public class CompanyServiceImpl implements CompanyService {
         Company company1 = companyRepository.findById(company.getId())
                 .orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         company1.setName(company.getName());
-        company1.setInn(company.getInn());
+        company1.setInn(company.getCompanyInn());
         company1.setDirectorInn(company.getDirectorInn());
         company1.setLogin(company.getLogin());
         company1.setPassword(company.getPassword());
@@ -233,7 +233,7 @@ public class CompanyServiceImpl implements CompanyService {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
-                .inn(company.getInn())
+                .companyInn(company.getInn())
                 .directorInn(company.getDirectorInn())
                 .login(company.getLogin())
                 .password(company.getPassword())
@@ -278,7 +278,7 @@ public class CompanyServiceImpl implements CompanyService {
     private Company convertToEntity(CompanyDto companyDto) {
         return Company.builder()
                 .name(companyDto.getName())
-                .inn(companyDto.getInn())
+                .inn(companyDto.getCompanyInn())
                 .directorInn(companyDto.getDirectorInn())
                 .login(companyDto.getLogin())
                 .password(companyDto.getPassword())

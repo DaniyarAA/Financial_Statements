@@ -99,7 +99,7 @@
                     <div class="col-md-6">
                         <ul class="list-group">
                             <li class="list-group-item">
-                                <strong>ИНН:</strong> <span id="companyInn">${company.inn!}</span>
+                                <strong>ИНН:</strong> <span id="companyInn">${company.companyInn!}</span>
                                 <button onclick="copyText('companyInn')" title="Скопировать" class="btn btn-link p-0">
                                     <i class="bi bi-clipboard" style="color: black;"></i>
                                 </button>
@@ -385,9 +385,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="inn" class="col-sm-4 col-form-label">ИНН:</label>
+                                    <label for="companyInn" class="col-sm-4 col-form-label">ИНН:</label>
                                     <div class="col-sm-8">
-                                        <input type="text" id="inn" name="inn" class="form-control" required>
+                                        <input type="text" id="companyInn" name="companyInn" class="form-control" required>
                                         <#if (errors?has_content && errors.hasFieldErrors("inn"))>
                                             <span class="text-danger">${errors.getFieldError("inn").defaultMessage}</span>
                                         </#if>

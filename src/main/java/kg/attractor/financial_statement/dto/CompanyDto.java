@@ -15,7 +15,7 @@ public class CompanyDto {
     @NotBlank(message = "Обязательно для заполнения!")
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
-    private String inn;
+    private String companyInn;
     @NotBlank(message = "Обязательно для заполнения!")
     private String directorInn;
     @NotBlank(message = "Обязательно для заполнения!")

@@ -16,7 +16,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -112,7 +120,7 @@ public class TaskController {
     public String getDashboardPage(
             Model model,
             Authentication authentication,
-            @RequestParam Integer month
+            @RequestParam(value = "monthYear", required = false) String monthYear
     ) {
         if (authentication == null) {
             return "redirect:/login";
@@ -121,7 +129,29 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
-        List<TaskDto> taskDtos = taskService.getTaskDtosForUserAndMonth(user, month);
+
+        List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
+        Set<YearMonth> uniqueYearMonths = taskDtos.stream()
+                .map(task -> YearMonth.from(task.getStartDateTime()))
+                .collect(Collectors.toSet());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
+        Map<String, String> monthsMap = uniqueYearMonths.stream()
+                .collect(Collectors.toMap(
+                        ym -> ym.format(formatter),
+                        ym -> ym.getMonth().getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + ym.getYear()
+                ));
+
+        YearMonth selectedMonthYear = monthYear != null ? YearMonth.parse(monthYear, formatter) : null;
+        List<TaskDto> tasksForSelectedMonth = selectedMonthYear != null
+                ? taskService.getTaskDtosForUserAndYearMonth(user, selectedMonthYear)
+                : List.of();
+
+
+        model.addAttribute("monthsMap", monthsMap);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("tasks", tasksForSelectedMonth);
+        model.addAttribute("companyDtos", companyDtos);
         return "tasks/dashboard";
     }
 }

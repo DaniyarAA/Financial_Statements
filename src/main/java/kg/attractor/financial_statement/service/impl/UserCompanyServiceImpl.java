@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +71,19 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     @Override
     public CompanyDto convertToCompanyToCompanyDto(Company company) {
         return companyPrivateService.convertToDto(company);
+    }
+
+    @Override
+    public List<UserCompany> findUserCompanyByUser(User user) {
+        return userCompanyRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Long> findUserCompanyIdsForUser(User user) {
+        List<UserCompany> userCompanies = findUserCompanyByUser(user);
+
+        return userCompanies.stream()
+                .map(UserCompany::getId)
+                .collect(Collectors.toList());
     }
 }

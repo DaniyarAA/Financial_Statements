@@ -15,6 +15,37 @@ function copyText(elementId) {
     });
 }
 
+function toggleCreateForm() {
+    const createCompanyForm = document.getElementById('createCompanyForm');
+    const companyInfo = document.getElementById('companyInfo');
+
+    if (createCompanyForm.style.display === "block") {
+        createCompanyForm.style.display = "none";
+        companyInfo.style.display = "block";
+    } else {
+        companyInfo.style.display = "none";
+        createCompanyForm.style.display = "block";
+    }
+}
+
+async function submitForm(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const response = await fetch(event.target.action, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        showResponseMessage(result.message);
+    } else {
+        const errors = await response.json();
+        const errorMessages = Object.values(errors).join('\n');
+        showResponseMessage(errorMessages, false);
+    }
+}
 
 function addNotification(message) {
     const notification = document.createElement('div');
@@ -78,14 +109,43 @@ function saveChanges() {
                 return response.json();
             })
             .then(data => {
-                console.log('Success:', data);
+                // Выводим сообщение от сервера
+                showResponseMessage(data.message);
+
+                // Закрываем модальное окно после успешного редактирования
                 const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
                 editModal.hide();
             })
             .catch((error) => {
+                // В случае ошибки отображаем её через showResponseMessage
+                showResponseMessage('Ошибка при сохранении изменений', false);
                 console.error('Error:', error);
             });
     }
+}
+
+
+function showResponseMessage(message, isSuccess = true) {
+    const notification = document.createElement('div');
+    notification.classList.add('notification');
+    notification.textContent = message;
+
+    if (isSuccess) {
+        notification.style.backgroundColor = "#d4edda";
+        notification.style.color = "#155724";
+        notification.style.borderColor = "#c3e6cb";
+    } else {
+        notification.style.backgroundColor = "#f8d7da";
+        notification.style.color = "#721c24";
+        notification.style.borderColor = "#f5c6cb";
+    }
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 500);
+    }, 3000);
 }
 
 function togglePasswordVisibility(passwordFieldId) {

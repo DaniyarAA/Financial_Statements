@@ -109,15 +109,12 @@ function saveChanges() {
                 return response.json();
             })
             .then(data => {
-                // Выводим сообщение от сервера
                 showResponseMessage(data.message);
 
-                // Закрываем модальное окно после успешного редактирования
                 const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
                 editModal.hide();
             })
             .catch((error) => {
-                // В случае ошибки отображаем её через showResponseMessage
                 showResponseMessage('Ошибка при сохранении изменений', false);
                 console.error('Error:', error);
             });

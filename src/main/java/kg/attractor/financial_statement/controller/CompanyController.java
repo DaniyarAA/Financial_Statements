@@ -57,12 +57,6 @@ public class CompanyController {
         return "company/all";
     }
 
-    @GetMapping("/{companyId}")
-    public String getById(@PathVariable Long companyId, Model model) {
-        model.addAttribute("company", companyService.findById(companyId));
-        return "company/company";
-    }
-
     @PostMapping("/edit")
     @ResponseBody
     public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data) {

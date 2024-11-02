@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.EditUserDto;
+import kg.attractor.financial_statement.dto.UserDetailsDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
@@ -15,6 +16,8 @@ import java.util.List;
 public interface UserService {
     void registerUser(UserDto user);
     UserDto getUserDtoById(Long id);
+
+    UserDetailsDto getUserDetailDto(Long userId);
 
     User getUserById(Long id);
 

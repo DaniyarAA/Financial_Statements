@@ -2,16 +2,14 @@ package kg.attractor.financial_statement.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kg.attractor.financial_statement.dto.CreateRoleDto;
-import kg.attractor.financial_statement.dto.EditUserDto;
-import kg.attractor.financial_statement.dto.RoleDto;
-import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,6 +58,13 @@ public class AdminController {
         return "admin/users";
     }
 
+    @GetMapping("users/edit/{id}")
+    @ResponseBody
+    public UserDetailsDto getUserById(@PathVariable Long id) {
+        return userService.getUserDetailDto(id);
+    }
+
+
     @GetMapping("user/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
         List<RoleDto> roles = roleService.getAll();
@@ -87,6 +92,8 @@ public class AdminController {
         }
 
     }
+
+
 
     @GetMapping("create/role")
     public String createRole(Model model) {

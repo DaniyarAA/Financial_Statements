@@ -70,6 +70,17 @@ public class UserServiceImpl implements UserService {
         return convertToUserDto(user);
     }
 
+    @Override
+    public UserDetailsDto getUserDetailDto(Long userId){
+        UserDto userDto = getUserDtoById(userId);
+        List<CompanyDto> companies = companyService.getAllCompanies();
+        List<RoleDto> roles = roleService.getAll();
+        return UserDetailsDto.builder()
+                .user(userDto)
+                .companies(companies)
+                .roles(roles)
+                .build();
+    }
 
     @Override
     public User getUserById(Long id) {

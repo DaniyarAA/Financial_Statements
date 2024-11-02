@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
@@ -57,9 +58,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateBirthday(LocalDate birthday) {
-        if(birthday.isAfter(LocalDate.now())) {
+        if (birthday.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Человек еще не родился");
-        } else if (birthday.isAfter(LocalDate.now().minusYears(18))){
+        } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
             throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
         }
     }
@@ -119,11 +120,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> getAllDtoUsers(Pageable pageable) {
-      Page<User> users = userRepository.findAll(pageable);
-      var list = users.get()
-              .map(this::convertToUserDto)
-              .toList();
-      return new PageImpl<>(list, pageable, users.getTotalElements());
+        Page<User> users = userRepository.findAll(pageable);
+        var list = users.get()
+                .map(this::convertToUserDto)
+                .toList();
+        return new PageImpl<>(list, pageable, users.getTotalElements());
     }
 
     @Override
@@ -140,7 +141,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserDtoByCookie(HttpServletRequest request){
+    public UserDto getUserDtoByCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         UserDto userDto = new UserDto();
         if (cookies != null) {
@@ -170,6 +171,20 @@ public class UserServiceImpl implements UserService {
     public User getUserByLogin(String userLogin) {
         return userRepository.findByLogin(userLogin)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public Boolean isAdmin(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getRoleName().equalsIgnoreCase("Админ");
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     private List<UserDto> convertToDtoList(List<User> users) {

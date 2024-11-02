@@ -34,4 +34,6 @@ public interface UserService {
     UserForTaskDto getUserForTaskDto(Long id);
 
     User getUserByLogin(String login);
+
+    Boolean isAdmin(String name);
 }

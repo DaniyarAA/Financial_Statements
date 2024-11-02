@@ -104,22 +104,24 @@ function saveChanges() {
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    return response.json().then(errData => {
+                        throw new Error(errData.message || 'Ошибка при сохранении изменений , не удалось получить сообщение об ошибке от сервера');
+                    });
                 }
                 return response.json();
             })
             .then(data => {
                 showResponseMessage(data.message);
-
                 const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
                 editModal.hide();
             })
-            .catch((error) => {
-                showResponseMessage('Ошибка при сохранении изменений', false);
+            .catch(error => {
+                showResponseMessage(error.message, false);
                 console.error('Error:', error);
             });
     }
 }
+
 
 
 function showResponseMessage(message, isSuccess = true) {

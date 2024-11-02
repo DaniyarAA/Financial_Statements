@@ -358,6 +358,35 @@
                             </li>
                         </ul>
                     </div>
+                    <#if isAdmin>
+                        <button type="button" class="btn btn-danger btn-custom-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            Удалить Компанию
+                        </button>
+
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Вы уверены, что хотите удалить эту компанию?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                        <form action="/company/delete" method="post" id="deleteForm">
+                                            <#if _csrf??>
+                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                                            </#if>
+                                            <input type="hidden" name="companyId" value="${company.id}">
+                                            <button type="submit" class="btn btn-danger">Удалить</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </#if>
                 </div>
                 <#else>
                     <p>Выберите компанию для отображения</p>

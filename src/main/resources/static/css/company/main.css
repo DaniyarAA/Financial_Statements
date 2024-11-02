@@ -63,6 +63,12 @@ form {
     color: #333;
 }
 
+.btn-custom-delete {
+    width: 180px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
 .row {
     margin: 0;
 }

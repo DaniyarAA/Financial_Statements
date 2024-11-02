@@ -55,7 +55,7 @@ public class CompanyDto {
     private String ked;
     private String email;
     private String emailPassword;
-    @Size(max = 30, message = "Размер номера не может быть больше 30")
+    @Size(max = 30, message = "Размер номера телефона не может быть больше 30")
     private String phone;
     private String esf;
     private String esfPassword;

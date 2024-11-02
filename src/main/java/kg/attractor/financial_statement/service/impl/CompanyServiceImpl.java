@@ -138,7 +138,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 30){
                     company.setPhone(newValue);
                 }else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер номера не может быть больше 30"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер номера телефона не может быть больше 30"));
                 }
                 break;
             case "esf":

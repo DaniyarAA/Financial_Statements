@@ -1,11 +1,11 @@
 package kg.attractor.financial_statement.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.CreateRoleDto;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.RoleDto;
 import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ public class AdminController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final AuthorityService authorityService;
 
     @GetMapping("register")
     public String register(Model model) {
@@ -88,27 +89,47 @@ public class AdminController {
 
     }
 
-    @GetMapping("create/role")
-    public String createRole(Model model) {
-        model.addAttribute("createRoleDto", new CreateRoleDto());
-        return "admin/create_role";
-    }
-
-    @PostMapping("create/role")
-    public String createRole(@Valid CreateRoleDto roleDto, BindingResult bindingResult, Model model,
-                             HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("createRoleDto", roleDto);
-            return "admin/create_role";
-        }
-        roleService.createNewRole(roleDto);
-        String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/admin/users");
-    }
-
     @DeleteMapping("/user/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("roles")
+    public String getAllRoles(Model model) {
+        List<RoleDto> roles = roleService.getAll();
+        model.addAttribute("roles", roles);
+        model.addAttribute("authorities", authorityService.getAll());
+        return "admin/roles";
+    }
+
+    @PostMapping("roles/create")
+    @ResponseBody
+    public ResponseEntity<Void> createRole(@RequestBody CreateRoleDto createRoleDto) {
+        roleService.createNewRole(createRoleDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("roles/edit/{roleId}")
+    @ResponseBody
+    public RoleDto getRole(@PathVariable Long roleId) {
+        return roleService.convertToDto(roleService.getRoleById(roleId));
+    }
+
+    @PostMapping("/admin/roles/edit/{id}")
+    public ResponseEntity<?> updateRole(
+            @PathVariable Long id,
+            @RequestBody RoleDto roleDto) {
+
+        roleService.updateRole(id, roleDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("roles/delete/{roleId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteRole(@PathVariable Long roleId) {
+        roleService.deleteRole(roleId);
         return ResponseEntity.ok().build();
     }
 

@@ -6,14 +6,13 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
-import kg.attractor.financial_statement.repository.UserCompanyRepository;
-import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.UserCompanyService;
+import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -28,8 +27,9 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
-    private final UserRepository userRepository;
-    private final UserCompanyRepository companyUserRepository;
+    private  final UserService userService;
+    private final UserCompanyService userCompanyService;
+
 
     @Override
     public ResponseEntity<Map<String, String>> createCompany(
@@ -256,12 +256,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private void createdUserCompany(Company company, String login) {
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден ошибка создания user-company!"));
+        User user = userService.getUserByLogin(login);
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);
-        companyUserRepository.save(userCompany);
+        userCompanyService.save(userCompany);
     }
 
     @Override

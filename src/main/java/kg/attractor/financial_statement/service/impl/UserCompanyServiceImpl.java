@@ -65,4 +65,9 @@ public class UserCompanyServiceImpl implements UserCompanyService {
                     .orElseThrow(() -> new NoSuchElementException("User company not found with companyId: " + taskCreateDto.getCompanyId() + " and userId: " + taskCreateDto.getAppointToUserId()));
         }
     }
+
+    @Override
+    public void save(UserCompany userCompany) {
+        userCompanyRepository.save(userCompany);
+    }
 }

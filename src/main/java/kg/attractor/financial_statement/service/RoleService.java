@@ -16,4 +16,10 @@ public interface RoleService {
     RoleDto convertToDto(Role role);
 
     void createNewRole(CreateRoleDto createRoleDto);
+
+    void updateRole(Long roleId, RoleDto roleDto);
+
+    void deleteRole(Long roleId);
+
+    boolean checkIfRoleNameExists(String roleName);
 }

@@ -68,7 +68,7 @@
                     <#else>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin/register">Регистрация</a>
+                            <a class="nav-link" href="/admin/users">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/company/all/">Компании</a>

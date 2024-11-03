@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AuthorityService {
     List<Authority> findAllById(List<Long> id);
+
+    List<Authority> getAll();
 }

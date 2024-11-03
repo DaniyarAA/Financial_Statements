@@ -126,6 +126,7 @@ public class AdminController {
     }
 
     @PostMapping("roles/edit/{id}")
+    @ResponseBody
     public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody RoleDto roleDto) {
         try {
             roleService.updateRole(id, roleDto);

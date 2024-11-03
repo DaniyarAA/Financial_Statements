@@ -80,18 +80,43 @@ function openCreateRoleModal() {
 
 function createRole() {
     const roleName = document.getElementById("createRoleName").value;
-    const authorities = Array.from(document.querySelectorAll('#createRoleModal input[name="authorityIds"]:checked')).map(input => input.value);
+    const authorityIds = Array.from(document.querySelectorAll('#createRoleModal input[name="authorityIds"]:checked')).map(input => input.value);
 
-    fetch('/admin/roles/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.getElementById("csrfToken").value
-        },
-        body: JSON.stringify({ roleName, authorityIds: authorities })
-    }).then(response => {
-        if (response.ok) location.reload();
-    });
+    document.getElementById("roleNameError").innerText = "";
+    document.getElementById("authorityError").innerText = "";
+
+    fetch('/admin/roles/checkRoleName?name=' + encodeURIComponent(roleName))
+        .then(response => response.json())
+        .then(isNameTaken => {
+            let hasError = false;
+
+            if (isNameTaken) {
+                document.getElementById("roleNameError").innerText = "Роль с таким именем уже существует.";
+                hasError = true;
+            }
+
+            if (authorityIds.length === 0) {
+                document.getElementById("authorityError").innerText = "Выберите хотя бы одну привилегию для роли.";
+                hasError = true;
+            }
+            if (roleName === "") {
+                document.getElementById("roleNameError").innerText = "Название роли не должно быть пустым.";
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            fetch('/admin/roles/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.getElementById("csrfToken").value
+                },
+                body: JSON.stringify({ roleName, authorityIds })
+            }).then(response => {
+                if (response.ok) location.reload();
+            });
+        });
 }
 
 function saveRole() {

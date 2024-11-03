@@ -6,7 +6,9 @@
             <div class="role-item">
                 <span>${role.roleName}</span>
                 <button class="btn btn-primary" onclick="openEditRoleModal(${role.id}, '${role.roleName}')">Редактировать</button>
-                <button class="btn btn-danger" onclick="deleteRole(${role.id})">Удалить</button>
+                <#if !role.userIds ? has_content>
+                    <button class="btn btn-danger" onclick="deleteRole(${role.id})">Удалить</button>
+                </#if>
             </div>
         </#list>
         <button class="btn btn-success btn-create-role" onclick="openCreateRoleModal()">Создать новую роль</button>
@@ -51,6 +53,7 @@
                         <div class="form-group">
                             <label for="createRoleName">Название роли</label>
                             <input type="text" id="createRoleName" name="roleName" class="form-control" required>
+                            <span id="roleNameError" class="text-danger"></span>
                         </div>
                         <h5>Права доступа</h5>
                         <#list authorities as authority>
@@ -59,6 +62,7 @@
                                 <label for="create_auth_${authority.id}" class="form-check-label">${authority.authorityName}</label>
                             </div>
                         </#list>
+                        <span id="authorityError" class="text-danger"></span>
                     </form>
                 </div>
                 <div class="modal-footer">

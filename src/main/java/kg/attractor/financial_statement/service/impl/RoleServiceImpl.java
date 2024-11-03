@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -29,6 +31,7 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleDto> getAll() {
         return roleRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(Role::getId))
                 .map(this::convertToDto)
                 .toList();
     }
@@ -39,23 +42,27 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public RoleDto getRoleDtoById(Long id) {
+        return convertToDto(roleRepository.findById(id).orElseThrow());
+    }
+
+    @Override
     public RoleDto getRoleByName(String name) {
         return convertToDto(roleRepository.findByRoleName(name).orElseThrow());
     }
 
     public RoleDto convertToDto(Role role) {
-        List<AuthorityDto> allAuthorities = authorityService.getAll().stream()
-                .map(auth -> new AuthorityDto(
-                        auth.getId(),
+        List<AuthorityDto> authorities = role.getAuthorities().stream()
+                .map(auth -> new AuthorityDto(auth.getId(),
                         auth.getAuthority(),
                         auth.getAuthorityName(),
-                        role.getAuthorities().contains(auth)
-                ))
+                        true))
                 .toList();
+
         return RoleDto.builder()
                 .id(role.getId())
                 .roleName(role.getRoleName())
-                .authorities(allAuthorities)
+                .authorities(authorities)
                 .userIds(role.getUsers().stream().map(User::getId).toList())
                 .build();
     }
@@ -75,10 +82,25 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NoSuchElementException("Role not found"));
 
-        role.setRoleName(roleDto.getRoleName());
+        if (roleDto.getRoleName() == null || roleDto.getRoleName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Имя роли не может быть пустым.");
+        }
 
-        List<Authority> authorities = authorityService.findAllById(roleDto.getAuthorities().stream()
-                .map(AuthorityDto::getId).toList());
+        if (!role.getRoleName().equals(roleDto.getRoleName())) {
+            boolean roleNameExists = roleRepository.findByRoleName(roleDto.getRoleName()).isPresent();
+            if (roleNameExists) {
+                throw new IllegalArgumentException("Роль с таким именем уже существует.");
+            }
+        }
+
+        if (roleDto.getAuthorities() == null || roleDto.getAuthorities().isEmpty()) {
+            throw new IllegalArgumentException("Роль должна иметь хотя бы одну привилегию.");
+        }
+
+        role.setRoleName(roleDto.getRoleName());
+        List<Authority> authorities = authorityService.findAllById(roleDto.getAuthorities()
+                .stream().map(AuthorityDto::getId).toList());
+        role.getAuthorities().clear();
         role.setAuthorities(authorities);
         roleRepository.save(role);
     }

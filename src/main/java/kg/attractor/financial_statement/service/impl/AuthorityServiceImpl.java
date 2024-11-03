@@ -6,7 +6,6 @@ import kg.attractor.financial_statement.service.AuthorityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Slf4j
@@ -18,5 +17,10 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public List<Authority> findAllById(List<Long> id) {
         return authorityRepository.findAllById(id);
+    }
+
+    @Override
+    public List<Authority> getAll() {
+        return authorityRepository.findAll();
     }
 }

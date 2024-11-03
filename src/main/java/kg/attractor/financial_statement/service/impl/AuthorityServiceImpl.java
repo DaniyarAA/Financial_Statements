@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import kg.attractor.financial_statement.dto.AuthorityDto;
 import kg.attractor.financial_statement.entity.Authority;
 import kg.attractor.financial_statement.repository.AuthorityRepository;
 import kg.attractor.financial_statement.service.AuthorityService;
@@ -20,7 +21,18 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
-    public List<Authority> getAll() {
-        return authorityRepository.findAll();
+    public List<AuthorityDto> getAll() {
+        return authorityRepository.findAll()
+                .stream().map(this::convertToDto)
+                .toList();
+    }
+
+    private AuthorityDto convertToDto(Authority authority) {
+        return AuthorityDto.builder()
+                .id(authority.getId())
+                .authority(authority.getAuthority())
+                .authorityName(authority.getAuthorityName())
+                .selected(false)
+                .build();
     }
 }

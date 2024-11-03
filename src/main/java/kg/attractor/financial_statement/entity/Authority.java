@@ -1,8 +1,7 @@
 package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,6 +11,9 @@ import java.util.Collection;
 @Setter
 @Entity
 @Table(name = "authorities")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

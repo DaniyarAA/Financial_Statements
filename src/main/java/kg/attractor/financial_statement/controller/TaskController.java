@@ -118,39 +118,42 @@ public class TaskController {
             Model model,
             Authentication authentication
     ) {
-
         if (authentication == null) {
             return "redirect:/login";
         }
+
         String userLogin = authentication.getName();
         User user = userService.getUserByLogin(userLogin);
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
         List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
 
-        Set<YearMonth> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDateTime()))
+        Set<String> uniqueYearMonths = taskDtos.stream()
+                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .collect(Collectors.toSet());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
 
-        Map<YearMonth, Map<Long, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
+        Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
 
-        for (YearMonth yearMonth : uniqueYearMonths) {
-            Map<Long, List<TaskDto>> tasksForCompanies = new HashMap<>();
+        for (String yearMonth : uniqueYearMonths) {
+            Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companyDtos) {
                 List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
-                        .filter(task -> YearMonth.from(task.getStartDateTime()).equals(yearMonth) && task.getCompany().getId().equals(company.getId()))
+                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
+                                && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
-                tasksForCompanies.put(company.getId(), tasksForCompanyAndMonth);
+                tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
             }
             tasksByYearMonthAndCompany.put(yearMonth, tasksForCompanies);
         }
 
         Map<String, String> monthsMap = uniqueYearMonths.stream()
                 .collect(Collectors.toMap(
-                        ym -> ym.format(formatter),
-                        ym -> ym.getMonth().getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + ym.getYear(),
+                        ym -> ym,
+                        ym -> YearMonth.parse(ym, formatter)
+                                .getMonth()
+                                .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
@@ -159,9 +162,9 @@ public class TaskController {
             System.out.println("YearMonth: " + yearMonth);
             companyTasks.forEach((companyId, tasks) -> {
                 System.out.println("Company ID: " + companyId + ", Tasks: " + tasks);
+                tasks.forEach(task -> System.out.println("Task ID: " + task.getId()));
             });
         });
-
 
         model.addAttribute("monthsMap", monthsMap);
         model.addAttribute("companyDtos", companyDtos);

@@ -36,17 +36,21 @@
                 <div class="modal-body">
                     <form id="editRoleForm">
                         <input type="hidden" id="editRoleId">
+                        <input type="hidden" name="csrf" value="${_csrf.token}" id="csrfToken">
+
                         <div class="form-group">
                             <label for="editRoleName">Название роли</label>
                             <input type="text" id="editRoleName" name="roleName" class="form-control" required>
+                            <span id="roleNameError" class="text-danger"></span>
                         </div>
+
                         <h5>Права доступа</h5>
                         <div id="editAuthoritiesContainer"></div>
+                        <span id="authorityError" class="text-danger"></span>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('editRoleModal')">Закрыть
-                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editRoleModal')">Закрыть</button>
                     <button type="button" class="btn btn-primary" onclick="saveRole()">Сохранить</button>
                 </div>
             </div>

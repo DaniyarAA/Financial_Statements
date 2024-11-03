@@ -1,10 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
-import kg.attractor.financial_statement.dto.CreateRoleDto;
-import kg.attractor.financial_statement.dto.EditUserDto;
-import kg.attractor.financial_statement.dto.RoleDto;
-import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
@@ -12,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("admin")
@@ -123,17 +122,22 @@ public class AdminController {
     @GetMapping("roles/edit/{roleId}")
     @ResponseBody
     public RoleDto getRole(@PathVariable Long roleId) {
-        return roleService.convertToDto(roleService.getRoleById(roleId));
+        return roleService.getRoleDtoById(roleId);
     }
 
-    @PostMapping("/admin/roles/edit/{id}")
-    public ResponseEntity<?> updateRole(
-            @PathVariable Long id,
-            @RequestBody RoleDto roleDto) {
-
-        roleService.updateRole(id, roleDto);
-
-        return ResponseEntity.ok().build();
+    @PostMapping("roles/edit/{id}")
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody RoleDto roleDto) {
+        try {
+            roleService.updateRole(id, roleDto);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("существует")) {
+                return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла ошибка на сервере");
+        }
     }
 
     @DeleteMapping("roles/delete/{roleId}")
@@ -141,6 +145,12 @@ public class AdminController {
     public ResponseEntity<Void> deleteRole(@PathVariable Long roleId) {
         roleService.deleteRole(roleId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/authorities")
+    public ResponseEntity<List<AuthorityDto>> getAllAuthorities() {
+        List<AuthorityDto> authorities = authorityService.getAll();
+        return ResponseEntity.ok(authorities);
     }
 
 }

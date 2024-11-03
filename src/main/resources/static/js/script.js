@@ -49,3 +49,84 @@ function deleteUser(userId) {
             });
     }
 }
+
+function openEditRoleModal(roleId, roleName) {
+    document.getElementById("editRoleId").value = roleId;
+    document.getElementById("editRoleName").value = roleName;
+
+    fetch('/admin/roles/edit/' + roleId)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("editAuthoritiesContainer");
+            container.innerHTML = "";
+
+            data.authorities.forEach(authority => {
+                const checked = authority.selected ? 'checked' : '';
+                container.innerHTML += `<div class="form-check">
+                    <input type="checkbox" id="edit_auth_${authority.id}" name="authorities" value="${authority.id}" class="form-check-input" ${checked}>
+                    <label for="edit_auth_${authority.id}" class="form-check-label">${authority.authorityName}</label>
+                </div>`;
+            });
+            showModal('editRoleModal');
+        })
+        .catch(error => console.error('Error loading role data:', error));
+}
+
+function openCreateRoleModal() {
+    document.getElementById("createRoleName").value = "";
+    document.querySelectorAll('#createRoleModal input[name="authorityIds"]').forEach(input => input.checked = false);
+    showModal('createRoleModal');
+}
+
+function createRole() {
+    const roleName = document.getElementById("createRoleName").value;
+    const authorities = Array.from(document.querySelectorAll('#createRoleModal input[name="authorityIds"]:checked')).map(input => input.value);
+
+    fetch('/admin/roles/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.getElementById("csrfToken").value
+        },
+        body: JSON.stringify({ roleName, authorityIds: authorities })
+    }).then(response => {
+        if (response.ok) location.reload();
+    });
+}
+
+function saveRole() {
+    const roleId = document.getElementById("editRoleId").value;
+    const roleName = document.getElementById("editRoleName").value;
+    const authorities = Array.from(document.querySelectorAll('#editRoleModal input[name="authorities"]:checked')).map(input => input.value);
+
+    fetch('/admin/roles/edit/' + roleId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.getElementById("csrfToken").value
+        },
+        body: JSON.stringify({ id: roleId, roleName,  authorities })
+    }).then(response => {
+        if (response.ok) location.reload();
+    });
+}
+
+
+function deleteRole(roleId) {
+    fetch('/admin/roles/delete/' + roleId, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.getElementById("csrfToken").value
+        }
+    }).then(response => {
+        if (response.ok) location.reload();
+    });
+}
+
+function showModal(id) {
+    document.getElementById(id).style.display = 'block';
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}

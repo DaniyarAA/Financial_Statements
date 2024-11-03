@@ -312,3 +312,29 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
+.view-icons a{
+    font-size: 20px;
+    color: black;
+}
+
+.role-list-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.role-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.role-item:hover {
+    background-color: #f5f5f5;
+}
+.btn-create-role {
+    margin-top: 20px;
+}

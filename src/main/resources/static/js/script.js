@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
+    function handleSaveUserData(userId) {
+        saveUserData(userId);
+    }
+
 
     userModal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;
@@ -51,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (role.id === user.roleDto.id) {
                         option.selected = true;
                     }
-                    roleSelect.appendChild(option);
+                    roleSelect.append(option);
                 });
 
                 const initialCompanies = document.getElementById("initialCompanies");
@@ -64,7 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const companyCheckboxes = document.getElementById("companyCheckboxes");
                 companyCheckboxes.innerHTML = "";
-                companies.forEach(company => {
+                const sortedCompanies = companies.sort((a, b) => {
+                    const aChecked = user.companies.some(userCompany => userCompany.id === a.id);
+                    const bChecked = user.companies.some(userCompany => userCompany.id === b.id);
+                    return bChecked - aChecked;
+                });
+
+                sortedCompanies.forEach((company, index) => {
                     const checkbox = document.createElement("input");
                     checkbox.type = "checkbox";
                     checkbox.value = company.id;
@@ -73,37 +83,130 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const label = document.createElement("label");
                     label.setAttribute("for", `company_${company.id}`);
-                    label.textContent = company.name;
+                    label.textContent = `${index + 1}) ${company.name}`;
 
                     const div = document.createElement("div");
                     div.style.display = "flex";
                     div.style.justifyContent = "space-between";
                     div.style.alignItems = "center";
 
-                    div.appendChild(label);
-                    div.appendChild(checkbox);
+                    div.append(label);
+                    div.append(checkbox);
 
-                    companyCheckboxes.appendChild(div);
+                    companyCheckboxes.append(div);
                 });
+                const editUserBtn = document.querySelector(".edit-user-btn");
+                editUserBtn.removeEventListener("click", handleSaveUserData);
+                editUserBtn.addEventListener("click", () => handleSaveUserData(userId));
 
             })
             .catch(error => console.error("Error loading user data:", error));
     });
 });
 
+let isSaving = false;
+function saveUserData(userId) {
+    if (isSaving) {
+        return;
+    }
+    isSaving = true;
+    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const roleSelect = document.getElementById("roleSelect");
+    const selectedRoleDto = {
+        id: roleSelect.value,
+        roleName: roleSelect.options[roleSelect.selectedIndex].textContent
+    };
+    const notes = document.getElementById("notesInput").value;
+    const companies = Array.from(document.querySelectorAll("#companyCheckboxes input:checked")).map(checkbox => {
+        const label = document.querySelector(`label[for="${checkbox.id}"]`);
+        return {
+            id: checkbox.value,
+            name: label ? label.textContent.trim() : ""
+        };
+    });
+    console.log("Companies being sent:", companies);
 
+
+    const userDto = {
+        roleDto: selectedRoleDto,
+        notes: notes,
+        companies: companies
+
+    };
+
+    fetch(`/admin/users/edit/` + userId, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(userDto)
+    })
+        .then(response => {
+            isSaving = false;
+            if (response.ok) {
+                showNotification("Информация успешно обновлена", "green");
+            } else {
+                return response.json().then(errorData => {
+                    const errorMessage = errorData.message || "Ошибка при обновлении информации";
+                    showNotification(errorMessage, "red");
+                });
+            }
+        })
+        .catch(error => console.error("Error saving user data:", error));
+}
+
+
+function showNotification(message, color) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.style.display = "block";
+    notification.style.opacity = "1";
+    notification.style.backgroundColor = color;
+
+    setTimeout(() => {
+        notification.style.opacity = "0";
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 500);
+    }, 3000);
+}
 function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-
+    const editIcon = document.getElementById('edit-company-icon');
+    console.log('432423423')
     if (companyDropdown.style.display === 'none') {
         initialCompanies.style.display = 'none';
         companyDropdown.style.display = 'inline-block';
+        editIcon.style.display = 'none';
     } else {
-        initialCompanies.style.display = 'inline';
-        companyDropdown.style.display = 'none';
+        closeDropdown();
     }
 }
+
+function closeDropdown() {
+    const initialCompanies = document.getElementById('initialCompanies');
+    const companyDropdown = document.getElementById('companyDropdown');
+    const editIcon = document.getElementById('edit-company-icon');
+
+    initialCompanies.style.display = 'inline';
+    companyDropdown.style.display = 'none';
+    editIcon.style.display = 'inline';
+
+    document.removeEventListener('click', closeDropdown);
+}
+
+document.addEventListener('click', function(event) {
+    const companyDropdown = document.getElementById('companyDropdown');
+    const editIcon = document.getElementById('edit-company-icon');
+
+    if (!companyDropdown.contains(event.target) && event.target !== editIcon) {
+        closeDropdown();
+    }
+});
+
 
 
 

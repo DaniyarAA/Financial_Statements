@@ -27,4 +27,6 @@ public interface CompanyService {
     Company getCompanyById(Long companyId);
 
     CompanyForTaskDto getCompanyForTaskDto(Long id);
+
+    Company convertToEntity(CompanyDto companyDto);
 }

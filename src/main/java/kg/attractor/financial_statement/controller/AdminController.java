@@ -64,35 +64,16 @@ public class AdminController {
         return userService.getUserDetailDto(id);
     }
 
-
-    @GetMapping("user/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, Model model) {
-        List<RoleDto> roles = roleService.getAll();
-        model.addAttribute("editUserDto", userService.getUserDtoById(id));
-        model.addAttribute("roles", roles);
-        return "admin/edit_user";
-    }
-
-    @PostMapping("user/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, @Valid EditUserDto userDto, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("editUserDto", userService.getUserDtoById(id));
-            model.addAttribute("roles", roleService.getAll());
-            return "admin/edit_user";
-        }
-
+    @PostMapping("users/edit/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         try {
-            userService.updateUser(id, userDto);
-            return "redirect:/admin/users";
-        } catch (IOException e){
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("editUserDto", userService.getUserDtoById(id));
-            model.addAttribute("roles", roleService.getAll());
-            return "admin/edit_user";
+            userService.editUser(id, userDto);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
         }
-
     }
-
 
 
     @GetMapping("create/role")

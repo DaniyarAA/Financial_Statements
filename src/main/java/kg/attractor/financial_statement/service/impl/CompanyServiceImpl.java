@@ -275,7 +275,8 @@ public class CompanyServiceImpl implements CompanyService {
         return convertToCompanyForTaskDto(company);
     }
 
-    private Company convertToEntity(CompanyDto companyDto) {
+    @Override
+    public Company convertToEntity(CompanyDto companyDto) {
         return Company.builder()
                 .name(companyDto.getName())
                 .inn(companyDto.getInn())

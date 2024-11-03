@@ -22,7 +22,9 @@ public interface UserService {
     User getUserById(Long id);
 
     UserDto getUserDtoByLogin(String login);
-    void updateUser(Long id, EditUserDto user) throws IOException;
+
+    void editUser(Long id, UserDto userDto);
+
     void deleteUser(Long id);
     //List<UserDto> getAllDtoUsers();
 

@@ -101,7 +101,7 @@
 
                             </div>
                         </div>
-                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" style="position: absolute; right: -25px; cursor: pointer;"></i>
+                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon" style="position: absolute; right: -25px; cursor: pointer;"></i>
                     </span>
                     </div>
 
@@ -128,6 +128,8 @@
             </div>
         </div>
     </div>
+
+    <div id="notification" class="notification"></div>
 
 
     <script src="/js/script.js"></script>

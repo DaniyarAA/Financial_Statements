@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -64,5 +66,34 @@ public class UserCompanyServiceImpl implements UserCompanyService {
             return userCompanyRepository.findByUserIdAndCompanyId(taskCreateDto.getAppointToUserId(), taskCreateDto.getCompanyId())
                     .orElseThrow(() -> new NoSuchElementException("User company not found with companyId: " + taskCreateDto.getCompanyId() + " and userId: " + taskCreateDto.getAppointToUserId()));
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateUserCompanies(User user, List<Company> newCompanies){
+        List<UserCompany> existingUserCompanies = findByUser(user);
+        List<Company> existingCompanies = existingUserCompanies.stream()
+                .map(UserCompany::getCompany)
+                .toList();
+        for (Company company : newCompanies) {
+            if (!existingCompanies.contains(company)) {
+                UserCompany userCompany = new UserCompany();
+                userCompany.setUser(user);
+                userCompany.setCompany(company);
+                userCompanyRepository.save(userCompany);
+            }
+        }
+        for (UserCompany userCompany : existingUserCompanies) {
+            if (!newCompanies.contains(userCompany.getCompany())) {
+                userCompanyRepository.delete(userCompany);
+            }
+        }
+
+    }
+
+
+    @Override
+    public List<UserCompany> findByUser(User user){
+        return userCompanyRepository.findByUser(user);
     }
 }

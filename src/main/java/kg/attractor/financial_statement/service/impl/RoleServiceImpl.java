@@ -100,7 +100,6 @@ public class RoleServiceImpl implements RoleService {
         role.setRoleName(roleDto.getRoleName());
         List<Authority> authorities = authorityService.findAllById(roleDto.getAuthorities()
                 .stream().map(AuthorityDto::getId).toList());
-        role.getAuthorities().clear();
         role.setAuthorities(authorities);
         roleRepository.save(role);
     }

@@ -179,23 +179,22 @@ function saveRole() {
             authorities: selectedAuthorities.map(id => ({ id: parseInt(id) }))
         })
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                if (data.error === "duplicate") {
-                    document.getElementById("roleNameError").textContent = "Роль с таким именем уже существует.";
-                } else {
-                    document.getElementById("authorityError").textContent = data.message || "Произошла ошибка при сохранении.";
-                }
-            } else {
+        .then(response => {
+            if (response.ok) {
                 closeModal("editRoleModal");
                 location.reload();
+            } else {
+                return response.json();
             }
         })
-        .catch(error => {
-            console.error("Ошибка при сохранении:", error);
-            document.getElementById("authorityError").textContent = "Произошла ошибка при сохранении.";
-        });
+        .then(data => {
+            if (data && data.error) {
+                if (data.error === "duplicate") {
+                    document.getElementById("roleNameError").textContent = "Роль с таким именем уже существует.";
+                }
+            }
+        })
+        .catch(error => console.error("Ошибка при сохранении роли:", error));
 }
 
 function deleteRole(roleId) {

@@ -3,6 +3,8 @@ package kg.attractor.financial_statement.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Collection;
 
@@ -17,6 +19,9 @@ public class Authority {
 
     @Column(name = "authority")
     private String authority;
+
+    private String authorityName;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "roles_authorities",

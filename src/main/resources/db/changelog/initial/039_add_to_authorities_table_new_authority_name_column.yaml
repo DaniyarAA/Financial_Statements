@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 039
+      author: Kamilla
+      changes:
+        - addColumn:
+            tableName: authorities
+            columns:
+              - column:
+                  name: authority_name
+                  type: varchar(255)

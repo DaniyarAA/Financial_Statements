@@ -100,13 +100,23 @@ public class AdminController {
         List<RoleDto> roles = roleService.getAll();
         model.addAttribute("roles", roles);
         model.addAttribute("authorities", authorityService.getAll());
+        model.addAttribute("createRoleDto", new CreateRoleDto());
         return "admin/roles";
+    }
+
+    @GetMapping("roles/checkRoleName")
+    @ResponseBody
+    public boolean checkRoleName(@RequestParam String name) {
+        return roleService.checkIfRoleNameExists(name);
     }
 
     @PostMapping("roles/create")
     @ResponseBody
     public ResponseEntity<Void> createRole(@RequestBody CreateRoleDto createRoleDto) {
         roleService.createNewRole(createRoleDto);
+        if (createRoleDto.getRoleName() == null || createRoleDto.getRoleName().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 

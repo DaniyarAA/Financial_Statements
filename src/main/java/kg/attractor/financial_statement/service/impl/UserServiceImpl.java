@@ -3,16 +3,16 @@ package kg.attractor.financial_statement.service.impl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.*;
-import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
-import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
+import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,11 +32,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final CompanyService companyService;
+    private final UserCompanyService userCompanyService;
 
 
     @Override
@@ -58,9 +57,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateBirthday(LocalDate birthday) {
-        if (birthday.isAfter(LocalDate.now())) {
+        if(birthday.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Человек еще не родился");
-        } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
+        } else if (birthday.isAfter(LocalDate.now().minusYears(18))){
             throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
         }
     }
@@ -136,12 +135,12 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         return user.getUserCompanies().stream()
                 .map(UserCompany::getCompany)
-                .map(companyService::convertToDto)
+                .map(userCompanyService::convertToCompanyToCompanyDto)
                 .toList();
     }
 
     @Override
-    public UserDto getUserDtoByCookie(HttpServletRequest request) {
+    public UserDto getUserDtoByCookie(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         UserDto userDto = new UserDto();
         if (cookies != null) {
@@ -173,6 +172,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+
     @Override
     public Boolean isAdmin(String name) {
         if (!name.isBlank()) {
@@ -186,7 +186,6 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
-
     private List<UserDto> convertToDtoList(List<User> users) {
         return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }

@@ -38,12 +38,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final CompanyService companyService;
+    private CompanyService companyService;
     private UserCompanyService userCompanyService;
     @Autowired
     @Lazy
     private void setUserCompanyService(UserCompanyService userCompanyService) {
         this.userCompanyService = userCompanyService;
+    }
+    @Autowired
+    @Lazy
+    private void setCompanyService(CompanyService companyService){
+        this.companyService = companyService;
     }
 
 

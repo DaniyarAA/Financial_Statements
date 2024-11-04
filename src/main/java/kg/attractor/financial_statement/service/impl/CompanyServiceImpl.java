@@ -13,6 +13,8 @@ import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -29,7 +31,12 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserCompanyService userCompanyService;
-    private final UserRepository userRepository;
+    private UserService userService;
+    @Autowired
+    @Lazy
+    private void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @Override
@@ -257,7 +264,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private void createdUserCompany(Company company, String login) {
-        User user = userRepository.findByLogin(login).orElseThrow();
+        User user = userService.getUserByLogin(login);
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);

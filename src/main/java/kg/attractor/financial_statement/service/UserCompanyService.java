@@ -18,4 +18,8 @@ public interface UserCompanyService {
     List<UserCompany> findUserCompanyByUser(User user);
     List<Long> findUserCompanyIdsForUser(User user);
     void save(UserCompany userCompany);
+
+    void updateUserCompanies(User user, List<Company> newCompanies);
+
+    List<UserCompany> findByUser(User user);
 }

@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("admin")
@@ -24,6 +27,7 @@ public class AdminController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final AuthorityService authorityService;
 
     @GetMapping("register")
     public String register(Model model) {
@@ -96,6 +100,66 @@ public class AdminController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("roles")
+    public String getAllRoles(Model model) {
+        List<RoleDto> roles = roleService.getAll();
+        model.addAttribute("roles", roles);
+        model.addAttribute("authorities", authorityService.getAll());
+        model.addAttribute("createRoleDto", new CreateRoleDto());
+        return "admin/roles";
+    }
+
+    @GetMapping("roles/checkRoleName")
+    @ResponseBody
+    public boolean checkRoleName(@RequestParam String name) {
+        return roleService.checkIfRoleNameExists(name);
+    }
+
+    @PostMapping("roles/create")
+    @ResponseBody
+    public ResponseEntity<Void> createRole(@RequestBody CreateRoleDto createRoleDto) {
+        roleService.createNewRole(createRoleDto);
+        if (createRoleDto.getRoleName() == null || createRoleDto.getRoleName().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("roles/edit/{roleId}")
+    @ResponseBody
+    public RoleDto getRole(@PathVariable Long roleId) {
+        return roleService.getRoleDtoById(roleId);
+    }
+
+    @PostMapping("roles/edit/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody RoleDto roleDto) {
+        try {
+            roleService.updateRole(id, roleDto);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("существует")) {
+                return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла ошибка на сервере");
+        }
+    }
+
+    @DeleteMapping("roles/delete/{roleId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteRole(@PathVariable Long roleId) {
+        roleService.deleteRole(roleId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/authorities")
+    public ResponseEntity<List<AuthorityDto>> getAllAuthorities() {
+        List<AuthorityDto> authorities = authorityService.getAll();
+        return ResponseEntity.ok(authorities);
     }
 
 }

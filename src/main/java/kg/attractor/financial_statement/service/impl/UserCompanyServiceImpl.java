@@ -88,7 +88,6 @@ public class UserCompanyServiceImpl implements UserCompanyService {
                 userCompanyRepository.delete(userCompany);
             }
         }
-
     }
 
 

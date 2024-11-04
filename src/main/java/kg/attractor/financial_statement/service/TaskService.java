@@ -20,4 +20,6 @@ public interface TaskService {
     List<TaskDto> getAllTasksForUser(User user);
 
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
+
+    TaskDto getTaskDtoById(Long taskId);
 }

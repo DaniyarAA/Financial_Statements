@@ -7,14 +7,12 @@ import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -158,6 +156,7 @@ public class TaskController {
                         LinkedHashMap::new
                 ));
 
+        //это для логов
         tasksByYearMonthAndCompany.forEach((yearMonth, companyTasks) -> {
             System.out.println("YearMonth: " + yearMonth);
             companyTasks.forEach((companyId, tasks) -> {
@@ -172,4 +171,15 @@ public class TaskController {
 
         return "tasks/dashboard";
     }
+
+    @GetMapping("dashboard/task-details")
+    @ResponseBody
+    public ResponseEntity<TaskDto> getTaskDetails(@RequestParam Long taskId) {
+        TaskDto taskDetailDto = taskService.getTaskDtoById(taskId);
+        if (taskDetailDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(taskDetailDto);
+    }
+
 }

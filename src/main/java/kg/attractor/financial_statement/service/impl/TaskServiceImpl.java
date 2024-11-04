@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,6 +88,13 @@ public class TaskServiceImpl implements TaskService {
         );
 
         return convertToDtoList(tasks);
+    }
+
+    @Override
+    public TaskDto getTaskDtoById(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task now found for id: " + taskId));
+        return convertToDto(task);
     }
 
 

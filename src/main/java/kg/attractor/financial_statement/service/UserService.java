@@ -8,7 +8,6 @@ import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -39,4 +38,6 @@ public interface UserService {
     UserForTaskDto getUserForTaskDto(Long id);
 
     User getUserByLogin(String login);
+
+    UserDto convertToUserDto(User user);
 }

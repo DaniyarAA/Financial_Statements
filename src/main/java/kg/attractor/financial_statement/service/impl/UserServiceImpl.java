@@ -197,7 +197,8 @@ public class UserServiceImpl implements UserService {
         return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }
 
-    private UserDto convertToUserDto(User user) {
+    @Override
+    public UserDto convertToUserDto(User user) {
         return UserDto
                 .builder()
                 .id(user.getId())

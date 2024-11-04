@@ -11,9 +11,17 @@ public interface RoleService {
 
     Role getRoleById(Long id);
 
+    RoleDto getRoleDtoById(Long id);
+
     RoleDto getRoleByName(String name);
 
     RoleDto convertToDto(Role role);
 
     void createNewRole(CreateRoleDto createRoleDto);
+
+    void updateRole(Long roleId, RoleDto roleDto);
+
+    void deleteRole(Long roleId);
+
+    boolean checkIfRoleNameExists(String roleName);
 }

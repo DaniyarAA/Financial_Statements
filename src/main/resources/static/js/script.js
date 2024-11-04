@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const birthday = new Date(user.birthday);
                 document.getElementById("user-birthday").innerText = birthday.toLocaleDateString("ru-RU");
                 document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
-                document.getElementById("notesInput").innerText = user.notes;
+                document.getElementById("notesInput").value = user.notes;
 
                 const roleDisplay = document.getElementById("roleDisplay");
                 const roleSelect = document.getElementById("roleSelect");

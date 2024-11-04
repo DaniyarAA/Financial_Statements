@@ -207,6 +207,7 @@ public class UserServiceImpl implements UserService {
                 .password(user.getPassword())
                 .birthday(user.getBirthday())
                 .enabled(user.isEnabled())
+                .notes(user.getNotes())
                 .registerDate(user.getRegisterDate())
                 .avatar(user.getAvatar())
                 .roleDto(roleService.convertToDto(user.getRole()))

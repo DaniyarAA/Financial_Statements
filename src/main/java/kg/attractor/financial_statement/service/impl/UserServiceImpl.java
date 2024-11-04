@@ -12,7 +12,6 @@ import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
-import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class UserServiceImpl implements UserService {
     private UserCompanyService userCompanyService;
     @Autowired
     @Lazy
-    public void setUserCompanyService(UserCompanyService userCompanyService) {
+    private void setUserCompanyService(UserCompanyService userCompanyService) {
         this.userCompanyService = userCompanyService;
     }
 

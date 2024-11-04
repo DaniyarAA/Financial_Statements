@@ -213,7 +213,7 @@ public class CompanyServiceImplTest {
         CompanyDto companyDto = CompanyDto.builder()
                 .id(1L)
                 .name("YouTube")
-                .inn("12121")
+                .companyInn("12121")
                 .directorInn("122312")
                 .login("youtube.com")
                 .password("Qwerty123")

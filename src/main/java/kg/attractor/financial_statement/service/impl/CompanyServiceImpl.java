@@ -6,14 +6,13 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
-import kg.attractor.financial_statement.repository.UserCompanyRepository;
-import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.UserCompanyService;
+import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -28,8 +27,9 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
-    private final UserRepository userRepository;
-    private final UserCompanyRepository companyUserRepository;
+    private  final UserService userService;
+    private final UserCompanyService userCompanyService;
+
 
     @Override
     public ResponseEntity<Map<String, String>> createCompany(
@@ -48,21 +48,21 @@ public class CompanyServiceImpl implements CompanyService {
 
         createdUserCompany(companyCreated, login);
 
-        return ResponseEntity.ok(Map.of("message", "Company created successfully"));
+        return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }
 
     @Override
     public CompanyDto findById(Long companyId) {
-        Company company = companyRepository.findById(companyId).orElseThrow(() -> new NoSuchElementException("Invalid company ID"));
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         return convertToDto(company);
     }
 
     @Override
     public void editCompany(CompanyDto company) {
         Company company1 = companyRepository.findById(company.getId())
-                .orElseThrow(() -> new NoSuchElementException("Invalid company ID"));
+                .orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         company1.setName(company.getName());
-        company1.setInn(company.getInn());
+        company1.setInn(company.getCompanyInn());
         company1.setDirectorInn(company.getDirectorInn());
         company1.setLogin(company.getLogin());
         company1.setPassword(company.getPassword());
@@ -110,32 +110,36 @@ public class CompanyServiceImpl implements CompanyService {
         String newValue = data.get("value");
 
         if (companyIdStr == null || fieldToEdit == null || newValue == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid input data."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
         }
 
         long companyId;
         try {
             companyId = Long.parseLong(companyIdStr);
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid company ID."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
         }
 
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new NoSuchElementException("Company not found"));
+                .orElseThrow(() -> new NoSuchElementException("Компания не найдена !"));
 
         switch (fieldToEdit) {
             case "email":
                 if (EmailValidator.isValidEmail(newValue)) {
                     company.setEmail(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format."));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Email !"));
                 }
                 break;
-            case "password":
-                company.setPassword(newValue);
+            case "emailPassword":
+                company.setEmailPassword(newValue);
                 break;
             case "phone":
-                company.setPhone(newValue);
+                if (newValue.length() < 30){
+                    company.setPhone(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер номера телефона не может быть больше 30"));
+                }
                 break;
             case "esf":
                 company.setEsf(newValue);
@@ -165,13 +169,24 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setName(newValue);
                 break;
             case "companyInn":
-                company.setInn(newValue);
+                if (newValue.length() < 20){
+                    company.setInn(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН не может быть больше 20"));
+                }
                 break;
             case "directorInn":
-                company.setDirectorInn(newValue);
+                if (newValue.length() < 20){
+                    company.setDirectorInn(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН не может быть больше 20"));
+                }
                 break;
             case "login":
                 company.setLogin(newValue);
+                break;
+            case "password":
+                company.setPassword(newValue);
                 break;
             case "ecp":
                 company.setEcp(newValue);
@@ -183,49 +198,69 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setKabinetSalykPassword(newValue);
                 break;
             case "taxMode":
-                company.setTaxMode(newValue);
+                if (newValue.length() < 75){
+                    company.setTaxMode(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не может быть больше 75"));
+                }
                 break;
             case "opf":
-                company.setOpf(newValue);
+                if (newValue.length() < 75){
+                    company.setOpf(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не может быть больше 75"));
+                }
                 break;
             case "districtGns":
                 company.setDistrictGns(newValue);
                 break;
             case "socfundNumber":
-                company.setSocfundNumber(newValue);
+                if (newValue.length() < 20){
+                    company.setSocfundNumber(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер социального фонда не может быть больше 20"));
+                }
                 break;
             case "registrationNumberMj":
-                company.setRegistrationNumberMj(newValue);
+                if (newValue.length() < 50){
+                    company.setRegistrationNumberMj(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не может быть больше 50"));
+                }
                 break;
             case "okpo":
-                company.setOkpo(newValue);
+                if (newValue.length() < 20){
+                    company.setOkpo(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО не может быть больше 20"));
+                }
                 break;
             case "director":
                 company.setDirector(newValue);
                 break;
             case "ked":
-                company.setKed(newValue);
-                break;
-            case "isDeleted":
-                company.setDeleted(Boolean.parseBoolean(newValue)); // assuming newValue is a String representation of a boolean
+                if (newValue.length() < 50){
+                    company.setKed(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не может быть больше 50"));
+                }
                 break;
             default:
-                return ResponseEntity.badRequest().body(Map.of("message", "Unknown field to edit."));
+                return ResponseEntity.badRequest().body(Map.of("message", "Неизвестное значение редактирования !"));
         }
 
 
         companyRepository.save(company);
 
-        return ResponseEntity.ok(Map.of("message", "Company updated successfully."));
+        return ResponseEntity.ok(Map.of("message", "Компания Успешно отредактирована."));
     }
 
     private void createdUserCompany(Company company, String login) {
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        User user = userService.getUserByLogin(login);
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);
-        companyUserRepository.save(userCompany);
+        userCompanyService.save(userCompany);
     }
 
     @Override
@@ -233,7 +268,7 @@ public class CompanyServiceImpl implements CompanyService {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
-                .inn(company.getInn())
+                .companyInn(company.getInn())
                 .directorInn(company.getDirectorInn())
                 .login(company.getLogin())
                 .password(company.getPassword())
@@ -279,7 +314,7 @@ public class CompanyServiceImpl implements CompanyService {
     public Company convertToEntity(CompanyDto companyDto) {
         return Company.builder()
                 .name(companyDto.getName())
-                .inn(companyDto.getInn())
+                .inn(companyDto.getCompanyInn())
                 .directorInn(companyDto.getDirectorInn())
                 .login(companyDto.getLogin())
                 .password(companyDto.getPassword())

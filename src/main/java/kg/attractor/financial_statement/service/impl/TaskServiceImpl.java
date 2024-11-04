@@ -3,6 +3,8 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
+import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +62,33 @@ public class TaskServiceImpl implements TaskService {
         }
         return tasksPage.map(this::convertToDto);
     }
+
+    @Override
+    public List<TaskDto> getTaskDtosForUserAndMonth(User user, Integer month) {
+        return null;
+    }
+
+    @Override
+    public List<TaskDto> getAllTasksForUser(User user) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        List<Task> tasks = taskRepository.findByUserCompanyIdIn(userCompanyIds);
+        return convertToDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        List<Task> tasks = taskRepository.findByUserCompanyIdInAndStartDatetimeYearAndMonth(
+                userCompanyIds,
+                selectedMonthYear.getYear(),
+                selectedMonthYear.getMonthValue()
+        );
+
+        return convertToDtoList(tasks);
+    }
+
 
     @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
@@ -149,4 +179,11 @@ public class TaskServiceImpl implements TaskService {
                 .description(task.getDescription())
                 .build();
     }
+
+    private List<TaskDto> convertToDtoList(List<Task> tasks) {
+        return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+
+
 }

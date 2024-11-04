@@ -6,6 +6,7 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
+import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
@@ -27,8 +28,8 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
-    private  final UserService userService;
     private final UserCompanyService userCompanyService;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -256,7 +257,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private void createdUserCompany(Company company, String login) {
-        User user = userService.getUserByLogin(login);
+        User user = userRepository.findByLogin(login).orElseThrow();
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);

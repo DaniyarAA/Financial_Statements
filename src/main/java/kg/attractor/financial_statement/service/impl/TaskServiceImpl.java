@@ -185,6 +185,7 @@ public class TaskServiceImpl implements TaskService {
                 .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
+                .isCompleted(taskStatusService.getIsCompleted(task.getTaskStatus()))
                 .build();
     }
 

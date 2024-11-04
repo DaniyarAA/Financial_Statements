@@ -2,16 +2,14 @@ package kg.attractor.financial_statement.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kg.attractor.financial_statement.dto.CreateRoleDto;
-import kg.attractor.financial_statement.dto.EditUserDto;
-import kg.attractor.financial_statement.dto.RoleDto;
-import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,33 +58,23 @@ public class AdminController {
         return "admin/users";
     }
 
-    @GetMapping("user/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, Model model) {
-        List<RoleDto> roles = roleService.getAll();
-        model.addAttribute("editUserDto", userService.getUserDtoById(id));
-        model.addAttribute("roles", roles);
-        return "admin/edit_user";
+    @GetMapping("users/edit/{id}")
+    @ResponseBody
+    public UserDetailsDto getUserById(@PathVariable Long id) {
+        return userService.getUserDetailDto(id);
     }
 
-    @PostMapping("user/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, @Valid EditUserDto userDto, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("editUserDto", userService.getUserDtoById(id));
-            model.addAttribute("roles", roleService.getAll());
-            return "admin/edit_user";
-        }
-
+    @PostMapping("users/edit/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         try {
-            userService.updateUser(id, userDto);
-            return "redirect:/admin/users";
-        } catch (IOException e){
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("editUserDto", userService.getUserDtoById(id));
-            model.addAttribute("roles", roleService.getAll());
-            return "admin/edit_user";
+            userService.editUser(id, userDto);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
         }
-
     }
+
 
     @GetMapping("create/role")
     public String createRole(Model model) {

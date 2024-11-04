@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,49 +63,79 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskDto> getTaskDtosForUserAndMonth(User user, Integer month) {
+        return null;
+    }
+
+    @Override
+    public List<TaskDto> getAllTasksForUser(User user) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        List<Task> tasks = taskRepository.findByUserCompanyIdIn(userCompanyIds);
+        return convertToDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        List<Task> tasks = taskRepository.findByUserCompanyIdInAndStartDatetimeYearAndMonth(
+                userCompanyIds,
+                selectedMonthYear.getYear(),
+                selectedMonthYear.getMonthValue()
+        );
+
+        return convertToDtoList(tasks);
+    }
+
+
+    @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
         System.out.println("login: " + taskCreateDto.getAppointToUserId());
         LocalDate now = LocalDate.now();
 
         if (taskCreateDto.getDocumentTypeId().equals(1L)) {
-
             if (now.getDayOfMonth() == 1) {
                 taskCreateDto.setStartDateTime(now.atStartOfDay());
-                int lastDayOfCurrentMonth = now.getMonth().length(now.isLeapYear());
-                LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(lastDayOfCurrentMonth);
+                LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(now.lengthOfMonth());
                 taskCreateDto.setEndDateTime(lastDayOfCurrentMonthDate.atTime(23, 59, 59));
             } else {
                 LocalDate firstDayOfNextMonth = now.plusMonths(1).withDayOfMonth(1);
                 taskCreateDto.setStartDateTime(firstDayOfNextMonth.atStartOfDay());
-                int lastDayOfNextMonth = firstDayOfNextMonth.getMonth().length(firstDayOfNextMonth.isLeapYear());
-                LocalDate lastDayOfNextMonthDate = firstDayOfNextMonth.withDayOfMonth(lastDayOfNextMonth);
+                LocalDate lastDayOfNextMonthDate = firstDayOfNextMonth.withDayOfMonth(firstDayOfNextMonth.lengthOfMonth());
                 taskCreateDto.setEndDateTime(lastDayOfNextMonthDate.atTime(23, 59, 59));
             }
-        } else if (taskCreateDto.getDocumentTypeId().equals(2L)) {
+        }
+
+        else if (taskCreateDto.getDocumentTypeId().equals(2L)) {
             int currentQuarter = (now.getMonthValue() - 1) / 3 + 1;
             LocalDate quarterStart;
-            LocalDate quarterEnd;
 
             if (now.getDayOfMonth() == 1) {
                 quarterStart = now.withMonth((currentQuarter - 1) * 3 + 1).withDayOfMonth(1);
             } else {
                 currentQuarter = currentQuarter == 4 ? 1 : currentQuarter + 1;
-                int startMonth = (currentQuarter - 1) * 3 + 1;
-                quarterStart = LocalDate.of(now.getYear() + (currentQuarter == 1 ? 1 : 0), startMonth, 1);
+                quarterStart = LocalDate.of(now.getYear() + (currentQuarter == 1 ? 1 : 0), (currentQuarter - 1) * 3 + 1, 1);
             }
-
-            quarterEnd = quarterStart.plusMonths(2).withDayOfMonth(quarterStart.plusMonths(2).getMonth().length(quarterStart.plusMonths(2).isLeapYear()));
-
+            LocalDate quarterEnd = quarterStart.plusMonths(2).withDayOfMonth(quarterStart.plusMonths(2).lengthOfMonth());
             taskCreateDto.setStartDateTime(quarterStart.atStartOfDay());
             taskCreateDto.setEndDateTime(quarterEnd.atTime(23, 59, 59));
         }
 
-        Task task;
-        if (taskCreateDto.getAppointToUserId() != null) {
-            task = convertToEntity(taskCreateDto);
-        } else {
-            task = convertToEntity(taskCreateDto, login);
+        else if (taskCreateDto.getDocumentTypeId().equals(13L)) {
+            if (now.getDayOfMonth() == 1) {
+                taskCreateDto.setStartDateTime(now.atStartOfDay());
+                LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(now.lengthOfMonth());
+                taskCreateDto.setEndDateTime(lastDayOfCurrentMonthDate.atTime(23, 59, 59));
+            } else {
+                LocalDate firstDayOfNextMonth = now.plusMonths(1).withDayOfMonth(1);
+                taskCreateDto.setStartDateTime(firstDayOfNextMonth.atStartOfDay());
+                LocalDate lastDayOfNextMonthDate = firstDayOfNextMonth.withDayOfMonth(firstDayOfNextMonth.lengthOfMonth());
+                taskCreateDto.setEndDateTime(lastDayOfNextMonthDate.atTime(23, 59, 59));
+            }
         }
+
+        Task task = (taskCreateDto.getAppointToUserId() != null) ? convertToEntity(taskCreateDto) : convertToEntity(taskCreateDto, login);
         Task newTask = taskRepository.save(task);
         return newTask.getId();
     }
@@ -113,6 +145,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDtoAndLogin(taskCreateDto, login));
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
+        task.setDescription(taskCreateDto.getDescription());
         task.setStartDateTime(taskCreateDto.getStartDateTime());
         task.setEndDateTime(taskCreateDto.getEndDateTime());
 
@@ -124,6 +157,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDto(taskCreateDto));
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
+        task.setDescription(taskCreateDto.getDescription());
         task.setStartDateTime(taskCreateDto.getStartDateTime());
         task.setEndDateTime(taskCreateDto.getEndDateTime());
 
@@ -144,4 +178,11 @@ public class TaskServiceImpl implements TaskService {
                 .description(task.getDescription())
                 .build();
     }
+
+    private List<TaskDto> convertToDtoList(List<Task> tasks) {
+        return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+
+
 }

@@ -6,8 +6,8 @@ import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
-import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
+import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +31,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final CompanyService companyService;
+    private final UserCompanyService userCompanyService;
 
 
     @Override
@@ -119,11 +118,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> getAllDtoUsers(Pageable pageable) {
-      Page<User> users = userRepository.findAll(pageable);
-      var list = users.get()
-              .map(this::convertToUserDto)
-              .toList();
-      return new PageImpl<>(list, pageable, users.getTotalElements());
+        Page<User> users = userRepository.findAll(pageable);
+        var list = users.get()
+                .map(this::convertToUserDto)
+                .toList();
+        return new PageImpl<>(list, pageable, users.getTotalElements());
     }
 
     @Override
@@ -135,7 +134,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         return user.getUserCompanies().stream()
                 .map(UserCompany::getCompany)
-                .map(companyService::convertToDto)
+                .map(userCompanyService::convertToCompanyToCompanyDto)
                 .toList();
     }
 
@@ -172,6 +171,20 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+
+    @Override
+    public Boolean isAdmin(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getRoleName().equalsIgnoreCase("Админ");
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
     private List<UserDto> convertToDtoList(List<User> users) {
         return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }

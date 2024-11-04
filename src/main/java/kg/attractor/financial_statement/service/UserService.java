@@ -35,4 +35,6 @@ public interface UserService {
     User getUserByLogin(String login);
 
     UserDto convertToUserDto(User user);
+
+    Boolean isAdmin(String name);
 }

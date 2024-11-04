@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.EditUserDto;
+import kg.attractor.financial_statement.dto.UserDetailsDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
@@ -15,10 +16,14 @@ public interface UserService {
     void registerUser(UserDto user);
     UserDto getUserDtoById(Long id);
 
+    UserDetailsDto getUserDetailDto(Long userId);
+
     User getUserById(Long id);
 
     UserDto getUserDtoByLogin(String login);
-    void updateUser(Long id, EditUserDto user) throws IOException;
+
+    void editUser(Long id, UserDto userDto);
+
     void deleteUser(Long id);
     //List<UserDto> getAllDtoUsers();
 

@@ -3,15 +3,18 @@ package kg.attractor.financial_statement.service.impl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
-import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +37,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final UserCompanyService userCompanyService;
+    private final CompanyService companyService;
+    private UserCompanyService userCompanyService;
+    @Autowired
+    @Lazy
+    private void setUserCompanyService(UserCompanyService userCompanyService) {
+        this.userCompanyService = userCompanyService;
+    }
+
+
 
 
     @Override
@@ -69,6 +80,17 @@ public class UserServiceImpl implements UserService {
         return convertToUserDto(user);
     }
 
+    @Override
+    public UserDetailsDto getUserDetailDto(Long userId){
+        UserDto userDto = getUserDtoById(userId);
+        List<CompanyDto> companies = companyService.getAllCompanies();
+        List<RoleDto> roles = roleService.getAll();
+        return UserDetailsDto.builder()
+                .user(userDto)
+                .companies(companies)
+                .roles(roles)
+                .build();
+    }
 
     @Override
     public User getUserById(Long id) {
@@ -83,20 +105,17 @@ public class UserServiceImpl implements UserService {
         return convertToUserDto(user);
     }
 
+
     @Override
-    public void updateUser(Long id, EditUserDto userDto) throws IOException {
-        if (!validateImageType(userDto.getAvatar())) {
-            throw new IOException("Неподдерживаемый формат файла. Поддерживаются только jpg, jpeg, webp и png.");
-        }
-        validateBirthday(userDto.getBirthday());
+    public void editUser(Long id, UserDto userDto){
         User user = getUserById(id);
-        String avatar = FileUtils.uploadFile(userDto.getAvatar());
-        user.setName(userDto.getName());
-        user.setSurname(userDto.getSurname());
-        user.setLogin(userDto.getLogin());
-        user.setAvatar(avatar);
-        user.setBirthday(userDto.getBirthday());
-        user.setRole(roleService.getRoleById(userDto.getRoleDto().getId()));
+        Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+        user.setRole(role);
+        user.setNotes(userDto.getNotes());
+        List<Company> newCompanies = userDto.getCompanies().stream()
+                .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
+                .toList();
+        userCompanyService.updateUserCompanies(user, newCompanies);
         userRepository.save(user);
     }
 
@@ -200,6 +219,7 @@ public class UserServiceImpl implements UserService {
                 .password(user.getPassword())
                 .birthday(user.getBirthday())
                 .enabled(user.isEnabled())
+                .notes(user.getNotes())
                 .registerDate(user.getRegisterDate())
                 .avatar(user.getAvatar())
                 .roleDto(roleService.convertToDto(user.getRole()))

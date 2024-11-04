@@ -60,32 +60,40 @@ public class AdminController {
         return "admin/users";
     }
 
-    @GetMapping("user/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, Model model) {
-        List<RoleDto> roles = roleService.getAll();
-        model.addAttribute("editUserDto", userService.getUserDtoById(id));
-        model.addAttribute("roles", roles);
-        return "admin/edit_user";
+    @GetMapping("users/edit/{id}")
+    @ResponseBody
+    public UserDetailsDto getUserById(@PathVariable Long id) {
+        return userService.getUserDetailDto(id);
     }
 
-    @PostMapping("user/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, @Valid EditUserDto userDto, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("editUserDto", userService.getUserDtoById(id));
-            model.addAttribute("roles", roleService.getAll());
-            return "admin/edit_user";
-        }
-
+    @PostMapping("users/edit/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         try {
-            userService.updateUser(id, userDto);
-            return "redirect:/admin/users";
-        } catch (IOException e){
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("editUserDto", userService.getUserDtoById(id));
-            model.addAttribute("roles", roleService.getAll());
-            return "admin/edit_user";
+            userService.editUser(id, userDto);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
         }
+    }
 
+
+    @GetMapping("create/role")
+    public String createRole(Model model) {
+        model.addAttribute("createRoleDto", new CreateRoleDto());
+        return "admin/create_role";
+    }
+
+    @PostMapping("create/role")
+    public String createRole(@Valid CreateRoleDto roleDto, BindingResult bindingResult, Model model,
+                             HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("createRoleDto", roleDto);
+            return "admin/create_role";
+        }
+        roleService.createNewRole(roleDto);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/admin/users");
     }
 
     @DeleteMapping("/user/delete/{id}")

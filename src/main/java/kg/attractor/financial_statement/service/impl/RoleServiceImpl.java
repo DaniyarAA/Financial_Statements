@@ -101,7 +101,13 @@ public class RoleServiceImpl implements RoleService {
         List<Long> newAuthorityIds = roleDto.getAuthorities()
                 .stream().map(AuthorityDto::getId).toList();
 
-        role.getAuthorities().removeIf(authority -> !newAuthorityIds.contains(authority.getId()));
+        List<Authority> authoritiesToRemove = role.getAuthorities().stream()
+                .filter(authority -> !newAuthorityIds.contains(authority.getId()))
+                .toList();
+        for (Authority authority : authoritiesToRemove) {
+            role.getAuthorities().remove(authority);
+            authority.getRoles().remove(role);
+        }
 
         List<Authority> authoritiesToAdd = authorityService.findAllById(newAuthorityIds)
                 .stream()
@@ -116,9 +122,11 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void deleteRole(Long roleId) {
         Role role = roleRepository.findById(roleId).orElseThrow();
-        role.getAuthorities().forEach(authority -> authority.getRoles().remove(role));
-        role.setAuthorities(new ArrayList<>());
-        roleRepository.deleteById(roleId);
+        if (role.getUsers().isEmpty()){
+            role.getAuthorities().forEach(authority -> authority.getRoles().remove(role));
+            role.setAuthorities(new ArrayList<>());
+            roleRepository.deleteById(roleId);
+        }
     }
 
     @Override

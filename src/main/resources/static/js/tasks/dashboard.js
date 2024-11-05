@@ -1,19 +1,21 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const taskDetailsDiv = document.createElement("div");
-    taskDetailsDiv.id = "task-details";
-    taskDetailsDiv.style.display = "none";
-    taskDetailsDiv.style.width = "33%";
-    taskDetailsDiv.style.padding = "1rem";
-    taskDetailsDiv.style.border = "1px solid #ddd";
-    taskDetailsDiv.style.backgroundColor = "#f9f9f9";
-
-    document.body.appendChild(taskDetailsDiv);
-});
-
 function showTaskDetails(taskId) {
-    const taskDetailsDiv = document.getElementById("task-details");
+    document.getElementById('task-details').style.display = 'block';
 
-    taskDetailsDiv.style.display = "block";
-
-    taskDetailsDiv.innerHTML = `<h3>Task Details</h3><p>Loading details for task ID: ${taskId}</p>`;
+    $.ajax({
+        url: '/dashboard/task-details',
+        method: 'GET',
+        data: { taskId: taskId },
+        success: function(data) {
+            $('#task-content').html(`
+                    <p><strong>Task ID:</strong> ${data.id}</p>
+                    <p><strong>Document Type:</strong> ${data.documentTypeName}</p>
+                    <p><strong>Start Date:</strong> ${data.startDateTime}</p>
+                    <p><strong>Company:</strong> ${data.company.name}</p>
+                    <!-- Add more details as needed -->
+                `);
+        },
+        error: function() {
+            $('#task-content').html('<p class="text-danger">Error loading task details.</p>');
+        }
+    });
 }

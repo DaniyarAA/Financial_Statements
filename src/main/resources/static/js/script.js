@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     userModal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;
+        const avatarInput = document.getElementById("avatarInput");
         const userId = button.getAttribute("data-user-id");
+        avatarInput.setAttribute("data-user-id", userId);
 
         fetch(`/admin/users/edit/` + userId)
             .then(response => response.json())
@@ -43,6 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("user-birthday").innerText = birthday.toLocaleDateString("ru-RU");
                 document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
                 document.getElementById("notesInput").value = user.notes;
+                if (user.avatar) {
+                    document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
+                }
 
                 const roleDisplay = document.getElementById("roleDisplay");
                 const roleSelect = document.getElementById("roleSelect");
@@ -103,6 +108,52 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Error loading user data:", error));
     });
 });
+
+function uploadAvatar() {
+    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarImg = document.getElementById("avatar");
+    const userId = avatarInput.getAttribute("data-user-id");
+
+    avatarInput.onchange = async function() {
+        const file = avatarInput.files[0];
+        if (!file) {
+            alert("Файл не выбран.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch(`/api/files/upload/avatar/${userId}`, {
+                method: "POST",
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                const resultFileName = data.resultFileName;
+                avatarImg.src = `/api/files/download/${resultFileName}`;
+                showNotification("Аватарка успешно обновлена!", "green");
+            } else {
+                showNotification("Ошибка при обновлении аватарки.", "red");
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            showNotification("Произошла ошибка при отправке запроса.", "red");
+        }
+    };
+
+    avatarInput.click();
+}
+
+
+
 
 let isSaving = false;
 function saveUserData(userId) {

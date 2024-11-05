@@ -12,6 +12,7 @@ import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +124,16 @@ public class UserServiceImpl implements UserService {
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
         userRepository.save(user);
+    }
+
+    @Override
+    public String updateAvatar(Long userId, MultipartFile file) throws IOException {
+        User user = getUserById(userId);
+        validateImageType(file);
+        String avatar = FileUtils.uploadFile(file);
+        user.setAvatar(avatar);
+        userRepository.save(user);
+        return avatar;
     }
 
     private boolean validateImageType(MultipartFile file) {

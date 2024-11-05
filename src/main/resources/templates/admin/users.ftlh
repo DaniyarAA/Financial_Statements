@@ -110,9 +110,10 @@
                 <div class="modal-body text-center">
                     <div class="avatar-container">
                         <img src="/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
-                        <div id="change-avatar-icon" class="change-avatar-icon">
+                        <div id="change-avatar-icon" class="change-avatar-icon"  onclick="uploadAvatar()">
                             <i class="bi bi-camera fs-5"></i>
                         </div>
+                        <input type="file" id="avatarInput" style="display: none;" accept="image/*">
                     </div>
 
 

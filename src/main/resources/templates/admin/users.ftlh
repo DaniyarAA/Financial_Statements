@@ -97,20 +97,24 @@
     </div>
 
 
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal fade user-fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content user-modal-content">
 
                 <i class="bi bi-trash delete-icon fs-1"></i>
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel"></h5>
+                <div class="modal-header user-modal-header">
+                    <h5 class="modal-title user-modal-title" id="userModalLabel"></h5>
                 </div>
 
                 <div class="modal-body text-center">
-                    <div>
+                    <div class="avatar-container">
                         <img src="/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
+                        <div id="change-avatar-icon" class="change-avatar-icon">
+                            <i class="bi bi-camera fs-5"></i>
+                        </div>
                     </div>
+
 
                     <div class="user-info-row mt-3 mb-2">
                         <span class="user-label">Роль:</span>

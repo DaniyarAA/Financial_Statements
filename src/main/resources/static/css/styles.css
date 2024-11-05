@@ -300,21 +300,21 @@
     cursor: pointer;
     margin-top: 10px;
 }
-.modal-content {
+.user-modal-content {
     border-radius: 10px;
     padding: 0 50px;
 }
 
-.fade{
+.user-fade{
     padding: 100px;
 }
 
-.modal-header {
+.user-modal-header {
     border-bottom: none;
     justify-content: center;
 }
 
-.modal-title {
+.user-modal-title {
     font-size: 1.5rem;
     font-weight: normal;
 }
@@ -370,6 +370,14 @@
     border-radius: 6px;
     object-fit: cover;
 }
+
+
+
+
+
+
+
+
 
 .view-icons a{
     font-size: 20px;
@@ -435,7 +443,7 @@ h2 {
     cursor: pointer;
 }
 
-.modal {
+.role-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -447,7 +455,7 @@ h2 {
     align-items: center;
 }
 
-.modal-dialog {
+.role-modal-dialog {
     background-color: #fff;
     border-radius: 8px;
     padding: 20px;
@@ -455,35 +463,35 @@ h2 {
     max-width: 500px;
 }
 
-.modal-header, .modal-footer {
+.role-modal-header, .role-modal-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.modal-title {
+.role-modal-title {
     color: #4CAF50;
 }
 
-.modal .btn {
+.role-btn {
     padding: 5px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.modal .btn-secondary {
+.role-btn-secondary {
     background-color: #ccc;
     color: #333;
 }
 
-.modal .btn-primary {
+.role-btn-primary {
     background-color: #4CAF50;
     color: #fff;
 }
 
-.modal .btn-primary:hover,
-.modal .btn-success:hover {
+.role-btn-primary:hover,
+.role-btn-success:hover {
     background-color: #45a049;
 }
 
@@ -561,3 +569,20 @@ h2 {
     transition: opacity 0.5s ease-in-out;
 }
 
+.avatar-container {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 120px;
+}
+.change-avatar-icon {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background-color: white;
+    padding: 0 6px;
+    cursor: pointer;
+    color: black;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

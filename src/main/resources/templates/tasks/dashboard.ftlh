@@ -24,7 +24,14 @@
                                                 <#list tasksByYearMonthAndCompany[yearMonth][company.id?string] as task>
                                                     <button
                                                             class="btn btn-sm <#if task.isCompleted>btn-success<#else>btn-danger</#if> m-1"
-                                                            onclick="showTaskDetails(${task.id})">
+                                                            onclick="showTaskDetails(this)"
+                                                            data-task-id="${task.id}"
+                                                            data-document-type="${task.documentTypeName}"
+                                                            data-start-date="${task.startDateTime}"
+                                                            data-company-name="${task.company.name}"
+                                                            data-description="${task.description}"
+                                                            data-amount="${task.amount}"
+                                                            data-status="${task.statusId}">
                                                         ${task.documentTypeName}
                                                     </button>
                                                 </#list>
@@ -52,7 +59,5 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script src="/js/tasks/dashboard"></script>
+    <script src="/js/tasks/list.js"></script>
 </@layout.layout>

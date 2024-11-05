@@ -50,24 +50,35 @@
         <div class="col-md-3">
             <div class="list-group">
                 <#if 0 < currentPage>
-                    <a href="/company/all/?companyId=${companyId}&page=${currentPage - 1}" class="btn btn-light arrow-btn">
+                    <a href="/company/all/?companyId=${companyId}&page=${currentPage - 1}&sort=${sort}" class="btn btn-light arrow-btn">
                         <i class="bi bi-arrow-up-circle arrow"></i>
                     </a>
                 </#if>
 
+                <#assign sort = sort! "actual">
                 <p class="list-group-item list-group-item-action titleList">Название</p>
+                <form id="filterForm" class="list-group-item list-group-item-action titleList"  method="get" action="/company/all/?companyId=0&page=0&sort=${sort}">
+                    <div class="form-group">
+                        <label for="sort">Выберите список:</label>
+                        <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
+                            <option value="actual" <#if sort == "actual">selected</#if>>Актуальные Компании</option>
+                            <option value="archive" <#if sort == "archive">selected</#if>>Удаленные Компании</option>
+                        </select>
+                    </div>
+                </form>
+
                 <#list list as item>
-                    <a href="/company/all/?companyId=${item.id}&page=${currentPage}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
+                    <a href="/company/all/?companyId=${item.id}&page=${currentPage}&sort=${sort}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
                 </#list>
 
                 <#if currentPage < totalPages - 1>
-                    <a href="/company/all/?companyId=${companyId}&page=${currentPage + 1}" class="btn btn-light arrow-btn">
+                    <a href="/company/all/?companyId=${companyId}&page=${currentPage + 1}&sort=${sort}" class="btn btn-light arrow-btn">
                         <i class="bi bi-arrow-down-circle arrow"></i>
                     </a>
                 </#if>
             </div>
-
         </div>
+
 
         <div class="col-md-9">
             <#if company?? && company.id?has_content>
@@ -359,33 +370,66 @@
                         </ul>
                     </div>
                     <#if isAdmin>
-                        <button type="button" class="btn btn-danger btn-custom-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            Удалить Компанию
-                        </button>
 
-                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Вы уверены, что хотите удалить эту компанию?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                        <form action="/company/delete" method="post" id="deleteForm">
-                                            <#if _csrf??>
-                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
-                                            </#if>
-                                            <input type="hidden" name="companyId" value="${company.id}">
-                                            <button type="submit" class="btn btn-danger">Удалить</button>
-                                        </form>
+
+
+                        <#if company.deleted>
+                            <button type="button" class="btn btn-danger btn-custom-delete" data-bs-toggle="modal" data-bs-target="#returnModal">
+                                Восстановить Компанию
+                            </button>
+
+                            <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="returnModalLabel">Подтверждение восстановления</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Вы уверены, что хотите восстановить эту компанию?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                            <form action="/company/return" method="post" id="returnForm">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                                                </#if>
+                                                <input type="hidden" name="companyId" value="${company.id}">
+                                                <button type="submit" class="btn btn-danger">Востановить</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <#else>
+                            <button type="button" class="btn btn-danger btn-custom-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Удалить Компанию
+                            </button>
+
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Вы уверены, что хотите удалить эту компанию?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                            <form action="/company/delete" method="post" id="deleteForm">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                                                </#if>
+                                                <input type="hidden" name="companyId" value="${company.id}">
+                                                <button type="submit" class="btn btn-danger">Удалить</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </#if>
                     </#if>
                 </div>
                 <#else>

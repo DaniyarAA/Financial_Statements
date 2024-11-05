@@ -65,4 +65,5 @@ public class CompanyDto {
     private String fresh1cPassword;
     private String ettn;
     private String ettnPassword;
+    private boolean isDeleted;
 }

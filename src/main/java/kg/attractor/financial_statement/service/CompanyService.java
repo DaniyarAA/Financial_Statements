@@ -29,4 +29,8 @@ public interface CompanyService {
     CompanyForTaskDto getCompanyForTaskDto(Long id);
 
     Company convertToEntity(CompanyDto companyDto);
+
+    List<CompanyDto> getAllCompaniesBySort(String sort);
+
+    void returnCompany(Long companyId);
 }

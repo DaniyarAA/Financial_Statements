@@ -19,10 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,6 +49,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         Company company = convertToEntity(companyDto);
+        company.setDeleted(Boolean.FALSE);
         Company companyCreated = companyRepository.save(company);
 
         createdUserCompany(companyCreated, login);
@@ -302,6 +300,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .fresh1cPassword(company.getFresh1cPassword())
                 .ettn(company.getEttn())
                 .ettnPassword(company.getEttnPassword())
+                .isDeleted(company.isDeleted())
                 .build();
     }
 
@@ -350,6 +349,30 @@ public class CompanyServiceImpl implements CompanyService {
                 .ettnPassword(companyDto.getEttnPassword())
                 .build();
     }
+
+    @Override
+    public List<CompanyDto> getAllCompaniesBySort(String sort) {
+        final String ARCHIVE = "archive";
+        List<Company> companyList = Collections.emptyList();
+
+        if (sort != null) {
+            if (sort.equalsIgnoreCase(ARCHIVE)) {
+                companyList = companyRepository.findByIsDeleted(Boolean.TRUE);
+            } else {
+                companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+            }
+        }
+
+        return companyList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void returnCompany(Long companyId) {
+        companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+    }
+
 
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
         return CompanyForTaskDto.builder()

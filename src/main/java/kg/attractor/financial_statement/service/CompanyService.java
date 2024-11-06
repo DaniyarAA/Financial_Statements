@@ -33,4 +33,6 @@ public interface CompanyService {
     List<CompanyDto> getAllCompaniesBySort(String sort);
 
     void returnCompany(Long companyId);
+
+    boolean existsByCompanyName(String companyName);
 }

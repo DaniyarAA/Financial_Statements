@@ -101,7 +101,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
-                <i class="bi bi-trash delete-icon fs-1"></i>
+                <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
 
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>

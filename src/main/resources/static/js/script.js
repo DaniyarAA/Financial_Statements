@@ -30,7 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
     userModal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;
         const avatarInput = document.getElementById("avatarInput");
+        const deleteUserIcon = document.getElementById("delete-user-icon");
         const userId = button.getAttribute("data-user-id");
+        deleteUserIcon.setAttribute("data-user-id", userId);
         avatarInput.setAttribute("data-user-id", userId);
 
         fetch(`/admin/users/edit/` + userId)
@@ -217,6 +219,38 @@ function saveUserData(userId) {
         })
         .catch(error => console.error("Error saving user data:", error));
 }
+
+
+
+function deleteUser() {
+    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const deleteUserIcon = document.getElementById("delete-user-icon");
+    const userStatus = document.getElementById("user-status");
+    const userId = deleteUserIcon.getAttribute("data-user-id");
+    if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+        fetch('/admin/user/delete/' + userId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    showNotification("Пользователь успешно удалён.", "green");
+                    userStatus.innerText = "Неактивен"
+                } else {
+                    showNotification("Ошибка при удалении пользователя.", "red");
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                showNotification("Ошибка при удалении пользователя.", "red");
+            });
+    }
+}
+
 
 
 function showNotification(message, color) {

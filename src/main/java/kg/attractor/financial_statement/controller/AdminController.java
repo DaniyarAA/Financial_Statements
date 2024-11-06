@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,9 +74,17 @@ public class AdminController {
         try {
             userService.editUser(id, userDto);
             return ResponseEntity.ok("User updated successfully");
+        } catch (IllegalArgumentException e) {
+            if(e.getMessage().contains("существует")) {
+                return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+
     }
 
 

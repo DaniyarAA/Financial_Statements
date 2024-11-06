@@ -50,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("notesInput").value = user.notes;
                 document.getElementById("userNameInput").value = user.name;
                 document.getElementById("birthday-input").value = birthday;
+                document.getElementById("user-login").innerText = user.login;
+                document.getElementById("user-login-input").value = user.login
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
                 } else {
@@ -174,6 +176,7 @@ function saveUserData(userId) {
     const roleSelect = document.getElementById("roleSelect");
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
+    const login = document.getElementById("user-login-input").value;
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -194,7 +197,8 @@ function saveUserData(userId) {
         notes: notes,
         companies: companies,
         name: username,
-        birthday: birthday
+        birthday: birthday,
+        login: login
 
     };
 
@@ -212,8 +216,15 @@ function saveUserData(userId) {
                 showNotification("Информация успешно обновлена", "green");
             } else {
                 return response.json().then(errorData => {
-                    const errorMessage = errorData.message || "Ошибка при обновлении информации";
-                    showNotification(errorMessage, "red");
+
+                    if (errorData && errorData.error) {
+                        if (errorData.error === "duplicate") {
+                            document.getElementById("loginError").innerText = errorData.message;
+                        } else {
+                            document.getElementById("birthdayError").innerText = errorData.message;
+                        }
+                    }
+                    showNotification("Ошибка при обновлении информации", "red");
                 });
             }
         })
@@ -330,6 +341,23 @@ function toggleNameEdit() {
         userModalLabel.innerText = userNameInput.value;
         userModalLabel.style.display = 'block';
         userNameInput.style.display = 'none';
+
+    }
+}
+
+
+function toggleLoginEdit() {
+    const userLogin = document.getElementById('user-login');
+    const userLoginInput = document.getElementById('user-login-input');
+    if (userLoginInput.style.display === 'none') {
+        userLoginInput.style.display = 'inline-block';
+        userLogin.style.display = 'none';
+        userLoginInput.value = userLogin.innerText;
+        userLoginInput.focus();
+    } else {
+        userLogin.innerText = userLoginInput.value;
+        userLogin.style.display = 'block';
+        userLoginInput.style.display = 'none';
 
     }
 }

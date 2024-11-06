@@ -135,6 +135,14 @@
                         <span class="user-value" id="user-status"></span>
                     </div>
 
+                    <div class="user-info-row mb-2">
+                        <span class="user-label">Логин:</span>
+                        <span class="user-value" id="user-login"></span>
+                        <input type="text" class="form-control fs-5" id="user-login-input" style="display: none; width: 50%">
+                        <i class="bi bi-pencil ms-2" onclick="toggleLoginEdit()"></i>
+                    </div>
+                    <span id="loginError" class="text-danger"></span>
+
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Доступные компании:</span>
@@ -156,6 +164,7 @@
                         <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
                         <i class="bi bi-pencil ms-2" onclick="toggleBirthdayEdit()"></i>
                     </div>
+                    <span id="birthdayError" class="text-danger"></span>
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Архив:</span>

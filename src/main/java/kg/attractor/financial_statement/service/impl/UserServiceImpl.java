@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,15 +118,27 @@ public class UserServiceImpl implements UserService {
     public void editUser(Long id, UserDto userDto){
         User user = getUserById(id);
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+        updateLoginIfChanged(userDto.getLogin(), user);
+        validateBirthday(userDto.getBirthday());
         user.setRole(role);
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
         user.setName(userDto.getName());
+        System.out.println("LOGIN:" + user.getLogin());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
         userRepository.save(user);
+    }
+
+    private void updateLoginIfChanged(String newLogin, User user) {
+        if (!Objects.equals(newLogin, user.getLogin())) {
+            if (checkIfUserExists(newLogin)) {
+                throw new IllegalArgumentException("Пользователь с таким логином уже существует");
+            }
+            user.setLogin(newLogin);
+        }
     }
 
     @Override

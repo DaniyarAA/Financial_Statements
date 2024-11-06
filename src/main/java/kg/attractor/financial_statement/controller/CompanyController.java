@@ -80,13 +80,13 @@ public class CompanyController {
     @PostMapping("/delete")
     public String deleteById(@RequestParam Long companyId) {
         companyService.deleteCompany(companyId);
-        return "redirect:/company/all/";
+        return "redirect:/company/all/?sort=actual";
     }
 
     @PostMapping("/return")
     public String returnById(@RequestParam Long companyId) {
         companyService.returnCompany(companyId);
-        return "redirect:/company/all/";
+        return "redirect:/company/all/?sort=actual";
     }
 
 }

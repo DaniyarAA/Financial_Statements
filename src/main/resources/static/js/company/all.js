@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", function() {
 function updateFilter() {
     const sortValue = document.getElementById('sort').value;
     localStorage.setItem('companySort', sortValue);
-
     document.getElementById('filterForm').submit();
 }
 
@@ -175,3 +174,8 @@ function loadFilters() {
         document.getElementById('sort').value = sortValue;
     }
 }
+
+function clearSortFilter() {
+    localStorage.removeItem('companySort');
+}
+

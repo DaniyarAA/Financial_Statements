@@ -57,7 +57,7 @@
 
                 <#assign sort = sort! "actual">
                 <p class="list-group-item list-group-item-action titleList">Название</p>
-                <form id="filterForm" class="list-group-item list-group-item-action titleList"  method="get" action="/company/all/?companyId=0&page=0&sort=${sort}">
+                <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get" action="/company/all/?companyId=0&page=0&sort=${sort}">
                     <div class="form-group">
                         <label for="sort">Выберите список:</label>
                         <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
@@ -78,6 +78,7 @@
                 </#if>
             </div>
         </div>
+
 
 
         <div class="col-md-9">
@@ -402,7 +403,7 @@
                                                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
                                                 </#if>
                                                 <input type="hidden" name="companyId" value="${company.id}">
-                                                <button type="submit" class="btn btn-danger">Востановить</button>
+                                                <button type="submit" class="btn btn-danger" onclick="clearSortFilter()">Востановить</button>
                                             </form>
                                         </div>
                                     </div>
@@ -430,7 +431,7 @@
                                                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
                                                 </#if>
                                                 <input type="hidden" name="companyId" value="${company.id}">
-                                                <button type="submit" class="btn btn-danger">Удалить</button>
+                                                <button type="submit" class="btn btn-danger" onclick="clearSortFilter()">Удалить</button>
                                             </form>
                                         </div>
                                     </div>

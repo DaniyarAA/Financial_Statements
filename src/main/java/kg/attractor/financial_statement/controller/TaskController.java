@@ -114,7 +114,9 @@ public class TaskController {
     @GetMapping("dashboard")
     public String getDashboardPage(
             Model model,
-            Authentication authentication
+            Authentication authentication,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "7") int size
     ) {
         if (authentication == null) {
             return "redirect:/login";
@@ -156,14 +158,13 @@ public class TaskController {
                         LinkedHashMap::new
                 ));
 
-        //это для логов
-        tasksByYearMonthAndCompany.forEach((yearMonth, companyTasks) -> {
-            System.out.println("YearMonth: " + yearMonth);
-            companyTasks.forEach((companyId, tasks) -> {
-                System.out.println("Company ID: " + companyId + ", Tasks: " + tasks);
-                tasks.forEach(task -> System.out.println("Task ID: " + task.getId()));
-            });
-        });
+        int totalCompanies = companyDtos.size();
+        int start = page * size;
+        int end = Math.min(start + size, totalCompanies);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
+        model.addAttribute("list", companyDtos.subList(start, end));
 
         model.addAttribute("monthsMap", monthsMap);
         model.addAttribute("companyDtos", companyDtos);
@@ -171,6 +172,7 @@ public class TaskController {
 
         return "tasks/dashboard";
     }
+
 
     @GetMapping("dashboard/task-details")
     @ResponseBody

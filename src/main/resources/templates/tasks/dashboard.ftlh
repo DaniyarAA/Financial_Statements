@@ -2,6 +2,14 @@
 <@layout.layout ; spring>
     <div class="container-fluid p-3">
         <div class="row">
+            <div class="col-md-12 mb-3 d-flex justify-content-between">
+                <button id="prevPage" class="btn btn-secondary" <#if currentPage == 0>disabled</#if>
+                        onclick="window.location.href='?page=${currentPage - 1}&size=7'">← Previous</button>
+                <span>Page ${currentPage + 1} of ${totalPages}</span>
+                <button id="nextPage" class="btn btn-secondary" <#if currentPage == totalPages - 1>disabled</#if>
+                        onclick="window.location.href='?page=${currentPage + 1}&size=7'">Next →</button>
+            </div>
+
             <div class="col-md-9">
                 <div class="table-responsive">
                     <table class="table table-bordered text-center">
@@ -14,7 +22,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <#list companyDtos as company>
+                        <#list list as company>
                             <tr>
                                 <td class="font-weight-bold">${company.name} ${company.id}</td>
                                 <#list monthsMap?keys as yearMonth>
@@ -51,8 +59,7 @@
             <div class="col-md-3">
                 <div id="task-details" class="border p-3" style="display: none;">
                     <h5>Task Details</h5>
-                    <div id="task-content">
-                    </div>
+                    <div id="task-content"></div>
                 </div>
             </div>
         </div>

@@ -252,7 +252,9 @@ function deleteUser() {
                     showNotification("Пользователь успешно удалён.", "green");
                     userStatus.innerText = "Неактивен"
                 } else {
-                    showNotification("Ошибка при удалении пользователя.", "red");
+                    return response.json().then(errorData => {
+                        showNotification(errorData.message, "red");
+                    });
                 }
             })
             .catch(error => {

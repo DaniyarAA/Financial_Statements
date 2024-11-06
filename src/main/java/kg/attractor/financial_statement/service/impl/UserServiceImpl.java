@@ -162,6 +162,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        if(id == 1L){
+            throw new IllegalArgumentException("Нельзя удалить администратора системы");
+        }
         User user = getUserById(id);
         user.setEnabled(false);
         userRepository.save(user);

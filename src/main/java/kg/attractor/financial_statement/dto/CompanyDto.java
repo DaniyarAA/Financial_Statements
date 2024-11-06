@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import kg.attractor.financial_statement.validation.UniqueCompanyName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class CompanyDto {
     private Long id;
     @NotBlank(message = "Обязательно для заполнения!")
+    @UniqueCompanyName
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
     @Size(min = 12,max = 12, message = "Размер ИНН должен быть 12 символов")

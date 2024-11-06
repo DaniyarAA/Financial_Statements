@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .birthday(userDto.getBirthday())
                 .role(roleService.getRoleById(userDto.getRoleDto().getId()))
-                .avatar("static/user.png")
+                .avatar("user.png")
                 .registerDate(LocalDate.now())
                 .build();
         userRepository.save(newUser);

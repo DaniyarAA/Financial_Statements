@@ -16,10 +16,10 @@ public class CompanyDto {
     @NotBlank(message = "Обязательно для заполнения!")
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 20, message = "Размер ИНН не может быть больше 20")
+    @Size(min = 12,max = 12, message = "Размер ИНН должен быть 12 символов")
     private String companyInn;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 20, message = "Размер ИНН не может быть больше 20")
+    @Size(min = 12,max = 12, message = "Размер ИНН должен быть 12 символов")
     private String directorInn;
     @NotBlank(message = "Обязательно для заполнения!")
     private String login;

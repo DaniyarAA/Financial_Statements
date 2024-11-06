@@ -175,17 +175,17 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setName(newValue);
                 break;
             case "companyInn":
-                if (newValue.length() < 20){
+                if (newValue.length() == 12){
                     company.setInn(newValue);
                 }else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН не может быть больше 20"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
                 }
                 break;
             case "directorInn":
-                if (newValue.length() < 20){
+                if (newValue.length() == 12){
                     company.setDirectorInn(newValue);
                 }else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН не может быть больше 20"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
                 }
                 break;
             case "login":

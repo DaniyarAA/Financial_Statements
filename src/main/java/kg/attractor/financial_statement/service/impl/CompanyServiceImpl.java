@@ -11,6 +11,7 @@ import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
+import kg.attractor.financial_statement.validation.UniqueCompanyName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserCompanyService userCompanyService;
     private UserService userService;
+
     @Autowired
     @Lazy
     private void setUserService(UserService userService) {
@@ -141,9 +143,9 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setEmailPassword(newValue);
                 break;
             case "phone":
-                if (newValue.length() < 30){
+                if (newValue.length() < 30) {
                     company.setPhone(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер номера телефона не может быть больше 30"));
                 }
                 break;
@@ -172,19 +174,23 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setEttnPassword(newValue);
                 break;
             case "name":
-                company.setName(newValue);
+                if (!existsByCompanyName(newValue)) {
+                    company.setName(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким именем уже существует , либо заорхивирована и можете восстановить !"));
+                }
                 break;
             case "companyInn":
-                if (newValue.length() == 12){
+                if (newValue.length() == 12) {
                     company.setInn(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
                 }
                 break;
             case "directorInn":
-                if (newValue.length() == 12){
+                if (newValue.length() == 12) {
                     company.setDirectorInn(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
                 }
                 break;
@@ -204,16 +210,16 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setKabinetSalykPassword(newValue);
                 break;
             case "taxMode":
-                if (newValue.length() < 75){
+                if (newValue.length() < 75) {
                     company.setTaxMode(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не может быть больше 75"));
                 }
                 break;
             case "opf":
-                if (newValue.length() < 75){
+                if (newValue.length() < 75) {
                     company.setOpf(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не может быть больше 75"));
                 }
                 break;
@@ -221,23 +227,23 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setDistrictGns(newValue);
                 break;
             case "socfundNumber":
-                if (newValue.length() < 20){
+                if (newValue.length() < 20) {
                     company.setSocfundNumber(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер социального фонда не может быть больше 20"));
                 }
                 break;
             case "registrationNumberMj":
-                if (newValue.length() < 50){
+                if (newValue.length() < 50) {
                     company.setRegistrationNumberMj(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не может быть больше 50"));
                 }
                 break;
             case "okpo":
-                if (newValue.length() < 20){
+                if (newValue.length() < 20) {
                     company.setOkpo(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО не может быть больше 20"));
                 }
                 break;
@@ -245,9 +251,9 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setDirector(newValue);
                 break;
             case "ked":
-                if (newValue.length() < 50){
+                if (newValue.length() < 50) {
                     company.setKed(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не может быть больше 50"));
                 }
                 break;
@@ -371,6 +377,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public void returnCompany(Long companyId) {
         companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+    }
+
+    @Override
+    public boolean existsByCompanyName(String companyName) {
+        return companyRepository.existsByName(companyName);
     }
 
 

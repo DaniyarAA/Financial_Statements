@@ -118,7 +118,9 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(id);
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
         user.setRole(role);
+        user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
+        user.setName(userDto.getName());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();

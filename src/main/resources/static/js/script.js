@@ -41,12 +41,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 const roles = data.roles;
 
                 document.getElementById("userModalLabel").innerText = user.name;
-                const birthday = new Date(user.birthday);
-                document.getElementById("user-birthday").innerText = birthday.toLocaleDateString("ru-RU");
+                const birthday = user.birthday;
+                const [year, month, day] = birthday.split('-');
+                document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
                 document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
                 document.getElementById("notesInput").value = user.notes;
+                document.getElementById("userNameInput").value = user.name;
+                document.getElementById("birthday-input").value = birthday;
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
+                } else {
+                    document.getElementById("avatar").src = `/user.png`;
+
                 }
 
                 const roleDisplay = document.getElementById("roleDisplay");
@@ -164,6 +170,8 @@ function saveUserData(userId) {
     const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const roleSelect = document.getElementById("roleSelect");
+    const username = document.getElementById("userNameInput").value;
+    const birthday = document.getElementById("birthday-input").value;
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -182,7 +190,9 @@ function saveUserData(userId) {
     const userDto = {
         roleDto: selectedRoleDto,
         notes: notes,
-        companies: companies
+        companies: companies,
+        name: username,
+        birthday: birthday
 
     };
 
@@ -227,7 +237,6 @@ function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
     const editIcon = document.getElementById('edit-company-icon');
-    console.log('432423423')
     if (companyDropdown.style.display === 'none') {
         initialCompanies.style.display = 'none';
         companyDropdown.style.display = 'inline-block';
@@ -274,6 +283,43 @@ function toggleRoleEdit() {
         roleSelect.style.display = 'none';
     }
 }
+
+function toggleNameEdit() {
+    const userModalLabel = document.getElementById('userModalLabel');
+    const userNameInput = document.getElementById('userNameInput');
+    if (userNameInput.style.display === 'none') {
+        userNameInput.style.display = 'inline-block';
+        userModalLabel.style.display = 'none';
+        userNameInput.value = userModalLabel.innerText;
+        userNameInput.focus();
+    } else {
+        userModalLabel.innerText = userNameInput.value;
+        userModalLabel.style.display = 'block';
+        userNameInput.style.display = 'none';
+
+    }
+}
+
+function toggleBirthdayEdit() {
+    const birthdayDisplay = document.getElementById("user-birthday");
+    const birthdayInput = document.getElementById("birthday-input");
+
+    if (birthdayInput.style.display === 'none') {
+        const displayDate = birthdayDisplay.innerText;
+        const dateParts = displayDate.split('.');
+        birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        birthdayInput.style.display = 'inline-block';
+        birthdayDisplay.style.display = 'none';
+    } else {
+        const dateParts = birthdayInput.value.split('-');
+        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        birthdayDisplay.style.display = 'inline';
+        birthdayInput.style.display = 'none';
+    }
+}
+
+
+
 
 function openEditRoleModal(roleId) {
     document.getElementById("editRoleId").value = roleId;

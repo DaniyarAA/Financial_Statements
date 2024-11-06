@@ -104,7 +104,9 @@
                 <i class="bi bi-trash delete-icon fs-1"></i>
 
                 <div class="modal-header user-modal-header">
-                    <h5 class="modal-title user-modal-title" id="userModalLabel"></h5>
+                    <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
+                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; width: 34%">
+                    <i class="bi bi-pencil ms-2" onclick="toggleNameEdit()"></i>
                 </div>
 
                 <div class="modal-body text-center">
@@ -121,7 +123,7 @@
                         <span class="user-label">Роль:</span>
                         <span class="user-value d-flex align-items-center" style="gap: 5px;">
                             <span id="roleDisplay"></span>
-                            <select id="roleSelect" class="form-select" style="display: none; width: auto;">
+                            <select id="roleSelect" class="form-select" style="display: none; width: 67%;">
 
                             </select>
                             <i class="bi bi-pencil" onclick="toggleRoleEdit()"></i>
@@ -143,7 +145,7 @@
 
                             </div>
                         </div>
-                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon" style="position: absolute; right: -25px; cursor: pointer;"></i>
+                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon"></i>
                     </span>
                     </div>
 
@@ -151,6 +153,8 @@
                     <div class="user-info-row">
                         <span class="user-label">День Рождения:</span>
                         <span class="user-value" id="user-birthday"></span>
+                        <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
+                        <i class="bi bi-pencil ms-2" onclick="toggleBirthdayEdit()"></i>
                     </div>
 
                     <div class="user-info-row mb-2">

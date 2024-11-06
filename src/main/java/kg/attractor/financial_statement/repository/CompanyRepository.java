@@ -23,4 +23,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     @Query("select c from Company c where c.isDeleted = :isDeleted")
     List<Company> findByIsDeleted(@Param("isDeleted") Boolean isDeleted);
+
+
+    Boolean existsByName(String name);
 }

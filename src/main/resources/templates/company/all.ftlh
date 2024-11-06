@@ -84,7 +84,14 @@
             <#if company?? && company.id?has_content>
 
             <div id="companyInfo" style="display:block;">
-                <h2 class="text-center titleInfoCreate">Наименование компании: ${company.name!}</h2>
+                <h2 class="text-center titleInfoCreate">Наименование компании: <span id="name">${company.name!}</span>
+                    <button onclick="copyText('name')" title="Скопировать" class="btn btn-link p-0">
+                        <i class="bi bi-clipboard" style="color: black;"></i>
+                    </button>
+                    <button onclick="editText('name', ${company.id})" title="Редактировать" class="btn btn-link p-0">
+                        <i class="bi bi-pencil" style="color: black;"></i>
+                    </button>
+                </h2>
                 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">

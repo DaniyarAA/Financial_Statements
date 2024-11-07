@@ -10,10 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -105,5 +102,41 @@ public class TaskController {
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
         return "redirect:/tasks";
 
+    }
+
+    @GetMapping("edit/{id}")
+    public String getEditTaskForm(
+            @PathVariable Long id,
+            Model model
+    ) {
+        TaskDto taskDto = taskService.getTaskById(id);
+
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
+        List<CompanyDto> companyDtos = companyService.getAllCompanies();
+
+        model.addAttribute("taskDto", taskDto);
+        model.addAttribute("documentTypeDtos", documentTypeDtos);
+        model.addAttribute("taskStatusDtos", taskStatusDtos);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("taskEditDto", new TaskEditDto());
+        model.addAttribute("dateUtils", new DateUtils());
+
+        return "tasks/edit";
+    }
+
+    @PostMapping("edit")
+    public String editTask(
+            @RequestParam Long id,
+            @Valid TaskEditDto taskEditDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "tasks/edit";
+        }
+        taskService.editTask(id, taskEditDto);
+
+        return "redirect:/tasks";
     }
 }

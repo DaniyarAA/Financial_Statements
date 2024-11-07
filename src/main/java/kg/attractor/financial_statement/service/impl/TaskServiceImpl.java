@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
+import kg.attractor.financial_statement.dto.TaskEditDto;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +31,12 @@ public class TaskServiceImpl implements TaskService {
     private final UserCompanyService userCompanyService;
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
+
+    @Override
+    public TaskDto getTaskById(Long id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
+        return convertToDto(task);
+    }
 
     @Override
     public List<TaskDto> getAllTasks() {
@@ -109,6 +117,32 @@ public class TaskServiceImpl implements TaskService {
         Task task = (taskCreateDto.getAppointToUserId() != null) ? convertToEntity(taskCreateDto) : convertToEntity(taskCreateDto, login);
         Task newTask = taskRepository.save(task);
         return newTask.getId();
+    }
+
+    @Override
+    public void editTask(Long id, TaskEditDto taskEditDto) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        if (taskEditDto.getDocumentTypeId() != null) {
+            task.setDocumentType(documentTypeService.getDocumentTypeById(taskEditDto.getDocumentTypeId()));
+        }
+        if (taskEditDto.getStatusId() != null) {
+            task.setTaskStatus(taskStatusService.getTaskStatusById(taskEditDto.getStatusId()));
+        }
+        if (taskEditDto.getDescription() != null) {
+            task.setDescription(taskEditDto.getDescription());
+        }
+        if (taskEditDto.getStartDateTime() != null) {
+            task.setStartDateTime(taskEditDto.getStartDateTime());
+        }
+        if (taskEditDto.getEndDateTime() != null) {
+            task.setEndDateTime(taskEditDto.getEndDateTime());
+        }
+        if (taskEditDto.getAmount() != null) {
+            task.setAmount(taskEditDto.getAmount());
+        }
+
+        taskRepository.save(task);
     }
 
     private Task convertToEntity(TaskCreateDto taskCreateDto, String login) {

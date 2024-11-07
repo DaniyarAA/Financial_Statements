@@ -43,6 +43,9 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
     private List<Report> reports;
 }

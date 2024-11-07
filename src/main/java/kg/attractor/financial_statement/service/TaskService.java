@@ -17,4 +17,6 @@ public interface TaskService {
     Page<TaskDto> getTasksPage(int page, int size, String sort, String direction, Long documentTypeId, Long statusId);
 
     void editTask(Long id, TaskEditDto taskEditDto);
+
+    void deleteTask(Long id);
 }

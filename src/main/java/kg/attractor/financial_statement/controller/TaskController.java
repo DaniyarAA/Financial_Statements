@@ -110,7 +110,6 @@ public class TaskController {
             Model model
     ) {
         TaskDto taskDto = taskService.getTaskById(id);
-
         List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         List<CompanyDto> companyDtos = companyService.getAllCompanies();
@@ -137,6 +136,12 @@ public class TaskController {
         }
         taskService.editTask(id, taskEditDto);
 
+        return "redirect:/tasks";
+    }
+
+    @PostMapping("delete/{id}")
+    public String deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
         return "redirect:/tasks";
     }
 }

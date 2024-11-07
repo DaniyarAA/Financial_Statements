@@ -34,8 +34,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getTaskById(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
-        return convertToDto(task);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        TaskDto taskDto = convertToDto(task);
+        taskDto.setDeleted(task.isDeleted());
+        return taskDto;
     }
 
     @Override
@@ -142,6 +146,15 @@ public class TaskServiceImpl implements TaskService {
             task.setAmount(taskEditDto.getAmount());
         }
 
+        taskRepository.save(task);
+    }
+
+    @Override
+    public void deleteTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        task.setDeleted(true);
         taskRepository.save(task);
     }
 

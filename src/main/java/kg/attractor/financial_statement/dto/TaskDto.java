@@ -21,8 +21,7 @@ public class TaskDto {
     private String documentTypeName;
     private UserForTaskDto user;
     private CompanyForTaskDto company;
-
     private BigDecimal amount;
     private String description;
-
+    private boolean isDeleted;
 }

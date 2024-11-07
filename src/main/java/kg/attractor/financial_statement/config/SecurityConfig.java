@@ -32,11 +32,13 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/admin/create/role").hasAuthority("CREATE_ROLE")
+                        .requestMatchers("/admin/roles/create").hasAuthority("CREATE_ROLE")
+                        .requestMatchers("/admin/roles/delete/").hasAuthority("DELETE_ROLE")
+                        .requestMatchers("/admin/roles").hasAuthority("VIEW_ROLES")
+                        .requestMatchers("/admin/roles/edit/").hasAuthority("EDIT_ROLE")
                         .requestMatchers("/admin/users").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/register").hasAuthority("CREATE_USER")
                         .requestMatchers("/admin/user/edit/**").hasAuthority("EDIT_USER")
-
                         .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")

@@ -6,10 +6,10 @@
     <title>Список Компаний</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/company/all.js"></script>
+    <script src="/js/company.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/company/main.css">
+    <link rel="stylesheet" href="/css/company/main.css">
 </head>
 <body>
 <header>
@@ -50,14 +50,14 @@
         <div class="col-md-3">
             <div class="list-group">
                 <#if 0 < currentPage>
-                    <a href="/company/all/?companyId=${companyId}&page=${currentPage - 1}&sort=${sort}" class="btn btn-light arrow-btn">
+                    <a href="/company/all?companyId=${companyId}&page=${currentPage - 1}&sort=${sort}" class="btn btn-light arrow-btn">
                         <i class="bi bi-arrow-up-circle arrow"></i>
                     </a>
                 </#if>
 
                 <#assign sort = sort! "actual">
                 <p class="list-group-item list-group-item-action titleList">Название</p>
-                <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get" action="/company/all/?companyId=0&page=0&sort=${sort}">
+                <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get" action="/company/all?companyId=0&page=0&sort=${sort}">
                     <div class="form-group">
                         <label for="sort">Выберите список:</label>
                         <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
@@ -68,11 +68,11 @@
                 </form>
 
                 <#list list as item>
-                    <a href="/company/all/?companyId=${item.id}&page=${currentPage}&sort=${sort}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
+                    <a href="/company/all?companyId=${item.id}&page=${currentPage}&sort=${sort}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
                 </#list>
 
                 <#if currentPage < totalPages - 1>
-                    <a href="/company/all/?companyId=${companyId}&page=${currentPage + 1}&sort=${sort}" class="btn btn-light arrow-btn">
+                    <a href="/company/all?companyId=${companyId}&page=${currentPage + 1}&sort=${sort}" class="btn btn-light arrow-btn">
                         <i class="bi bi-arrow-down-circle arrow"></i>
                     </a>
                 </#if>

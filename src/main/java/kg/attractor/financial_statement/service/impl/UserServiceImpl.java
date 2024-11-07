@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +39,8 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private CompanyService companyService;
     private UserCompanyService userCompanyService;
+
+
     @Autowired
     @Lazy
     private void setUserCompanyService(UserCompanyService userCompanyService) {
@@ -50,9 +51,6 @@ public class UserServiceImpl implements UserService {
     private void setCompanyService(CompanyService companyService){
         this.companyService = companyService;
     }
-
-
-
 
     @Override
     public void registerUser(UserDto userDto) {
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .birthday(userDto.getBirthday())
                 .role(roleService.getRoleById(userDto.getRoleDto().getId()))
-                .avatar("static/user.png")
+                .avatar("data/files/user.png")
                 .registerDate(LocalDate.now())
                 .build();
         userRepository.save(newUser);

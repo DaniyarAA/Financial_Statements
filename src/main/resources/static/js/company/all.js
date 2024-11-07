@@ -158,3 +158,24 @@ function togglePasswordVisibility(passwordFieldId) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    loadFilters();
+});
+
+function updateFilter() {
+    const sortValue = document.getElementById('sort').value;
+    localStorage.setItem('companySort', sortValue);
+    document.getElementById('filterForm').submit();
+}
+
+function loadFilters() {
+    const sortValue = localStorage.getItem('companySort');
+    if (sortValue) {
+        document.getElementById('sort').value = sortValue;
+    }
+}
+
+function clearSortFilter() {
+    localStorage.removeItem('companySort');
+}
+

@@ -202,14 +202,13 @@ public class UserServiceImpl implements UserService {
         if (!name.isBlank()) {
             UserDto userDto = getUserDtoByLogin(name);
             if (userDto != null && userDto.getRoleDto() != null) {
-                return userDto.getRoleDto().getRoleName().equalsIgnoreCase("Админ");
-            } else {
-                return false;
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("DELETE_COMPANY"));
             }
-        } else {
-            return false;
         }
+        return false;
     }
+
     private List<UserDto> convertToDtoList(List<User> users) {
         return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }

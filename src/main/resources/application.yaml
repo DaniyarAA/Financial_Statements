@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: FinancialStatement
+  mvc:
+    static-path-pattern: /static/**
+  freemarker:
+    expose-session-attributes: true
 
   # ------------- DataBases
   datasource:

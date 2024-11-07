@@ -71,7 +71,7 @@
                             <a class="nav-link" href="/admin/users">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/company/all/">Компании</a>
+                            <a class="nav-link" href="/company/all/?sort=actual">Компании</a>
                         </li>
                         <div class="d-flex align-items-center">
                             <a class="btn btn-outline-success ms-3" href="/login">Войти</a>

@@ -32,7 +32,7 @@ public class CompanyController {
     }
 
 
-    @GetMapping("/all/")
+    @GetMapping("/all")
     public String getAll(
             @RequestParam(required = false, defaultValue = "0") Long companyId,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -67,7 +67,7 @@ public class CompanyController {
         model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
         model.addAttribute("sort", sort);
 
-        return "company/all";
+        return "company/companies";
     }
 
 
@@ -80,13 +80,13 @@ public class CompanyController {
     @PostMapping("/delete")
     public String deleteById(@RequestParam Long companyId) {
         companyService.deleteCompany(companyId);
-        return "redirect:/company/all/?sort=actual";
+        return "redirect:/company/all?sort=actual";
     }
 
     @PostMapping("/return")
     public String returnById(@RequestParam Long companyId) {
         companyService.returnCompany(companyId);
-        return "redirect:/company/all/?sort=actual";
+        return "redirect:/company/all?sort=actual";
     }
 
 }

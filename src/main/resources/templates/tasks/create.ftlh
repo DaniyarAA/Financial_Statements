@@ -2,71 +2,122 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-    <div class="container">
-        <h1>Создать таск</h1>
-        <form action="/tasks/create" method="post">
-            <#if _csrf??>
-                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                       value="${(_csrf.token)!'csrf-token'}"/>
-            </#if>
-            <div class="mb-3">
-                <label for="category" class="form-label">Тип документа</label>
-                <select class="form-select" id="documentType" name="documentTypeId" required>
-                    <#if documentTypeDtos??>
-                        <#list documentTypeDtos as documentType>
-                            <option value="${documentType.id}">${documentType.name}</option>
-                        </#list>
-                    <#else>
-                        <option disabled>Нет доступных типов документов</option>
+    <div class="container py-5">
+        <div class="card shadow-lg rounded">
+            <div class="card-header bg-success text-white text-center">
+                <h2>Создать таск</h2>
+            </div>
+            <div class="card-body">
+                <form action="/tasks/create" method="post">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
-                </select>
-            </div>
 
-            <div class="mb-3">
-                <label for="category" class="form-label">Назначить</label>
-                <select class="form-select" id="user" name="appointToUserId" required>
-                    <#if userDtos??>
-                        <#list userDtos as user>
-                            <option value="${user.id}">${user.login}</option>
-                        </#list>
-                    <#else>
-                        <option disabled>Нет доступных пользователей</option>
-                    </#if>
-                </select>
-            </div>
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Тип документа</label>
+                        <select class="form-select" id="documentType" name="documentTypeId" required>
+                            <#if documentTypeDtos??>
+                                <#list documentTypeDtos as documentType>
+                                    <option value="${documentType.id}">${documentType.name}</option>
+                                </#list>
+                            <#else>
+                                <option disabled>Нет доступных типов документов</option>
+                            </#if>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label for="category" class="form-label">Компания</label>
-                <select class="form-select" id="company" name="companyId" required>
-                    <#if companyDtos??>
-                        <#list companyDtos as company>
-                            <option value="${company.id}">${company.name}</option>
-                        </#list>
-                    <#else>
-                        <option disabled>Нет доступных компаний</option>
-                    </#if>
-                </select>
-            </div>
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Назначить</label>
+                        <select class="form-select" id="user" name="appointToUserId" required>
+                            <#if userDtos??>
+                                <#list userDtos as user>
+                                    <option value="${user.id}">${user.login}</option>
+                                </#list>
+                            <#else>
+                                <option disabled>Нет доступных пользователей</option>
+                            </#if>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label for="category" class="form-label">Статус</label>
-                <select class="form-select" id="taskStatus" name="taskStatusId" required>
-                    <#if taskStatusDtos??>
-                        <#list taskStatusDtos as taskStatus>
-                            <option value="${taskStatus.id}">${taskStatus.name}</option>
-                        </#list>
-                    <#else>
-                        <option disabled>Нет доступных статусов</option>
-                    </#if>
-                </select>
-            </div>
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Компания</label>
+                        <select class="form-select" id="company" name="companyId" required>
+                            <#if companyDtos??>
+                                <#list companyDtos as company>
+                                    <option value="${company.id}">${company.name}</option>
+                                </#list>
+                            <#else>
+                                <option disabled>Нет доступных компаний</option>
+                            </#if>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Описание</label>
-                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-            </div>
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Статус</label>
+                        <select class="form-select" id="taskStatus" name="taskStatusId" required>
+                            <#if taskStatusDtos??>
+                                <#list taskStatusDtos as taskStatus>
+                                    <option value="${taskStatus.id}">${taskStatus.name}</option>
+                                </#list>
+                            <#else>
+                                <option disabled>Нет доступных статусов</option>
+                            </#if>
+                        </select>
+                    </div>
 
-            <button type="submit" class="btn btn-primary">Создать</button>
-        </form>
+                    <div class="mb-4">
+                        <label for="month" class="form-label">Месяц</label>
+                        <select class="form-select" id="month" required>
+                            <option value="">Выберите месяц</option>
+                            <option value="1">Январь</option>
+                            <option value="2">Февраль</option>
+                            <option value="3">Март</option>
+                            <option value="4">Апрель</option>
+                            <option value="5">Май</option>
+                            <option value="6">Июнь</option>
+                            <option value="7">Июль</option>
+                            <option value="8">Август</option>
+                            <option value="9">Сентябрь</option>
+                            <option value="10">Октябрь</option>
+                            <option value="11">Ноябрь</option>
+                            <option value="12">Декабрь</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="year" class="form-label">Год</label>
+                        <select class="form-select" id="year" required>
+                            <option value="">Выберите год</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="startDateTime" class="form-label">Дата начала</label>
+                        <input type="text" class="form-control" id="startDateTimeDisplay" readonly>
+                        <input type="hidden" id="startDateTime" name="startDateTime">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="endDateTime" class="form-label">Дата окончания</label>
+                        <input type="text" class="form-control" id="endDateTimeDisplay" readonly>
+                        <input type="hidden" id="endDateTime" name="endDateTime">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Описание</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Создать</button>
+                </form>
+            </div>
+        </div>
     </div>
+    <script src="/js/taskDateLogic.js"></script>
 </@main.layout>

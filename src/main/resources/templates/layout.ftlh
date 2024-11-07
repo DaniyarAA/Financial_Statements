@@ -38,9 +38,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tasks/create">+</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/tasks">Таски</a>
                     </li>
+
                     <#assign known = SPRING_SECURITY_CONTEXT??>
                     <#if known>
                         <#assign

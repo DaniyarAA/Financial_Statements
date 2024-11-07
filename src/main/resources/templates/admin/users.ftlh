@@ -109,7 +109,7 @@
 
                 <div class="modal-body text-center">
                     <div>
-                        <img src="/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
+                        <img src="/api/files/download/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
                     </div>
 
                     <div class="user-info-row mt-3 mb-2">
@@ -169,6 +169,6 @@
     <div id="notification" class="notification"></div>
 
 
-    <script src="/js/script.js"></script>
+    <script src="/js/users.js"></script>
 
 </@layout.layout>

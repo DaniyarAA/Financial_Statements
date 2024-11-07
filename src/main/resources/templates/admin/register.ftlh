@@ -167,5 +167,5 @@
         </div>
     </div>
 
-    <script src="/static/js/script.js"></script>
+    <script src="/js/users.js"></script>
 </@layout.layout>

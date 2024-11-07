@@ -105,7 +105,9 @@
 
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
-                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; width: 34%">
+                    <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
+                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
+                    <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
                     <i class="bi bi-pencil ms-2" onclick="toggleNameEdit()"></i>
                 </div>
 

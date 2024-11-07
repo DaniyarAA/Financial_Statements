@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const roles = data.roles;
 
                 document.getElementById("userModalLabel").innerText = user.name;
+                document.getElementById("surnameModalLabel").innerText = user.surname;
                 const birthday = user.birthday;
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
@@ -177,6 +178,7 @@ function saveUserData(userId) {
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
     const login = document.getElementById("user-login-input").value;
+    const surname = document.getElementById("surnameNameInput").value;
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -198,7 +200,8 @@ function saveUserData(userId) {
         companies: companies,
         name: username,
         birthday: birthday,
-        login: login
+        login: login,
+        surname: surname
 
     };
 
@@ -333,17 +336,26 @@ function toggleRoleEdit() {
 
 function toggleNameEdit() {
     const userModalLabel = document.getElementById('userModalLabel');
+    const surnameModalLabel = document.getElementById('surnameModalLabel');
     const userNameInput = document.getElementById('userNameInput');
-    if (userNameInput.style.display === 'none') {
+    const surnameNameInput = document.getElementById('surnameNameInput');
+
+    const isEditing = userNameInput.style.display === 'inline-block';
+
+    if (!isEditing) {
         userNameInput.style.display = 'inline-block';
+        surnameNameInput.style.display = 'inline-block';
         userModalLabel.style.display = 'none';
+        surnameModalLabel.style.display = 'none';
         userNameInput.value = userModalLabel.innerText;
-        userNameInput.focus();
+        surnameNameInput.value = surnameModalLabel.innerText;
     } else {
         userModalLabel.innerText = userNameInput.value;
+        surnameModalLabel.innerText = surnameNameInput.value;
         userModalLabel.style.display = 'block';
+        surnameModalLabel.style.display = 'block';
         userNameInput.style.display = 'none';
-
+        surnameNameInput.style.display = 'none';
     }
 }
 

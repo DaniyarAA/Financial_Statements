@@ -2,7 +2,7 @@
 
 <@main.layout ; spring>
     <div class="main-page">
-        <div class="row row-cols-1 row-cols-md-2 g-5">
+        <div class="row row-cols-1 row-cols-lg-2 g-5">
             <div class="col">
                 <div class="row row-cols-1 row-cols-md-2 g-1">
                     <div class="left col">

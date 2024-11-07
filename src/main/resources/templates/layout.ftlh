@@ -1,4 +1,4 @@
-<#import "spring.ftl" as spring>
+<#import 'spring.ftl' as spring>
 <#macro layout>
 
     <!doctype html>
@@ -90,13 +90,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-    <main>
-        <div class="container">
-            <#nested spring >
-        </div>
-    </main>
+    <div class="container">
 
-    <#include "footer.ftlh" />
+        <#nested spring>
+
+    </div>
 
     </body>
     </html>

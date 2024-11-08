@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: FinancialStatement
+  freemarker:
+    expose-session-attributes: true
 
   # ------------- DataBases
   datasource:

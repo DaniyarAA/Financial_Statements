@@ -113,7 +113,7 @@
 
                 <div class="modal-body text-center">
                     <div class="avatar-container">
-                        <img src="/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
+                        <img src="/api/files/download/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
                         <div id="change-avatar-icon" class="change-avatar-icon"  onclick="uploadAvatar()">
                             <i class="bi bi-camera fs-5"></i>
                         </div>
@@ -189,6 +189,6 @@
     <div id="notification" class="notification"></div>
 
 
-    <script src="/js/script.js"></script>
+    <script src="/js/users.js"></script>
 
 </@layout.layout>

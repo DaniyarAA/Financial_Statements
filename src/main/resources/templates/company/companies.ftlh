@@ -100,13 +100,8 @@
             </div>
         </div>
 
-
-
-
-
-    <div class="col-md-9">
+       <div class="col-md-9">
             <#if company?? && company.id?has_content>
-
             <div id="companyInfo" style="display:block;">
                 <h2 class="text-center titleInfoCreate">Наименование компании: <span id="name">${company.name!}</span>
                     <button onclick="copyText('name')" title="Скопировать" class="btn btn-link p-0">
@@ -408,9 +403,6 @@
                         </ul>
                     </div>
                     <#if isAdmin>
-
-
-
                         <#if company.deleted>
                             <button type="button" class="btn btn-danger btn-custom-delete" data-bs-toggle="modal" data-bs-target="#returnModal">
                                 Восстановить Компанию
@@ -470,11 +462,11 @@
                         </#if>
                     </#if>
                 </div>
-                <#else>
-                    <div id="companyInfo" style="display:block;">
-                    </div>
-                </#if>
             </div>
+            <#else>
+                <div id="companyInfo" style="display:block;">
+                </div>
+            </#if>
 
             <div id="createCompanyForm" style="display:none;">
                 <h1 class="text-center titleInfoCreate">Создание Компании</h1>

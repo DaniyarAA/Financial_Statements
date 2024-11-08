@@ -38,9 +38,17 @@ public class CompanyController {
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "actual") String sort,
+            @RequestParam(value = "search", required = false, defaultValue = "") String search,
             Model model, Principal principal) {
 
-        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort);
+        List<CompanyDto> allCompanies ;
+
+        if (search != null && !search.isEmpty()) {
+            allCompanies = companyService.findByName(search);
+        } else {
+            allCompanies = companyService.getAllCompaniesBySort(sort);
+        }
+
         int totalCompanies = allCompanies.size();
         int start = page * size;
         int end = Math.min(start + size, totalCompanies);
@@ -66,6 +74,7 @@ public class CompanyController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
         model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
 
         return "company/companies";
     }

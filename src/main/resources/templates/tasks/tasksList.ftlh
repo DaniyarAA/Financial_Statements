@@ -24,7 +24,7 @@
                         <tbody>
                         <#list list as company>
                             <tr>
-                                <td class="font-weight-bold">${company.name} ${company.id}</td>
+                                <td class="font-weight-bold">${company.name}</td>
                                 <#list monthsMap?keys as yearMonth>
                                     <td>
                                         <#if tasksByYearMonthAndCompany[yearMonth]?? && tasksByYearMonthAndCompany[yearMonth][company.id?string]??>
@@ -36,6 +36,8 @@
                                                             data-task-id="${task.id}"
                                                             data-document-type="${task.documentTypeName}"
                                                             data-start-date="${task.startDateTime}"
+                                                            data-end-date="${task.endDateTime}"
+                                                            data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
                                                             data-description="${task.description}"
                                                             data-amount="${task.amount}"
@@ -58,8 +60,32 @@
 
             <div class="col-md-3">
                 <div id="task-details" class="border p-3" style="display: none;">
-                    <h5>Task Details</h5>
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" id="csrfToken"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
+                    <h5>Подробнее</h5>
                     <div id="task-content"></div>
+                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Редактировать</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label for="editInput" class="form-label">Новое значение:</label>
+                                    <input type="text" id="editInput" class="form-control">
+                                    <input type="hidden" id="editFieldId">
+                                    <input type="hidden" id="editTaskId">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Сохранить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

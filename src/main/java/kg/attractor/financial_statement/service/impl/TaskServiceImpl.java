@@ -14,11 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -95,6 +98,42 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NoSuchElementException("Task now found for id: " + taskId));
         return convertToDto(task);
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data) {
+        String taskIdStr = data.get("taskId");
+        String fieldToEdit = data.get("field");
+        String newValue = data.get("value");
+
+        if (taskIdStr == null || fieldToEdit == null || newValue == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
+        }
+
+        Long taskId;
+        try {
+            taskId = Long.parseLong(taskIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found for id" + taskId));
+
+        switch (fieldToEdit) {
+            case "amount":
+                if (isValidBigDecimal(newValue)) {
+                    task.setAmount(new BigDecimal(newValue));
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Amount!"));
+                }
+            case "description":
+                task.setDescription(newValue);
+        }
+
+        taskRepository.save(task);
+        return ResponseEntity.ok(Map.of("message", "Задача Успешно отредактирована."));
+
     }
 
 
@@ -191,6 +230,18 @@ public class TaskServiceImpl implements TaskService {
 
     private List<TaskDto> convertToDtoList(List<Task> tasks) {
         return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public boolean isValidBigDecimal(String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        try {
+            new BigDecimal(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 

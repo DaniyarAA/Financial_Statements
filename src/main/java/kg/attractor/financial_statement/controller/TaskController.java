@@ -111,8 +111,8 @@ public class TaskController {
 
     }
 
-    @GetMapping("dashboard")
-    public String getDashboardPage(
+    @GetMapping("list")
+    public String getTaskListPage(
             Model model,
             Authentication authentication,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -170,19 +170,26 @@ public class TaskController {
         model.addAttribute("companyDtos", companyDtos);
         model.addAttribute("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
 
-        return "tasks/dashboard";
+        model.addAttribute("dateUtils", new DateUtils());
+
+        return "tasks/tasksList";
     }
 
-
-    @GetMapping("dashboard/task-details")
+    @PostMapping("/edit")
     @ResponseBody
-    public ResponseEntity<TaskDto> getTaskDetails(@RequestParam Long taskId) {
-        TaskDto taskDetailDto = taskService.getTaskDtoById(taskId);
-        if (taskDetailDto == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(taskDetailDto);
+    public ResponseEntity<Map<String, String>> updateTaskByField(@RequestBody Map<String, String> data) {
+        return taskService.editTaskByField(data);
     }
 
-
+//    @PostMapping("/edit/{id}")
+//    public String updateTaskInListPage(
+//            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
+//            @PathVariable Long id,
+//            BindingResult bindingResult,
+//            Model model,
+//            Authentication authentication
+//            ) {
+//
+//
+//    }
 }

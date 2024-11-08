@@ -384,6 +384,14 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.existsByName(companyName);
     }
 
+    @Override
+    public List<CompanyDto> findByName(String search) {
+        List<Company> companyList = companyRepository.findByNameContainingIgnoreCase(search);
+        return companyList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
         return CompanyForTaskDto.builder()

@@ -35,4 +35,6 @@ public interface CompanyService {
     void returnCompany(Long companyId);
 
     boolean existsByCompanyName(String companyName);
+
+    List<CompanyDto> findByName(String search);
 }

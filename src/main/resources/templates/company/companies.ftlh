@@ -16,19 +16,19 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#"><i class="bi bi-house-door"></i></a>
+                <a class="navbar-brand" href="/"><i class="bi bi-house-door"></i></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Companies list</a>
+                            <p class="nav-link active">Companies list</p>
                         </li>
                     </ul>
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Компании</a>
+                            <p class="nav-link active">Компании</p>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto">
@@ -50,13 +50,23 @@
         <div class="col-md-3">
             <div class="list-group">
                 <#if 0 < currentPage>
-                    <a href="/company/all?companyId=${companyId}&page=${currentPage - 1}&sort=${sort}" class="btn btn-light arrow-btn">
-                        <i class="bi bi-arrow-up-circle arrow"></i>
-                    </a>
+                    <#if (sort?trim?length == 0)>
+                        <a href="/company/all?companyId=${companyId}&page=${currentPage - 1}&sort=${sort}" class="btn btn-light arrow-btn">
+                            <i class="bi bi-arrow-up-circle arrow"></i>
+                        </a>
+                    <#else>
+                        <a href="/company/all?companyId=${companyId}&page=${currentPage - 1}&search=${search}" class="btn btn-light arrow-btn">
+                            <i class="bi bi-arrow-up-circle arrow"></i>
+                        </a>
+                    </#if>
                 </#if>
 
+                <form action="/company/all" method="get" class="list-group-item list-group-item-action titleList d-flex">
+                    <input class="form-control rounded-0" type="text" placeholder="Поиск" aria-label="Search" name="search" value="${search}">
+                    <button class="btn btn-outline-success rounded-0" type="submit">Поиск</button>
+                </form>
+
                 <#assign sort = sort! "actual">
-                <p class="list-group-item list-group-item-action titleList">Название</p>
                 <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get" action="/company/all?companyId=0&page=0&sort=${sort}">
                     <div class="form-group">
                         <label for="sort">Выберите список:</label>
@@ -67,21 +77,34 @@
                     </div>
                 </form>
 
+                <p class="list-group-item list-group-item-action titleList">Название</p>
                 <#list list as item>
-                    <a href="/company/all?companyId=${item.id}&page=${currentPage}&sort=${sort}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
+                    <#if (sort?trim?length == 0)>
+                        <a href="/company/all?companyId=${item.id}&page=${currentPage}&sort=${sort}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
+                    <#else>
+                        <a href="/company/all?companyId=${item.id}&page=${currentPage}&search=${search}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
+                    </#if>
                 </#list>
 
                 <#if currentPage < totalPages - 1>
-                    <a href="/company/all?companyId=${companyId}&page=${currentPage + 1}&sort=${sort}" class="btn btn-light arrow-btn">
-                        <i class="bi bi-arrow-down-circle arrow"></i>
-                    </a>
+                    <#if (sort?trim?length == 0)>
+                        <a href="/company/all?companyId=${companyId}&page=${currentPage + 1}&sort=${sort}" class="btn btn-light arrow-btn">
+                            <i class="bi bi-arrow-down-circle arrow"></i>
+                        </a>
+                    <#else>
+                        <a href="/company/all?companyId=${companyId}&page=${currentPage + 1}&search=${search}" class="btn btn-light arrow-btn">
+                            <i class="bi bi-arrow-down-circle arrow"></i>
+                        </a>
+                    </#if>
                 </#if>
             </div>
         </div>
 
 
 
-        <div class="col-md-9">
+
+
+    <div class="col-md-9">
             <#if company?? && company.id?has_content>
 
             <div id="companyInfo" style="display:block;">
@@ -375,6 +398,13 @@
                                     <i class="bi bi-eye" style="color: black;"></i>
                                 </button>
                             </li>
+                            <li class="list-group-item">
+                                <#if company.deleted>
+                                    <strong>Состояние:</strong> <span> Удаленная компания</span>
+                                <#else>
+                                    <strong>Состояние:</strong> <span> Актуальная компания</span>
+                                </#if>
+                            </li>
                         </ul>
                     </div>
                     <#if isAdmin>
@@ -441,7 +471,8 @@
                     </#if>
                 </div>
                 <#else>
-                    <p>Выберите компанию для отображения</p>
+                    <div id="companyInfo" style="display:block;">
+                    </div>
                 </#if>
             </div>
 

@@ -125,52 +125,9 @@ public class TaskController {
         String userLogin = authentication.getName();
         User user = userService.getUserByLogin(userLogin);
 
-        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
-        System.out.println("CompanyDtos" +companyDtos);
-        List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
+        Map<String, Object> taskListData = taskService.getTaskListData(user, page, size);
 
-        Set<String> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
-                .collect(Collectors.toSet());
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
-
-        Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
-
-        for (String yearMonth : uniqueYearMonths) {
-            Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
-            for (CompanyForTaskDto company : companyDtos) {
-                List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
-                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
-                                && task.getCompany().getId().equals(company.getId()))
-                        .collect(Collectors.toList());
-                tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
-            }
-            tasksByYearMonthAndCompany.put(yearMonth, tasksForCompanies);
-        }
-
-        Map<String, String> monthsMap = uniqueYearMonths.stream()
-                .collect(Collectors.toMap(
-                        ym -> ym,
-                        ym -> YearMonth.parse(ym, formatter)
-                                .getMonth()
-                                .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
-                        (oldValue, newValue) -> oldValue,
-                        LinkedHashMap::new
-                ));
-
-        int totalCompanies = companyDtos.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        model.addAttribute("list", companyDtos.subList(start, end));
-
-        model.addAttribute("monthsMap", monthsMap);
-        model.addAttribute("companyDtos", companyDtos);
-        model.addAttribute("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
-
+        model.addAllAttributes(taskListData);
         model.addAttribute("dateUtils", new DateUtils());
 
         return "tasks/tasksList";

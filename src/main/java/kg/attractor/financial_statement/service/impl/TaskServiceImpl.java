@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
@@ -20,9 +21,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -191,6 +192,55 @@ public class TaskServiceImpl implements TaskService {
         Task newTask = taskRepository.save(task);
         return newTask.getId();
     }
+
+    public Map<String, Object> getTaskListData(User user, int page, int size) {
+        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
+        List<TaskDto> taskDtos = getAllTasksForUser(user);
+
+        Set<String> uniqueYearMonths = taskDtos.stream()
+                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .collect(Collectors.toSet());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
+
+        Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
+        for (String yearMonth : uniqueYearMonths) {
+            Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
+            for (CompanyForTaskDto company : companyDtos) {
+                List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
+                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
+                                && task.getCompany().getId().equals(company.getId()))
+                        .collect(Collectors.toList());
+                tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
+            }
+            tasksByYearMonthAndCompany.put(yearMonth, tasksForCompanies);
+        }
+
+        Map<String, String> monthsMap = uniqueYearMonths.stream()
+                .collect(Collectors.toMap(
+                        ym -> ym,
+                        ym -> YearMonth.parse(ym, formatter)
+                                .getMonth()
+                                .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
+                ));
+
+        int totalCompanies = companyDtos.size();
+        int start = page * size;
+        int end = Math.min(start + size, totalCompanies);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("currentPage", page);
+        response.put("totalPages", (int) Math.ceil((double) totalCompanies / size));
+        response.put("list", companyDtos.subList(start, end));
+        response.put("monthsMap", monthsMap);
+        response.put("companyDtos", companyDtos);
+        response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
+
+        return response;
+    }
+
 
     private Task convertToEntity(TaskCreateDto taskCreateDto, String login) {
         Task task = new Task();

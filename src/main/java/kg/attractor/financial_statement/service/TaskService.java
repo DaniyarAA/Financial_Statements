@@ -26,4 +26,6 @@ public interface TaskService {
     TaskDto getTaskDtoById(Long taskId);
 
     ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data);
+
+    Map<String, Object> getTaskListData(User user, int page, int size);
 }

@@ -2,7 +2,7 @@ package kg.attractor.financial_statement.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import kg.attractor.financial_statement.validation.UniqueCompanyName;
+import kg.attractor.financial_statement.validation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,17 +19,21 @@ public class CompanyDto {
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
     @Size(min = 12,max = 12, message = "Размер ИНН должен быть 12 символов")
+    @UniqueCompanyInn
     private String companyInn;
     @NotBlank(message = "Обязательно для заполнения!")
     @Size(min = 12,max = 12, message = "Размер ИНН должен быть 12 символов")
+    @UniqueCompanyDirectorInn
     private String directorInn;
     @NotBlank(message = "Обязательно для заполнения!")
+    @UniqueCompanyLogin
     private String login;
     @NotBlank(message = "Обязательно для заполнения!")
     private String password;
     @NotBlank(message = "Обязательно для заполнения!")
     private String ecp;
     @NotBlank(message = "Обязательно для заполнения!")
+    @UniqueCompanySalykLogin
     private String kabinetSalyk;
     @NotBlank(message = "Обязательно для заполнения!")
     private String kabinetSalykPassword;

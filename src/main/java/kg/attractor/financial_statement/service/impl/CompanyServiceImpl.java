@@ -40,6 +40,10 @@ public class CompanyServiceImpl implements CompanyService {
     public ResponseEntity<Map<String, String>> createCompany(
             CompanyDto companyDto, String login, BindingResult bindingResult) {
 
+        if (login == null || login.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Авторизуйтесь чтобы создать компанию !"));
+        }
+
         if (bindingResult != null && bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error ->

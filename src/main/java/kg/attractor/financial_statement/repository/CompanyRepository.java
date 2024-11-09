@@ -27,5 +27,13 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Boolean existsByName(String name);
 
+    Boolean existsByInn(String inn);
+
+    Boolean existsByDirectorInn(String directorInn);
+
+    Boolean existsByLogin(String login);
+
+    Boolean existsByKabinetSalyk(String kabinetSalyk);
+
     List<Company> findByNameContainingIgnoreCase(String name);
 }

@@ -46,13 +46,13 @@ public class CompanyDto {
     @NotBlank(message = "Обязательно для заполнения!")
     private String districtGns;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 20, message = "Размер социального фонда не может быть больше 20")
+    @Size(min = 12,max = 12, message = "Номер социального фонда должен быть 12 из символов")
     private String socfundNumber;
     @NotBlank(message = "Обязательно для заполнения!")
     @Size(max = 50, message = "Размер регистрационного номера МЮ не может быть больше 50")
     private String registrationNumberMj;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 20, message = "Размер ОКПО не может быть больше 20")
+    @Size(min = 8,max = 8, message = "Код ОКПО должен быть 8 из символов")
     private String okpo;
     @NotBlank(message = "Обязательно для заполнения!")
     private String director;

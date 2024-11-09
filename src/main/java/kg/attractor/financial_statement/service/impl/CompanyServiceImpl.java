@@ -241,10 +241,10 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setDistrictGns(newValue);
                 break;
             case "socfundNumber":
-                if (newValue.length() < 20) {
+                if (newValue.length() == 12) {
                     company.setSocfundNumber(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер социального фонда не может быть больше 20"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен быть 12 из символов"));
                 }
                 break;
             case "registrationNumberMj":
@@ -255,10 +255,10 @@ public class CompanyServiceImpl implements CompanyService {
                 }
                 break;
             case "okpo":
-                if (newValue.length() < 20) {
+                if (newValue.length() == 8) {
                     company.setOkpo(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО не может быть больше 20"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен быть из 8 символов"));
                 }
                 break;
             case "director":

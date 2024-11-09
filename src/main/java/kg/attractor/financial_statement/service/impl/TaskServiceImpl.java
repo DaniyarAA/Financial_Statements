@@ -4,6 +4,7 @@ import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -13,11 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,6 +91,53 @@ public class TaskServiceImpl implements TaskService {
         );
 
         return convertToDtoList(tasks);
+    }
+
+    @Override
+    public TaskDto getTaskDtoById(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task now found for id: " + taskId));
+        return convertToDto(task);
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data) {
+        String taskIdStr = data.get("taskId");
+        String fieldToEdit = data.get("field");
+        String newValue = data.get("value");
+        System.out.println("edit " + newValue);
+
+        if (taskIdStr == null || fieldToEdit == null || newValue == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
+        }
+
+        Long taskId;
+        try {
+            taskId = Long.parseLong(taskIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found for id" + taskId));
+
+        switch (fieldToEdit) {
+            case "amount":
+                String cleanedValue = newValue.replaceAll("[,\\s]", "");
+                if (isValidBigDecimal(cleanedValue)) {
+                    task.setAmount(new BigDecimal(cleanedValue));
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Amount!"));
+                }
+                break;
+            case "description":
+                task.setDescription(newValue);
+                break;
+        }
+
+        taskRepository.save(task);
+        return ResponseEntity.ok(Map.of("message", "Задача Успешно отредактирована."));
+
     }
 
 
@@ -176,12 +228,27 @@ public class TaskServiceImpl implements TaskService {
                 .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
+                .isCompleted(taskStatusService.getIsCompleted(task.getTaskStatus()))
                 .build();
     }
 
     private List<TaskDto> convertToDtoList(List<Task> tasks) {
         return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
     }
+
+    public boolean isValidBigDecimal(String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        value = value.replaceAll("[,\\s]", "");
+        try {
+            new BigDecimal(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 
 
 

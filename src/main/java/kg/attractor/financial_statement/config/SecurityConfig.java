@@ -39,6 +39,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/users").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/register").hasAuthority("CREATE_USER")
                         .requestMatchers("/admin/user/edit/**").hasAuthority("EDIT_USER")
+                        .requestMatchers("/admin/user/delete/**").hasAuthority("DELETE_USER")
+                        .requestMatchers("/admin/users/change-password/**").hasAuthority("EDIT_USER")
                         .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")

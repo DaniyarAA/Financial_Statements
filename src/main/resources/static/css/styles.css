@@ -284,6 +284,12 @@
     align-items: center;
 }
 
+.buttons-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
 .user-tile-info span {
     white-space: nowrap;
     overflow: hidden;
@@ -300,21 +306,21 @@
     cursor: pointer;
     margin-top: 10px;
 }
-.modal-content {
+.user-modal-content {
     border-radius: 10px;
     padding: 0 50px;
 }
 
-.fade{
+.user-fade{
     padding: 100px;
 }
 
-.modal-header {
+.user-modal-header {
     border-bottom: none;
     justify-content: center;
 }
 
-.modal-title {
+.user-modal-title {
     font-size: 1.5rem;
     font-weight: normal;
 }
@@ -376,10 +382,17 @@
     color: black;
 }
 
+.container {
+    padding: 20px;
+}
 .main-page{
     display: flex;
     margin-top: 50px;
     margin-bottom: 50px;
+}
+h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
 }
 
 .role-list {
@@ -432,7 +445,7 @@
     cursor: pointer;
 }
 
-.modal {
+.role-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -444,7 +457,7 @@
     align-items: center;
 }
 
-.modal-dialog {
+.role-modal-dialog {
     background-color: #fff;
     border-radius: 8px;
     padding: 20px;
@@ -452,35 +465,35 @@
     max-width: 500px;
 }
 
-.modal-header, .modal-footer {
+.role-modal-header, .role-modal-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.modal-title {
+.role-modal-title {
     color: #4CAF50;
 }
 
-.modal .btn {
+.role-btn {
     padding: 5px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.modal .btn-secondary {
+.role-btn-secondary {
     background-color: #ccc;
     color: #333;
 }
 
-.modal .btn-primary {
+.role-btn-primary {
     background-color: #4CAF50;
     color: #fff;
 }
 
-.modal .btn-primary:hover,
-.modal .btn-success:hover {
+.role-btn-primary:hover,
+.role-btn-success:hover {
     background-color: #45a049;
 }
 
@@ -558,6 +571,23 @@
     transition: opacity 0.5s ease-in-out;
 }
 
+.avatar-container {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 120px;
+}
+.change-avatar-icon {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background-color: white;
+    padding: 0 6px;
+    cursor: pointer;
+    color: black;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
 .container, .container-lg, .container-md, .container-sm, .container-xl {
     max-width: 100%;
     width: 100%;

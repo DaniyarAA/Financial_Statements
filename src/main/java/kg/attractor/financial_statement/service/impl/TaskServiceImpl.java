@@ -105,6 +105,7 @@ public class TaskServiceImpl implements TaskService {
         String taskIdStr = data.get("taskId");
         String fieldToEdit = data.get("field");
         String newValue = data.get("value");
+        System.out.println("edit " + newValue);
 
         if (taskIdStr == null || fieldToEdit == null || newValue == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
@@ -122,13 +123,16 @@ public class TaskServiceImpl implements TaskService {
 
         switch (fieldToEdit) {
             case "amount":
-                if (isValidBigDecimal(newValue)) {
-                    task.setAmount(new BigDecimal(newValue));
+                String cleanedValue = newValue.replaceAll("[,\\s]", "");
+                if (isValidBigDecimal(cleanedValue)) {
+                    task.setAmount(new BigDecimal(cleanedValue));
                 } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Amount!"));
                 }
+                break;
             case "description":
                 task.setDescription(newValue);
+                break;
         }
 
         taskRepository.save(task);
@@ -236,6 +240,7 @@ public class TaskServiceImpl implements TaskService {
         if (value == null || value.isEmpty()) {
             return false;
         }
+        value = value.replaceAll("[,\\s]", "");
         try {
             new BigDecimal(value);
             return true;
@@ -243,6 +248,7 @@ public class TaskServiceImpl implements TaskService {
             return false;
         }
     }
+
 
 
 

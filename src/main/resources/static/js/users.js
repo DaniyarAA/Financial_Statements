@@ -1,3 +1,6 @@
+const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
@@ -112,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     companyCheckboxes.append(div);
                 });
-                const editUserBtn = document.querySelector(".edit-user-btn");
+                const editUserBtn = document.getElementById("edit-user-info-button");
                 editUserBtn.removeEventListener("click", handleSaveUserData);
                 editUserBtn.addEventListener("click", () => handleSaveUserData(userId));
 
@@ -122,8 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function uploadAvatar() {
-    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const avatarInput = document.getElementById("avatarInput");
     const avatarImg = document.getElementById("avatar");
     const userId = avatarInput.getAttribute("data-user-id");
@@ -163,8 +164,48 @@ function uploadAvatar() {
 
     avatarInput.click();
 }
+document.addEventListener("DOMContentLoaded", function () {
+    const changePasswordModal = document.getElementById("changePasswordModal");
+    let userId;
+
+    changePasswordModal.addEventListener("show.bs.modal", function (event) {
+        const button = event.relatedTarget;
+        userId = button.getAttribute("data-user-id");
+    });
+
+    function savePassword() {
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const errorMessage = document.getElementById("errorMessage");
 
 
+        if (newPassword !== confirmPassword) {
+            errorMessage.textContent = 'Пароли не совпадают';
+            return;
+        }
+
+        fetch(`/admin/users/change-password/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [csrfHeader]: csrfToken
+            },
+            body: new URLSearchParams({ newPassword: newPassword })
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    return response.json().then(errorData => {
+                        errorMessage.textContent = errorData.message;
+                    });
+                }
+            })
+            .catch(error => console.error("Ошибка при обновлении пароля:", error));
+    }
+
+    window.savePassword = savePassword;
+});
 
 
 let isSaving = false;
@@ -173,8 +214,6 @@ function saveUserData(userId) {
         return;
     }
     isSaving = true;
-    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const roleSelect = document.getElementById("roleSelect");
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
@@ -192,7 +231,7 @@ function saveUserData(userId) {
             name: label ? label.textContent.trim() : ""
         };
     });
-    console.log("Companies being sent:", companies);
+
 
 
     const userDto = {
@@ -217,7 +256,6 @@ function saveUserData(userId) {
         .then(response => {
             isSaving = false;
             if (response.ok) {
-                showNotification("Информация успешно обновлена", "green");
                 location.reload();
             } else {
                 return response.json().then(errorData => {
@@ -239,8 +277,6 @@ function saveUserData(userId) {
 
 
 function deleteUser() {
-    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const deleteUserIcon = document.getElementById("delete-user-icon");
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");

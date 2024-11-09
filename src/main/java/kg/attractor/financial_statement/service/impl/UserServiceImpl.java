@@ -123,8 +123,12 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
-        user.setName(userDto.getName());
-        user.setSurname(userDto.getSurname());
+        if (!userDto.getName().isEmpty()){
+            user.setName(userDto.getName());
+        }
+        if (!userDto.getSurname().isEmpty()){
+            user.setSurname(userDto.getSurname());
+        }
         System.out.println("LOGIN:" + user.getLogin());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
@@ -139,6 +143,26 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
             user.setLogin(newLogin);
+        }
+    }
+
+    @Override
+    public void updatePassword(Long userId, String newPassword){
+        validatePassword(newPassword);
+        User user = getUserById(userId);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    private void validatePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Заполните поля");
+        }
+        if (password.length() < 8 || password.length() > 20) {
+            throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20");
+        }
+        if (!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$")) {
+            throw new IllegalArgumentException("Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ");
         }
     }
 
@@ -163,10 +187,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        if(id == 1L){
+        User user = getUserById(id);
+        if(user.getRole().getRoleName().equals("SuperUser")){
             throw new IllegalArgumentException("Нельзя удалить администратора системы");
         }
-        User user = getUserById(id);
         user.setEnabled(false);
         userRepository.save(user);
     }

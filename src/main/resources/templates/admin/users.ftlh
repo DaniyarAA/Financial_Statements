@@ -37,6 +37,7 @@
                             <span>${user.roleDto.roleName}</span>
                         </td>
                         <td class="user-action-buttons">
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
                             <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
                         </td>
                     </tr>
@@ -58,7 +59,14 @@
                             <span class="user-status user-detail">Disabled</span>
                         </#if>
                         <span class="user-detail">Role: ${user.roleDto.roleName}</span>
-                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
+
+                        <div class="buttons-container">
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}">
+                                <i class="bi bi-key"></i>
+                            </button>
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
+
+                        </div>
                     </div>
                 </div>
             </#list>
@@ -178,9 +186,35 @@
                         <textarea id="notesInput" name="notes" class="form-control notes-form p-3 pb-5 mt-2"></textarea>
                     </div>
 
-                    <button class="btn btn-light edit-user-btn mt-1 mb-3">
+                    <button class="btn btn-light edit-user-btn mt-1 mb-3" id="edit-user-info-button">
                         <i class="bi bi-check2 fs-1"></i>
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="border: none">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Смена пароля</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="border: none">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Новый пароль:</label>
+                            <input type="password" class="form-control form-control-lg" id="newPassword">
+                        </div>
+                        <div class="mb-1">
+                            <label for="confirmPassword" class="form-label">Подтвердите пароль:</label>
+                            <input type="password" class="form-control form-control-lg" id="confirmPassword">
+                        </div>
+                        <div id="errorMessage" class="text-danger"></div>
+                </div>
+                <div class="modal-footer text-center" style="border: none">
+                    <button type="button" class="btn btn-light edit-user-btn mx-auto" id="edit-password-button" onclick="savePassword()"><i class="bi bi-check2 fs-1"></i></button>
                 </div>
             </div>
         </div>

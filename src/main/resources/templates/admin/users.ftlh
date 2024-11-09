@@ -37,6 +37,7 @@
                             <span>${user.roleDto.roleName}</span>
                         </td>
                         <td class="user-action-buttons">
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
                             <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
                         </td>
                     </tr>
@@ -58,7 +59,14 @@
                             <span class="user-status user-detail">Disabled</span>
                         </#if>
                         <span class="user-detail">Role: ${user.roleDto.roleName}</span>
-                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
+
+                        <div class="buttons-container">
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}">
+                                <i class="bi bi-key"></i>
+                            </button>
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
+
+                        </div>
                     </div>
                 </div>
             </#list>
@@ -97,26 +105,35 @@
     </div>
 
 
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal fade user-fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content user-modal-content">
 
-                <i class="bi bi-trash delete-icon fs-1"></i>
+                <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel"></h5>
+                <div class="modal-header user-modal-header">
+                    <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
+                    <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
+                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
+                    <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
+                    <i class="bi bi-pencil ms-2" onclick="toggleNameEdit()"></i>
                 </div>
 
                 <div class="modal-body text-center">
-                    <div>
-                        <img src="/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
+                    <div class="avatar-container">
+                        <img src="/api/files/download/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
+                        <div id="change-avatar-icon" class="change-avatar-icon"  onclick="uploadAvatar()">
+                            <i class="bi bi-camera fs-5"></i>
+                        </div>
+                        <input type="file" id="avatarInput" style="display: none;" accept="image/*">
                     </div>
+
 
                     <div class="user-info-row mt-3 mb-2">
                         <span class="user-label">Роль:</span>
                         <span class="user-value d-flex align-items-center" style="gap: 5px;">
                             <span id="roleDisplay"></span>
-                            <select id="roleSelect" class="form-select" style="display: none; width: auto;">
+                            <select id="roleSelect" class="form-select" style="display: none; width: 67%;">
 
                             </select>
                             <i class="bi bi-pencil" onclick="toggleRoleEdit()"></i>
@@ -128,6 +145,14 @@
                         <span class="user-value" id="user-status"></span>
                     </div>
 
+                    <div class="user-info-row mb-2">
+                        <span class="user-label">Логин:</span>
+                        <span class="user-value" id="user-login"></span>
+                        <input type="text" class="form-control fs-5" id="user-login-input" style="display: none; width: 50%">
+                        <i class="bi bi-pencil ms-2" onclick="toggleLoginEdit()"></i>
+                    </div>
+                    <span id="loginError" class="text-danger"></span>
+
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Доступные компании:</span>
@@ -138,7 +163,7 @@
 
                             </div>
                         </div>
-                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon" style="position: absolute; right: -25px; cursor: pointer;"></i>
+                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon"></i>
                     </span>
                     </div>
 
@@ -146,7 +171,10 @@
                     <div class="user-info-row">
                         <span class="user-label">День Рождения:</span>
                         <span class="user-value" id="user-birthday"></span>
+                        <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
+                        <i class="bi bi-pencil ms-2" onclick="toggleBirthdayEdit()"></i>
                     </div>
+                    <span id="birthdayError" class="text-danger"></span>
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Архив:</span>
@@ -158,9 +186,35 @@
                         <textarea id="notesInput" name="notes" class="form-control notes-form p-3 pb-5 mt-2"></textarea>
                     </div>
 
-                    <button class="btn btn-light edit-user-btn mt-1 mb-3">
+                    <button class="btn btn-light edit-user-btn mt-1 mb-3" id="edit-user-info-button">
                         <i class="bi bi-check2 fs-1"></i>
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="border: none">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Смена пароля</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="border: none">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Новый пароль:</label>
+                            <input type="password" class="form-control form-control-lg" id="newPassword">
+                        </div>
+                        <div class="mb-1">
+                            <label for="confirmPassword" class="form-label">Подтвердите пароль:</label>
+                            <input type="password" class="form-control form-control-lg" id="confirmPassword">
+                        </div>
+                        <div id="errorMessage" class="text-danger"></div>
+                </div>
+                <div class="modal-footer text-center" style="border: none">
+                    <button type="button" class="btn btn-light edit-user-btn mx-auto" id="edit-password-button" onclick="savePassword()"><i class="bi bi-check2 fs-1"></i></button>
                 </div>
             </div>
         </div>
@@ -169,6 +223,6 @@
     <div id="notification" class="notification"></div>
 
 
-    <script src="/js/script.js"></script>
+    <script src="/js/users.js"></script>
 
 </@layout.layout>

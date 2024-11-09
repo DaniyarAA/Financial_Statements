@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,6 +31,7 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleDto> getAll() {
         return roleRepository.findAll()
                 .stream()
+                .filter(role -> !"SuperUser".equals(role.getRoleName()))
                 .sorted(Comparator.comparing(Role::getId))
                 .map(this::convertToDto)
                 .toList();
@@ -95,6 +97,9 @@ public class RoleServiceImpl implements RoleService {
         if (roleDto.getAuthorities() == null || roleDto.getAuthorities().isEmpty()) {
             throw new IllegalArgumentException("Роль должна иметь хотя бы одну привилегию.");
         }
+        if ("SuperUser".equals(role.getRoleName())) {
+            throw new IllegalArgumentException("Роль 'SuperUser' нельзя редактировать или удалять.");
+        }
 
         role.setRoleName(roleDto.getRoleName());
 
@@ -122,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void deleteRole(Long roleId) {
         Role role = roleRepository.findById(roleId).orElseThrow();
-        if (role.getUsers().isEmpty()){
+        if (role.getUsers().isEmpty()) {
             role.getAuthorities().forEach(authority -> authority.getRoles().remove(role));
             role.setAuthorities(new ArrayList<>());
             roleRepository.deleteById(roleId);

@@ -28,18 +28,27 @@ public class CompanyController {
             @Valid CompanyDto companyDto,
             BindingResult bindingResult,
             Principal principal) {
-        return companyService.createCompany(companyDto, principal.getName(),bindingResult);
+        return companyService.createCompany(companyDto, principal.getName(), bindingResult);
     }
 
 
-    @GetMapping("/all/")
+    @GetMapping("/all")
     public String getAll(
             @RequestParam(required = false, defaultValue = "0") Long companyId,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
-            Model model,Principal principal) {
+            @RequestParam(value = "sort", defaultValue = "actual") String sort,
+            @RequestParam(value = "search", required = false, defaultValue = "") String search,
+            Model model, Principal principal) {
 
-        List<CompanyDto> allCompanies = companyService.getAllCompanies();
+        List<CompanyDto> allCompanies ;
+
+        if (search != null && !search.isEmpty()) {
+            allCompanies = companyService.findByName(search);
+        } else {
+            allCompanies = companyService.getAllCompaniesBySort(sort);
+        }
+
         int totalCompanies = allCompanies.size();
         int start = page * size;
         int end = Math.min(start + size, totalCompanies);
@@ -49,19 +58,27 @@ public class CompanyController {
         if (companyId != 0) {
             model.addAttribute("company", companyService.findById(companyId));
             model.addAttribute("companyId", companyId);
+        } else if (allCompanies.isEmpty()) {
+            model.addAttribute("company", new CompanyDto());
+            model.addAttribute("companyId", companyId);
         } else {
             model.addAttribute("company", allCompanies.getFirst());
             model.addAttribute("companyId", allCompanies.getFirst().getId());
         }
+
         boolean isAdmin = false;
         if (principal != null) {
             isAdmin = userService.isAdmin(principal.getName());
         }
-        model.addAttribute("isAdmin",isAdmin);
+        model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        return "company/all";
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
+
+        return "company/companies";
     }
+
 
     @PostMapping("/edit")
     @ResponseBody
@@ -72,7 +89,13 @@ public class CompanyController {
     @PostMapping("/delete")
     public String deleteById(@RequestParam Long companyId) {
         companyService.deleteCompany(companyId);
-        return "redirect:/company/all/";
+        return "redirect:/company/all?sort=actual";
+    }
+
+    @PostMapping("/return")
+    public String returnById(@RequestParam Long companyId) {
+        companyService.returnCompany(companyId);
+        return "redirect:/company/all?sort=actual";
     }
 
 }

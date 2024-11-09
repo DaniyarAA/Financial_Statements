@@ -12,6 +12,7 @@ import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .birthday(userDto.getBirthday())
                 .role(roleService.getRoleById(userDto.getRoleDto().getId()))
-                .avatar("static/user.png")
+                .avatar("user.png")
                 .registerDate(LocalDate.now())
                 .build();
         userRepository.save(newUser);
@@ -116,13 +118,62 @@ public class UserServiceImpl implements UserService {
     public void editUser(Long id, UserDto userDto){
         User user = getUserById(id);
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+        updateLoginIfChanged(userDto.getLogin(), user);
+        validateBirthday(userDto.getBirthday());
         user.setRole(role);
+        user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
+        if (!userDto.getName().isEmpty()){
+            user.setName(userDto.getName());
+        }
+        if (!userDto.getSurname().isEmpty()){
+            user.setSurname(userDto.getSurname());
+        }
+        System.out.println("LOGIN:" + user.getLogin());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
         userRepository.save(user);
+    }
+
+    private void updateLoginIfChanged(String newLogin, User user) {
+        if (!Objects.equals(newLogin, user.getLogin())) {
+            if (checkIfUserExists(newLogin)) {
+                throw new IllegalArgumentException("Пользователь с таким логином уже существует");
+            }
+            user.setLogin(newLogin);
+        }
+    }
+
+    @Override
+    public void updatePassword(Long userId, String newPassword){
+        validatePassword(newPassword);
+        User user = getUserById(userId);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    private void validatePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Заполните поля");
+        }
+        if (password.length() < 8 || password.length() > 20) {
+            throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20");
+        }
+        if (!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$")) {
+            throw new IllegalArgumentException("Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ");
+        }
+    }
+
+    @Override
+    public String updateAvatar(Long userId, MultipartFile file) throws IOException {
+        User user = getUserById(userId);
+        validateImageType(file);
+        String avatar = FileUtils.uploadFile(file);
+        user.setAvatar(avatar);
+        userRepository.save(user);
+        return avatar;
     }
 
     private boolean validateImageType(MultipartFile file) {
@@ -137,6 +188,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
+        if(user.getRole().getRoleName().equals("SuperUser")){
+            throw new IllegalArgumentException("Нельзя удалить администратора системы");
+        }
         user.setEnabled(false);
         userRepository.save(user);
     }
@@ -202,14 +256,13 @@ public class UserServiceImpl implements UserService {
         if (!name.isBlank()) {
             UserDto userDto = getUserDtoByLogin(name);
             if (userDto != null && userDto.getRoleDto() != null) {
-                return userDto.getRoleDto().getRoleName().equalsIgnoreCase("Админ");
-            } else {
-                return false;
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("DELETE_COMPANY"));
             }
-        } else {
-            return false;
         }
+        return false;
     }
+
     private List<UserDto> convertToDtoList(List<User> users) {
         return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }

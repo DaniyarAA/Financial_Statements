@@ -11,6 +11,7 @@ import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
+import kg.attractor.financial_statement.validation.UniqueCompanyName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -391,6 +392,15 @@ public class CompanyServiceImpl implements CompanyService {
                 .collect(Collectors.toList());
     }
 
+
+    private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
+        return CompanyForTaskDto.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .inn(company.getInn())
+                .build();
+    }
+
     @Override
     public List<CompanyForTaskDto> getAllCompaniesForUser(User user) {
         Long userId = user.getId();
@@ -412,14 +422,5 @@ public class CompanyServiceImpl implements CompanyService {
     private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
         return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }
-
-    private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
-        return CompanyForTaskDto.builder()
-                .id(company.getId())
-                .name(company.getName())
-                .inn(company.getInn())
-                .build();
-    }
-
 
 }

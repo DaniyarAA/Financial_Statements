@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,34 +74,27 @@ public class AdminController {
         try {
             userService.editUser(id, userDto);
             return ResponseEntity.ok("User updated successfully");
+        } catch (IllegalArgumentException e) {
+            if(e.getMessage().contains("существует")) {
+                return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-    }
 
-
-    @GetMapping("create/role")
-    public String createRole(Model model) {
-        model.addAttribute("createRoleDto", new CreateRoleDto());
-        return "admin/create_role";
-    }
-
-    @PostMapping("create/role")
-    public String createRole(@Valid CreateRoleDto roleDto, BindingResult bindingResult, Model model,
-                             HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("createRoleDto", roleDto);
-            return "admin/create_role";
-        }
-        roleService.createNewRole(roleDto);
-        String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/admin/users");
     }
 
     @DeleteMapping("/user/delete/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("roles")
@@ -160,6 +155,17 @@ public class AdminController {
     public ResponseEntity<List<AuthorityDto>> getAllAuthorities() {
         List<AuthorityDto> authorities = authorityService.getAll();
         return ResponseEntity.ok(authorities);
+    }
+
+    @PostMapping("users/change-password/{userId}")
+    public ResponseEntity<?> changeUserPassword(@PathVariable Long userId, String newPassword) {
+        try{
+            System.out.println("NEWPASSWORD:" + newPassword);
+            userService.updatePassword(userId, newPassword);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
 }

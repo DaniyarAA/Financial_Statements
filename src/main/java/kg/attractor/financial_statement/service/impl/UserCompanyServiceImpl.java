@@ -107,6 +107,11 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     }
 
     @Override
+    public List<UserCompany> findByUserIdAndCompanyIdIn(Long userId, List<Long> collect) {
+        return userCompanyRepository.findByUserIdAndCompanyIdIn(userId, collect);
+    }
+
+    @Override
     public CompanyDto convertToCompanyToCompanyDto(Company company) {
         return companyService.convertToDto(company);
     }

@@ -31,5 +31,13 @@ public interface CompanyService {
 
     Company convertToEntity(CompanyDto companyDto);
 
+    List<CompanyDto> getAllCompaniesBySort(String sort);
+
+    void returnCompany(Long companyId);
+
+    boolean existsByCompanyName(String companyName);
+
+    List<CompanyDto> findByName(String search);
+
     List<CompanyForTaskDto> getAllCompaniesForUser(User user);
 }

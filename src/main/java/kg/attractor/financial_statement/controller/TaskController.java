@@ -126,6 +126,7 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
+        System.out.println("CompanyDtos" +companyDtos);
         List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
 
         Set<String> uniqueYearMonths = taskDtos.stream()

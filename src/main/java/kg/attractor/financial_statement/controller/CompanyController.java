@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.controller;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CompanyController {
     private final CompanyService companyService;
+    private final UserService userService;
 
     @PostMapping("/create")
     @ResponseBody
@@ -35,7 +37,7 @@ public class CompanyController {
             @RequestParam(required = false, defaultValue = "0") Long companyId,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
-            Model model) {
+            Model model,Principal principal) {
 
         List<CompanyDto> allCompanies = companyService.getAllCompanies();
         int totalCompanies = allCompanies.size();
@@ -43,23 +45,22 @@ public class CompanyController {
         int end = Math.min(start + size, totalCompanies);
 
         model.addAttribute("list", allCompanies.subList(start, end));
-        model.addAttribute("companyId", companyId);
 
-        if (companyId == 0) {
-            model.addAttribute("company", new CompanyDto());
-        } else {
+        if (companyId != 0) {
             model.addAttribute("company", companyService.findById(companyId));
+            model.addAttribute("companyId", companyId);
+        } else {
+            model.addAttribute("company", allCompanies.getFirst());
+            model.addAttribute("companyId", allCompanies.getFirst().getId());
         }
-
+        boolean isAdmin = false;
+        if (principal != null) {
+            isAdmin = userService.isAdmin(principal.getName());
+        }
+        model.addAttribute("isAdmin",isAdmin);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
         return "company/all";
-    }
-
-    @GetMapping("/{companyId}")
-    public String getById(@PathVariable Long companyId, Model model) {
-        model.addAttribute("company", companyService.findById(companyId));
-        return "company/company";
     }
 
     @PostMapping("/edit")
@@ -71,13 +72,7 @@ public class CompanyController {
     @PostMapping("/delete")
     public String deleteById(@RequestParam Long companyId) {
         companyService.deleteCompany(companyId);
-        return "redirect:/company/all";
-    }
-
-    @GetMapping("/delete")
-    public String deletePage(Model model){
-        model.addAttribute("list", companyService.getAllCompanies());
-        return "company/delete";
+        return "redirect:/company/all/";
     }
 
 }

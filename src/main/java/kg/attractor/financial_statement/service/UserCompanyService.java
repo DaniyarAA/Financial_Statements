@@ -1,7 +1,6 @@
 package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
-import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
@@ -18,4 +17,9 @@ public interface UserCompanyService {
 
     List<UserCompany> findUserCompanyByUser(User user);
     List<Long> findUserCompanyIdsForUser(User user);
+    void save(UserCompany userCompany);
+
+    void updateUserCompanies(User user, List<Company> newCompanies);
+
+    List<UserCompany> findByUser(User user);
 }

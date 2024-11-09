@@ -24,7 +24,7 @@ public class CompanyPrivateService {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
-                .inn(company.getInn())
+                .companyInn(company.getInn())
                 .directorInn(company.getDirectorInn())
                 .login(company.getLogin())
                 .password(company.getPassword())

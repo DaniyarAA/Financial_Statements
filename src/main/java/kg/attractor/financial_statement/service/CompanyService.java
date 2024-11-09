@@ -29,5 +29,7 @@ public interface CompanyService {
 
     CompanyForTaskDto getCompanyForTaskDto(Long id);
 
+    Company convertToEntity(CompanyDto companyDto);
+
     List<CompanyForTaskDto> getAllCompaniesForUser(User user);
 }

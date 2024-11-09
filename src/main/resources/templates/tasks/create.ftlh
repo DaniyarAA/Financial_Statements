@@ -1,6 +1,5 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as main>
-
 <@main.layout>
     <div class="container py-5">
         <div class="card shadow-lg rounded">
@@ -13,7 +12,6 @@
                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
-
                     <div class="mb-4">
                         <label for="category" class="form-label">Тип документа</label>
                         <select class="form-select" id="documentType" name="documentTypeId" required>
@@ -66,47 +64,98 @@
                         </select>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="month" class="form-label">Месяц</label>
-                        <select class="form-select" id="month" required>
-                            <option value="">Выберите месяц</option>
-                            <option value="1">Январь</option>
-                            <option value="2">Февраль</option>
-                            <option value="3">Март</option>
-                            <option value="4">Апрель</option>
-                            <option value="5">Май</option>
-                            <option value="6">Июнь</option>
-                            <option value="7">Июль</option>
-                            <option value="8">Август</option>
-                            <option value="9">Сентябрь</option>
-                            <option value="10">Октябрь</option>
-                            <option value="11">Ноябрь</option>
-                            <option value="12">Декабрь</option>
-                        </select>
-                    </div>
+                    <div class="p-3 mb-4 border rounded bg-light">
+                        <h5 class="mb-3">Выбор периода</h5>
+                        <div class="mb-4">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="reportType" id="weekly" value="weekly">
+                                <label class="form-check-label" for="weekly">Недельный</label>
+                            </div>
 
-                    <div class="mb-4">
-                        <label for="year" class="form-label">Год</label>
-                        <select class="form-select" id="year" required>
-                            <option value="">Выберите год</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                        </select>
-                    </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="reportType" id="decadal" value="decadal">
+                                <label class="form-check-label" for="decadal">Декадный</label>
+                            </div>
 
-                    <div class="mb-4">
-                        <label for="startDateTime" class="form-label">Дата начала</label>
-                        <input type="text" class="form-control" id="startDateTimeDisplay" readonly>
-                        <input type="hidden" id="startDateTime" name="startDateTime">
-                    </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="reportType" id="monthly" value="monthly" checked>
+                                <label class="form-check-label" for="monthly">Ежемесячный</label>
+                            </div>
 
-                    <div class="mb-4">
-                        <label for="endDateTime" class="form-label">Дата окончания</label>
-                        <input type="text" class="form-control" id="endDateTimeDisplay" readonly>
-                        <input type="hidden" id="endDateTime" name="endDateTime">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="reportType" id="quarterly" value="quarterly">
+                                <label class="form-check-label" for="quarterly">Ежеквартальный</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="reportType" id="annual" value="annual">
+                                <label class="form-check-label" for="annual">Годовой</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="weekSelection" style="display: none;">
+                            <label for="week" class="form-label">Неделя</label>
+                            <select class="form-select" id="week">
+                                <option value="">Выберите неделю</option>
+                                <option value="1">1 неделя</option>
+                                <option value="2">2 неделя</option>
+                                <option value="3">3 неделя</option>
+                                <option value="4">4 неделя</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="quarterSelection" style="display:none;">
+                            <label for="quarter" class="form-label">Декада</label>
+                            <select class="form-select" id="quarter" name="quarter">
+                                <option value="">Выберите декаду</option>
+                                <option value="1">1-я декада</option>
+                                <option value="2">2-я декада</option>
+                                <option value="3">3-я декада</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="month" class="form-label">Месяц</label>
+                            <select class="form-select" id="month" required>
+                                <option value="">Выберите месяц</option>
+                                <option value="1">Январь</option>
+                                <option value="2">Февраль</option>
+                                <option value="3">Март</option>
+                                <option value="4">Апрель</option>
+                                <option value="5">Май</option>
+                                <option value="6">Июнь</option>
+                                <option value="7">Июль</option>
+                                <option value="8">Август</option>
+                                <option value="9">Сентябрь</option>
+                                <option value="10">Октябрь</option>
+                                <option value="11">Ноябрь</option>
+                                <option value="12">Декабрь</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Год</label>
+                            <select class="form-select" id="year" required>
+                                <option value="">Выберите год</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="startDateTime" class="form-label">Дата начала</label>
+                            <input type="text" class="form-control" id="startDateTimeDisplay" readonly>
+                            <input type="hidden" id="startDateTime" name="startDateTime">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="endDateTime" class="form-label">Дата окончания</label>
+                            <input type="text" class="form-control" id="endDateTimeDisplay" readonly>
+                            <input type="hidden" id="endDateTime" name="endDateTime">
+                        </div>
                     </div>
 
                     <div class="mb-4">

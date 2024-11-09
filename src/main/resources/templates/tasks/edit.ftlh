@@ -37,7 +37,7 @@
             <div class="mb-3">
                 <label for="amount" class="form-label">Сумма:</label>
                 <input type="number" class="form-control" id="amount" name="amount" step="0.01"
-                       value="${taskDto.amount}"/>
+                       value="${taskDto.amount?if_exists}" />
             </div>
 
             <div class="mb-3">

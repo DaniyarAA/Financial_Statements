@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const startDateTimeInput = document.getElementById("startDateTime");
     const endDateTimeInput = document.getElementById("endDateTime");
     const weekSelectionDiv = document.getElementById("weekSelection");
-    const quarterSelectionDiv = document.getElementById("quarterSelection");
+    const decadeSelectionDiv = document.getElementById("decadeSelection");
 
     function cleaning() {
         monthSelect.value = "";
@@ -125,13 +125,13 @@ document.addEventListener("DOMContentLoaded", function () {
             cleaning();
             if (radio.value === "weekly") {
                 weekSelectionDiv.style.display = "block";
-                quarterSelectionDiv.style.display = "none";
+                decadeSelectionDiv.style.display = "none";
             } else if (radio.value === "decadal") {
                 weekSelectionDiv.style.display = "none";
-                quarterSelectionDiv.style.display = "block";
+                decadeSelectionDiv.style.display = "block";
             } else {
                 weekSelectionDiv.style.display = "none";
-                quarterSelectionDiv.style.display = "none";
+                decadeSelectionDiv.style.display = "none";
             }
             updateDates();
         });

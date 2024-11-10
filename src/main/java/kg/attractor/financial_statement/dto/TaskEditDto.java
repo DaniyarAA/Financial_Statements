@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 public class TaskEditDto {
-    private Long documentTypeId;
-    private String userLogin;
-    private Long companyId;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
+    private Long statusId;
+    private String amount;
+    private String description;
 }

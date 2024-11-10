@@ -11,6 +11,9 @@ function showTaskDetails(button) {
     const amount = button.getAttribute("data-amount");
     const status = button.getAttribute("data-status");
 
+    let statusOptions = '';
+
+
     document.getElementById('task-content').innerHTML = `
         <form id="task-edit-form" action="/tasks/edit/${taskId}" method="post">
             <input type="hidden" name="_csrf" value="${csrfToken}">
@@ -32,7 +35,8 @@ function showTaskDetails(button) {
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
                 </div>
 
-                <p><strong>Статус:</strong> ${status}</p>
+               
+                
                 <label for="description" class="form-label">Описание</label>
                 <input type="text" class="form-control" id="description" name="description" value="${description}">
             </div>

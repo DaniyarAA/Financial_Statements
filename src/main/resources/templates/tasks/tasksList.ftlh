@@ -94,8 +94,22 @@
                 </div>
             </div>
         </div>
+<#--        <div class="mb-3">-->
+<#--            <label for="taskStatus" class="form-label">Статус</label>-->
+<#--            <select class="form-select" id="taskStatus" name="statusId">-->
+<#--                <#list taskStatusDtoList as status>-->
+<#--                    <option value="${status.id}">${status.name}</option>-->
+<#--                </#list>-->
+<#--            </select>-->
+<#--        </div>-->
     </div>
 
+
+    <script>
+        const taskStatusList = JSON.parse('${taskStatusDtosJson}');
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/tasks/list.js"></script>
+
+
 </@layout.layout>

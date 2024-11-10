@@ -1,5 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
@@ -117,7 +119,7 @@ public class TaskController {
             Authentication authentication,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "7") int size
-    ) {
+    ) throws JsonProcessingException {
         if (authentication == null) {
             return "redirect:/login";
         }
@@ -127,7 +129,12 @@ public class TaskController {
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size);
 
+        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
+
         model.addAllAttributes(taskListData);
+        model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
 
         return "tasks/tasksList";
@@ -139,14 +146,33 @@ public class TaskController {
         return taskService.editTaskByField(data);
     }
 
+//    @PostMapping("/edit/{id}")
+//    public String updateTaskInListPage(
+//            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
+//            @PathVariable Long id,
+//            BindingResult bindingResult,
+//            Model model,
+//            Authentication authentication
+//            ) {
+//        if (bindingResult.hasErrors() ) {
+//            model.addAttribute("taskDto", taskDto);
+//            return "tasks/tasksList";
+//        }
+//        if (!taskService.checkIsAuthor(authentication.getName(), id)) {
+//            return "redirect:/login";
+//        }
+//        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+//        return "redirect:/tasks/list";
+//
+//    }
     @PostMapping("/edit/{id}")
     public String updateTaskInListPage(
-            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
+            @Valid @ModelAttribute("taskDto") TaskEditDto taskDto,
             @PathVariable Long id,
             BindingResult bindingResult,
             Model model,
             Authentication authentication
-            ) {
+    ) {
         if (bindingResult.hasErrors() ) {
             model.addAttribute("taskDto", taskDto);
             return "tasks/tasksList";

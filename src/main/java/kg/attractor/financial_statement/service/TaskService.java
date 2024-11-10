@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
+import kg.attractor.financial_statement.dto.TaskEditDto;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public interface TaskService {
 
     Map<String, Object> getTaskListData(User user, int page, int size);
 
-    void editTaskFromTasksList(TaskDto taskDto, String name, Long id);
+    void editTaskFromTasksList(TaskEditDto taskEditDto, String name, Long id);
 
     boolean checkIsAuthor(String name, Long id);
 }

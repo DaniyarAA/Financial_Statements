@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
+import kg.attractor.financial_statement.dto.TaskEditDto;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
@@ -243,14 +244,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void editTaskFromTasksList(TaskDto taskDto, String name, Long id) {
+    public void editTaskFromTasksList(TaskEditDto taskDto, String name, Long id) {
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
         if (taskDto.getStatusId() != null) {
-            newVersionOfTask.setTaskStatus(taskStatusService.getTaskStatusById(taskDto.getId()));
+            newVersionOfTask.setTaskStatus(taskStatusService.getTaskStatusById(taskDto.getStatusId()));
         }
         if (taskDto.getAmount() != null) {
-            newVersionOfTask.setAmount(taskDto.getAmount());
+            String cleanedValue = taskDto.getAmount().replaceAll("[,\\s]", "");
+            if (isValidBigDecimal(cleanedValue)) {
+                newVersionOfTask.setAmount(new BigDecimal(cleanedValue));
+            }
         }
         if (taskDto.getDescription() != null) {
             newVersionOfTask.setDescription(taskDto.getDescription());

@@ -127,6 +127,13 @@
     margin: 100px auto 0;
 
 }
+.card-registration{
+    box-shadow: 0 3px 2px 3px rgba(0, 0, 0, 0.25);
+    border: 1px solid;
+    border-image-source: linear-gradient(0deg, #FFFFFF 80.26%, #11C24D 80.36%, #11C24D 98.68%);
+    border-image-slice: 1;
+}
+
 .login-container h2 {
     margin-top: 0;
     font-size: 30px;
@@ -153,10 +160,16 @@
     border: none;
 
 }
+
+.login-button:hover{
+    background: rgb(230, 230, 230);
+}
+
 .login-input{
     border: 1px solid rgba(195, 195, 195, 1);
-    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25);
 }
+
 .bi-star-fill{
     top: 41px;
     right: -40px;

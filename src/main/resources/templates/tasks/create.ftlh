@@ -105,8 +105,8 @@
                         </div>
 
                         <div class="mb-3" id="decadeSelection" style="display:none;">
-                            <label for="quarter" class="form-label">Декада</label>
-                            <select class="form-select" id="quarter" name="quarter">
+                            <label for="decade" class="form-label">Декада</label>
+                            <select class="form-select" id="decade" name="decade">
                                 <option value="">Выберите декаду</option>
                                 <option value="1">1-я декада</option>
                                 <option value="2">2-я декада</option>

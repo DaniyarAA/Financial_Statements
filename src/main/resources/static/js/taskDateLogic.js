@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const monthSelect = document.getElementById("month");
     const yearSelect = document.getElementById("year");
-    const quarterSelect = document.getElementById("quarter");
+    const decadeSelect = document.getElementById("decade");
     const weekSelect = document.getElementById("week");
     const reportTypeRadios = document.getElementsByName("reportType");
     const startDateTimeDisplay = document.getElementById("startDateTimeDisplay");
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function cleaning() {
         monthSelect.value = "";
         yearSelect.value = "";
-        quarterSelect.value = "";
+        decadeSelect.value = "";
         weekSelect.value = "";
         startDateTimeDisplay.value = "";
         endDateTimeDisplay.value = "";
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const reportType = document.querySelector('input[name="reportType"]:checked').value;
         const month = parseInt(monthSelect.value);
         const year = parseInt(yearSelect.value);
-        const quarter = parseInt(quarterSelect.value);
+        const decade = parseInt(decadeSelect.value);
 
         if (reportType === "weekly" && month && year && weekSelect.value) {
             const week = parseInt(weekSelect.value);
@@ -71,10 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
             startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
             endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
         }
-        else if (reportType === "decadal" && month && year) {
+        else if (reportType === "decadal" && month && year && decade) {
             let startDay, endDay;
 
-            switch (quarter) {
+            switch (decade) {
                 case 1:
                     startDay = 1;
                     endDay = 10;
@@ -140,5 +140,5 @@ document.addEventListener("DOMContentLoaded", function () {
     monthSelect.addEventListener("change", updateDates);
     yearSelect.addEventListener("change", updateDates);
     weekSelect.addEventListener("change", updateDates);
-    quarterSelect.addEventListener("change", updateDates);
+    decadeSelect.addEventListener("change", updateDates);
 });

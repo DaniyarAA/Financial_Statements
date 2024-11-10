@@ -116,7 +116,7 @@
 
                         <div class="mb-3" id="monthSelection" style="display: none">
                             <label for="month" class="form-label">Месяц</label>
-                            <select class="form-select" id="month" name="month" required>
+                            <select class="form-select" id="month" name="month">
                                 <option value="">Выберите месяц</option>
                                 <option value="1">Январь</option>
                                 <option value="2">Февраль</option>
@@ -146,7 +146,7 @@
 
                         <div class="mb-3">
                             <label for="year" class="form-label">Год</label>
-                            <select class="form-select" id="year" required>
+                            <select class="form-select" id="year">
                                 <option value="">Выберите год</option>
                                 <option value="2023">2023</option>
                                 <option value="2024">2024</option>

@@ -118,6 +118,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
             startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
             endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+
+        } else if (reportType === "annual" && year) {
+            const startDate = new Date(Date.UTC(year, 0, 1));
+            const endDate = new Date(Date.UTC(year, 11, 31));
+
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+
+            startDateTimeDisplay.value = formattedStartDate;
+            endDateTimeDisplay.value = formattedEndDate;
+
+            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
+            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
         }
     }
 
@@ -156,6 +177,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 weekSelectionDiv.style.display = "none";
                 decadeSelectionDiv.style.display = "none";
                 quarterSelectionDiv.style.display = "none";
+            } else if (reportType === "annual") {
+                monthSelectionDiv.style.display = "none";
+                weekSelectionDiv.style.display = "none";
+                decadeSelectionDiv.style.display = "none";
+                quarterSelectionDiv.style.display = "none";
             } else {
                 weekSelectionDiv.style.display = "none";
                 decadeSelectionDiv.style.display = "none";
@@ -174,6 +200,4 @@ document.addEventListener("DOMContentLoaded", function () {
     quarterSelect.addEventListener("change", updateDates);
     decadeSelect.addEventListener("change", updateDates);
     weekSelect.addEventListener("change", updateDates);
-
-    updateDates();
 });

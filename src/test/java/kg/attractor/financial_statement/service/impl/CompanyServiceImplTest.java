@@ -10,7 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
 import java.util.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -23,6 +28,31 @@ public class CompanyServiceImplTest {
 
     @InjectMocks
     private CompanyServiceImpl companyService;
+
+    @Mock
+    private BindingResult bindingResult;
+
+    @Test
+    void createCompanyWithNotValidLogin() {
+        CompanyDto companyDto = new CompanyDto();
+
+        ResponseEntity<Map<String, String>> response = companyService.createCompany(companyDto, "", bindingResult);
+
+        Assertions.assertEquals(400, response.getStatusCodeValue());
+        Assertions.assertEquals("Авторизуйтесь чтобы создать компанию !", response.getBody().get("message"));
+    }
+
+    @Test
+    void createCompanyWithBindingResultHasError() {
+        CompanyDto companyDto = new CompanyDto();
+        Mockito.when(bindingResult.hasErrors()).thenReturn(true);
+        Mockito.when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("companyDto", "name", "Name is required")));
+
+        ResponseEntity<Map<String, String>> response = companyService.createCompany(companyDto, "userLogin", bindingResult);
+
+        Assertions.assertEquals(400, response.getStatusCodeValue());
+        Assertions.assertEquals("Name is required", response.getBody().get("name"));
+    }
 
     @Test
     void findById() {

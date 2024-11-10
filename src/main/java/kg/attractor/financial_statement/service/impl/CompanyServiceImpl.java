@@ -6,12 +6,10 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
-import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
-import kg.attractor.financial_statement.validation.UniqueCompanyName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,10 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public ResponseEntity<Map<String, String>> createCompany(
             CompanyDto companyDto, String login, BindingResult bindingResult) {
+
+        if (login == null || login.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Авторизуйтесь чтобы создать компанию !"));
+        }
 
         if (bindingResult != null && bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -182,20 +184,32 @@ public class CompanyServiceImpl implements CompanyService {
                 break;
             case "companyInn":
                 if (newValue.length() == 12) {
-                    company.setInn(newValue);
+                    if (!existsByCompanyInn(newValue)) {
+                        company.setInn(newValue);
+                    } else {
+                        return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН уже существует!"));
+                    }
                 } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
                 }
                 break;
             case "directorInn":
                 if (newValue.length() == 12) {
-                    company.setDirectorInn(newValue);
+                    if (!existsByCompanyDirectorInn(newValue)) {
+                        company.setDirectorInn(newValue);
+                    }else {
+                        return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН директором уже существует!"));
+                    }
                 } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
                 }
                 break;
             case "login":
-                company.setLogin(newValue);
+                if (!existsByCompanyLogin(newValue)) {
+                    company.setLogin(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким логином уже существует!"));
+                }
                 break;
             case "password":
                 company.setPassword(newValue);
@@ -204,7 +218,11 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setEcp(newValue);
                 break;
             case "kabinetSalyk":
-                company.setKabinetSalyk(newValue);
+                if (!existsByCompanySalykLogin(newValue)){
+                    company.setKabinetSalyk(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким логином Salyk.kg уже существует!"));
+                }
                 break;
             case "kabinetSalykPassword":
                 company.setKabinetSalykPassword(newValue);
@@ -227,10 +245,10 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setDistrictGns(newValue);
                 break;
             case "socfundNumber":
-                if (newValue.length() < 20) {
+                if (newValue.length() == 12) {
                     company.setSocfundNumber(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер социального фонда не может быть больше 20"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен быть 12 из символов"));
                 }
                 break;
             case "registrationNumberMj":
@@ -241,10 +259,10 @@ public class CompanyServiceImpl implements CompanyService {
                 }
                 break;
             case "okpo":
-                if (newValue.length() < 20) {
+                if (newValue.length() == 8) {
                     company.setOkpo(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО не может быть больше 20"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен быть из 8 символов"));
                 }
                 break;
             case "director":
@@ -390,6 +408,26 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsByCompanyInn(String companyInn) {
+        return companyRepository.existsByInn(companyInn);
+    }
+
+    @Override
+    public boolean existsByCompanyDirectorInn(String companyDirectorInn) {
+        return companyRepository.existsByDirectorInn(companyDirectorInn);
+    }
+
+    @Override
+    public boolean existsByCompanyLogin(String companyLogin) {
+        return companyRepository.existsByLogin(companyLogin);
+    }
+
+    @Override
+    public boolean existsByCompanySalykLogin(String salykLogin) {
+        return companyRepository.existsByKabinetSalyk(salykLogin);
     }
 
 

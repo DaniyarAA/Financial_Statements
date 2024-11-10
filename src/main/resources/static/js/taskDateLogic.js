@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const monthSelect = document.getElementById("month");
     const yearSelect = document.getElementById("year");
+    const quarterSelect = document.getElementById("quarter");
     const decadeSelect = document.getElementById("decade");
     const weekSelect = document.getElementById("week");
     const reportTypeRadios = document.getElementsByName("reportType");
@@ -10,10 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const endDateTimeInput = document.getElementById("endDateTime");
     const weekSelectionDiv = document.getElementById("weekSelection");
     const decadeSelectionDiv = document.getElementById("decadeSelection");
+    const quarterSelectionDiv = document.getElementById("quarterSelection");
+    const monthSelectionDiv = document.getElementById("monthSelection");
 
     function cleaning() {
         monthSelect.value = "";
         yearSelect.value = "";
+        quarterSelect.value = "";
         decadeSelect.value = "";
         weekSelect.value = "";
         startDateTimeDisplay.value = "";
@@ -26,10 +30,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const reportType = document.querySelector('input[name="reportType"]:checked').value;
         const month = parseInt(monthSelect.value);
         const year = parseInt(yearSelect.value);
+        const quarter = parseInt(quarterSelect.value);
         const decade = parseInt(decadeSelect.value);
+        const week = parseInt(weekSelect.value);
 
-        if (reportType === "weekly" && month && year && weekSelect.value) {
-            const week = parseInt(weekSelect.value);
+        if (reportType === "weekly" && month && year && week) {
             const startDay = (week - 1) * 7 + 1;
             const startDate = new Date(Date.UTC(year, month - 1, startDay));
             const endDate = new Date(Date.UTC(year, month - 1, startDay + 6));
@@ -50,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
             endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+
         } else if (reportType === "monthly" && month && year) {
             const startDate = new Date(Date.UTC(year, month - 1, 1));
             const endDate = new Date(Date.UTC(year, month, 0));
@@ -70,29 +76,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
             startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
             endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
-        }
-        else if (reportType === "decadal" && month && year && decade) {
-            let startDay, endDay;
 
-            switch (decade) {
-                case 1:
-                    startDay = 1;
-                    endDay = 10;
-                    break;
-                case 2:
-                    startDay = 11;
-                    endDay = 20;
-                    break;
-                case 3:
-                    startDay = 21;
-                    endDay = new Date(year, month, 0).getDate();
-                    break;
-                default:
-                    return;
-            }
+        } else if (reportType === "quarterly" && quarter && year) {
+            const startDate = new Date(Date.UTC(year, (quarter - 1) * 3, 1));
+            const endDate = new Date(Date.UTC(year, quarter * 3, 0));
 
-            const startDate = new Date(Date.UTC(year, month - 1, startDay));
-            const endDate = new Date(Date.UTC(year, month - 1, endDay));
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+
+            startDateTimeDisplay.value = formattedStartDate;
+            endDateTimeDisplay.value = formattedEndDate;
+
+            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
+            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+
+        } else if (reportType === "decadal" && month && year && decade) {
+            const startDate = new Date(Date.UTC(year, month - 1, (decade - 1) * 10 + 1));
+            const endDate = new Date(Date.UTC(year, month - 1, decade * 10));
 
             const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
                 day: "2-digit",
@@ -111,34 +119,61 @@ document.addEventListener("DOMContentLoaded", function () {
             startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
             endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
         }
+    }
 
-        else {
-            startDateTimeDisplay.value = "";
-            endDateTimeDisplay.value = "";
-            startDateTimeInput.value = "";
-            endDateTimeInput.value = "";
+    function defaultType() {
+        const reportType = document.querySelector('input[name="reportType"]:checked');
+
+        if (reportType) {
+            reportType.dispatchEvent(new Event('change'));
+        } else {
+            reportTypeRadios[0].checked = true;
+            reportTypeRadios[0].dispatchEvent(new Event('change'));
         }
     }
 
     reportTypeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
-            cleaning();
-            if (radio.value === "weekly") {
+            const reportType = this.value;
+
+            if (reportType === "weekly") {
                 weekSelectionDiv.style.display = "block";
                 decadeSelectionDiv.style.display = "none";
-            } else if (radio.value === "decadal") {
+                quarterSelectionDiv.style.display = "none";
+                monthSelectionDiv.style.display = "block";
+            } else if (reportType === "decadal") {
                 weekSelectionDiv.style.display = "none";
                 decadeSelectionDiv.style.display = "block";
+                quarterSelectionDiv.style.display = "none";
+                monthSelectionDiv.style.display = "block";
+            } else if (reportType === "quarterly") {
+                weekSelectionDiv.style.display = "none";
+                decadeSelectionDiv.style.display = "none";
+                monthSelectionDiv.style.display = "none";
+                quarterSelectionDiv.style.display = "block";
+            } else if (reportType === "monthly") {
+                monthSelectionDiv.style.display = "block";
+                weekSelectionDiv.style.display = "none";
+                decadeSelectionDiv.style.display = "none";
+                quarterSelectionDiv.style.display = "none";
             } else {
                 weekSelectionDiv.style.display = "none";
                 decadeSelectionDiv.style.display = "none";
+                quarterSelectionDiv.style.display = "none";
+                monthSelectionDiv.style.display = "none";
             }
+            cleaning();
             updateDates();
         });
     });
 
+    defaultType();
+
     monthSelect.addEventListener("change", updateDates);
     yearSelect.addEventListener("change", updateDates);
-    weekSelect.addEventListener("change", updateDates);
+    quarterSelect.addEventListener("change", updateDates);
     decadeSelect.addEventListener("change", updateDates);
+    weekSelect.addEventListener("change", updateDates);
+
+    updateDates();
 });

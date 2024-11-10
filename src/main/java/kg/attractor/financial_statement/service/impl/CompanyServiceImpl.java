@@ -433,9 +433,32 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
         return CompanyForTaskDto.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .inn(company.getInn())
                 .build();
+    }
+
+    @Override
+    public List<CompanyForTaskDto> getAllCompaniesForUser(User user) {
+        Long userId = user.getId();
+
+        List<UserCompany> userCompanies = userCompanyService.findByUserIdAndCompanyIdIn(
+                userId,
+                companyRepository.findAll().stream().map(Company::getId).collect(Collectors.toList())
+        );
+
+        List<Long> userCompanyIds = userCompanies.stream()
+                .map(userCompany -> userCompany.getCompany().getId())
+                .collect(Collectors.toList());
+
+        List<Company> companies = companyRepository.findAllById(userCompanyIds);
+
+        return convertToCompanyForTaskDtoList(companies);
+    }
+
+    private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
+        return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }
 
 }

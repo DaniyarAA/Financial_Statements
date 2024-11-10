@@ -139,15 +139,23 @@ public class TaskController {
         return taskService.editTaskByField(data);
     }
 
-//    @PostMapping("/edit/{id}")
-//    public String updateTaskInListPage(
-//            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
-//            @PathVariable Long id,
-//            BindingResult bindingResult,
-//            Model model,
-//            Authentication authentication
-//            ) {
-//
-//
-//    }
+    @PostMapping("/edit/{id}")
+    public String updateTaskInListPage(
+            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
+            @PathVariable Long id,
+            BindingResult bindingResult,
+            Model model,
+            Authentication authentication
+            ) {
+        if (bindingResult.hasErrors() ) {
+            model.addAttribute("taskDto", taskDto);
+            return "tasks/tasksList";
+        }
+        if (!taskService.checkIsAuthor(authentication.getName(), id)) {
+            return "redirect:/login";
+        }
+        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+        return "redirect:/tasks/list";
+
+    }
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -239,6 +240,32 @@ public class TaskServiceImpl implements TaskService {
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
 
         return response;
+    }
+
+    @Override
+    public void editTaskFromTasksList(TaskDto taskDto, String name, Long id) {
+        Task newVersionOfTask = taskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
+        if (taskDto.getStatusId() != null) {
+            newVersionOfTask.setTaskStatus(taskStatusService.getTaskStatusById(taskDto.getId()));
+        }
+        if (taskDto.getAmount() != null) {
+            newVersionOfTask.setAmount(taskDto.getAmount());
+        }
+        if (taskDto.getDescription() != null) {
+            newVersionOfTask.setDescription(taskDto.getDescription());
+        }
+        newVersionOfTask.setId(id);
+        taskRepository.save(newVersionOfTask);
+
+    }
+
+    @Override
+    public boolean checkIsAuthor(String userLogin, Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + taskId));
+        User user = userService.getUserByLogin(userLogin);
+        return task.getUserCompany().getUser() == user;
     }
 
 

@@ -28,4 +28,8 @@ public interface TaskService {
     ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data);
 
     Map<String, Object> getTaskListData(User user, int page, int size);
+
+    void editTaskFromTasksList(TaskDto taskDto, String name, Long id);
+
+    boolean checkIsAuthor(String name, Long id);
 }

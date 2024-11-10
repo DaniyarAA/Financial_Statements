@@ -1,3 +1,5 @@
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
     <div class="container-fluid p-3">
@@ -65,7 +67,10 @@
                                value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
                     <h5>Подробнее</h5>
-                    <div id="task-content"></div>
+                    <div id="task-content">
+
+                    </div>
+
                     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">

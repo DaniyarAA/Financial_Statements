@@ -30,6 +30,11 @@ public class TaskStatusServiceImpl implements TaskStatusService {
                 .orElseThrow(() -> new NoSuchElementException("Task status not found: " + statusId));
     }
 
+    @Override
+    public Boolean getIsCompleted(TaskStatus taskStatus) {
+        return taskStatus.getName().equals("Сдан");
+    }
+
     private List<TaskStatusDto> convertToDtoList(List<TaskStatus> taskStatuses) {
         return taskStatuses.stream().map(this::convertToDto).collect(Collectors.toList());
     }

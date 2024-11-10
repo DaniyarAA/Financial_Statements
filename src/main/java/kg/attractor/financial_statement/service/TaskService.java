@@ -4,9 +4,11 @@ import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskService {
     List<TaskDto> getAllTasks();
@@ -20,4 +22,8 @@ public interface TaskService {
     List<TaskDto> getAllTasksForUser(User user);
 
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
+
+    TaskDto getTaskDtoById(Long taskId);
+
+    ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data);
 }

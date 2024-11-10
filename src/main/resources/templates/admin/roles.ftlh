@@ -27,11 +27,11 @@
         <button class="btn btn-create-role mt-3" onclick="openCreateRoleModal()">Создать новую роль</button>
     </div>
 
-    <div id="editRoleModal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
+    <div id="editRoleModal" class="modal role-modal" tabindex="-1">
+        <div class="modal-dialog role-modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Редактирование роли</h5>
+                <div class="modal-header role-modal-header">
+                    <h5 class="modal-title role-modal-title">Редактирование роли</h5>
                 </div>
                 <div class="modal-body">
                     <form id="editRoleForm">
@@ -49,19 +49,19 @@
                         <span id="authorityError" class="text-danger"></span>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('editRoleModal')">Закрыть</button>
-                    <button type="button" class="btn btn-primary" onclick="saveRole()">Сохранить</button>
+                <div class="modal-footer role-modal-footer">
+                    <button type="button" class="btn btn-secondary role-btn role-btn-secondary" onclick="closeModal('editRoleModal')">Закрыть</button>
+                    <button type="button" class="btn btn-primary role-btn role-btn-primary" onclick="saveRole()">Сохранить</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="createRoleModal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
+    <div id="createRoleModal" class="modal role-modal" tabindex="-1">
+        <div class="modal-dialog role-modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Создание новой роли</h5>
+                <div class="modal-header role-modal-header">
+                    <h5 class="modal-title role-modal-title">Создание новой роли</h5>
                 </div>
                 <div class="modal-body">
                     <form id="createRoleForm">
@@ -83,10 +83,10 @@
                         <span id="authorityError" class="text-danger"></span>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('createRoleModal')">Закрыть
+                <div class="modal-footer role-modal-footer">
+                    <button type="button" class="btn btn-secondary role-btn role-btn-secondary" onclick="closeModal('createRoleModal')">Закрыть
                     </button>
-                    <button type="button" class="btn btn-success" onclick="createRole()">Создать</button>
+                    <button type="button" class="btn btn-success role-btn role-btn-secondary" onclick="createRole()">Создать</button>
                 </div>
             </div>
         </div>

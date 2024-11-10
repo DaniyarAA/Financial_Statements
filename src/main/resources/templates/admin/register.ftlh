@@ -1,64 +1,124 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
 
-    <div class="user-form-container">
-        <h2>Регистрация нового пользователя</h2>
-        <form action="/admin/register" method="post" enctype="multipart/form-data">
-            <#if _csrf??>
-                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
-                       value="${(_csrf.token)!'--no-token--'}"/>
-            </#if>
+    <section class="vh-100">
+        <div class="container py-5 h-100">
+            <div class="row justify-content-center align-items-center h-100">
+                <div class="col-12 col-lg-9 col-xl-7">
+                    <div class="card shadow-2-strong card-registration">
+                        <div class="card-body p-4 p-md-5">
+                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Регистрация нового пользователя</h3>
+                            <form action="/admin/register" method="post" id="register-form">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                </#if>
 
-            <label for="name">Имя:</label>
-            <@spring.formInput "userDto.name" 'id="form3Example3cg" class="form-control form-control-lg"' />
-            <@spring.showErrors  "<br>" "error text-danger" />
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
 
-            <label for="surname">Фамилия:</label>
-            <@spring.formInput "userDto.surname" 'id="form3Example3cg" class="form-control form-control-lg"' />
-            <@spring.showErrors  "<br>" "error text-danger" />
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="name" class="form-label text-dark">Имя:</label>
+                                            <@spring.formInput "userDto.name" 'id="name" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
 
-            <label for="login">Логин:</label>
-            <@spring.formInput "userDto.login" 'id="form3Example3cg" class="form-control form-control-lg"' />
-            <@spring.showErrors  "<br>" "error text-danger" />
+                                    </div>
+                                    <div class="col-md-6 mb-4">
 
-            <label for="password">Пароль:</label>
-            <@spring.formPasswordInput "userDto.password" 'id="form3Example3cg" class="form-control form-control-lg"' />
-            <@spring.showErrors  "<br>" "error text-danger" />
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="surname" class="form-label text-dark">Фамилия:</label>
+                                            <@spring.formInput "userDto.surname" 'id="surname" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
 
-            <label for="roleId">Роль:</label>
-            <@spring.bind "userDto.roleDto.id"/>
-            <select class="form-select ${spring.status.error?string('is-invalid', '')}"
-                    id="roleId" name="${spring.status.expression}">
-                <option value="">Выберите роль для сотрудника</option>
-                <#list roles as role>
-                    <#if role?index != 0>
-                        <option value="${role.id}" ${(spring.stringStatusValue == role.id?string)?string("selected", "")}>
-                            ${role.roleName}
-                        </option>
-                    </#if>
-                </#list>
-                <option value="create_new_role" data-bs-toggle="modal" data-bs-target="#createRoleModal">
-                    Создать новую роль
-                </option>
-            </select>
+                                    </div>
+                                </div>
 
-            <#if spring.status.error>
-                <div class="invalid-feedback">
-                    <#list spring.status.errorMessages as error>
-                        ${error}<#if !error?is_last><br/></#if>
-                    </#list>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+
+                                        <div data-mdb-input-init class="form-outline datepicker w-100">
+                                            <label for="login" class="form-label text">Логин:</label>
+                                            <@spring.formInput "userDto.login" 'id="login" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
+
+                                    </div>
+
+                                    <div class="col-md-6 mb-4 pb-2">
+
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="password" class="form-label text-dark">Пароль:</label>
+                                            <@spring.formPasswordInput "userDto.password" 'id="password" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
+
+
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4 pb-2">
+
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="roleId" class="form-label text-dark">Роль:</label>
+                                            <@spring.bind "userDto.roleDto.id"/>
+                                            <select class="form-select form-select-lg login-input ${spring.status.error?string('is-invalid', '')}"
+                                                    id="roleId" name="${spring.status.expression}">
+                                                <option value="">Выберите роль для сотрудника</option>
+                                                <#list roles as role>
+                                                    <#if role?index != 0>
+                                                        <option value="${role.id}" ${(spring.stringStatusValue == role.id?string)?string("selected", "")}>
+                                                            ${role.roleName}
+                                                        </option>
+                                                    </#if>
+                                                </#list>
+                                                <option value="create_new_role" data-bs-toggle="modal" data-bs-target="#createRoleModal">
+                                                    Создать новую роль
+                                                </option>
+                                            </select>
+
+                                            <#if spring.status.error>
+                                                <div class="invalid-feedback">
+                                                    <#list spring.status.errorMessages as error>
+                                                        ${error}<#if !error?is_last><br/></#if>
+                                                    </#list>
+                                                </div>
+                                            </#if>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4 pb-2">
+
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="birthday" class="form-label">Дата рождения:</label>
+                                            <input type="date" class="form-control form-control-lg login-input" id="birthday" name="birthday" required>
+                                        </div>
+                                        <#if error??>
+                                            <b class="text-danger text-center mb-3">${error}</b>
+                                        </#if>
+                                    </div>
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" form="register-form" class="login-button fs-3">Создать пользователя</button>
+                    </div>
+
+
                 </div>
-            </#if>
 
-            <label for="birthday">Дата рождения:</label>
-            <input type="date" id="birthday" name="birthday" required>
-
-            <#if error??>
-                <b class="text-danger text-center mb-3">${error}</b>
-            </#if>
-            <button type="submit">Создать пользователя</button>
-        </form>
-    </div>
+            </div>
+        </div>
+    </section>
 
 
     <div class="modal fade" id="createRoleModal" tabindex="-1" aria-labelledby="createRoleModalLabel" aria-hidden="true">
@@ -167,5 +227,5 @@
         </div>
     </div>
 
-    <script src="/js/users.js"></script>
+    <script src="/js/roles.js"></script>
 </@layout.layout>

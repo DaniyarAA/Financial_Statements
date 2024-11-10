@@ -29,6 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
         saveUserData(userId);
     }
 
+    const companySearchInput = document.getElementById("companySearch");
+    const companyCheckboxes = document.getElementById("companyCheckboxes");
+
+    companySearchInput.addEventListener("input", function () {
+        const searchTerm = companySearchInput.value.toLowerCase();
+
+        Array.from(companyCheckboxes.children).forEach(div => {
+            const label = div.querySelector("label");
+            if (label.textContent.toLowerCase().includes(searchTerm)) {
+                div.style.display = "flex";
+            } else {
+                div.style.display = "none";
+            }
+        });
+    });
 
     userModal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;

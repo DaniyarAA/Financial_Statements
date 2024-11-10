@@ -20,7 +20,18 @@ function showTaskDetails(button) {
                 <p><strong>Тип документа:</strong> ${documentType}</p>
                 <p><strong>С:</strong> ${startDate}</p>
                 <p><strong>Компания:</strong> ${companyName}</p>
-                <p><strong>Сумма:</strong> ${amount}</p>
+                
+                <div id="amount-display">
+                    <p><strong>Сумма:</strong> <span id="amount-text">${amount}</span>
+                    <button type="button" class="btn btn-link" onclick="editAmount()">Edit</button></p>
+                </div>
+                
+                <div id="amount-input" style="display: none;">
+                    <label for="amount" class="form-label">Сумма</label>
+                    <input type="text" class="form-control" id="amount" name="amount" value="${amount}">
+                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
+                </div>
+
                 <p><strong>Статус:</strong> ${status}</p>
                 <label for="description" class="form-label">Описание</label>
                 <input type="text" class="form-control" id="description" name="description" value="${description}">
@@ -28,4 +39,14 @@ function showTaskDetails(button) {
             <button type="submit" class="btn btn-primary">Сохранить изменения</button>
         </form>
     `;
+}
+
+function editAmount() {
+    document.getElementById('amount-display').style.display = 'none';
+    document.getElementById('amount-input').style.display = 'block';
+}
+
+function cancelEditAmount() {
+    document.getElementById('amount-display').style.display = 'block';
+    document.getElementById('amount-input').style.display = 'none';
 }

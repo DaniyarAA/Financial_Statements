@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
                 } else {
-                    document.getElementById("avatar").src = `/user.png`;
+                    document.getElementById("avatar").src = `/api/files/download/user.png`;
 
                 }
 

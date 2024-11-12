@@ -49,5 +49,5 @@ public interface CompanyService {
 
     List<CompanyForTaskDto> getAllCompaniesForUser(User user);
 
-    void addCompany(CompanyDto companyDto);
+    void addCompany(CompanyDto companyDto , String login);
 }

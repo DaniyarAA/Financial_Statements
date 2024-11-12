@@ -20,9 +20,9 @@
             </div>
             <div class="form-group">
                 <label for="inn">ИНН:</label>
-                <input type="text" id="inn" name="inn" class="form-control" value="${company.inn?if_exists}">
-                <#if (errors?has_content && errors.hasFieldErrors("inn"))>
-                    <span class="text-danger">${errors.getFieldError("inn").defaultMessage}</span>
+                <input type="text" id="companyInn" name="companyInn" class="form-control" value="${company.companyInn?if_exists}">
+                <#if (errors?has_content && errors.hasFieldErrors("companyInn"))>
+                    <span class="text-danger">${errors.getFieldError("companyInn").defaultMessage}</span>
                 </#if>
             </div>
             <div class="form-group">
@@ -140,6 +140,9 @@
             <div class="form-group">
                 <label for="phone">Телефон:</label>
                 <input type="text" id="phone" name="phone" class="form-control" value="${company.phone?if_exists}">
+                <#if (errors?has_content && errors.hasFieldErrors("phone"))>
+                    <span class="text-danger">${errors.getFieldError("phone").defaultMessage}</span>
+                </#if>
             </div>
             <div class="form-group">
                 <label for="esf">ЭСФ логин:</label>

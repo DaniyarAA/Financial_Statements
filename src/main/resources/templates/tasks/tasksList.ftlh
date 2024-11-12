@@ -14,7 +14,7 @@
 
             <div class="col-md-9">
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center">
+                    <table class="table table-main text-center">
                         <thead class="thead-light">
                         <tr>
                             <th scope="col" class="font-weight-bold">Компании</th>
@@ -25,7 +25,7 @@
                         </thead>
                         <tbody>
                         <#list list as company>
-                            <tr>
+                            <tr class="table-striped-row">
                                 <td class="font-weight-bold">${company.name}</td>
                                 <#list monthsMap?keys as yearMonth>
                                     <td>
@@ -56,6 +56,7 @@
                             </tr>
                         </#list>
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -94,14 +95,6 @@
                 </div>
             </div>
         </div>
-<#--        <div class="mb-3">-->
-<#--            <label for="taskStatus" class="form-label">Статус</label>-->
-<#--            <select class="form-select" id="taskStatus" name="statusId">-->
-<#--                <#list taskStatusDtoList as status>-->
-<#--                    <option value="${status.id}">${status.name}</option>-->
-<#--                </#list>-->
-<#--            </select>-->
-<#--        </div>-->
     </div>
 
 
@@ -112,5 +105,28 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/tasks/list.js"></script>
 
+    <style>
+        .table-striped-row:nth-child(odd) {
+            background-color: #d9d9d9;
+        }
+        .table-striped-row:nth-child(even) {
+            background-color: #ffffff;
+        }
+        .table-main {
+            margin-bottom: 20px;
+        }
 
+        .table-main td, .table-main th {
+            padding: 15px;
+        }
+
+        .table-main tr {
+            height: 50px;
+        }
+
+        .company-column {
+            width: 244px;
+            text-align: center; /* Ensures "Компании" column is center-aligned */
+        }
+    </style>
 </@layout.layout>

@@ -48,4 +48,6 @@ public interface CompanyService {
     boolean existsByCompanySalykLogin(String salykLogin);
 
     List<CompanyForTaskDto> getAllCompaniesForUser(User user);
+
+    void addCompany(CompanyDto companyDto);
 }

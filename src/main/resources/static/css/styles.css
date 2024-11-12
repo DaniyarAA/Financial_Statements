@@ -600,6 +600,23 @@ h2 {
     transition: opacity 0.5s ease-in-out;
 }
 
+.submit-btn-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 319px;
+    height: 51px;
+    background: #96FF9D;
+    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 14px;
+    border: none;
+}
+
+.check-icon-add {
+    font-size: 44px;
+    color: #1E1E1E;
+}
+
 .avatar-container {
     position: relative;
     display: inline-block;

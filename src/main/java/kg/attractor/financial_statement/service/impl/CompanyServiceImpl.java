@@ -457,6 +457,12 @@ public class CompanyServiceImpl implements CompanyService {
         return convertToCompanyForTaskDtoList(companies);
     }
 
+    @Override
+    public void addCompany(CompanyDto companyDto) {
+        Company company = convertToEntity(companyDto);
+        companyRepository.save(company);
+    }
+
     private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
         return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }

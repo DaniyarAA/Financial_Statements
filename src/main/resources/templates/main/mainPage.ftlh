@@ -15,8 +15,8 @@
                     </div>
                     <div class="left col">
                         <div class="center-column">
-                            <a href="/company/create" class="button company btn type-btn mt-5">СОЗДАТЬ НОВЫЙ ИП/ОСОО</a>
-                            <a href="/company/all" class="button company btn type-btn">СПИСОК КОМПАНИЙ</a>
+                            <a href="/company/add" class="button company btn type-btn mt-5">СОЗДАТЬ НОВЫЙ ИП/ОСОО</a>
+                            <a href="/company/all?sort=actual" class="button company btn type-btn">СПИСОК КОМПАНИЙ</a>
 
                         </div>
                     </div>

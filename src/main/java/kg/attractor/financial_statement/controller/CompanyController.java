@@ -31,6 +31,23 @@ public class CompanyController {
         return companyService.createCompany(companyDto, principal.getName(), bindingResult);
     }
 
+    @PostMapping("/add")
+    public String create(@Valid CompanyDto companyDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("company", companyDto);
+            model.addAttribute("errors", bindingResult);
+            return "company/add";
+        }
+        companyService.addCompany(companyDto);
+        return "redirect:/company/all";
+    }
+
+    @GetMapping("/add")
+    public String add(Model model) {
+        model.addAttribute("company", new CompanyDto());
+        return "company/add";
+    }
+
 
     @GetMapping("/all")
     public String getAll(

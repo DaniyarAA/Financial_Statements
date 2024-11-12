@@ -106,8 +106,9 @@
 
 
     <script>
-        const taskStatusList = JSON.parse('${taskStatusDtosJson}');
+        const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/tasks/list.js"></script>
 

@@ -1,4 +1,6 @@
 function showTaskDetails(button) {
+    console.log(taskStatusDtos);
+
     document.getElementById('task-details').style.display = 'block';
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
@@ -12,7 +14,10 @@ function showTaskDetails(button) {
     const status = button.getAttribute("data-status");
 
     let statusOptions = '';
-
+    taskStatusDtos.forEach((statusDto) => {
+        const isSelected = statusDto.id == status ? 'selected' : '';
+        statusOptions += `<option value="${statusDto.id}" ${isSelected}>${statusDto.name}</option>`;
+    });
 
     document.getElementById('task-content').innerHTML = `
         <form id="task-edit-form" action="/tasks/edit/${taskId}" method="post">
@@ -35,7 +40,10 @@ function showTaskDetails(button) {
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
                 </div>
 
-               
+                <label for="taskStatus" class="form-label">Статус</label>
+                <select class="form-select" id="taskStatus" name="statusId">
+                    ${statusOptions}
+                </select>
                 
                 <label for="description" class="form-label">Описание</label>
                 <input type="text" class="form-control" id="description" name="description" value="${description}">

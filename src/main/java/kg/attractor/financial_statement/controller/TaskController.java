@@ -132,6 +132,7 @@ public class TaskController {
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         ObjectMapper objectMapper = new ObjectMapper();
         String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
+        System.out.println("Json: " + taskStatusDtosJson);
 
         model.addAllAttributes(taskListData);
         model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);

@@ -39,11 +39,20 @@ function showTaskDetails(button) {
                     <input type="text" class="form-control" id="amount" name="amount" value="${amount}">
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
                 </div>
+                
+                <div id="status-display">
+                    <p><strong>Cтатус:</strong> <span id="amount-text">${status}</span>
+                    <button type="button" class="btn btn-link" onclick="editStatus()">Edit</button></p>
+                </div>
+                
+                <div id="status-input" style="display: none">
+                    <label for="taskStatus" class="form-label">Статус</label>
+                    <select class="form-select" id="taskStatus" name="statusId">
+                        ${statusOptions}
+                    </select>
+                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Cancel</button>
 
-                <label for="taskStatus" class="form-label">Статус</label>
-                <select class="form-select" id="taskStatus" name="statusId">
-                    ${statusOptions}
-                </select>
+                </div>
                 
                 <label for="description" class="form-label">Описание</label>
                 <input type="text" class="form-control" id="description" name="description" value="${description}">
@@ -61,4 +70,14 @@ function editAmount() {
 function cancelEditAmount() {
     document.getElementById('amount-display').style.display = 'block';
     document.getElementById('amount-input').style.display = 'none';
+}
+
+function editStatus() {
+    document.getElementById('status-display').style.display = 'none';
+    document.getElementById('status-input').style.display = 'block';
+}
+
+function cancelEditStatus() {
+    document.getElementById('status-display').style.display = 'block';
+    document.getElementById('status-input').style.display = 'none';
 }

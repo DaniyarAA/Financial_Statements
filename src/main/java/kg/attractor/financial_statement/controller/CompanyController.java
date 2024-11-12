@@ -39,7 +39,7 @@ public class CompanyController {
             return "company/add";
         }
         companyService.addCompany(companyDto);
-        return "redirect:/company/all";
+        return "redirect:/company/all?sort=actual";
     }
 
     @GetMapping("/add")

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,8 +19,8 @@ public class TaskEditDto {
     private Long documentTypeId;
     private String userLogin;
     private Long companyId;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String description;
     private BigDecimal amount;
     private Long statusId;

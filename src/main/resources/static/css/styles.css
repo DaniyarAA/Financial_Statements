@@ -22,17 +22,16 @@ a {
 
 .calendar-wrapper {
     width: 360px;
-    margin: 3em auto;
-    padding: 2em;
-    border: 1px solid #dcdcff;
-    border-radius: 5px;
-    background: #fff;
+    margin-left: 12px;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 1.8px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
 }
 
 table {
     clear: both;
     width: 100%;
-    border: 1px solid #dcdcff;
+    border: 1px solid #f0f0f5;
     border-radius: 3px;
     border-collapse: collapse;
     color: #444;
@@ -42,8 +41,8 @@ td {
     height: 48px;
     text-align: center;
     vertical-align: middle;
-    border-right: 1px solid #dcdcff;
-    border-top: 1px solid #dcdcff;
+    border-right: 1px solid #f0f0f5;
+    border-top: 1px solid #f0f0f5;
     width: 14.28571429%;
 }
 

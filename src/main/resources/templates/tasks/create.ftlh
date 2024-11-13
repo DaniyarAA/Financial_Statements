@@ -157,16 +157,17 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="startDateTime" class="form-label">Дата начала</label>
-                            <input type="text" class="form-control" id="startDateTimeDisplay" readonly>
-                            <input type="hidden" id="startDateTime" name="startDateTime">
+                            <label for="startDate" class="form-label">Дата начала</label>
+                            <input type="text" class="form-control" id="startDateDisplay" readonly>
+                            <input type="hidden" id="startDate" name="startDate">
                         </div>
 
                         <div class="mb-3">
-                            <label for="endDateTime" class="form-label">Дата окончания</label>
-                            <input type="text" class="form-control" id="endDateTimeDisplay" readonly>
-                            <input type="hidden" id="endDateTime" name="endDateTime">
+                            <label for="endDate" class="form-label">Дата окончания</label>
+                            <input type="text" class="form-control" id="endDateDisplay" readonly>
+                            <input type="hidden" id="endDate" name="endDate">
                         </div>
+
                     </div>
 
                     <div class="mb-4">

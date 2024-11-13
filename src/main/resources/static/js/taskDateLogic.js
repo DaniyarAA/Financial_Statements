@@ -5,10 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const decadeSelect = document.getElementById("decade");
     const weekSelect = document.getElementById("week");
     const reportTypeRadios = document.getElementsByName("reportType");
-    const startDateTimeDisplay = document.getElementById("startDateTimeDisplay");
-    const endDateTimeDisplay = document.getElementById("endDateTimeDisplay");
-    const startDateTimeInput = document.getElementById("startDateTime");
-    const endDateTimeInput = document.getElementById("endDateTime");
+    const startDateDisplay = document.getElementById("startDateDisplay");
+    const endDateDisplay = document.getElementById("endDateDisplay");
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
     const weekSelectionDiv = document.getElementById("weekSelection");
     const decadeSelectionDiv = document.getElementById("decadeSelection");
     const quarterSelectionDiv = document.getElementById("quarterSelection");
@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
         quarterSelect.value = "";
         decadeSelect.value = "";
         weekSelect.value = "";
-        startDateTimeDisplay.value = "";
-        endDateTimeDisplay.value = "";
-        startDateTimeInput.value = "";
-        endDateTimeInput.value = "";
+        startDateDisplay.value = "";
+        endDateDisplay.value = "";
+        startDateInput.value = "";
+        endDateInput.value = "";
     }
 
     function updateDates() {
@@ -39,106 +39,66 @@ document.addEventListener("DOMContentLoaded", function () {
             const startDate = new Date(Date.UTC(year, month - 1, startDay));
             const endDate = new Date(Date.UTC(year, month - 1, startDay + 6));
 
-            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
-            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU");
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU");
 
-            startDateTimeDisplay.value = formattedStartDate;
-            endDateTimeDisplay.value = formattedEndDate;
+            startDateDisplay.value = formattedStartDate;
+            endDateDisplay.value = formattedEndDate;
 
-            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
-            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+            startDateInput.value = startDate.toISOString().split("T")[0];
+            endDateInput.value = endDate.toISOString().split("T")[0];
 
         } else if (reportType === "monthly" && month && year) {
             const startDate = new Date(Date.UTC(year, month - 1, 1));
             const endDate = new Date(Date.UTC(year, month, 0));
 
-            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
-            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU");
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU");
 
-            startDateTimeDisplay.value = formattedStartDate;
-            endDateTimeDisplay.value = formattedEndDate;
+            startDateDisplay.value = formattedStartDate;
+            endDateDisplay.value = formattedEndDate;
 
-            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
-            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+            startDateInput.value = startDate.toISOString().split("T")[0];
+            endDateInput.value = endDate.toISOString().split("T")[0];
 
         } else if (reportType === "quarterly" && quarter && year) {
             const startDate = new Date(Date.UTC(year, (quarter - 1) * 3, 1));
             const endDate = new Date(Date.UTC(year, quarter * 3, 0));
 
-            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
-            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU");
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU");
 
-            startDateTimeDisplay.value = formattedStartDate;
-            endDateTimeDisplay.value = formattedEndDate;
+            startDateDisplay.value = formattedStartDate;
+            endDateDisplay.value = formattedEndDate;
 
-            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
-            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+            startDateInput.value = startDate.toISOString().split("T")[0];
+            endDateInput.value = endDate.toISOString().split("T")[0];
 
         } else if (reportType === "decadal" && month && year && decade) {
             const startDate = new Date(Date.UTC(year, month - 1, (decade - 1) * 10 + 1));
             const endDate = new Date(Date.UTC(year, month - 1, decade * 10));
 
-            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
-            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU");
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU");
 
-            startDateTimeDisplay.value = formattedStartDate;
-            endDateTimeDisplay.value = formattedEndDate;
+            startDateDisplay.value = formattedStartDate;
+            endDateDisplay.value = formattedEndDate;
 
-            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
-            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+            startDateInput.value = startDate.toISOString().split("T")[0];
+            endDateInput.value = endDate.toISOString().split("T")[0];
 
         } else if (reportType === "annual" && year) {
             const startDate = new Date(Date.UTC(year, 0, 1));
             const endDate = new Date(Date.UTC(year, 11, 31));
 
-            const formattedStartDate = startDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
-            const formattedEndDate = endDate.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            });
+            const formattedStartDate = startDate.toLocaleDateString("ru-RU");
+            const formattedEndDate = endDate.toLocaleDateString("ru-RU");
 
-            startDateTimeDisplay.value = formattedStartDate;
-            endDateTimeDisplay.value = formattedEndDate;
+            startDateDisplay.value = formattedStartDate;
+            endDateDisplay.value = formattedEndDate;
 
-            startDateTimeInput.value = startDate.toISOString().split("T")[0] + "T00:00:00";
-            endDateTimeInput.value = endDate.toISOString().split("T")[0] + "T23:59:59";
+            startDateInput.value = startDate.toISOString().split("T")[0];
+            endDateInput.value = endDate.toISOString().split("T")[0];
         }
     }
 

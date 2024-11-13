@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/users/change-password/**").hasAuthority("EDIT_USER")
                         .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
+                        .requestMatchers("/company/add").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")
                         .requestMatchers("/company/delete").hasAuthority("DELETE_COMPANY")
 

@@ -2,38 +2,38 @@
 <meta name="_csrf_header" content="${_csrf.headerName}">
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
-    <div class="container-fluid p-3">
+    <div class="container p-3">
         <div class="row">
-            <div class="col-md-12 mb-3 d-flex justify-content-between">
-                <button id="prevPage" class="btn btn-secondary" <#if currentPage == 0>disabled</#if>
-                        onclick="window.location.href='?page=${currentPage - 1}&size=7'">← Previous</button>
+            <div class="col-md-12 mb-3">
+                <button id="prevPage" onclick="window.location.href='?page=${currentPage - 1}&size=7'"
+                        <#if currentPage == 0>disabled</#if> >← Previous</button>
                 <span>Page ${currentPage + 1} of ${totalPages}</span>
-                <button id="nextPage" class="btn btn-secondary" <#if currentPage == totalPages - 1>disabled</#if>
-                        onclick="window.location.href='?page=${currentPage + 1}&size=7'">Next →</button>
+                <button id="nextPage" onclick="window.location.href='?page=${currentPage + 1}&size=7'"
+                        <#if currentPage == totalPages - 1>disabled</#if> >Next →</button>
             </div>
 
             <div class="col-md-9">
                 <div class="table-responsive">
-                    <table class="table table-main text-center">
-                        <thead class="thead-light">
+                    <table class="table-main">
+                        <thead>
                         <tr>
-                            <th scope="col" class="font-weight-bold">Компании</th>
+                            <th class="company-column">Компании</th>
                             <#list monthsMap?keys as yearMonth>
-                                <th scope="col" class="font-weight-bold">${monthsMap[yearMonth]}</th>
+                                <th>${monthsMap[yearMonth]}</th>
                             </#list>
                         </tr>
                         </thead>
                         <tbody>
                         <#list list as company>
                             <tr class="table-striped-row">
-                                <td class="font-weight-bold">${company.name}</td>
+                                <td class="company-column">${company.name}</td>
                                 <#list monthsMap?keys as yearMonth>
                                     <td>
                                         <#if tasksByYearMonthAndCompany[yearMonth]?? && tasksByYearMonthAndCompany[yearMonth][company.id?string]??>
-                                            <div class="d-flex flex-row justify-content-center align-items-center flex-wrap">
+                                            <div class="task-buttons">
                                                 <#list tasksByYearMonthAndCompany[yearMonth][company.id?string] as task>
                                                     <button
-                                                            class="btn btn-sm <#if task.isCompleted>btn-success<#else>btn-danger</#if> m-1"
+                                                            class="<#if task.isCompleted>completed<#else>pending</#if>"
                                                             onclick="showTaskDetails(this)"
                                                             data-task-id="${task.id}"
                                                             data-document-type="${task.documentTypeName}"
@@ -49,84 +49,96 @@
                                                 </#list>
                                             </div>
                                         <#else>
-                                            <span class="text-muted font-italic">Нет задач</span>
+                                            <span class="no-tasks">Нет задач</span>
                                         </#if>
                                     </td>
                                 </#list>
                             </tr>
                         </#list>
                         </tbody>
-
                     </table>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div id="task-details" class="border p-3" style="display: none;">
-                    <#if _csrf??>
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" id="csrfToken"
-                               value="${(_csrf.token)!'csrf-token'}"/>
-                    </#if>
+                <div id="task-details" class="task-details">
+                    <input type="hidden" id="csrfToken" value="${(_csrf.token)!'csrf-token'}"/>
                     <h5>Подробнее</h5>
-                    <div id="task-content">
-
-                    </div>
-
-                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel">Редактировать</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <label for="editInput" class="form-label">Новое значение:</label>
-                                    <input type="text" id="editInput" class="form-control">
-                                    <input type="hidden" id="editFieldId">
-                                    <input type="hidden" id="editTaskId">
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Сохранить</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="task-content"></div>
                 </div>
             </div>
         </div>
     </div>
 
-
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/tasks/list.js"></script>
 
     <style>
-        .table-striped-row:nth-child(odd) {
-            background-color: #d9d9d9;
-        }
-        .table-striped-row:nth-child(even) {
-            background-color: #ffffff;
-        }
         .table-main {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 3px;
             margin-bottom: 20px;
+            box-shadow: -4px -4px 8px rgba(0, 0, 0, 0.2), 4px -4px 8px rgba(0, 0, 0, 0.2), 0px -4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .table-main td, .table-main th {
+        .table-main th, .table-main td {
+            border: 3px solid #ffffff;
             padding: 15px;
+            text-align: center;
+            height: 70px;
         }
 
-        .table-main tr {
-            height: 50px;
+        .table-main tbody {
+            background-color: #d9d9d9;
         }
 
         .company-column {
             width: 244px;
-            text-align: center; /* Ensures "Компании" column is center-aligned */
+            text-align: center;
+        }
+
+        .table-striped-row:nth-child(odd) {
+            background-color: #f5f5f5;
+        }
+        .table-striped-row:nth-child(even) {
+            background-color: #d9d9d9;
+        }
+
+        /* Button styling */
+        .task-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .task-buttons button {
+            margin: 4px;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .pending {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .task-details {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        .no-tasks {
+            font-style: italic;
+            color: #6c757d;
         }
     </style>
+
+
+
+
 </@layout.layout>

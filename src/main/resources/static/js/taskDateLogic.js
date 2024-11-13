@@ -75,8 +75,17 @@ document.addEventListener("DOMContentLoaded", function () {
             endDateInput.value = endDate.toISOString().split("T")[0];
 
         } else if (reportType === "decadal" && month && year && decade) {
-            const startDate = new Date(Date.UTC(year, month - 1, (decade - 1) * 10 + 1));
-            const endDate = new Date(Date.UTC(year, month - 1, decade * 10));
+            let startDate, endDate;
+            if (decade === 1) {
+                startDate = new Date(Date.UTC(year, month - 1, 1));
+                endDate = new Date(Date.UTC(year, month - 1, 10));
+            } else if (decade === 2) {
+                startDate = new Date(Date.UTC(year, month - 1, 11));
+                endDate = new Date(Date.UTC(year, month - 1, 20));
+            } else if (decade === 3) {
+                startDate = new Date(Date.UTC(year, month - 1, 21));
+                endDate = new Date(Date.UTC(year, month, 0));
+            }
 
             const formattedStartDate = startDate.toLocaleDateString("ru-RU");
             const formattedEndDate = endDate.toLocaleDateString("ru-RU");
@@ -160,4 +169,4 @@ document.addEventListener("DOMContentLoaded", function () {
     quarterSelect.addEventListener("change", updateDates);
     decadeSelect.addEventListener("change", updateDates);
     weekSelect.addEventListener("change", updateDates);
-});
+})

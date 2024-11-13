@@ -9,4 +9,6 @@ public interface TaskStatusService {
     List<TaskStatusDto> getAllTaskStatuses();
 
     TaskStatus getTaskStatusById(Long statusId);
+
+    Boolean getIsCompleted(TaskStatus taskStatus);
 }

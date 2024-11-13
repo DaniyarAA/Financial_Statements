@@ -2,17 +2,24 @@ package kg.attractor.financial_statement.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -144,4 +151,87 @@ public class TaskController {
         taskService.deleteTask(id);
         return "redirect:/tasks";
     }
+
+    @GetMapping("list")
+    public String getTaskListPage(
+            Model model,
+            Authentication authentication,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "7") int size
+    ) {
+        if (authentication == null) {
+            return "redirect:/login";
+        }
+
+        String userLogin = authentication.getName();
+        User user = userService.getUserByLogin(userLogin);
+
+        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
+        System.out.println("CompanyDtos" +companyDtos);
+        List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
+
+        Set<String> uniqueYearMonths = taskDtos.stream()
+                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .collect(Collectors.toSet());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
+
+        Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
+
+        for (String yearMonth : uniqueYearMonths) {
+            Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
+            for (CompanyForTaskDto company : companyDtos) {
+                List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
+                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
+                                && task.getCompany().getId().equals(company.getId()))
+                        .collect(Collectors.toList());
+                tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
+            }
+            tasksByYearMonthAndCompany.put(yearMonth, tasksForCompanies);
+        }
+
+        Map<String, String> monthsMap = uniqueYearMonths.stream()
+                .collect(Collectors.toMap(
+                        ym -> ym,
+                        ym -> YearMonth.parse(ym, formatter)
+                                .getMonth()
+                                .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
+                ));
+
+        int totalCompanies = companyDtos.size();
+        int start = page * size;
+        int end = Math.min(start + size, totalCompanies);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
+        model.addAttribute("list", companyDtos.subList(start, end));
+
+        model.addAttribute("monthsMap", monthsMap);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
+
+        model.addAttribute("dateUtils", new DateUtils());
+
+        return "tasks/tasksList";
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> updateTaskByField(@RequestBody Map<String, String> data) {
+        return taskService.editTaskByField(data);
+    }
+
+//    @PostMapping("/edit/{id}")
+//    public String updateTaskInListPage(
+//            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
+//            @PathVariable Long id,
+//            BindingResult bindingResult,
+//            Model model,
+//            Authentication authentication
+//            ) {
+//
+//
+//    }
 }

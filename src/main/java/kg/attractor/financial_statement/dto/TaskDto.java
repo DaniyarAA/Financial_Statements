@@ -25,4 +25,6 @@ public class TaskDto {
     private BigDecimal amount;
     private String description;
     private boolean isDeleted;
+    private Boolean isCompleted;
+
 }

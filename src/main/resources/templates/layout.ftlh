@@ -1,4 +1,4 @@
-<#import "spring.ftl" as spring>
+<#import 'spring.ftl' as spring>
 <#macro layout>
 
     <!doctype html>
@@ -12,6 +12,7 @@
         <meta name="_csrf_token" content="${_csrf.token}">
         <title>Document</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
         <link rel="stylesheet" href="/css/layout.css">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,68 +28,26 @@
         <link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #6DF700; color: black">
-
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <span class="ms-2">Financial Statement</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="/"><i class="bi bi-house-door"></i></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tasks/create">+</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tasks">Таски</a>
-                    </li>
-
-                    <#assign known = SPRING_SECURITY_CONTEXT??>
-                    <#if known>
-                        <#assign
-                        user = SPRING_SECURITY_CONTEXT.authentication.principal
-                        name = user.username>
-                    <#--                    <#list user.authorities as auth>-->
-                    <#--                        <#if auth = "ADMIN">-->
-                    <#--                            <li class="nav-item">-->
-                    <#--                                <a class="nav-link active" aria-current="page" href="/admin/users">Пользователи</a>-->
-                    <#--                            </li>-->
-                    <#--                        </#if>-->
-                    <#--                    </#list>-->
-                        <#if _csrf??>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/account">Профиль</a>
-                            </li>
-                            <form action="/logout" method="post">
-                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
-                                       value="${(_csrf.token)!'--no-token--'}"/>
-                                <a class="btn btn-outline-light ms-3" href="/logout">Выйти</a>
-                            </form>
-                        <#else>
-
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <#assign known = SPRING_SECURITY_CONTEXT??>
+                <#if known>
+                    <#assign
+                    user = SPRING_SECURITY_CONTEXT.authentication.principal
+                    name = user.getUsername()>
+                    <#list user.authorities as auth>
+                        <#if auth=="VIEW_USER">
+                            <a class="navbar-brand" href="/admin/users"><i class="bi bi-people-fill"></i></a>
                         </#if>
-                    <#else>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/register">Регистрация</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/company/all/">Компании</a>
-                        </li>
-                        <div class="d-flex align-items-center">
-                            <a class="btn btn-outline-success ms-3" href="/login">Войти</a>
-                        </div>
-                    </#if>
-                </ul>
-
-                <div>
-
-                </div>
-
+                    </#list>
+                </#if>
             </div>
         </div>
     </nav>
@@ -96,13 +55,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-    <main>
-        <div class="container">
-            <#nested spring >
-        </div>
-    </main>
+    <div class="container">
 
-    <#include "footer.ftlh" />
+        <#nested spring>
+
+    </div>
 
     </body>
     </html>

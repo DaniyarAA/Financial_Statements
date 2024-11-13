@@ -6,21 +6,19 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.CompanyRepository;
-import kg.attractor.financial_statement.repository.UserCompanyRepository;
-import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.UserCompanyService;
+import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,12 +26,31 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
-    private final UserRepository userRepository;
-    private final UserCompanyRepository companyUserRepository;
+    private final UserCompanyService userCompanyService;
+    private UserService userService;
+
+    @Autowired
+    @Lazy
+    private void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+
+    @Override
+    public void addCompany(CompanyDto companyDto,String login) {
+        Company company = convertToEntity(companyDto);
+        company.setDeleted(Boolean.FALSE);
+        Company companyCreated = companyRepository.save(company);
+        createdUserCompany(companyCreated, login);
+    }
 
     @Override
     public ResponseEntity<Map<String, String>> createCompany(
             CompanyDto companyDto, String login, BindingResult bindingResult) {
+
+        if (login == null || login.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Авторизуйтесь чтобы создать компанию !"));
+        }
 
         if (bindingResult != null && bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -44,25 +61,26 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         Company company = convertToEntity(companyDto);
+        company.setDeleted(Boolean.FALSE);
         Company companyCreated = companyRepository.save(company);
 
         createdUserCompany(companyCreated, login);
 
-        return ResponseEntity.ok(Map.of("message", "Company created successfully"));
+        return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }
 
     @Override
     public CompanyDto findById(Long companyId) {
-        Company company = companyRepository.findById(companyId).orElseThrow(() -> new NoSuchElementException("Invalid company ID"));
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         return convertToDto(company);
     }
 
     @Override
     public void editCompany(CompanyDto company) {
         Company company1 = companyRepository.findById(company.getId())
-                .orElseThrow(() -> new NoSuchElementException("Invalid company ID"));
+                .orElseThrow(() -> new NoSuchElementException("Нерабочая ID компании !"));
         company1.setName(company.getName());
-        company1.setInn(company.getInn());
+        company1.setInn(company.getCompanyInn());
         company1.setDirectorInn(company.getDirectorInn());
         company1.setLogin(company.getLogin());
         company1.setPassword(company.getPassword());
@@ -110,32 +128,36 @@ public class CompanyServiceImpl implements CompanyService {
         String newValue = data.get("value");
 
         if (companyIdStr == null || fieldToEdit == null || newValue == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid input data."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
         }
 
         long companyId;
         try {
             companyId = Long.parseLong(companyIdStr);
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid company ID."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
         }
 
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new NoSuchElementException("Company not found"));
+                .orElseThrow(() -> new NoSuchElementException("Компания не найдена !"));
 
         switch (fieldToEdit) {
             case "email":
                 if (EmailValidator.isValidEmail(newValue)) {
                     company.setEmail(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format."));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Email !"));
                 }
                 break;
-            case "password":
-                company.setPassword(newValue);
+            case "emailPassword":
+                company.setEmailPassword(newValue);
                 break;
             case "phone":
-                company.setPhone(newValue);
+                if (newValue.length() < 30) {
+                    company.setPhone(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер номера телефона не может быть больше 30"));
+                }
                 break;
             case "esf":
                 company.setEsf(newValue);
@@ -162,70 +184,121 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setEttnPassword(newValue);
                 break;
             case "name":
-                company.setName(newValue);
+                if (!existsByCompanyName(newValue)) {
+                    company.setName(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким именем уже существует , либо заорхивирована и можете восстановить !"));
+                }
                 break;
             case "companyInn":
-                company.setInn(newValue);
+                if (newValue.length() == 12) {
+                    if (!existsByCompanyInn(newValue)) {
+                        company.setInn(newValue);
+                    } else {
+                        return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН уже существует!"));
+                    }
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
+                }
                 break;
             case "directorInn":
-                company.setDirectorInn(newValue);
+                if (newValue.length() == 12) {
+                    if (!existsByCompanyDirectorInn(newValue)) {
+                        company.setDirectorInn(newValue);
+                    }else {
+                        return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН директором уже существует!"));
+                    }
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
+                }
                 break;
             case "login":
-                company.setLogin(newValue);
+                if (!existsByCompanyLogin(newValue)) {
+                    company.setLogin(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким логином уже существует!"));
+                }
+                break;
+            case "password":
+                company.setPassword(newValue);
                 break;
             case "ecp":
                 company.setEcp(newValue);
                 break;
             case "kabinetSalyk":
-                company.setKabinetSalyk(newValue);
+                if (!existsByCompanySalykLogin(newValue)){
+                    company.setKabinetSalyk(newValue);
+                }else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким логином Salyk.kg уже существует!"));
+                }
                 break;
             case "kabinetSalykPassword":
                 company.setKabinetSalykPassword(newValue);
                 break;
             case "taxMode":
-                company.setTaxMode(newValue);
+                if (newValue.length() < 75) {
+                    company.setTaxMode(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не может быть больше 75"));
+                }
                 break;
             case "opf":
-                company.setOpf(newValue);
+                if (newValue.length() < 75) {
+                    company.setOpf(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не может быть больше 75"));
+                }
                 break;
             case "districtGns":
                 company.setDistrictGns(newValue);
                 break;
             case "socfundNumber":
-                company.setSocfundNumber(newValue);
+                if (newValue.length() == 12) {
+                    company.setSocfundNumber(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен быть 12 из символов"));
+                }
                 break;
             case "registrationNumberMj":
-                company.setRegistrationNumberMj(newValue);
+                if (newValue.length() < 50) {
+                    company.setRegistrationNumberMj(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не может быть больше 50"));
+                }
                 break;
             case "okpo":
-                company.setOkpo(newValue);
+                if (newValue.length() == 8) {
+                    company.setOkpo(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен быть из 8 символов"));
+                }
                 break;
             case "director":
                 company.setDirector(newValue);
                 break;
             case "ked":
-                company.setKed(newValue);
-                break;
-            case "isDeleted":
-                company.setDeleted(Boolean.parseBoolean(newValue)); // assuming newValue is a String representation of a boolean
+                if (newValue.length() < 50) {
+                    company.setKed(newValue);
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не может быть больше 50"));
+                }
                 break;
             default:
-                return ResponseEntity.badRequest().body(Map.of("message", "Unknown field to edit."));
+                return ResponseEntity.badRequest().body(Map.of("message", "Неизвестное значение редактирования !"));
         }
 
 
         companyRepository.save(company);
 
-        return ResponseEntity.ok(Map.of("message", "Company updated successfully."));
+        return ResponseEntity.ok(Map.of("message", "Компания Успешно отредактирована."));
     }
 
     private void createdUserCompany(Company company, String login) {
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        User user = userService.getUserByLogin(login);
         UserCompany userCompany = new UserCompany();
         userCompany.setCompany(company);
         userCompany.setUser(user);
-        companyUserRepository.save(userCompany);
+        userCompanyService.save(userCompany);
     }
 
     @Override
@@ -233,7 +306,7 @@ public class CompanyServiceImpl implements CompanyService {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
-                .inn(company.getInn())
+                .companyInn(company.getInn())
                 .directorInn(company.getDirectorInn())
                 .login(company.getLogin())
                 .password(company.getPassword())
@@ -259,6 +332,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .fresh1cPassword(company.getFresh1cPassword())
                 .ettn(company.getEttn())
                 .ettnPassword(company.getEttnPassword())
+                .isDeleted(company.isDeleted())
                 .build();
     }
 
@@ -275,10 +349,11 @@ public class CompanyServiceImpl implements CompanyService {
         return convertToCompanyForTaskDto(company);
     }
 
-    private Company convertToEntity(CompanyDto companyDto) {
+    @Override
+    public Company convertToEntity(CompanyDto companyDto) {
         return Company.builder()
                 .name(companyDto.getName())
-                .inn(companyDto.getInn())
+                .inn(companyDto.getCompanyInn())
                 .directorInn(companyDto.getDirectorInn())
                 .login(companyDto.getLogin())
                 .password(companyDto.getPassword())
@@ -307,11 +382,91 @@ public class CompanyServiceImpl implements CompanyService {
                 .build();
     }
 
+    @Override
+    public List<CompanyDto> getAllCompaniesBySort(String sort) {
+        final String ARCHIVE = "archive";
+        List<Company> companyList = Collections.emptyList();
+
+        if (sort != null) {
+            if (sort.equalsIgnoreCase(ARCHIVE)) {
+                companyList = companyRepository.findByIsDeleted(Boolean.TRUE);
+            } else {
+                companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+            }
+        }
+
+        return companyList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void returnCompany(Long companyId) {
+        companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+    }
+
+    @Override
+    public boolean existsByCompanyName(String companyName) {
+        return companyRepository.existsByName(companyName);
+    }
+
+    @Override
+    public List<CompanyDto> findByName(String search) {
+        List<Company> companyList = companyRepository.findByNameContainingIgnoreCase(search);
+        return companyList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsByCompanyInn(String companyInn) {
+        return companyRepository.existsByInn(companyInn);
+    }
+
+    @Override
+    public boolean existsByCompanyDirectorInn(String companyDirectorInn) {
+        return companyRepository.existsByDirectorInn(companyDirectorInn);
+    }
+
+    @Override
+    public boolean existsByCompanyLogin(String companyLogin) {
+        return companyRepository.existsByLogin(companyLogin);
+    }
+
+    @Override
+    public boolean existsByCompanySalykLogin(String salykLogin) {
+        return companyRepository.existsByKabinetSalyk(salykLogin);
+    }
+
+
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
         return CompanyForTaskDto.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .inn(company.getInn())
                 .build();
+    }
+
+    @Override
+    public List<CompanyForTaskDto> getAllCompaniesForUser(User user) {
+        Long userId = user.getId();
+
+        List<UserCompany> userCompanies = userCompanyService.findByUserIdAndCompanyIdIn(
+                userId,
+                companyRepository.findAll().stream().map(Company::getId).collect(Collectors.toList())
+        );
+
+        List<Long> userCompanyIds = userCompanies.stream()
+                .map(userCompany -> userCompany.getCompany().getId())
+                .collect(Collectors.toList());
+
+        List<Company> companies = companyRepository.findAllById(userCompanyIds);
+
+        return convertToCompanyForTaskDtoList(companies);
+    }
+
+    private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
+        return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }
 
 }

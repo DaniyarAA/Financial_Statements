@@ -31,6 +31,7 @@
                             <div class="calendar-wrapper">
                                 <h2 class="text-center">КАЛЕНДАРЬ</h2>
                                 <div id="divCal"></div>
+                                <input type="hidden" name="_csrf" value="${csrfToken.token}">
                             </div>
                     </div>
                 </div>

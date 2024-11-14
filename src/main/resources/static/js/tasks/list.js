@@ -1,7 +1,8 @@
 function showTaskDetails(button) {
     console.log(taskStatusDtos);
 
-    document.getElementById('task-details').style.display = 'block';
+    const container = document.querySelector('.container');
+    container.classList.add('with-details');
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 
@@ -19,48 +20,54 @@ function showTaskDetails(button) {
         statusOptions += `<option value="${statusDto.id}" ${isSelected}>${statusDto.name}</option>`;
     });
 
+    document.getElementById('task-details').style.display = 'block';
     document.getElementById('task-content').innerHTML = `
+        <div>
+            <p style="font-size: 24px">${documentType}</p>
+        </div>
         <form id="task-edit-form" action="/tasks/edit/${taskId}" method="post">
-            <input type="hidden" name="_csrf" value="${csrfToken}">
+    <input type="hidden" name="_csrf" value="${csrfToken}">
 
-            <div class="mb-3">
-                <p><strong>ID:</strong> ${taskId}</p>
-                <p><strong>Тип документа:</strong> ${documentType}</p>
-                <p><strong>С:</strong> ${startDate}</p>
-                <p><strong>Компания:</strong> ${companyName}</p>
-                
-                <div id="amount-display">
-                    <p><strong>Сумма:</strong> <span id="amount-text">${amount}</span>
-                    <button type="button" class="btn btn-link" onclick="editAmount()">Edit</button></p>
-                </div>
-                
-                <div id="amount-input" style="display: none;">
-                    <label for="amount" class="form-label">Сумма</label>
-                    <input type="text" class="form-control" id="amount" name="amount" value="${amount}">
-                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
-                </div>
-                
-                <div id="status-display">
-                    <p><strong>Cтатус:</strong> <span id="amount-text">${status}</span>
-                    <button type="button" class="btn btn-link" onclick="editStatus()">Edit</button></p>
-                </div>
-                
-                <div id="status-input" style="display: none">
-                    <label for="taskStatus" class="form-label">Статус</label>
-                    <select class="form-select" id="taskStatus" name="statusId">
-                        ${statusOptions}
-                    </select>
-                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Cancel</button>
-
-                </div>
-                
-                <label for="description" class="form-label">Описание</label>
-                <input type="text" class="form-control" id="description" name="description" value="${description}">
+    <div class="task-info">
+        <div class="labels" style="font-size: 14px; font-style: italic; font-weight: 100; display: inline">
+            <p>С:</p>
+            <p>Компания:</p>
+            <p>Сумма:</p>
+            <p>Статус:</p>
+        </div>
+        
+        <div class="values" style="font-size: 20px; display: inline">
+            <p>${startDate}</p>
+            <p>${companyName}</p>
+            <div id="amount-display" style="display: block;">
+                <p>${amount} <button type="button" class="btn btn-link" onclick="editAmount()">Edit</button></p>
+            </div>    
+            <div id="amount-input" style="display: none;">
+                <input type="text" class="form-control" id="amount" name="amount" value="${amount}">
+                <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
             </div>
-            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-        </form>
+            <div id="status-display" style="display: block">
+                <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()">Edit</button></p>
+            </div>
+            <div id="status-input" style="display: none;">
+                <select class="form-select" id="taskStatus" name="statusId">
+                    ${statusOptions}
+                </select>
+                <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <label for="description" class="form-label">Описание</label>
+    <input type="text" class="form-control" id="description" name="description" value="${description}">
+    
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+</form>
     `;
+
+
 }
+
 
 function editAmount() {
     document.getElementById('amount-display').style.display = 'none';

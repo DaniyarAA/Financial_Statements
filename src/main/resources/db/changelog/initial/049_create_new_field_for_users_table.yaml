@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 049
+      author: Kamilla
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: credentials_updated
+                  type: boolean
+                  defaultValueBoolean: false

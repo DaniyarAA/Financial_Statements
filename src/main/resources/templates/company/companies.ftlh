@@ -50,7 +50,7 @@
         <div class="col-md-3">
             <div class="list-group">
                 <#if 0 < currentPage>
-                    <#if (sort?trim?length == 0)>
+                    <#if (search?trim?length == 0)>
                         <a href="/company/all?companyId=${companyId}&page=${currentPage - 1}&sort=${sort}" class="btn btn-light arrow-btn">
                             <i class="bi bi-arrow-up-circle arrow"></i>
                         </a>
@@ -79,7 +79,7 @@
 
                 <p class="list-group-item list-group-item-action titleList">Название</p>
                 <#list list as item>
-                    <#if (sort?trim?length == 0)>
+                    <#if (search?trim?length == 0)>
                         <a href="/company/all?companyId=${item.id}&page=${currentPage}&sort=${sort}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
                     <#else>
                         <a href="/company/all?companyId=${item.id}&page=${currentPage}&search=${search}" class="list-group-item list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
@@ -87,7 +87,7 @@
                 </#list>
 
                 <#if currentPage < totalPages - 1>
-                    <#if (sort?trim?length == 0)>
+                    <#if (search?trim?length == 0)>
                         <a href="/company/all?companyId=${companyId}&page=${currentPage + 1}&sort=${sort}" class="btn btn-light arrow-btn">
                             <i class="bi bi-arrow-down-circle arrow"></i>
                         </a>

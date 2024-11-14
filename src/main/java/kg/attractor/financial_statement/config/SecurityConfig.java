@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/calendar").permitAll()
                         .requestMatchers("/admin/roles/create").hasAuthority("CREATE_ROLE")
                         .requestMatchers("/admin/roles/delete/").hasAuthority("DELETE_ROLE")
                         .requestMatchers("/admin/roles").hasAuthority("VIEW_ROLES")
@@ -46,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers("/company/add").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")
                         .requestMatchers("/company/delete").hasAuthority("DELETE_COMPANY")
-
                         .anyRequest().permitAll());
         return http.build();
     }

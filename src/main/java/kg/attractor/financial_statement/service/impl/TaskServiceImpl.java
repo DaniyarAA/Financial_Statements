@@ -64,14 +64,8 @@ public class TaskServiceImpl implements TaskService {
         YearMonth ym = YearMonth.of(year, month);
         List<Task> tasks = taskRepository.findAll();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
-                .map(task -> {
-                    String dateTimeStr = String.valueOf(task.getEndDate());
-                    LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
-                    return dateTime.toLocalDate();
-                })
+                .map(Task::getEndDate)
                 .filter(date -> YearMonth.from(date).equals(ym))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 

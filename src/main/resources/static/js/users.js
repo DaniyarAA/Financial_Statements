@@ -1,3 +1,6 @@
+const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
@@ -64,11 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
                 document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
+                document.getElementById("user-login").innerText = user.login;
                 document.getElementById("notesInput").value = user.notes;
                 document.getElementById("userNameInput").value = user.name;
-                document.getElementById("birthday-input").value = birthday;
-                document.getElementById("user-login").innerText = user.login;
-                document.getElementById("user-login-input").value = user.login
+                document.getElementById("birthday-input").value = birthday
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
                 } else {
@@ -176,47 +178,79 @@ function uploadAvatar() {
 
     avatarInput.click();
 }
+
+function deleteAllCookies() {
+    document.cookie.split(";").forEach((cookie) => {
+        const [name] = cookie.split("=");
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/admin/users;`;
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-    const changePasswordModal = document.getElementById("changePasswordModal");
-    let userId;
+    const changePasswordModal = document.getElementById("changeLoginPasswordModal");
+    let userId = document.getElementById("currentUserId").value || null;
 
     changePasswordModal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;
-        userId = button.getAttribute("data-user-id");
+        userId = button.getAttribute("data-user-id") || userId;
     });
 
-    function savePassword() {
+    async function saveLoginAndPassword() {
+        const newLogin = document.getElementById("newLogin").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
-        const errorMessage = document.getElementById("errorMessage");
+        const loginErrorMessage = document.getElementById("loginErrorMessage");
+        const passwordErrorMessage = document.getElementById("passwordErrorMessage");
 
+        loginErrorMessage.textContent = '';
+        passwordErrorMessage.textContent = '';
 
-        if (newPassword !== confirmPassword) {
-            errorMessage.textContent = 'Пароли не совпадают';
+        if (!userId) {
+            alert('Ошибка: userId отсутствует. Пожалуйста, обновите страницу.');
             return;
         }
 
-        fetch(`/admin/users/change-password/${userId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                [csrfHeader]: csrfToken
-            },
-            body: new URLSearchParams({ newPassword: newPassword })
-        })
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    return response.json().then(errorData => {
-                        errorMessage.textContent = errorData.message;
-                    });
+        if (newPassword !== confirmPassword) {
+            passwordErrorMessage.textContent = 'Пароли не совпадают';
+            return;
+        }
+
+        if (newLogin === "") {
+            loginErrorMessage.textContent = 'Заполните поле логин!';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/admin/users/change-login-password/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ newLogin, newPassword })
+            });
+
+            if (response.ok) {
+                alert('Данные успешно обновлены!');
+                deleteAllCookies();
+                window.location = '/login'
+            } else {
+                const errorData = await response.json();
+                if (errorData.message) {
+                    if (errorData.message.includes('логин')) {
+                        loginErrorMessage.textContent = errorData.message;
+                    } else {
+                        passwordErrorMessage.textContent = errorData.message;
+                    }
                 }
-            })
-            .catch(error => console.error("Ошибка при обновлении пароля:", error));
+            }
+        } catch (error) {
+            console.error("Ошибка при обновлении данных пользователя:", error);
+            passwordErrorMessage.textContent = 'Произошла ошибка при отправке запроса';
+        }
     }
 
-    window.savePassword = savePassword;
+    window.saveLoginAndPassword = saveLoginAndPassword;
 });
 
 
@@ -443,3 +477,17 @@ function toggleBirthdayEdit() {
         birthdayInput.style.display = 'none';
     }
 }
+
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const response = await fetch('/admin/login-check');
+        const requiresChange = await response.json();
+
+        if (!requiresChange) {
+            const userModal = new bootstrap.Modal(document.getElementById('changeLoginPasswordModal'));
+            userModal.show();
+        }
+    } catch (error) {
+        console.error("Ошибка при проверке данных пользователя:", error);
+    }
+});

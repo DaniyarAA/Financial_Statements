@@ -37,8 +37,13 @@
                             <span>${user.roleDto.roleName}</span>
                         </td>
                         <td class="user-action-buttons">
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
+                            <button class="edit-button" data-bs-toggle="modal"
+                                    data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
+                                        class="bi bi-key"></i></button>
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                    data-user-id="${user.id}">✏️
+                            </button>
+                            <input type="hidden" id="currentUserId" value="${currentUser.id}">
                         </td>
                     </tr>
                 </#list>
@@ -114,8 +119,10 @@
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
-                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
-                    <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
+                    <input type="text" class="form-control fs-5" id="userNameInput"
+                           style="display: none; border: none; padding: 0; width: 28%">
+                    <input type="text" class="form-control fs-5" id="surnameNameInput"
+                           style="display: none; border: none; padding: 0; width: 32%">
                     <i class="bi bi-pencil ms-2" onclick="toggleNameEdit()"></i>
                 </div>
 
@@ -148,8 +155,6 @@
                     <div class="user-info-row mb-2">
                         <span class="user-label">Логин:</span>
                         <span class="user-value" id="user-login"></span>
-                        <input type="text" class="form-control fs-5" id="user-login-input" style="display: none; width: 50%">
-                        <i class="bi bi-pencil ms-2" onclick="toggleLoginEdit()"></i>
                     </div>
                     <span id="loginError" class="text-danger"></span>
 
@@ -159,7 +164,8 @@
                         <span class="user-value d-flex align-items-center" style="gap: 5px; position: relative;">
                         <span id="initialCompanies"></span>
                         <div id="companyDropdown" style="display: none;">
-                            <input type="text" id="companySearch" placeholder="Поиск компаний..." class="form-control mb-2">
+                            <input type="text" id="companySearch" placeholder="Поиск компаний..."
+                                   class="form-control mb-2">
                             <div id="companyCheckboxes" class="dropdown-menu p-3">
 
                             </div>
@@ -172,7 +178,8 @@
                     <div class="user-info-row">
                         <span class="user-label">День Рождения:</span>
                         <span class="user-value" id="user-birthday"></span>
-                        <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
+                        <input type="date" id="birthday-input" class="user-value"
+                               style="display: none; width: 35%; border: none">
                         <i class="bi bi-pencil ms-2" onclick="toggleBirthdayEdit()"></i>
                     </div>
                     <span id="birthdayError" class="text-danger"></span>
@@ -196,26 +203,36 @@
     </div>
 
 
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changeLoginPasswordModal" tabindex="-1" aria-labelledby="changeLoginPasswordModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" style="border: none">
-                    <h5 class="modal-title" id="changePasswordModalLabel">Смена пароля</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeLoginPasswordModalLabel">Изменение пароля и логина</h5>
                 </div>
                 <div class="modal-body" style="border: none">
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">Новый пароль:</label>
-                            <input type="password" class="form-control form-control-lg" id="newPassword">
-                        </div>
-                        <div class="mb-1">
-                            <label for="confirmPassword" class="form-label">Подтвердите пароль:</label>
-                            <input type="password" class="form-control form-control-lg" id="confirmPassword">
-                        </div>
-                        <div id="errorMessage" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label for="newLogin" class="form-label">Новый логин</label>
+                        <input type="text" id="newLogin" class="form-control form-control-lg"
+                               placeholder="Введите новый логин">
+                        <div id="loginErrorMessage" class="text-danger mt-1"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Новый пароль</label>
+                        <input type="password" id="newPassword" class="form-control form-control-lg"
+                               placeholder="Введите новый пароль">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                        <input type="password" id="confirmPassword" class="form-control form-control-lg"
+                               placeholder="Повторите новый пароль">
+                        <div id="passwordErrorMessage" class="text-danger mt-1"></div>
+                    </div>
                 </div>
-                <div class="modal-footer text-center" style="border: none">
-                    <button type="button" class="btn btn-light edit-user-btn mx-auto" id="edit-password-button" onclick="savePassword()"><i class="bi bi-check2 fs-1"></i></button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="saveLoginAndPassword()">Сохранить изменения
+                    </button>
                 </div>
             </div>
         </div>

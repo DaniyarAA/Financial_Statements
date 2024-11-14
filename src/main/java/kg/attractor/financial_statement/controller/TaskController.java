@@ -78,7 +78,7 @@ public class TaskController {
             Model model,
             Authentication authentication
     ) {
-        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
         List<UserDto> userDtos = userService.getAllUsers();
         List<CompanyDto> companyDtos = companyService.getAllCompanies();
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
@@ -111,6 +111,47 @@ public class TaskController {
 
     }
 
+    @GetMapping("edit/{id}")
+    public String getEditTaskForm(
+            @PathVariable Long id,
+            Model model
+    ) {
+        TaskDto taskDto = taskService.getTaskById(id);
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
+        List<CompanyDto> companyDtos = companyService.getAllCompanies();
+
+        model.addAttribute("taskDto", taskDto);
+        model.addAttribute("documentTypeDtos", documentTypeDtos);
+        model.addAttribute("taskStatusDtos", taskStatusDtos);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("taskEditDto", new TaskEditDto());
+        model.addAttribute("dateUtils", new DateUtils());
+
+        return "tasks/edit";
+    }
+
+//    @PostMapping("edit")
+//    public String editTask(
+//            @RequestParam Long id,
+//            @Valid TaskEditDto taskEditDto,
+//            BindingResult bindingResult,
+//            Model model
+//    ) {
+//        if (bindingResult.hasErrors()) {
+//            return "tasks/edit";
+//        }
+//        taskService.editTask(id, taskEditDto);
+//
+//        return "redirect:/tasks";
+//    }
+
+    @PostMapping("delete/{id}")
+    public String deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return "redirect:/tasks";
+    }
+
     @GetMapping("list")
     public String getTaskListPage(
             Model model,
@@ -130,7 +171,7 @@ public class TaskController {
         List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
 
         Set<String> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .map(task -> YearMonth.from(task.getStartDate()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .collect(Collectors.toSet());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
@@ -141,7 +182,7 @@ public class TaskController {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companyDtos) {
                 List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
-                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
+                        .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
                                 && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
                 tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);

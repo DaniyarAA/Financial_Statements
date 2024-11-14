@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
+import kg.attractor.financial_statement.dto.TaskEditDto;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -40,6 +42,16 @@ public class TaskServiceImpl implements TaskService {
     private final CompanyService companyService;
 
     @Override
+    public TaskDto getTaskById(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        TaskDto taskDto = convertToDto(task);
+        taskDto.setDeleted(task.isDeleted());
+        return taskDto;
+    }
+
+    @Override
     public List<TaskDto> getAllTasks() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
@@ -52,14 +64,8 @@ public class TaskServiceImpl implements TaskService {
         YearMonth ym = YearMonth.of(year, month);
         List<Task> tasks = taskRepository.findAll();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
-                .map(task -> {
-                    String dateTimeStr = String.valueOf(task.getEndDateTime());
-                    LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
-                    return dateTime.toLocalDate();
-                })
+                .map(Task::getEndDate)
                 .filter(date -> YearMonth.from(date).equals(ym))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
@@ -167,52 +173,45 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
         System.out.println("login: " + taskCreateDto.getAppointToUserId());
-        LocalDate now = LocalDate.now();
-
-        if (taskCreateDto.getDocumentTypeId().equals(1L)) {
-            if (now.getDayOfMonth() == 1) {
-                taskCreateDto.setStartDateTime(now.atStartOfDay());
-                LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(now.lengthOfMonth());
-                taskCreateDto.setEndDateTime(lastDayOfCurrentMonthDate.atTime(23, 59, 59));
-            } else {
-                LocalDate firstDayOfNextMonth = now.plusMonths(1).withDayOfMonth(1);
-                taskCreateDto.setStartDateTime(firstDayOfNextMonth.atStartOfDay());
-                LocalDate lastDayOfNextMonthDate = firstDayOfNextMonth.withDayOfMonth(firstDayOfNextMonth.lengthOfMonth());
-                taskCreateDto.setEndDateTime(lastDayOfNextMonthDate.atTime(23, 59, 59));
-            }
-        }
-
-        else if (taskCreateDto.getDocumentTypeId().equals(2L)) {
-            int currentQuarter = (now.getMonthValue() - 1) / 3 + 1;
-            LocalDate quarterStart;
-
-            if (now.getDayOfMonth() == 1) {
-                quarterStart = now.withMonth((currentQuarter - 1) * 3 + 1).withDayOfMonth(1);
-            } else {
-                currentQuarter = currentQuarter == 4 ? 1 : currentQuarter + 1;
-                quarterStart = LocalDate.of(now.getYear() + (currentQuarter == 1 ? 1 : 0), (currentQuarter - 1) * 3 + 1, 1);
-            }
-            LocalDate quarterEnd = quarterStart.plusMonths(2).withDayOfMonth(quarterStart.plusMonths(2).lengthOfMonth());
-            taskCreateDto.setStartDateTime(quarterStart.atStartOfDay());
-            taskCreateDto.setEndDateTime(quarterEnd.atTime(23, 59, 59));
-        }
-
-        else if (taskCreateDto.getDocumentTypeId().equals(13L)) {
-            if (now.getDayOfMonth() == 1) {
-                taskCreateDto.setStartDateTime(now.atStartOfDay());
-                LocalDate lastDayOfCurrentMonthDate = now.withDayOfMonth(now.lengthOfMonth());
-                taskCreateDto.setEndDateTime(lastDayOfCurrentMonthDate.atTime(23, 59, 59));
-            } else {
-                LocalDate firstDayOfNextMonth = now.plusMonths(1).withDayOfMonth(1);
-                taskCreateDto.setStartDateTime(firstDayOfNextMonth.atStartOfDay());
-                LocalDate lastDayOfNextMonthDate = firstDayOfNextMonth.withDayOfMonth(firstDayOfNextMonth.lengthOfMonth());
-                taskCreateDto.setEndDateTime(lastDayOfNextMonthDate.atTime(23, 59, 59));
-            }
-        }
 
         Task task = (taskCreateDto.getAppointToUserId() != null) ? convertToEntity(taskCreateDto) : convertToEntity(taskCreateDto, login);
         Task newTask = taskRepository.save(task);
         return newTask.getId();
+    }
+
+    @Override
+    public void editTask(Long id, TaskEditDto taskEditDto) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        if (taskEditDto.getDocumentTypeId() != null) {
+            task.setDocumentType(documentTypeService.getDocumentTypeById(taskEditDto.getDocumentTypeId()));
+        }
+        if (taskEditDto.getStatusId() != null) {
+            task.setTaskStatus(taskStatusService.getTaskStatusById(taskEditDto.getStatusId()));
+        }
+        if (taskEditDto.getDescription() != null) {
+            task.setDescription(taskEditDto.getDescription());
+        }
+        if (taskEditDto.getStartDate() != null) {
+            task.setStartDate(taskEditDto.getStartDate());
+        }
+        if (taskEditDto.getEndDate() != null) {
+            task.setEndDate(taskEditDto.getEndDate());
+        }
+        if (taskEditDto.getAmount() != null) {
+            task.setAmount(taskEditDto.getAmount());
+        }
+
+        taskRepository.save(task);
+    }
+
+    @Override
+    public void deleteTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        task.setDeleted(true);
+        taskRepository.save(task);
     }
 
     private Task convertToEntity(TaskCreateDto taskCreateDto, String login) {
@@ -221,8 +220,8 @@ public class TaskServiceImpl implements TaskService {
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDtoAndLogin(taskCreateDto, login));
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
         task.setDescription(taskCreateDto.getDescription());
-        task.setStartDateTime(taskCreateDto.getStartDateTime());
-        task.setEndDateTime(taskCreateDto.getEndDateTime());
+        task.setStartDate(taskCreateDto.getStartDate());
+        task.setEndDate(taskCreateDto.getEndDate());
 
         return task;
     }
@@ -233,8 +232,8 @@ public class TaskServiceImpl implements TaskService {
         task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDto(taskCreateDto));
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
         task.setDescription(taskCreateDto.getDescription());
-        task.setStartDateTime(taskCreateDto.getStartDateTime());
-        task.setEndDateTime(taskCreateDto.getEndDateTime());
+        task.setStartDate(taskCreateDto.getStartDate());
+        task.setEndDate(taskCreateDto.getEndDate());
 
         return task;
     }
@@ -243,8 +242,8 @@ public class TaskServiceImpl implements TaskService {
         return TaskDto.builder()
                 .id(task.getId())
                 .statusId(task.getTaskStatus().getName())
-                .startDateTime(task.getStartDateTime())
-                .endDateTime(task.getEndDateTime())
+                .startDate(task.getStartDate())
+                .endDate(task.getEndDate())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
                 .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
 

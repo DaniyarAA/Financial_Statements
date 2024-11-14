@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 041
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: document_types
+            columns:
+              - column:
+                  name: is_optional
+                  type: boolean
+                  constraints:
+                    nullable: true

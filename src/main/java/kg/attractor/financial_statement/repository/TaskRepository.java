@@ -13,8 +13,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUserCompanyIdIn(List<Long> userCompanyIds);
 
     @Query("SELECT t FROM Task t WHERE t.userCompany.id IN :userCompanyIds " +
-            "AND YEAR(t.startDateTime) = :year " +
-            "AND MONTH(t.startDateTime) = :month")
+            "AND YEAR(t.startDate) = :year " +
+            "AND MONTH(t.startDate) = :month")
     List<Task> findByUserCompanyIdInAndStartDatetimeYearAndMonth(
             @Param("userCompanyIds") List<Long> userCompanyIds,
             @Param("year") int year,

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 047
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: time_spent
+                  type: timestamp
+                  constraints:
+                    nullable: true

@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .role(roleService.getRoleById(userDto.getRoleDto().getId()))
                 .avatar("user.png")
                 .registerDate(LocalDate.now())
+                .credentialsUpdated(true)
                 .build();
         userRepository.save(newUser);
 
@@ -118,7 +120,6 @@ public class UserServiceImpl implements UserService {
     public void editUser(Long id, UserDto userDto){
         User user = getUserById(id);
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        updateLoginIfChanged(userDto.getLogin(), user);
         validateBirthday(userDto.getBirthday());
         user.setRole(role);
         user.setBirthday(userDto.getBirthday());
@@ -147,16 +148,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Long userId, String newPassword){
+    public void updateLoginAndPassword(Long userId, String newLogin, String newPassword) {
+
         validatePassword(newPassword);
         User user = getUserById(userId);
+        updateLoginIfChanged(newLogin, user);
         user.setPassword(passwordEncoder.encode(newPassword));
+        user.setCredentialsUpdated(true);
         userRepository.save(user);
     }
 
     private void validatePassword(String password) {
         if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("Заполните поля");
+            throw new IllegalArgumentException("Заполните поля поролей");
         }
         if (password.length() < 8 || password.length() > 20) {
             throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20");

@@ -26,7 +26,7 @@ public interface UserService {
 
     void editUser(Long id, UserDto userDto);
 
-    void updatePassword(Long userId, String newPassword);
+    void updateLoginAndPassword(Long userId, String newLogin, String newPassword);
 
     String updateAvatar(Long userId, MultipartFile file) throws IOException;
 

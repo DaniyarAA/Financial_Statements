@@ -68,7 +68,7 @@ public class TaskServiceImpl implements TaskService {
 
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
                 .map(task -> {
-                    String dateTimeStr = String.valueOf(task.getEndDateTime());
+                    String dateTimeStr = String.valueOf(task.getEndDate());
                     LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
                     return dateTime.toLocalDate();
                 })

@@ -10,14 +10,12 @@
                             <a href="/report/create" class="button lock btn type-btn">СФОРМИРОВАТЬ ОТЧЕТ</a>
                             <a href="/tasks/create/everyMonth" class="button btn type-btn">ЕЖЕМЕСЯЧНЫЙ</a>
                             <a href="/tasks/create/everyQuarter" class="button btn type-btn">ЕЖЕКВАРТАЛЬНЫЙ</a>
-
                         </div>
                     </div>
                     <div class="left col">
                         <div class="center-column">
                             <a href="/company/add" class="button company btn type-btn mt-5">СОЗДАТЬ НОВЫЙ ИП/ОСОО</a>
                             <a href="/company/all?sort=actual" class="button company btn type-btn">СПИСОК КОМПАНИЙ</a>
-
                         </div>
                     </div>
                     <div class="left col">
@@ -30,58 +28,11 @@
                         </div>
                     </div>
                     <div class="left col">
-                        <div class="calendar">
-                            <h2>КАЛЕНДАРЬ</h2>
-                            <div class="calendar-1">
-                                <div class="calendar-header">
-                                    <button class="nav-button">&lt;</button>
-                                    <time class="month-year"> 2024</time>
-                                    <button class="nav-button">&gt;</button>
-                                </div>
-                                <div class="calendar-days">
-                                    <div class="day">MON</div>
-                                    <div class="day">TUE</div>
-                                    <div class="day">WED</div>
-                                    <div class="day">THU</div>
-                                    <div class="day">FRI</div>
-                                    <div class="day">SAT</div>
-                                    <div class="day">SUN</div>
-                                </div>
-                                <div class="calendar-dates">
-                                    <div class="date">1</div>
-                                    <div class="date">2</div>
-                                    <div class="date">3</div>
-                                    <div class="date">4</div>
-                                    <div class="date">5</div>
-                                    <div class="date">6</div>
-                                    <div class="date">7</div>
-                                    <div class="date">8</div>
-                                    <div class="date">9</div>
-                                    <div class="date">10</div>
-                                    <div class="date">11</div>
-                                    <div class="date">12</div>
-                                    <div class="date">13</div>
-                                    <div class="date">14</div>
-                                    <div class="date">15</div>
-                                    <div class="date">16</div>
-                                    <div class="date">17</div>
-                                    <div class="date">18</div>
-                                    <div class="date">19</div>
-                                    <div class="date">20</div>
-                                    <div class="date">21</div>
-                                    <div class="date">22</div>
-                                    <div class="date">23</div>
-                                    <div class="date">24</div>
-                                    <div class="date">25</div>
-                                    <div class="date">26</div>
-                                    <div class="date">27</div>
-                                    <div class="date">28</div>
-                                    <div class="date">29</div>
-                                    <div class="date">30</div>
-                                    <div class="date">31</div>
-                                </div>
+                            <div class="calendar-wrapper">
+                                <h2 class="text-center">КАЛЕНДАРЬ</h2>
+                                <div id="divCal"></div>
+                                <input type="hidden" name="_csrf" value="${csrfToken.token}">
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -130,7 +81,6 @@
                         <span>Список компаний пуст</span>
                     </#if>
                 </div>
-
             </div>
         </div>
     </div>

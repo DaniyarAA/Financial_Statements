@@ -4,7 +4,6 @@ import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -19,10 +18,13 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +43,27 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getAllTasks() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth) {
+        int year = yearMonth.get("year");
+        int month = yearMonth.get("month");
+        YearMonth ym = YearMonth.of(year, month);
+        List<Task> tasks = taskRepository.findAll();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        Map<LocalDate, Long> calendarTaskCount = tasks.stream()
+                .map(task -> {
+                    String dateTimeStr = String.valueOf(task.getEndDateTime());
+                    LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
+                    return dateTime.toLocalDate();
+                })
+                .filter(date -> YearMonth.from(date).equals(ym))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        return ResponseEntity.ok().body(calendarTaskCount);
     }
 
     @Override

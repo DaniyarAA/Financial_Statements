@@ -37,6 +37,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
+    public void addCompany(CompanyDto companyDto,String login) {
+        Company company = convertToEntity(companyDto);
+        company.setDeleted(Boolean.FALSE);
+        Company companyCreated = companyRepository.save(company);
+        createdUserCompany(companyCreated, login);
+    }
+
+    @Override
     public ResponseEntity<Map<String, String>> createCompany(
             CompanyDto companyDto, String login, BindingResult bindingResult) {
 

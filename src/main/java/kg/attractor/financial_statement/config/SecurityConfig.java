@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/calendar").permitAll()
                         .requestMatchers("/admin/roles/create").hasAuthority("CREATE_ROLE")
                         .requestMatchers("/admin/roles/delete/").hasAuthority("DELETE_ROLE")
                         .requestMatchers("/admin/roles").hasAuthority("VIEW_ROLES")
@@ -43,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/users/change-password/**").hasAuthority("EDIT_USER")
                         .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
+                        .requestMatchers("/company/add").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")
                         .requestMatchers("/company/delete").hasAuthority("DELETE_COMPANY")
                         .requestMatchers("/tasks").hasAuthority("VIEW_TASK")

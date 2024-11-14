@@ -25,31 +25,26 @@
 
                 <!-- Pagination Container under Companies Table -->
                 <div class="pagination-container">
-                    <#if currentPage == totalPages - 1>
-                        <!-- No next page if on the last page -->
-                    <#else>
-                        <a href="?page=${currentPage + 1}&size=7" class="">
-                            <div class="button-container">
-                                <div class="icon-circle">
-                                    <div class="icon-arrow"></div>
-                                </div>
-                            </div>
-                        </a>
-                    </#if>
-
                     <#if currentPage != 0>
                         <a href="?page=${currentPage - 1}&size=7" class="">
                             <div class="button-container">
-                                <div class="icon-circle">
-                                    <div class="icon-arrow"></div>
-                                </div>
+                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
                             </div>
                         </a>
                     </#if>
+                    <#if currentPage == totalPages - 1>
+                    <#else>
+                        <a href="?page=${currentPage + 1}&size=7" class="">
+                            <div class="button-container">
+                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
+                            </div>
+                        </a>
+                    </#if>
+
+
                 </div>
             </div>
 
-            <!-- Tasks Table Container -->
             <div class="table-container tasks-table">
                 <div class="table-wrapper">
                     <table class="table-main">
@@ -104,7 +99,10 @@
                 <div class="task-details-header">
                     <h5>Подробнее</h5>
                 </div>
-                <div id="task-content"></div>
+
+                <div id="task-content">
+
+                </div>
             </div>
         </div>
     </div>
@@ -126,7 +124,7 @@
         }
 
         .table-container {
-            box-shadow: -4px -4px 8px rgba(0, 0, 0, 0.2), 4px -4px 8px rgba(0, 0, 0, 0.2), 0px -4px 8px rgba(0, 0, 0, 0.2);
+            /*box-shadow: -4px -4px 8px rgba(0, 0, 0, 0.2), 4px -4px 8px rgba(0, 0, 0, 0.2), 0px -4px 8px rgba(0, 0, 0, 0.2);*/
         }
         .company-table {
             width: 250px;
@@ -142,6 +140,7 @@
         .tasks-table {
             width: 75%;
             background-color: #d9d9d9;
+            margin-right: 10px;
         }
 
         .year-month-column {
@@ -159,6 +158,7 @@
         .table-main {
             width: 100%;
             margin-bottom: 20px;
+
         }
 
         .table-main th {
@@ -171,10 +171,10 @@
         }
 
         .table-main td {
-            border: 3px solid #a6a6a6;
-            /*padding: 15px;*/
             text-align: center;
-            /*height: 80px;*/
+            border-bottom: 3px solid #a4a4a4;
+            box-shadow: 0 4px 2px -2px #a4a4a4;
+
         }
 
 
@@ -292,29 +292,28 @@
             width: 133px;
             height: 45px;
         }
-        .task-details-header {
-            height: 61px;
-            background-color: blueviolet;
-        }
+
 
         .test {
 
         }
 
         #task-content {
-            border: 1px solid #a6a6a6;
-            border-radius: 10px;
-            padding: 20px;
-            background-color: #f9f9f9;
+            padding: 5px;
+            background-color: #d9d9d9;
             width: 100%;
+            height: 100%;
         }
-
         .task-details-header {
+            height: 61px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 10px;
             color: #333;
+            justify-content: center;
         }
 
         #task-edit-form p {

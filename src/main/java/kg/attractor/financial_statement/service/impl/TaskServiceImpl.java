@@ -63,10 +63,6 @@ public class TaskServiceImpl implements TaskService {
                 .filter(date -> YearMonth.from(date).equals(ym))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        calendarTaskCount.forEach((date, count) -> {
-            System.out.println("Date: " + date + ", Task count: " + count);
-        });
-
         return ResponseEntity.ok().body(calendarTaskCount);
     }
 

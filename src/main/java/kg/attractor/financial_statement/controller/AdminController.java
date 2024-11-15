@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -59,7 +58,7 @@ public class AdminController {
 
     @GetMapping("users")
     public String getAllUsers(Model model, @PageableDefault(size = 6, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
-       var users = userService.getAllDtoUsers(pageable);
+        var users = userService.getAllDtoUsers(pageable);
         model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
         model.addAttribute("users", users);
         return "admin/users";
@@ -167,10 +166,10 @@ public class AdminController {
     }
 
     @PostMapping("users/change-login-password/{userId}")
-    public ResponseEntity<?> changeUserLoginAndPassword(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> changeUserLoginAndPassword(@PathVariable Long userId, @RequestBody Map<String, String> loginAndPassword) {
         try{
-            String newLogin = requestBody.get("newLogin");
-            String newPassword = requestBody.get("newPassword");
+            String newLogin = loginAndPassword.get("newLogin");
+            String newPassword = loginAndPassword.get("newPassword");
             userService.updateLoginAndPassword(userId, newLogin, newPassword);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){

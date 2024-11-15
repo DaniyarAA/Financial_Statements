@@ -159,6 +159,7 @@
                         <span class="user-value d-flex align-items-center" style="gap: 5px; position: relative;">
                         <span id="initialCompanies"></span>
                         <div id="companyDropdown" style="display: none;">
+                            <input type="text" id="companySearch" placeholder="Поиск компаний..." class="form-control mb-2">
                             <div id="companyCheckboxes" class="dropdown-menu p-3">
 
                             </div>

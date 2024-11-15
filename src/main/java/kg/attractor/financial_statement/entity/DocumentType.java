@@ -14,7 +14,12 @@ public class DocumentType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Column(name = "is_optional")
+    private boolean isOptional;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "documentType")
     private List<Task> tasks;
 }

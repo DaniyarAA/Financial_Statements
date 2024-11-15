@@ -1,28 +1,33 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
-    <div class="login-container text-center">
-        <p class="fs-3">Добро Пожаловать<#if username??>, ${username}</#if></p>
-        <#if avatar??>
-            <img src="/api/files/download/${avatar}" id="avatar" alt="avatar" class="profile-info-avatar-img">
-        <#else >
-            <img src="api/files/download/user.png" class="login-info-avatar-img" alt="User Icon">
-        </#if>
-        <form id="login-form" action="/login" method="post">
-
-            <!-- CSRF -->
-            <#if _csrf??>
-                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                       value="${(_csrf.token)!'csrf-token'}"/>
+    <div class="text-center">
+        <div class="login-container">
+            <p class="fs-3">Добро Пожаловать<#if username??>, ${username}</#if></p>
+            <#if avatar??>
+                <img src="/api/files/download/${avatar}" id="avatar" alt="avatar" class="profile-info-avatar-img">
+            <#else >
+                <img src="api/files/download/user.png" class="login-info-avatar-img" alt="User Icon">
             </#if>
-            <div data-mdb-input-init class="form-outline mb-4 text-start">
-                <label for="form2Example1">Логин:</label>
-                <input type="text" id="form2Example1" class="form-control" name="username"/>
-            </div>
-            <div data-mdb-input-init class="form-outline mb-4 text-start">
-                <label for="form2Example2">Пароль:</label>
-                <input type="password" id="form2Example2" class="form-control" name="password"/>
-            </div>
-            <button type="submit" class="w-50">Войти</button>
-        </form>
+            <form id="login-form" action="/login" method="post">
+
+                <!-- CSRF -->
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
+                <div data-mdb-input-init class="form-outline mb-4 text-start">
+                    <label for="form2Example1">Логин:</label>
+                    <input type="text" id="form2Example1" class="form-control login-input" name="username"/>
+                </div>
+                <div data-mdb-input-init class="form-outline mb-4 text-start position-relative">
+                    <label for="form2Example2">Пароль:</label>
+                    <input type="password" id="form2Example2" class="form-control login-input" name="password"/>
+                    <i class="bi bi-star-fill position-absolute"></i>
+                </div>
+            </form>
+        </div>
+
+        <button type="submit" form="login-form" class="login-button fs-3">Войти</button>
     </div>
+
 </@layout.layout>

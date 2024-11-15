@@ -39,5 +39,15 @@ public interface CompanyService {
 
     List<CompanyDto> findByName(String search);
 
+    boolean existsByCompanyInn(String companyInn);
+
+    boolean existsByCompanyDirectorInn(String companyDirectorInn);
+
+    boolean existsByCompanyLogin(String companyLogin);
+
+    boolean existsByCompanySalykLogin(String salykLogin);
+
     List<CompanyForTaskDto> getAllCompaniesForUser(User user);
+
+    void addCompany(CompanyDto companyDto , String login);
 }

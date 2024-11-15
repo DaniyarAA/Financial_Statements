@@ -80,7 +80,7 @@ public class TaskController {
             Model model,
             Authentication authentication
     ) {
-        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
         List<UserDto> userDtos = userService.getAllUsers();
         List<CompanyDto> companyDtos = companyService.getAllCompanies();
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
@@ -111,6 +111,47 @@ public class TaskController {
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
         return "redirect:/tasks";
 
+    }
+
+    @GetMapping("edit/{id}")
+    public String getEditTaskForm(
+            @PathVariable Long id,
+            Model model
+    ) {
+        TaskDto taskDto = taskService.getTaskById(id);
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
+        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
+        List<CompanyDto> companyDtos = companyService.getAllCompanies();
+
+        model.addAttribute("taskDto", taskDto);
+        model.addAttribute("documentTypeDtos", documentTypeDtos);
+        model.addAttribute("taskStatusDtos", taskStatusDtos);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("taskEditDto", new TaskEditDto());
+        model.addAttribute("dateUtils", new DateUtils());
+
+        return "tasks/edit";
+    }
+
+//    @PostMapping("edit")
+//    public String editTask(
+//            @RequestParam Long id,
+//            @Valid TaskEditDto taskEditDto,
+//            BindingResult bindingResult,
+//            Model model
+//    ) {
+//        if (bindingResult.hasErrors()) {
+//            return "tasks/edit";
+//        }
+//        taskService.editTask(id, taskEditDto);
+//
+//        return "redirect:/tasks";
+//    }
+
+    @PostMapping("delete/{id}")
+    public String deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return "redirect:/tasks";
     }
 
     @GetMapping("list")
@@ -155,15 +196,7 @@ public class TaskController {
 //            Model model,
 //            Authentication authentication
 //            ) {
-//        if (bindingResult.hasErrors() ) {
-//            model.addAttribute("taskDto", taskDto);
-//            return "tasks/tasksList";
-//        }
-//        if (!taskService.checkIsAuthor(authentication.getName(), id)) {
-//            return "redirect:/login";
-//        }
-//        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
-//        return "redirect:/tasks/list";
+//
 //
 //    }
     @PostMapping("/edit/{id}")

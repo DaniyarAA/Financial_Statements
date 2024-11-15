@@ -66,11 +66,13 @@
                         <span class="user-detail">Role: ${user.roleDto.roleName}</span>
 
                         <div class="buttons-container">
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}">
-                                <i class="bi bi-key"></i>
+                            <button class="edit-button" data-bs-toggle="modal"
+                                    data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
+                                        class="bi bi-key"></i></button>
+                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                    data-user-id="${user.id}">✏️
                             </button>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
-
+                            <input type="hidden" id="currentUserId" value="${currentUser.id}">
                         </div>
                     </div>
                 </div>
@@ -128,8 +130,9 @@
 
                 <div class="modal-body text-center">
                     <div class="avatar-container">
-                        <img src="/api/files/download/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
-                        <div id="change-avatar-icon" class="change-avatar-icon"  onclick="uploadAvatar()">
+                        <img src="/api/files/download/user.png" id="avatar" alt="avatar"
+                             class="profile-info-avatar-img">
+                        <div id="change-avatar-icon" class="change-avatar-icon" onclick="uploadAvatar()">
                             <i class="bi bi-camera fs-5"></i>
                         </div>
                         <input type="file" id="avatarInput" style="display: none;" accept="image/*">

@@ -38,7 +38,10 @@ function showTaskDetails(button) {
             z-index: 0;"></div>
 
     <div style="position: relative; z-index: 1;">
+        <div style="display: flex; justify-content: center">
+
         <p style="font-size: 24px">${documentType}</p>
+        </div>
     </div>
     <form id="task-edit-form" action="/tasks/edit/${taskId}" method="post" style="position: relative; z-index: 1;">
         <input type="hidden" name="_csrf" value="${csrfToken}">
@@ -59,9 +62,24 @@ function showTaskDetails(button) {
                     <p>${amount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
                 <div id="amount-input" style="display: none;">
-                    <input type="text" class="form-control" id="amount" name="amount" value="${amount}">
-                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()">Cancel</button>
-                </div>
+    <input type="text" id="amount" name="amount" value="${amount}" style="
+        width: 70px;
+        height: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        margin: 0;
+    ">
+    <button type="button" onclick="cancelEditAmount()" style="
+        background: none;
+        color: #007bff;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        text-decoration: underline;
+        font-size: 14px;
+    ">Cancel</button>
+</div>
                 <div id="status-display" style="display: block">
                     <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
@@ -74,10 +92,25 @@ function showTaskDetails(button) {
             </div>
         </div>
 
-        <label for="description" class="form-label">Описание</label>
-        <input type="text" class="form-control" id="description" name="description" value="${description}">
-    
-        <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
+  <label for="description" style="margin-top: 55px; font-size: 14px; font-style: italic; font-weight: 100">Описание</label>
+<textarea id="description" name="description" style="width: 324px;
+    height: 112px;
+    background-color: #d9d9d9;
+    color: #333;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+    outline: none;
+    font-size: 16px;
+    resize: none;
+    overflow-y: auto;">${description}</textarea>
+    <div style="display: flex; justify-content: center; margin-top: 50px">
+
+        <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center;             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
+            0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
+    </div>
+
     </form>
 </div>
     `;

@@ -4,7 +4,6 @@
 <@layout.layout ; spring>
     <div class="container p-3">
         <div class="main-content">
-            <!-- Companies Table Container -->
             <div class="table-container company-table">
                 <div class="table-wrapper">
                     <table class="table-main">
@@ -23,26 +22,27 @@
                     </table>
                 </div>
 
-                <!-- Pagination Container under Companies Table -->
-                <div class="pagination-container">
+                <div class="pagination-container
+    <#if currentPage == 0 && currentPage == totalPages - 1>
+        single-button
+    </#if>
+">
                     <#if currentPage != 0>
-                        <a href="?page=${currentPage - 1}&size=7" class="">
+                        <a href="?page=${currentPage - 1}&size=7">
                             <div class="button-container">
                                 <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
                             </div>
                         </a>
                     </#if>
-                    <#if currentPage == totalPages - 1>
-                    <#else>
-                        <a href="?page=${currentPage + 1}&size=7" class="">
+                    <#if currentPage < totalPages - 1>
+                        <a href="?page=${currentPage + 1}&size=7">
                             <div class="button-container">
                                 <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
                             </div>
                         </a>
                     </#if>
-
-
                 </div>
+
             </div>
 
             <div class="table-container tasks-table">
@@ -123,7 +123,7 @@
         }
 
         .table-container {
-            /*box-shadow: -4px -4px 8px rgba(0, 0, 0, 0.2), 4px -4px 8px rgba(0, 0, 0, 0.2), 0px -4px 8px rgba(0, 0, 0, 0.2);*/
+            position: relative;
         }
         .company-table {
             width: 250px;
@@ -150,8 +150,10 @@
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 669px;
-            max-height: 669px;
+            height: 550px;
+            min-height: 550px;
+            max-height: 550px;
+
         }
 
         .table-main {
@@ -226,8 +228,8 @@
             height: 45px;
             overflow: hidden;
 
-            box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3), /* Left shadow */
-            0px 2px 5px rgba(0, 0, 0, 0.4); /* Bottom gradient shadow */
+            box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
+            0px 2px 5px rgba(0, 0, 0, 0.4);
         }
         .button-alert {
             position: absolute;
@@ -260,10 +262,20 @@
         }
 
         .pagination-container {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f9f9f9; /* Optional for visibility */
         }
+
+        .pagination-container a {
+            margin: 0 0.5rem;
+        }
+
 
         .button-container {
             display: flex;
@@ -274,6 +286,14 @@
             background-color: #f9f9f9;
             border-radius: 8px;
             border: 1px solid #ddd;
+        }
+
+        .button-container.single-button {
+            justify-content: center;
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .status-indicator {

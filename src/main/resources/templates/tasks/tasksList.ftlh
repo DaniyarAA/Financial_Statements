@@ -76,7 +76,8 @@
                                                             data-amount="${task.amount}"
                                                             data-status="${task.statusId}">
                                                         ${task.documentTypeName}
-                                                        <div class="<#if task.isCompleted>completed<#else>pending</#if> button-alert" style="<#if task.isCompleted>color: red</#if>">
+<#--                                                        <div class="<#if task.isCompleted>completed<#else>pending</#if> button-alert" style="<#if task.isCompleted>color: red</#if>">-->
+                                                    <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>">
 
                                                         </div>
                                                     </button>
@@ -215,12 +216,20 @@
             flex-wrap: wrap;
             justify-content: center;
         }
-        .task-buttons button {
+
+        .task-button {
+            margin-right: 4px;
+            margin-left: 4px;
             position: relative;
             font-size: 12px;
             border: 1px solid #ffffff;
             border-radius: 4px;
-            box-shadow: -4px -4px 8px rgba(0, 0, 0, 0.2), 4px -4px 8px rgba(0, 0, 0, 0.2), 0px -4px 8px rgba(0, 0, 0, 0.2);
+            width: 133px;
+            height: 45px;
+            overflow: hidden;
+
+            box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3), /* Left shadow */
+            0px 2px 5px rgba(0, 0, 0, 0.4); /* Bottom gradient shadow */
         }
         .button-alert {
             position: absolute;
@@ -228,11 +237,11 @@
         }
 
         .completed {
-            background-color: green;
+            background-color: #15C24E;
         }
 
         .pending {
-            background-color: red;
+            background-color: #C20B18;
         }
 
         .task-details {
@@ -288,10 +297,16 @@
             margin-top: -3px;
         }
 
-        .task-button {
-            width: 133px;
-            height: 45px;
+
+        .status-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 23px;
+            height: 100%;
+            pointer-events: none;
         }
+
 
 
         .test {

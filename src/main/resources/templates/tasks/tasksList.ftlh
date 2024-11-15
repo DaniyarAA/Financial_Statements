@@ -77,9 +77,7 @@
                                                             data-status="${task.statusId}">
                                                         ${task.documentTypeName}
 <#--                                                        <div class="<#if task.isCompleted>completed<#else>pending</#if> button-alert" style="<#if task.isCompleted>color: red</#if>">-->
-                                                    <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>">
-
-                                                        </div>
+                                                        <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>"></div>
                                                     </button>
                                                 </#list>
                                             </div>
@@ -277,26 +275,6 @@
             border-radius: 8px;
             border: 1px solid #ddd;
         }
-
-        .icon-circle {
-            width: 48px;
-            height: 48px;
-            border: 4px solid #000;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .icon-arrow {
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 12px solid #000;
-            margin-top: -3px;
-        }
-
 
         .status-indicator {
             position: absolute;

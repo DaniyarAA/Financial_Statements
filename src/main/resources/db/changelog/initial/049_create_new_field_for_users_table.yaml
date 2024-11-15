@@ -9,4 +9,4 @@ databaseChangeLog:
               - column:
                   name: credentials_updated
                   type: boolean
-                  defaultValueBoolean: false
+                  defaultValueBoolean: true

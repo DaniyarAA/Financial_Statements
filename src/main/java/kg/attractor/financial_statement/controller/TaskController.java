@@ -16,12 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -133,21 +128,6 @@ public class TaskController {
         return "tasks/edit";
     }
 
-//    @PostMapping("edit")
-//    public String editTask(
-//            @RequestParam Long id,
-//            @Valid TaskEditDto taskEditDto,
-//            BindingResult bindingResult,
-//            Model model
-//    ) {
-//        if (bindingResult.hasErrors()) {
-//            return "tasks/edit";
-//        }
-//        taskService.editTask(id, taskEditDto);
-//
-//        return "redirect:/tasks";
-//    }
-
     @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
@@ -159,7 +139,7 @@ public class TaskController {
             Model model,
             Authentication authentication,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "7") int size
+            @RequestParam(required = false, defaultValue = "8") int size
     ) throws JsonProcessingException {
         if (authentication == null) {
             return "redirect:/login";
@@ -188,20 +168,9 @@ public class TaskController {
         return taskService.editTaskByField(data);
     }
 
-//    @PostMapping("/edit/{id}")
-//    public String updateTaskInListPage(
-//            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
-//            @PathVariable Long id,
-//            BindingResult bindingResult,
-//            Model model,
-//            Authentication authentication
-//            ) {
-//
-//
-//    }
     @PostMapping("/edit/{id}")
     public String updateTaskInListPage(
-            @Valid @ModelAttribute("taskDto") TaskEditDto taskDto,
+            @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
             @PathVariable Long id,
             BindingResult bindingResult,
             Model model,

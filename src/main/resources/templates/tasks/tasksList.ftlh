@@ -28,14 +28,14 @@
     </#if>
 ">
                     <#if currentPage != 0>
-                        <a href="?page=${currentPage - 1}&size=7">
+                        <a href="?page=${currentPage - 1}&size=8">
                             <div class="button-container">
                                 <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
                             </div>
                         </a>
                     </#if>
                     <#if currentPage < totalPages - 1>
-                        <a href="?page=${currentPage + 1}&size=7">
+                        <a href="?page=${currentPage + 1}&size=8">
                             <div class="button-container">
                                 <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
                             </div>
@@ -68,8 +68,8 @@
                                                             onclick="showTaskDetails(this)"
                                                             data-task-id="${task.id}"
                                                             data-document-type="${task.documentTypeName}"
-                                                            data-start-date="${task.startDateTime}"
-                                                            data-end-date="${task.endDateTime}"
+                                                            data-start-date="${task.startDate}"
+                                                            data-end-date="${task.endDate}"
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
                                                             data-description="${task.description}"

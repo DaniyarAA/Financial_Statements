@@ -1,9 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
-import kg.attractor.financial_statement.dto.CompanyForTaskDto;
-import kg.attractor.financial_statement.dto.TaskCreateDto;
-import kg.attractor.financial_statement.dto.TaskDto;
-import kg.attractor.financial_statement.dto.TaskEditDto;
+import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
@@ -224,7 +221,7 @@ public class TaskServiceImpl implements TaskService {
         List<TaskDto> taskDtos = getAllTasksForUser(user);
 
         Set<String> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .map(task -> YearMonth.from(task.getStartDate()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .collect(Collectors.toSet());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
@@ -234,7 +231,7 @@ public class TaskServiceImpl implements TaskService {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companyDtos) {
                 List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
-                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
+                        .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
                                 && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
                 tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
@@ -268,7 +265,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void editTaskFromTasksList(TaskEditDto taskDto, String name, Long id) {
+    public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String name, Long id) {
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
         if (taskDto.getStatusId() != null) {

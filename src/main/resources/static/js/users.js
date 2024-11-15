@@ -13,7 +13,7 @@ function switchToListView() {
     localStorage.setItem('viewMode', 'list');
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const savedViewMode = localStorage.getItem('viewMode');
     if (savedViewMode === 'tile') {
         switchToTileView();
@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
+
     function handleSaveUserData(userId) {
         saveUserData(userId);
     }
@@ -96,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 initialCompanies.innerHTML = user.companies.slice(0, 1).map(company => company.name).join(", ");
                 if (user.companies.length > 1) {
                     initialCompanies.innerHTML += ", ...";
-                } else if (user.companies.length === 0){
+                } else if (user.companies.length === 0) {
                     initialCompanies.innerHTML += "Отсутствуют"
                 }
 
@@ -143,7 +144,7 @@ function uploadAvatar() {
     const avatarImg = document.getElementById("avatar");
     const userId = avatarInput.getAttribute("data-user-id");
 
-    avatarInput.onchange = async function() {
+    avatarInput.onchange = async function () {
         const file = avatarInput.files[0];
         if (!file) {
             alert("Файл не выбран.");
@@ -177,13 +178,6 @@ function uploadAvatar() {
     };
 
     avatarInput.click();
-}
-
-function deleteAllCookies() {
-    document.cookie.split(";").forEach((cookie) => {
-        const [name] = cookie.split("=");
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/admin/users;`;
-    });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -227,13 +221,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     'Content-Type': 'application/json',
                     [csrfHeader]: csrfToken
                 },
-                body: JSON.stringify({ newLogin, newPassword })
+                body: JSON.stringify({newLogin, newPassword})
             });
 
             if (response.ok) {
-                alert('Данные успешно обновлены!');
-                deleteAllCookies();
-                window.location = '/login'
+                const modalInstance = bootstrap.Modal.getInstance(changePasswordModal);
+                modalInstance.hide();
+                displaySuccessAlert('Данные обновлены');
+                setTimeout(() => location.reload(), 1000);
+
             } else {
                 const errorData = await response.json();
                 if (errorData.message) {
@@ -253,8 +249,25 @@ document.addEventListener("DOMContentLoaded", function () {
     window.saveLoginAndPassword = saveLoginAndPassword;
 });
 
+function displaySuccessAlert(message) {
+    const alertContainer = document.createElement('div');
+    alertContainer.className = 'alert alert-success alert-dismissible fade show';
+    alertContainer.role = 'alert';
+    alertContainer.style.fontSize = '1.1rem';
+    alertContainer.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    document.body.appendChild(alertContainer);
+
+    setTimeout(() => {
+        alertContainer.remove();
+    }, 5000);
+}
 
 let isSaving = false;
+
 function saveUserData(userId) {
     if (isSaving) {
         return;
@@ -277,7 +290,6 @@ function saveUserData(userId) {
             name: label ? label.textContent.trim() : ""
         };
     });
-
 
 
     const userDto = {
@@ -320,8 +332,6 @@ function saveUserData(userId) {
         .catch(error => console.error("Error saving user data:", error));
 }
 
-
-
 function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
     const userStatus = document.getElementById("user-status");
@@ -351,8 +361,6 @@ function deleteUser() {
     }
 }
 
-
-
 function showNotification(message, color) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -367,6 +375,7 @@ function showNotification(message, color) {
         }, 500);
     }, 3000);
 }
+
 function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
@@ -392,7 +401,7 @@ function closeDropdown() {
     document.removeEventListener('click', closeDropdown);
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     const companyDropdown = document.getElementById('companyDropdown');
     const editIcon = document.getElementById('edit-company-icon');
 
@@ -400,10 +409,6 @@ document.addEventListener('click', function(event) {
         closeDropdown();
     }
 });
-
-
-
-
 
 function toggleRoleEdit() {
     const roleDisplay = document.getElementById('roleDisplay');
@@ -440,23 +445,6 @@ function toggleNameEdit() {
         surnameModalLabel.style.display = 'block';
         userNameInput.style.display = 'none';
         surnameNameInput.style.display = 'none';
-    }
-}
-
-
-function toggleLoginEdit() {
-    const userLogin = document.getElementById('user-login');
-    const userLoginInput = document.getElementById('user-login-input');
-    if (userLoginInput.style.display === 'none') {
-        userLoginInput.style.display = 'inline-block';
-        userLogin.style.display = 'none';
-        userLoginInput.value = userLogin.innerText;
-        userLoginInput.focus();
-    } else {
-        userLogin.innerText = userLoginInput.value;
-        userLogin.style.display = 'block';
-        userLoginInput.style.display = 'none';
-
     }
 }
 

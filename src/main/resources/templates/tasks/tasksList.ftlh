@@ -150,9 +150,9 @@
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 550px;
-            min-height: 550px;
-            max-height: 550px;
+            height: 650px;
+            min-height: 650px;
+            max-height: 650px;
 
         }
 
@@ -269,7 +269,7 @@
             justify-content: center;
             align-items: center;
             padding: 1rem;
-            background-color: #f9f9f9; /* Optional for visibility */
+            flex-direction: column;
         }
 
         .pagination-container a {

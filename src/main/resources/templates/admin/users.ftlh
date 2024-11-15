@@ -27,14 +27,14 @@
                 <#list users.content as user>
                     <tr class="user-row">
                         <td class="user-info">
-                            <span>#${user.id}. ${user.name} ${user.surname}</span>
+                            <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
                             <span>Reg: ${user.registerDate}</span>
                             <span><#if user.enabled==true>
                                 Active
                                 <#else>
                                     Disabled
                                 </#if></span>
-                            <span>${user.roleDto.roleName}</span>
+                            <span id="${user.id}-role">${user.roleDto.roleName}</span>
                         </td>
                         <td class="user-action-buttons">
                             <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
@@ -51,14 +51,14 @@
             <#list users.content as user>
                 <div class="user-tile">
                     <div class="user-tile-info">
-                        <span>#${user.id}.${user.name} ${user.surname}</span>
+                        <span id="${user.id}-name-surname">#${user.id}.${user.name} ${user.surname}</span>
                         <span class="user-detail">Reg: ${user.registerDate}</span>
                         <#if user.enabled == true>
                             <span class="user-status user-detail">Active</span>
                         <#else>
                             <span class="user-status user-detail">Disabled</span>
                         </#if>
-                        <span class="user-detail">Role: ${user.roleDto.roleName}</span>
+                        <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
 
                         <div class="buttons-container">
                             <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}">
@@ -133,7 +133,7 @@
                         <span class="user-label">Роль:</span>
                         <span class="user-value d-flex align-items-center" style="gap: 5px;">
                             <span id="roleDisplay"></span>
-                            <select id="roleSelect" class="form-select" style="display: none; width: 67%;">
+                            <select id="roleSelect" class="form-select" style="display: none; width: 85%;">
 
                             </select>
                             <i class="bi bi-pencil" onclick="toggleRoleEdit()"></i>
@@ -144,14 +144,6 @@
                         <span class="user-label">Статус:</span>
                         <span class="user-value" id="user-status"></span>
                     </div>
-
-                    <div class="user-info-row mb-2">
-                        <span class="user-label">Логин:</span>
-                        <span class="user-value" id="user-login"></span>
-                        <input type="text" class="form-control fs-5" id="user-login-input" style="display: none; width: 50%">
-                        <i class="bi bi-pencil ms-2" onclick="toggleLoginEdit()"></i>
-                    </div>
-                    <span id="loginError" class="text-danger"></span>
 
 
                     <div class="user-info-row mb-2">

@@ -65,6 +65,7 @@
                                         </button>
                                     </td>
                                 </#if>
+                                <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </tr>
                         </#list>
                     </table>
@@ -94,6 +95,7 @@
                                         </button>
                                     </div>
                                 </#if>
+                                <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </div>
                         </div>
                     </#list>

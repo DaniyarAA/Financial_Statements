@@ -216,6 +216,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(task);
     }
 
+    @Override
     public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
         List<TaskDto> taskDtos = getAllTasksForUser(user);
@@ -233,6 +234,7 @@ public class TaskServiceImpl implements TaskService {
             previousYearMonth = filterYearMonth.minusMonths(1);
         }
 
+        // Filter tasks based on the provided yearMonth or previous month
         List<TaskDto> filteredTasks = taskDtos.stream()
                 .filter(task -> {
                     YearMonth taskYearMonth = YearMonth.from(task.getStartDate());
@@ -240,10 +242,12 @@ public class TaskServiceImpl implements TaskService {
                 })
                 .collect(Collectors.toList());
 
+        // Collect unique yearMonths from filtered tasks
         Set<String> uniqueYearMonths = filteredTasks.stream()
                 .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
                 .collect(Collectors.toSet());
 
+        // Map tasks by yearMonth and company
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
         for (String yearMonth : uniqueYearMonths) {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
@@ -257,6 +261,7 @@ public class TaskServiceImpl implements TaskService {
             tasksByYearMonthAndCompany.put(yearMonth, tasksForCompanies);
         }
 
+        // Map yearMonth strings to human-readable formats
         Map<String, String> monthsMap = uniqueYearMonths.stream()
                 .collect(Collectors.toMap(
                         ym -> ym,
@@ -267,17 +272,20 @@ public class TaskServiceImpl implements TaskService {
                         LinkedHashMap::new
                 ));
 
+        // Implement pagination for companies
         int totalCompanies = companyDtos.size();
         int start = page * size;
         int end = Math.min(start + size, totalCompanies);
+        List<CompanyForTaskDto> paginatedCompanies = companyDtos.subList(start, end);
 
+        // Response map
         Map<String, Object> response = new HashMap<>();
         response.put("currentPage", page);
         response.put("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        response.put("list", companyDtos.subList(start, end));
-        response.put("monthsMap", monthsMap);
-        response.put("companyDtos", companyDtos);
-        response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
+        response.put("list", paginatedCompanies); // Paginated company list
+        response.put("monthsMap", monthsMap); // Month mappings for display
+        response.put("companyDtos", companyDtos); // Full list of companies (if needed elsewhere)
+        response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany); // Filtered tasks by yearMonth and company
 
         return response;
     }

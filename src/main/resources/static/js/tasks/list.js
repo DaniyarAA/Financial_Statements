@@ -140,10 +140,12 @@ function cancelEditStatus() {
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
-    const currentYearMonthSpan = document.getElementById("currentYearMonth");
 
+    // Update the displayed year and month
+    const currentYearMonthSpan = document.getElementById("currentYearMonth");
     currentYearMonthSpan.textContent = formatYearMonth(currentYearMonth);
 
+    // Handle Year-Month navigation
     document.getElementById("prevYearMonth").addEventListener("click", function () {
         navigateToYearMonth(-1, currentYearMonth);
     });
@@ -152,6 +154,15 @@ document.addEventListener("DOMContentLoaded", function () {
         navigateToYearMonth(1, currentYearMonth);
     });
 
+    // Handle Pagination with Year-Month Preservation
+    document.querySelectorAll(".pagination-link").forEach(link => {
+        link.addEventListener("click", function (event) {
+            const targetPage = event.currentTarget.getAttribute("data-page");
+            window.location.href = updateURLParameter("page", targetPage, "yearMonth", currentYearMonth);
+        });
+    });
+
+    // Helper Functions
     function navigateToYearMonth(delta, current) {
         const newYearMonth = computeNewYearMonth(current, delta);
         window.location.href = updateURLParameter("yearMonth", newYearMonth);
@@ -163,9 +174,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
     }
 
-    function updateURLParameter(key, value) {
+    function updateURLParameter(key1, value1, key2, value2) {
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set(key, value);
+        searchParams.set(key1, value1);
+        if (key2 && value2) {
+            searchParams.set(key2, value2);
+        }
         return `${window.location.pathname}?${searchParams.toString()}`;
     }
 

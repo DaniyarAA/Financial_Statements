@@ -28,18 +28,18 @@
                 </div>
 
                 <div class="pagination-container
-                        <#if currentPage == 0 && currentPage == totalPages - 1>
-                            single-button
-                        </#if>">
+        <#if currentPage == 0 && currentPage == totalPages - 1>
+            single-button
+        </#if>">
                     <#if currentPage != 0>
-                        <a href="?page=${currentPage - 1}&size=8">
+                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">
                             <div class="button-container">
                                 <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
                             </div>
                         </a>
                     </#if>
                     <#if currentPage < totalPages - 1>
-                        <a href="?page=${currentPage + 1}&size=8">
+                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">
                             <div class="button-container">
                                 <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
                             </div>

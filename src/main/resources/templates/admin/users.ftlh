@@ -16,7 +16,6 @@
                 <#assign
                 user = SPRING_SECURITY_CONTEXT.authentication.principal
                 name = user.getUsername()>
-                <span>Hello ${name}</span>
                 <#list user.authorities as auth>
                     <#if auth=="VIEW_ROLES">
                         <a class="icon" href="/admin/roles">
@@ -38,7 +37,7 @@
     <#if known>
         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
         <#list user.authorities as auth>
-            <div id="listView" class="view-container">
+            <div id="listView" class="view-container hidden">
                 <div class="user-list-container">
                     <table class="user-table">
                         <#list users.content as user>

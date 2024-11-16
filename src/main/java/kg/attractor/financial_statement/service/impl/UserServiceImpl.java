@@ -128,7 +128,6 @@ public class UserServiceImpl implements UserService {
         if (!userDto.getSurname().isEmpty()) {
             user.setSurname(userDto.getSurname());
         }
-        System.out.println("LOGIN:" + user.getLogin());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();

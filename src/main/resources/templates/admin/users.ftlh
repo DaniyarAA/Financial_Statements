@@ -38,33 +38,30 @@
     <#if known>
         <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
         <#list user.authorities as auth>
-            <div id="listView" class="view-container hidden">
+            <div id="listView" class="view-container">
                 <div class="user-list-container">
                     <table class="user-table">
                         <#list users.content as user>
                             <tr class="user-row">
                                 <td class="user-info">
-                                    <span>#${user.id}. ${user.name} ${user.surname}</span>
+                                    <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
                                     <span>Reg: ${user.registerDate}</span>
-                                    <span>
-                                    <#if user.enabled>
-                                        Active
-                                    <#else>
-                                        Disabled
-                                    </#if>
-                                </span>
-                                    <span>${user.roleDto.roleName}</span>
+                                    <span><#if user.enabled==true>
+                                Active
+                                <#else>
+                                            Disabled
+                                        </#if></span>
+                                    <span id="${user.id}-role">${user.roleDto.roleName}</span>
                                 </td>
                                 <#if auth == "EDIT_USER">
                                     <td class="user-action-buttons">
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
-                                            <i class="bi bi-key"></i>
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
+                                                    class="bi bi-key"></i></button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                                data-user-id="${user.id}">✏️
                                         </button>
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">
-                                            ✏️
-                                        </button>
-                                    </td>
-                                </#if>
+                                    </td> </#if>
                                 <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </tr>
                         </#list>
@@ -77,21 +74,22 @@
                     <#list users.content as user>
                         <div class="user-tile">
                             <div class="user-tile-info">
-                                <span>#${user.id}. ${user.name} ${user.surname}</span>
+                                <span id="${user.id}-name-surname">#${user.id}.${user.name} ${user.surname}</span>
                                 <span class="user-detail">Reg: ${user.registerDate}</span>
-                                <#if user.enabled>
+                                <#if user.enabled == true>
                                     <span class="user-status user-detail">Active</span>
                                 <#else>
                                     <span class="user-status user-detail">Disabled</span>
                                 </#if>
-                                <span class="user-detail">Role: ${user.roleDto.roleName}</span>
+                                <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
                                 <#if auth == "EDIT_USER">
                                     <div class="buttons-container">
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
                                             <i class="bi bi-key"></i>
                                         </button>
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">
-                                            ✏️
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                                data-user-id="${user.id}">✏️
                                         </button>
                                     </div>
                                 </#if>
@@ -176,7 +174,7 @@
                         <span class="user-label">Роль:</span>
                         <span class="user-value d-flex align-items-center" style="gap: 5px;">
                             <span id="roleDisplay"></span>
-                            <select id="roleSelect" class="form-select" style="display: none; width: 67%;">
+                            <select id="roleSelect" class="form-select" style="display: none; width: 85%;">
 
                             </select>
                             <i class="bi bi-pencil" onclick="toggleRoleEdit()"></i>

@@ -87,7 +87,7 @@ public class UserCompanyServiceImpl implements UserCompanyService {
                 .toList();
         for (Company company : newCompanies) {
             if (!existingCompanies.contains(company)) {
-                UserCompany userCompany = new UserCompany();
+                UserCompany userCompany = userCompanyRepository.findByCompany(company).orElse(new UserCompany());
                 userCompany.setUser(user);
                 userCompany.setCompany(company);
                 userCompanyRepository.save(userCompany);
@@ -95,7 +95,8 @@ public class UserCompanyServiceImpl implements UserCompanyService {
         }
         for (UserCompany userCompany : existingUserCompanies) {
             if (!newCompanies.contains(userCompany.getCompany())) {
-                userCompanyRepository.delete(userCompany);
+                userCompany.setUser(null);
+                userCompanyRepository.save(userCompany);
             }
         }
     }

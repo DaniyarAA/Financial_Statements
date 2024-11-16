@@ -77,10 +77,7 @@ public class AdminController {
             userService.editUser(id, userDto);
             return ResponseEntity.ok("User updated successfully");
         } catch (IllegalArgumentException e) {
-            if(e.getMessage().contains("существует")) {
-                return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
-            }
-            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", e.getMessage());

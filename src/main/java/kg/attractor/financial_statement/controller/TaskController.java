@@ -139,7 +139,8 @@ public class TaskController {
             Model model,
             Authentication authentication,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "8") int size
+            @RequestParam(required = false, defaultValue = "8") int size,
+            @RequestParam(required = false, defaultValue = "") String yearMonth
     ) throws JsonProcessingException {
         if (authentication == null) {
             return "redirect:/login";
@@ -148,7 +149,8 @@ public class TaskController {
         String userLogin = authentication.getName();
         User user = userService.getUserByLogin(userLogin);
 
-        Map<String, Object> taskListData = taskService.getTaskListData(user, page, size);
+        Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        System.out.println("taskListData: " + taskListData);
 
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         ObjectMapper objectMapper = new ObjectMapper();

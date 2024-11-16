@@ -38,7 +38,7 @@ public interface TaskService {
 
     ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data);
 
-    Map<String, Object> getTaskListData(User user, int page, int size);
+    Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth);
 
     void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String name, Long id);
 

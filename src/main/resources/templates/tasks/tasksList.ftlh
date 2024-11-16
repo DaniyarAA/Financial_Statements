@@ -6,6 +6,11 @@
         <div class="main-content">
             <div class="table-container company-table">
                 <div class="table-wrapper">
+                    <div class="year-month-pagination">
+                        <button id="prevYearMonth" class="btn-nav">&lt; Previous Month</button>
+                        <span id="currentYearMonth"></span>
+                        <button id="nextYearMonth" class="btn-nav">Next Month &gt;</button>
+                    </div>
                     <table class="table-main">
                         <thead>
                         <tr class="company-column-tr">
@@ -23,10 +28,9 @@
                 </div>
 
                 <div class="pagination-container
-    <#if currentPage == 0 && currentPage == totalPages - 1>
-        single-button
-    </#if>
-">
+                        <#if currentPage == 0 && currentPage == totalPages - 1>
+                            single-button
+                        </#if>">
                     <#if currentPage != 0>
                         <a href="?page=${currentPage - 1}&size=8">
                             <div class="button-container">

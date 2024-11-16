@@ -136,3 +136,50 @@ function cancelEditStatus() {
     document.getElementById('status-display').style.display = 'block';
     document.getElementById('status-input').style.display = 'none';
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
+    const currentYearMonthSpan = document.getElementById("currentYearMonth");
+
+    currentYearMonthSpan.textContent = formatYearMonth(currentYearMonth);
+
+    document.getElementById("prevYearMonth").addEventListener("click", function () {
+        navigateToYearMonth(-1, currentYearMonth);
+    });
+
+    document.getElementById("nextYearMonth").addEventListener("click", function () {
+        navigateToYearMonth(1, currentYearMonth);
+    });
+
+    function navigateToYearMonth(delta, current) {
+        const newYearMonth = computeNewYearMonth(current, delta);
+        window.location.href = updateURLParameter("yearMonth", newYearMonth);
+    }
+
+    function computeNewYearMonth(current, delta) {
+        const [month, year] = current.split(".").map(Number);
+        const date = new Date(year, month - 1 + delta);
+        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+    }
+
+    function updateURLParameter(key, value) {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set(key, value);
+        return `${window.location.pathname}?${searchParams.toString()}`;
+    }
+
+    function formatYearMonth(yearMonth) {
+        const [month, year] = yearMonth.split(".");
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December",
+        ];
+        return `${monthNames[Number(month) - 1]} ${year}`;
+    }
+
+    function getCurrentMonth() {
+        const date = new Date();
+        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+    }
+});

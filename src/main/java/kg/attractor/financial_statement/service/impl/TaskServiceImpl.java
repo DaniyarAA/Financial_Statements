@@ -216,21 +216,39 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(task);
     }
 
-    public Map<String, Object> getTaskListData(User user, int page, int size) {
+    public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
         List<TaskDto> taskDtos = getAllTasksForUser(user);
 
-        Set<String> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDate()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
-                .collect(Collectors.toSet());
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
+        YearMonth filterYearMonth;
+        YearMonth previousYearMonth;
+
+        if (paramYearMonth == null || paramYearMonth.isEmpty()) {
+            YearMonth currentYearMonth = YearMonth.now();
+            filterYearMonth = currentYearMonth;
+            previousYearMonth = currentYearMonth.minusMonths(1);
+        } else {
+            filterYearMonth = YearMonth.parse(paramYearMonth, formatter);
+            previousYearMonth = filterYearMonth.minusMonths(1);
+        }
+
+        List<TaskDto> filteredTasks = taskDtos.stream()
+                .filter(task -> {
+                    YearMonth taskYearMonth = YearMonth.from(task.getStartDate());
+                    return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(previousYearMonth);
+                })
+                .collect(Collectors.toList());
+
+        Set<String> uniqueYearMonths = filteredTasks.stream()
+                .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
+                .collect(Collectors.toSet());
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
         for (String yearMonth : uniqueYearMonths) {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companyDtos) {
-                List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
+                List<TaskDto> tasksForCompanyAndMonth = filteredTasks.stream()
                         .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
                                 && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
@@ -263,6 +281,7 @@ public class TaskServiceImpl implements TaskService {
 
         return response;
     }
+
 
     @Override
     public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String name, Long id) {

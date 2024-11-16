@@ -267,7 +267,17 @@ function saveUserData(userId) {
             if (response.ok) {
                 fullnameDispay.innerText = `#${userId}. ${username} ${surname}`;
                 userRoleDisplay.innerText = selectedRoleDto.roleName;
-                showNotification("Информация успешно обновлена", "green");
+                const modalElement = document.getElementById('userModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                    modalElement.addEventListener('hidden.bs.modal', () => {
+                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    }, { once: true });
+                }
+                showNotification("Информация успешно обновлена!", "green");
+
+
             } else {
                 return response.json().then(errorData => {
                     document.getElementById("birthdayError").innerText = errorData.message;

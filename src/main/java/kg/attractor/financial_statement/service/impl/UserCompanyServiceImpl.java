@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,7 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     private final UserCompanyRepository userCompanyRepository;
     private final UserService userService;
     private CompanyService companyService;
+
     @Lazy
     @Autowired
     private void setCompanyService(CompanyService companyService) {
@@ -54,7 +56,6 @@ public class UserCompanyServiceImpl implements UserCompanyService {
                     .orElseThrow(() -> new NoSuchElementException("User company not found with companyId: " + taskCreateDto.getCompanyId() + " and userId: " + taskCreateDto.getAppointToUserId()));
 
         }
-
     }
 
     @Override
@@ -100,7 +101,6 @@ public class UserCompanyServiceImpl implements UserCompanyService {
         }
     }
 
-
     @Override
     public List<UserCompany> findByUser(User user){
         return userCompanyRepository.findByUser(user);
@@ -109,6 +109,11 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     @Override
     public List<UserCompany> findByUserIdAndCompanyIdIn(Long userId, List<Long> collect) {
         return userCompanyRepository.findByUserIdAndCompanyIdIn(userId, collect);
+    }
+
+    @Override
+    public Optional<UserCompany> findByCompany(Company company) {
+        return userCompanyRepository.findByCompany(company);
     }
 
     @Override
@@ -133,5 +138,10 @@ public class UserCompanyServiceImpl implements UserCompanyService {
         return userCompanies.stream()
                 .map(UserCompany::getId)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserCompany> findAll() {
+        return userCompanyRepository.findAll();
     }
 }

@@ -131,20 +131,20 @@ public class TaskController {
         return "tasks/edit";
     }
 
-    @PostMapping("edit")
-    public String editTask(
-            @RequestParam Long id,
-            @Valid TaskEditDto taskEditDto,
-            BindingResult bindingResult,
-            Model model
-    ) {
-        if (bindingResult.hasErrors()) {
-            return "tasks/edit";
-        }
-        taskService.editTask(id, taskEditDto);
-
-        return "redirect:/tasks";
-    }
+//    @PostMapping("edit")
+//    public String editTask(
+//            @RequestParam Long id,
+//            @Valid TaskEditDto taskEditDto,
+//            BindingResult bindingResult,
+//            Model model
+//    ) {
+//        if (bindingResult.hasErrors()) {
+//            return "tasks/edit";
+//        }
+//        taskService.editTask(id, taskEditDto);
+//
+//        return "redirect:/tasks";
+//    }
 
     @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id) {
@@ -171,7 +171,7 @@ public class TaskController {
         List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
 
         Set<String> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDateTime()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .map(task -> YearMonth.from(task.getStartDate()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .collect(Collectors.toSet());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
@@ -182,7 +182,7 @@ public class TaskController {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companyDtos) {
                 List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
-                        .filter(task -> YearMonth.from(task.getStartDateTime()).format(formatter).equals(yearMonth)
+                        .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
                                 && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
                 tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);

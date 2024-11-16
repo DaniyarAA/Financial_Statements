@@ -47,6 +47,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<DocumentType> getNonOptionalDocumentTypes() {
+        return documentTypeRepository.findByIsOptionalFalse();
+    }
+
     private DocumentTypeDto convertToDto(DocumentType documentType) {
         return DocumentTypeDto.builder()
                 .id(documentType.getId())

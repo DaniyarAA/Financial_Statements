@@ -13,6 +13,8 @@ import java.util.Map;
 public interface CompanyService {
     ResponseEntity<Map<String, String>> createCompany(CompanyDto company, String login, BindingResult bindingResult);
 
+    void assignUserToCompany(Company company, String login);
+
     CompanyDto findById(Long companyId);
 
     void editCompany(CompanyDto company);
@@ -50,4 +52,6 @@ public interface CompanyService {
     List<CompanyForTaskDto> getAllCompaniesForUser(User user);
 
     void addCompany(CompanyDto companyDto , String login);
+
+    List<Company> findAll();
 }

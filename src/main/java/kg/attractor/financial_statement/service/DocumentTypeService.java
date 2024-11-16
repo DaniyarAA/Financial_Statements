@@ -13,4 +13,6 @@ public interface DocumentTypeService {
     DocumentType getDocumentTypeById(Long documentTypeId);
 
     List<DocumentTypeDto> getFilteredDocumentTypes();
+
+    List<DocumentType> getNonOptionalDocumentTypes();
 }

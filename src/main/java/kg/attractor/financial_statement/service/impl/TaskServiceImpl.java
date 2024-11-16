@@ -3,9 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.dto.TaskEditDto;
-import kg.attractor.financial_statement.entity.Task;
-import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.entity.UserCompany;
+import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -16,14 +14,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Map;
+import java.util.*;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -152,7 +149,6 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-
     @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
         System.out.println("login: " + taskCreateDto.getAppointToUserId());
@@ -254,7 +250,49 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    @Scheduled(cron = "0 0 0 1 1 *")
+    public void tasksGenerator() {
+        LocalDate currentDate = LocalDate.now();
+
+        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
+            List<Company> companies = companyService.findAll();
+
+            for (Company company : companies) {
+                Optional<UserCompany> userCompanyOptional = userCompanyService.findByCompany(company);
+
+                if (userCompanyOptional.isPresent()) {
+                    UserCompany userCompany = userCompanyOptional.get();
+                    generateAutomaticTasks(userCompany, currentDate);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate) {
+        int currentYear = currentDate.getYear();
+
+        List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
+        TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
 
 
+        for (int i = 0; i < 12; i++) {
+            YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);
 
+            if (nextMonth.getYear() == currentYear) {
+                for (DocumentType documentType : automaticDocumentTypes) {
+                    Task task = new Task();
+                    LocalDate startDate = nextMonth.atDay(1);
+                    LocalDate endDate = nextMonth.atEndOfMonth();
+                    task.setUserCompany(userCompany);
+                    task.setStartDate(startDate);
+                    task.setEndDate(endDate);
+                    task.setDocumentType(documentType);
+                    task.setTaskStatus(defaultStatus);
+                    taskRepository.save(task);
+                }
+            }
+        }
+    }
 }

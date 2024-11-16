@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,17 +32,23 @@ public class Task {
     @JoinColumn(name = "status_id")
     private TaskStatus taskStatus;
 
-    @Column(name = "start_datetime")
-    private LocalDateTime startDateTime;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-    @Column(name = "end_datetime")
-    private LocalDateTime endDateTime;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @Column(name = "time_spent")
+    private LocalDateTime timeSpent;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
     private List<Report> reports;

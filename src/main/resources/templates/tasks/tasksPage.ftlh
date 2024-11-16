@@ -52,14 +52,14 @@
                             <p class="card-text">ИНН: ${task.company.inn}</p>
                             <p class="card-text">Тип документа: ${task.documentTypeName}</p>
                             <p class="card-text">От:
-                                <#if task.startDateTime??>
-                                    ${dateUtils.formatDateTime(task.startDateTime, "dd.MM.yyyy")}
+                                <#if task.startDate??>
+                                    ${task.startDate}
                                 <#else>
                                  Не указано
                                 </#if>
                                  До:
-                                <#if task.endDateTime??>
-                                    ${dateUtils.formatDateTime(task.endDateTime, "dd.MM.yyyy")}
+                                <#if task.endDate??>
+                                    ${task.endDate}
 
                                 <#else>
                                     Не указано

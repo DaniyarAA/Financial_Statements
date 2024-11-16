@@ -118,7 +118,6 @@ public class UserServiceImpl implements UserService {
     public void editUser(Long id, UserDto userDto){
         User user = getUserById(id);
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        updateLoginIfChanged(userDto.getLogin(), user);
         validateBirthday(userDto.getBirthday());
         user.setRole(role);
         user.setBirthday(userDto.getBirthday());
@@ -129,7 +128,6 @@ public class UserServiceImpl implements UserService {
         if (!userDto.getSurname().isEmpty()){
             user.setSurname(userDto.getSurname());
         }
-        System.out.println("LOGIN:" + user.getLogin());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();

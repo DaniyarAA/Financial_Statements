@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
-    function handleSaveUserData(userId) {
-        saveUserData(userId);
-    }
+    const editUserBtn = document.getElementById("edit-user-info-button");
+    let currentUserId = null;
+
 
     const companySearchInput = document.getElementById("companySearch");
     const companyCheckboxes = document.getElementById("companyCheckboxes");
@@ -49,11 +49,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.relatedTarget;
         const avatarInput = document.getElementById("avatarInput");
         const deleteUserIcon = document.getElementById("delete-user-icon");
-        const userId = button.getAttribute("data-user-id");
-        deleteUserIcon.setAttribute("data-user-id", userId);
-        avatarInput.setAttribute("data-user-id", userId);
+        deleteUserIcon.setAttribute("data-user-id", currentUserId);
+        avatarInput.setAttribute("data-user-id", currentUserId);
+        currentUserId = button.getAttribute("data-user-id");
 
-        fetch(`/admin/users/edit/` + userId)
+        fetch(`/admin/users/edit/` + currentUserId)
             .then(response => response.json())
             .then(data => {
                 const user = data.user;
@@ -70,8 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("notesInput").value = user.notes;
                 document.getElementById("userNameInput").value = user.name;
                 document.getElementById("birthday-input").value = birthday;
-                document.getElementById("user-login").innerText = user.login;
-                document.getElementById("user-login-input").value = user.login
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
                 } else {
@@ -130,12 +128,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     companyCheckboxes.append(div);
                 });
-                const editUserBtn = document.getElementById("edit-user-info-button");
-                editUserBtn.removeEventListener("click", handleSaveUserData);
-                editUserBtn.addEventListener("click", () => handleSaveUserData(userId));
 
             })
             .catch(error => console.error("Error loading user data:", error));
+    });
+    editUserBtn.addEventListener("click", function () {
+        if (currentUserId) {
+            saveUserData(currentUserId);
+        }
     });
 });
 
@@ -223,17 +223,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-let isSaving = false;
 function saveUserData(userId) {
-    if (isSaving) {
-        return;
-    }
-    isSaving = true;
     const roleSelect = document.getElementById("roleSelect");
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
-    const login = document.getElementById("user-login-input").value;
     const surname = document.getElementById("surnameNameInput").value;
+    const fullnameDispay = document.getElementById(userId + "-name-surname");
+    const userRoleDisplay = document.getElementById(userId + "-role")
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -255,7 +251,6 @@ function saveUserData(userId) {
         companies: companies,
         name: username,
         birthday: birthday,
-        login: login,
         surname: surname
 
     };
@@ -269,19 +264,23 @@ function saveUserData(userId) {
         body: JSON.stringify(userDto)
     })
         .then(response => {
-            isSaving = false;
             if (response.ok) {
-                location.reload();
+                fullnameDispay.innerText = `#${userId}. ${username} ${surname}`;
+                userRoleDisplay.innerText = selectedRoleDto.roleName;
+                const modalElement = document.getElementById('userModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                    modalElement.addEventListener('hidden.bs.modal', () => {
+                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    }, { once: true });
+                }
+                showNotification("Информация успешно обновлена!", "green");
+
+
             } else {
                 return response.json().then(errorData => {
-
-                    if (errorData && errorData.error) {
-                        if (errorData.error === "duplicate") {
-                            document.getElementById("loginError").innerText = errorData.message;
-                        } else {
-                            document.getElementById("birthdayError").innerText = errorData.message;
-                        }
-                    }
+                    document.getElementById("birthdayError").innerText = errorData.message;
                     showNotification("Ошибка при обновлении информации", "red");
                 });
             }

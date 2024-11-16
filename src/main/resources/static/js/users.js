@@ -1,6 +1,15 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
+window.onload = function () {
+    const viewMode = localStorage.getItem('viewMode');
+    if (viewMode === 'tile') {
+        switchToTileView();
+    } else {
+        switchToListView();
+    }
+};
+
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');

@@ -11,74 +11,96 @@
             </svg>
         </span>
             <span class="icon" onclick="switchToListView()">&#x2630;</span>
-            <a class="icon" href="/admin/roles">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-person-fill-gear" viewBox="0 0 16 16">
-                    <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
-                </svg>
-            </a>
-            <span class="icon" onclick="window.location.href='/admin/register'">+</span>
-        </div>
-    </div>
-
-    <div id="listView" class="view-container">
-        <div class="user-list-container">
-            <table class="user-table">
-                <#list users.content as user>
-                    <tr class="user-row">
-                        <td class="user-info">
-                            <span>#${user.id}. ${user.name} ${user.surname}</span>
-                            <span>Reg: ${user.registerDate}</span>
-                            <span><#if user.enabled==true>
-                                Active
-                                <#else>
-                                    Disabled
-                                </#if></span>
-                            <span>${user.roleDto.roleName}</span>
-                        </td>
-                        <td class="user-action-buttons">
-                            <button class="edit-button" data-bs-toggle="modal"
-                                    data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
-                                        class="bi bi-key"></i></button>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
-                                    data-user-id="${user.id}">✏️
-                            </button>
-                            <input type="hidden" id="currentUserId" value="${currentUser.id}">
-                        </td>
-                    </tr>
+            <#assign known = SPRING_SECURITY_CONTEXT??>
+            <#if known>
+                <#assign
+                user = SPRING_SECURITY_CONTEXT.authentication.principal
+                name = user.getUsername()>
+                <span>Hello ${name}</span>
+                <#list user.authorities as auth>
+                    <#if auth=="VIEW_ROLES">
+                        <a class="icon" href="/admin/roles">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+                            </svg>
+                        </a>
+                    </#if>
+                    <#if auth = 'CREATE_USER'>
+                        <span class="icon" onclick="window.location.href='/admin/register'">+</span>
+                    </#if>
                 </#list>
-            </table>
+            </#if>
         </div>
     </div>
 
-    <div id="tileView" class="view-container hidden">
-        <div class="user-tile-container">
-            <#list users.content as user>
-                <div class="user-tile">
-                    <div class="user-tile-info">
-                        <span>#${user.id}.${user.name} ${user.surname}</span>
-                        <span class="user-detail">Reg: ${user.registerDate}</span>
-                        <#if user.enabled == true>
-                            <span class="user-status user-detail">Active</span>
-                        <#else>
-                            <span class="user-status user-detail">Disabled</span>
-                        </#if>
-                        <span class="user-detail">Role: ${user.roleDto.roleName}</span>
-
-                        <div class="buttons-container">
-                            <button class="edit-button" data-bs-toggle="modal"
-                                    data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
-                                        class="bi bi-key"></i></button>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
-                                    data-user-id="${user.id}">✏️
-                            </button>
-                            <input type="hidden" id="currentUserId" value="${currentUser.id}">
-                        </div>
-                    </div>
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+        <#list user.authorities as auth>
+            <div id="listView" class="view-container hidden">
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <#list users.content as user>
+                            <tr class="user-row">
+                                <td class="user-info">
+                                    <span>#${user.id}. ${user.name} ${user.surname}</span>
+                                    <span>Reg: ${user.registerDate}</span>
+                                    <span>
+                                    <#if user.enabled>
+                                        Active
+                                    <#else>
+                                        Disabled
+                                    </#if>
+                                </span>
+                                    <span>${user.roleDto.roleName}</span>
+                                </td>
+                                <#if auth == "EDIT_USER">
+                                    <td class="user-action-buttons">
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
+                                            <i class="bi bi-key"></i>
+                                        </button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">
+                                            ✏️
+                                        </button>
+                                    </td>
+                                </#if>
+                            </tr>
+                        </#list>
+                    </table>
                 </div>
-            </#list>
-        </div>
-    </div>
+            </div>
+
+            <div id="tileView" class="view-container hidden">
+                <div class="user-tile-container">
+                    <#list users.content as user>
+                        <div class="user-tile">
+                            <div class="user-tile-info">
+                                <span>#${user.id}. ${user.name} ${user.surname}</span>
+                                <span class="user-detail">Reg: ${user.registerDate}</span>
+                                <#if user.enabled>
+                                    <span class="user-status user-detail">Active</span>
+                                <#else>
+                                    <span class="user-status user-detail">Disabled</span>
+                                </#if>
+                                <span class="user-detail">Role: ${user.roleDto.roleName}</span>
+                                <#if auth == "EDIT_USER">
+                                    <div class="buttons-container">
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
+                                            <i class="bi bi-key"></i>
+                                        </button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">
+                                            ✏️
+                                        </button>
+                                    </div>
+                                </#if>
+                            </div>
+                        </div>
+                    </#list>
+                </div>
+            </div>
+        </#list>
+    </#if>
 
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation example">
@@ -116,8 +138,17 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
-                <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
-
+                <#assign known = SPRING_SECURITY_CONTEXT??>
+                <#if known>
+                    <#assign
+                    user = SPRING_SECURITY_CONTEXT.authentication.principal
+                    name = user.getUsername()>
+                    <#list user.authorities as auth>
+                        <#if auth=="DELETE_USER">
+                            <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
+                        </#if>
+                    </#list>
+                </#if>
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>

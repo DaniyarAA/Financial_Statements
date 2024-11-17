@@ -36,20 +36,17 @@
                                     <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
                                     <span>Reg: ${user.registerDate}</span>
                                     <span><#if user.enabled==true>
-                                Active
-                                <#else>
+                                             Active
+                                          <#else>
                                             Disabled
-                                        </#if></span>
+                                          </#if>
+                                    </span>
                                     <span id="${user.id}-role">${user.roleDto.roleName}</span>
                                 </td>
                                 <#if auth == "EDIT_USER">
                                     <td class="user-action-buttons">
-                                        <button class="edit-button" data-bs-toggle="modal"
-                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
-                                                    class="bi bi-key"></i></button>
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
-                                                data-user-id="${user.id}">✏️
-                                        </button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
                                     </td> </#if>
                                 <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </tr>
@@ -71,17 +68,13 @@
                                     <span class="user-status user-detail">Disabled</span>
                                 </#if>
                                 <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
-                                <#if auth == "EDIT_USER">
+
                                     <div class="buttons-container">
-                                        <button class="edit-button" data-bs-toggle="modal"
-                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
-                                            <i class="bi bi-key"></i>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i>
                                         </button>
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
-                                                data-user-id="${user.id}">✏️
-                                        </button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
                                     </div>
-                                </#if>
+
                                 <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </div>
                         </div>

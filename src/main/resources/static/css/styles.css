@@ -415,7 +415,7 @@ thead td {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     column-gap: 15px;
-    row-gap: 3px;
+    row-gap: 15px;
 }
 .user-tile:nth-child(odd) {
     margin-left: 30px;
@@ -427,13 +427,12 @@ thead td {
 
 .user-tile {
     border-radius: 3px;
-    height: 85%;
+    height: 100%;
+    padding: 9px 0;
     box-shadow: 3px 2px 6px rgba(0, 0, 0, 0.2);
     text-align: center;
     position: relative;
     background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
-
-
 }
 
 .user-name-surname{
@@ -458,7 +457,6 @@ thead td {
     display: flex;
     column-gap: 20px;
     align-items: center;
-    margin-bottom: 18px;
 }
 
 .user-tile-info span {
@@ -471,7 +469,6 @@ thead td {
     padding: 0;
     border: none;
     cursor: pointer;
-    margin-top: 10px;
     font-size: 25px;
     background: none;
 }

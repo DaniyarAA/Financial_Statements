@@ -140,12 +140,10 @@ function cancelEditStatus() {
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
-
-    // Update the displayed year and month
     const currentYearMonthSpan = document.getElementById("currentYearMonth");
+
     currentYearMonthSpan.textContent = formatYearMonth(currentYearMonth);
 
-    // Handle Year-Month navigation
     document.getElementById("prevYearMonth").addEventListener("click", function () {
         navigateToYearMonth(-1, currentYearMonth);
     });
@@ -154,15 +152,6 @@ document.addEventListener("DOMContentLoaded", function () {
         navigateToYearMonth(1, currentYearMonth);
     });
 
-    // Handle Pagination with Year-Month Preservation
-    document.querySelectorAll(".pagination-link").forEach(link => {
-        link.addEventListener("click", function (event) {
-            const targetPage = event.currentTarget.getAttribute("data-page");
-            window.location.href = updateURLParameter("page", targetPage, "yearMonth", currentYearMonth);
-        });
-    });
-
-    // Helper Functions
     function navigateToYearMonth(delta, current) {
         const newYearMonth = computeNewYearMonth(current, delta);
         window.location.href = updateURLParameter("yearMonth", newYearMonth);
@@ -174,12 +163,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
     }
 
-    function updateURLParameter(key1, value1, key2, value2) {
+    function updateURLParameter(key, value) {
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set(key1, value1);
-        if (key2 && value2) {
-            searchParams.set(key2, value2);
-        }
+        searchParams.set(key, value);
         return `${window.location.pathname}?${searchParams.toString()}`;
     }
 
@@ -197,3 +183,79 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
     }
 });
+
+function setupNavigationButtons() {
+    const yearMonthColumns = document.querySelectorAll(".year-month-th");
+
+    if (yearMonthColumns.length >= 2) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
+
+        // Handle the first column
+        const firstColumn = yearMonthColumns[0];
+        if (!firstColumn.querySelector(".btn-nav-img")) { // Avoid duplicates
+            const prevButtonImage = document.createElement("img");
+            prevButtonImage.src = "/images/prev-month.png"; // Path to your image
+            prevButtonImage.alt = "Previous Month";
+            prevButtonImage.classList.add("btn-nav-img");
+            prevButtonImage.style.position = "absolute";
+            prevButtonImage.style.left = "5px";
+            prevButtonImage.style.top = "0px";
+            prevButtonImage.style.cursor = "pointer";
+            prevButtonImage.style.width = "35px";
+            prevButtonImage.style.height = "35px";
+
+            prevButtonImage.addEventListener("click", () => {
+                navigateToYearMonth(-1, currentYearMonth);
+            });
+
+            firstColumn.style.position = "relative";
+            firstColumn.appendChild(prevButtonImage);
+        }
+
+        // Handle the last column
+        const lastColumn = yearMonthColumns[yearMonthColumns.length - 1];
+        if (!lastColumn.querySelector(".btn-nav-img")) { // Avoid duplicates
+            const nextButtonImage = document.createElement("img");
+            nextButtonImage.src = "/images/next-month.png"; // Path to your image
+            nextButtonImage.alt = "Next Month";
+            nextButtonImage.classList.add("btn-nav-img");
+            nextButtonImage.style.position = "absolute";
+            nextButtonImage.style.right = "5px";
+            nextButtonImage.style.top = "0px";
+            nextButtonImage.style.cursor = "pointer";
+            nextButtonImage.style.width = "35px";
+            nextButtonImage.style.height = "35px";
+
+            nextButtonImage.addEventListener("click", () => {
+                navigateToYearMonth(1, currentYearMonth);
+            });
+
+            lastColumn.style.position = "relative";
+            lastColumn.appendChild(nextButtonImage);
+        }
+    }
+
+    function navigateToYearMonth(delta, current) {
+        const newYearMonth = computeNewYearMonth(current, delta);
+        window.location.href = updateURLParameter("yearMonth", newYearMonth);
+    }
+
+    function computeNewYearMonth(current, delta) {
+        const [month, year] = current.split(".").map(Number);
+        const date = new Date(year, month - 1 + delta);
+        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+    }
+
+    function updateURLParameter(key, value) {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set(key, value);
+        return `${window.location.pathname}?${searchParams.toString()}`;
+    }
+
+    function getCurrentMonth() {
+        const date = new Date();
+        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+    }
+}
+document.addEventListener("DOMContentLoaded", setupNavigationButtons);

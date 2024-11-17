@@ -6,11 +6,6 @@
         <div class="main-content">
             <div class="table-container company-table">
                 <div class="table-wrapper">
-                    <div class="year-month-pagination">
-                        <button id="prevYearMonth" class="btn-nav">&lt; Previous Month</button>
-                        <span id="currentYearMonth"></span>
-                        <button id="nextYearMonth" class="btn-nav">Next Month &gt;</button>
-                    </div>
                     <table class="table-main">
                         <thead>
                         <tr class="company-column-tr">
@@ -54,9 +49,13 @@
                     <table class="table-main">
                         <thead>
                         <tr class="year-month-column">
-                                <#list monthsMap?keys as yearMonth>
-                                    <th class="year-month-th">${monthsMap[yearMonth]}</th>
-                                </#list>
+                            <#list monthsMap?keys as yearMonth>
+                                <th class="year-month-th">
+                                    <div class="year-month-header">
+                                        <span class="year-month-label">${monthsMap[yearMonth]}</span>
+                                    </div>
+                                </th>
+                            </#list>
                         </tr>
                         </thead>
                         <tbody>
@@ -80,7 +79,6 @@
                                                             data-amount="${task.amount}"
                                                             data-status="${task.statusId}">
                                                         ${task.documentTypeName}
-<#--                                                        <div class="<#if task.isCompleted>completed<#else>pending</#if> button-alert" style="<#if task.isCompleted>color: red</#if>">-->
                                                         <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>"></div>
                                                     </button>
                                                 </#list>
@@ -144,11 +142,16 @@
             width: 75%;
             background-color: #d9d9d9;
             margin-right: 10px;
+            margin-top: 26px;
         }
 
         .year-month-column {
             background-color: #ffffff;
-            height: 61px;
+            height: 35px;
+        }
+
+        .year-month-th {
+            padding: 5px;
         }
 
         .table-wrapper {
@@ -167,24 +170,14 @@
         }
 
         .table-main th {
-            /*border: 3px solid #fff;*/
-            padding: 15px;
             text-align: center;
             border-bottom: 1px solid #dee2e6;
-
-            /*height: 80px;*/
         }
 
         .table-main td {
             text-align: center;
             border-bottom: 3px solid #a4a4a4;
             box-shadow: 0 4px 2px -2px #a4a4a4;
-
-        }
-
-
-
-        .table-main tbody {
         }
         .table-main {
             background-color: #d9d9d9;
@@ -192,7 +185,6 @@
         }
 
         .company-columns {
-            /*width: 100%;*/
             text-align: center;
             height: 52px;
         }
@@ -208,12 +200,6 @@
         .table-striped-row:nth-child(even) {
             background-color: #ffffff;
         }
-        /*.year-month-column:nth-child(odd) {*/
-        /*    background-color: #d9d9d9;*/
-        /*}*/
-        /*.year-month-column:nth-child(even) {*/
-        /*    background-color: #ededed;*/
-        /*}*/
 
         .task-buttons {
             display: flex;
@@ -292,14 +278,6 @@
             border: 1px solid #ddd;
         }
 
-        .button-container.single-button {
-            justify-content: center;
-            position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
         .status-indicator {
             position: absolute;
             top: 0;
@@ -307,12 +285,6 @@
             width: 23px;
             height: 100%;
             pointer-events: none;
-        }
-
-
-
-        .test {
-
         }
 
         #task-content {
@@ -342,22 +314,6 @@
         #task-edit-form strong {
             color: #666;
             font-style: italic;
-        }
-
-        #amount-text, #status-text {
-            font-weight: bold;
-            color: #000;
-        }
-
-        .btn-link {
-            color: #888;
-            font-size: 14px;
-            padding: 0;
-            text-decoration: none;
-        }
-
-        .btn-link:hover {
-            color: #333;
         }
 
         textarea, input[type="text"] {
@@ -412,9 +368,66 @@
             margin: 5px 0;
         }
 
+        .year-month-header {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .year-month-label {
+            padding: 0 20px;
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 14px;
+
+        }
+
+        .year-month-navigation button {
+            pointer-events: auto;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .year-month-navigation button:hover {
+            background-color: #0056b3;
+        }
+
+        .year-month-navigation .btn-nav:first-of-type {
+            margin-right: auto;
+        }
+
+        .year-month-navigation .btn-nav:last-of-type {
+            margin-left: auto;
+        }
+
+        .btn-nav {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-nav:hover {
+            background-color: #0056b3;
+        }
+
+        #currentYearMonth {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
 
     </style>
-
-
-
 </@layout.layout>

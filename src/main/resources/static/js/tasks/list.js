@@ -138,66 +138,39 @@ function cancelEditStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
-    const currentYearMonthSpan = document.getElementById("currentYearMonth");
+    const paginationContainer = document.querySelector('.pagination-container');
 
-    currentYearMonthSpan.textContent = formatYearMonth(currentYearMonth);
-
-    document.getElementById("prevYearMonth").addEventListener("click", function () {
-        navigateToYearMonth(-1, currentYearMonth);
-    });
-
-    document.getElementById("nextYearMonth").addEventListener("click", function () {
-        navigateToYearMonth(1, currentYearMonth);
-    });
-
-    function navigateToYearMonth(delta, current) {
-        const newYearMonth = computeNewYearMonth(current, delta);
-        window.location.href = updateURLParameter("yearMonth", newYearMonth);
+    if (paginationContainer) {
+        paginationContainer.addEventListener('click', function (event) {
+            const target = event.target.closest('.pagination-link');
+            if (target) {
+                const page = target.getAttribute('data-page');
+                if (page !== null) {
+                    navigateToPage(page);
+                }
+            }
+        });
     }
 
-    function computeNewYearMonth(current, delta) {
-        const [month, year] = current.split(".").map(Number);
-        const date = new Date(year, month - 1 + delta);
-        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
-    }
-
-    function updateURLParameter(key, value) {
+    function navigateToPage(page) {
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set(key, value);
-        return `${window.location.pathname}?${searchParams.toString()}`;
-    }
-
-    function formatYearMonth(yearMonth) {
-        const [month, year] = yearMonth.split(".");
-        const monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December",
-        ];
-        return `${monthNames[Number(month) - 1]} ${year}`;
-    }
-
-    function getCurrentMonth() {
-        const date = new Date();
-        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+        searchParams.set("page", page);
+        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
     }
 });
-
 function setupNavigationButtons() {
     const yearMonthColumns = document.querySelectorAll(".year-month-th");
 
-    if (yearMonthColumns.length >= 2) {
+    if (yearMonthColumns.length >= 1) {
         const urlParams = new URLSearchParams(window.location.search);
         const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
 
-        // Handle the first column
         const firstColumn = yearMonthColumns[0];
-        if (!firstColumn.querySelector(".btn-nav-img")) { // Avoid duplicates
+        if (!firstColumn.querySelector(".btn-nav-img-prev")) {
             const prevButtonImage = document.createElement("img");
-            prevButtonImage.src = "/images/prev-month.png"; // Path to your image
+            prevButtonImage.src = "/images/prev-month.png";
             prevButtonImage.alt = "Previous Month";
-            prevButtonImage.classList.add("btn-nav-img");
+            prevButtonImage.classList.add("btn-nav-img", "btn-nav-img-prev");
             prevButtonImage.style.position = "absolute";
             prevButtonImage.style.left = "5px";
             prevButtonImage.style.top = "0px";
@@ -206,20 +179,21 @@ function setupNavigationButtons() {
             prevButtonImage.style.height = "35px";
 
             prevButtonImage.addEventListener("click", () => {
-                navigateToYearMonth(-1, currentYearMonth);
+                if (!prevButtonImage.classList.contains("disabled")) {
+                    navigateToYearMonth(-1, currentYearMonth);
+                }
             });
 
             firstColumn.style.position = "relative";
             firstColumn.appendChild(prevButtonImage);
         }
 
-        // Handle the last column
         const lastColumn = yearMonthColumns[yearMonthColumns.length - 1];
-        if (!lastColumn.querySelector(".btn-nav-img")) { // Avoid duplicates
+        if (!lastColumn.querySelector(".btn-nav-img-next")) {
             const nextButtonImage = document.createElement("img");
-            nextButtonImage.src = "/images/next-month.png"; // Path to your image
+            nextButtonImage.src = "/images/next-month.png";
             nextButtonImage.alt = "Next Month";
-            nextButtonImage.classList.add("btn-nav-img");
+            nextButtonImage.classList.add("btn-nav-img", "btn-nav-img-next");
             nextButtonImage.style.position = "absolute";
             nextButtonImage.style.right = "5px";
             nextButtonImage.style.top = "0px";
@@ -228,7 +202,9 @@ function setupNavigationButtons() {
             nextButtonImage.style.height = "35px";
 
             nextButtonImage.addEventListener("click", () => {
-                navigateToYearMonth(1, currentYearMonth);
+                if (!nextButtonImage.classList.contains("disabled")) {
+                    navigateToYearMonth(1, currentYearMonth);
+                }
             });
 
             lastColumn.style.position = "relative";
@@ -259,3 +235,4 @@ function setupNavigationButtons() {
     }
 }
 document.addEventListener("DOMContentLoaded", setupNavigationButtons);
+

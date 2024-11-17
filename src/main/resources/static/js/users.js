@@ -2,40 +2,20 @@ const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribut
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
 
-function updateUserDisplay(mode) {
-    const listItems = document.querySelectorAll('#listView .user-row');
-    const tileItems = document.querySelectorAll('#tileView .user-tile');
-
-    if (mode === 'tile') {
-        tileItems.forEach((item, index) => {
-            item.classList.remove('hidden');
-        });
-        listItems.forEach((item) => item.classList.add('hidden'));
-    } else if (mode === 'list') {
-        listItems.forEach((item, index) => {
-            item.classList.toggle('hidden', index >= 8);
-        });
-        tileItems.forEach((item) => item.classList.add('hidden'));
-    }
-}
-
-
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
     localStorage.setItem('viewMode', 'tile');
-    updateUserDisplay('tile')
 }
 
 function switchToListView() {
     document.getElementById('listView').classList.remove('hidden');
     document.getElementById('tileView').classList.add('hidden');
     localStorage.setItem('viewMode', 'list');
-    updateUserDisplay('list');
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const savedViewMode = localStorage.getItem('viewMode') || 'list';
+    const savedViewMode = localStorage.getItem('viewMode');
     if (savedViewMode === 'tile') {
         switchToTileView();
     } else {

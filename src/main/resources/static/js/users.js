@@ -346,7 +346,9 @@ function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
-    if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    confirmModal.show();
+    document.getElementById('confirmYes').onclick = function() {
         fetch('/admin/user/delete/' + userId, {
             method: 'DELETE',
             headers: {
@@ -356,16 +358,19 @@ function deleteUser() {
         })
             .then(response => {
                 if (response.ok) {
+                    confirmModal.hide();
                     showNotification("Пользователь успешно удалён.", "green");
                     userStatus.innerText = "Неактивен"
                 } else {
                     return response.json().then(errorData => {
+                        confirmModal.hide();
                         showNotification(errorData.message, "red");
                     });
                 }
             })
             .catch(error => {
                 console.error('Ошибка:', error);
+                confirmModal.hide();
                 showNotification("Ошибка при удалении пользователя.", "red");
             });
     }

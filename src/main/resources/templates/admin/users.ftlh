@@ -42,12 +42,12 @@
                                         </#if></span>
                                     <span id="${user.id}-role" class="user-table-detail">${user.roleDto.roleName}</span>
                                 </td>
-                                <#if auth == "EDIT_USER">
+
                                     <td class="user-action-buttons">
                                         <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
                                         <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
                                     </td>
-                                </#if>
+
                                 <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </tr>
                         </#list>

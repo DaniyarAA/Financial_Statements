@@ -11,67 +11,95 @@
             </svg>
         </span>
             <span class="icon" onclick="switchToListView()">&#x2630;</span>
-            <a class="icon" href="/admin/roles">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-person-fill-gear" viewBox="0 0 16 16">
-                    <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
-                </svg>
-            </a>
-            <span class="icon" onclick="window.location.href='/admin/register'">+</span>
+            <#assign known = SPRING_SECURITY_CONTEXT??>
+            <#if known>
+                <#assign
+                user = SPRING_SECURITY_CONTEXT.authentication.principal
+                name = user.getUsername()>
+                <#list user.authorities as auth>
+                    <#if auth=="VIEW_ROLES">
+                        <a class="icon" href="/admin/roles">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+                            </svg>
+                        </a>
+                    </#if>
+                    <#if auth = 'CREATE_USER'>
+                        <span class="icon" onclick="window.location.href='/admin/register'">+</span>
+                    </#if>
+                </#list>
+            </#if>
         </div>
     </div>
 
-    <div id="listView" class="view-container">
-        <div class="user-list-container">
-            <table class="user-table">
-                <#list users.content as user>
-                    <tr class="user-row">
-                        <td class="user-info">
-                            <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
-                            <span>Reg: ${user.registerDate}</span>
-                            <span><#if user.enabled==true>
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+        <#list user.authorities as auth>
+            <div id="listView" class="view-container hidden">
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <#list users.content as user>
+                            <tr class="user-row">
+                                <td class="user-info">
+                                    <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
+                                    <span>Reg: ${user.registerDate}</span>
+                                    <span><#if user.enabled==true>
                                 Active
                                 <#else>
-                                    Disabled
-                                </#if></span>
-                            <span id="${user.id}-role">${user.roleDto.roleName}</span>
-                        </td>
-                        <td class="user-action-buttons">
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
-                        </td>
-                    </tr>
-                </#list>
-            </table>
-        </div>
-    </div>
-
-    <div id="tileView" class="view-container hidden">
-        <div class="user-tile-container">
-            <#list users.content as user>
-                <div class="user-tile">
-                    <div class="user-tile-info">
-                        <span id="${user.id}-name-surname">#${user.id}.${user.name} ${user.surname}</span>
-                        <span class="user-detail">Reg: ${user.registerDate}</span>
-                        <#if user.enabled == true>
-                            <span class="user-status user-detail">Active</span>
-                        <#else>
-                            <span class="user-status user-detail">Disabled</span>
-                        </#if>
-                        <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
-
-                        <div class="buttons-container">
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}">
-                                <i class="bi bi-key"></i>
-                            </button>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
-
-                        </div>
-                    </div>
+                                            Disabled
+                                        </#if></span>
+                                    <span id="${user.id}-role">${user.roleDto.roleName}</span>
+                                </td>
+                                <#if auth == "EDIT_USER">
+                                    <td class="user-action-buttons">
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
+                                                    class="bi bi-key"></i></button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                                data-user-id="${user.id}">✏️
+                                        </button>
+                                    </td> </#if>
+                                <input type="hidden" id="currentUserId" value="${currentUser.id}">
+                            </tr>
+                        </#list>
+                    </table>
                 </div>
-            </#list>
-        </div>
-    </div>
+            </div>
+
+            <div id="tileView" class="view-container hidden">
+                <div class="user-tile-container">
+                    <#list users.content as user>
+                        <div class="user-tile">
+                            <div class="user-tile-info">
+                                <span id="${user.id}-name-surname">#${user.id}.${user.name} ${user.surname}</span>
+                                <span class="user-detail">Reg: ${user.registerDate}</span>
+                                <#if user.enabled == true>
+                                    <span class="user-status user-detail">Active</span>
+                                <#else>
+                                    <span class="user-status user-detail">Disabled</span>
+                                </#if>
+                                <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
+                                <#if auth == "EDIT_USER">
+                                    <div class="buttons-container">
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
+                                            <i class="bi bi-key"></i>
+                                        </button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                                data-user-id="${user.id}">✏️
+                                        </button>
+                                    </div>
+                                </#if>
+                                <input type="hidden" id="currentUserId" value="${currentUser.id}">
+                            </div>
+                        </div>
+                    </#list>
+                </div>
+            </div>
+        </#list>
+    </#if>
 
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation example">
@@ -109,20 +137,32 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
-                <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
-
+                <#assign known = SPRING_SECURITY_CONTEXT??>
+                <#if known>
+                    <#assign
+                    user = SPRING_SECURITY_CONTEXT.authentication.principal
+                    name = user.getUsername()>
+                    <#list user.authorities as auth>
+                        <#if auth=="DELETE_USER">
+                            <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
+                        </#if>
+                    </#list>
+                </#if>
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
-                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
-                    <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
+                    <input type="text" class="form-control fs-5" id="userNameInput"
+                           style="display: none; border: none; padding: 0; width: 28%">
+                    <input type="text" class="form-control fs-5" id="surnameNameInput"
+                           style="display: none; border: none; padding: 0; width: 32%">
                     <i class="bi bi-pencil ms-2" onclick="toggleNameEdit()"></i>
                 </div>
 
                 <div class="modal-body text-center">
                     <div class="avatar-container">
-                        <img src="/api/files/download/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
-                        <div id="change-avatar-icon" class="change-avatar-icon"  onclick="uploadAvatar()">
+                        <img src="/api/files/download/user.png" id="avatar" alt="avatar"
+                             class="profile-info-avatar-img">
+                        <div id="change-avatar-icon" class="change-avatar-icon" onclick="uploadAvatar()">
                             <i class="bi bi-camera fs-5"></i>
                         </div>
                         <input type="file" id="avatarInput" style="display: none;" accept="image/*">
@@ -145,13 +185,20 @@
                         <span class="user-value" id="user-status"></span>
                     </div>
 
+                    <div class="user-info-row mb-2">
+                        <span class="user-label">Логин:</span>
+                        <span class="user-value" id="user-login"></span>
+                    </div>
+                    <span id="loginError" class="text-danger"></span>
+
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Доступные компании:</span>
                         <span class="user-value d-flex align-items-center" style="gap: 5px; position: relative;">
                         <span id="initialCompanies"></span>
                         <div id="companyDropdown" style="display: none;">
-                            <input type="text" id="companySearch" placeholder="Поиск компаний..." class="form-control mb-2">
+                            <input type="text" id="companySearch" placeholder="Поиск компаний..."
+                                   class="form-control mb-2">
                             <div id="companyCheckboxes" class="dropdown-menu p-3">
 
                             </div>
@@ -164,7 +211,8 @@
                     <div class="user-info-row">
                         <span class="user-label">День Рождения:</span>
                         <span class="user-value" id="user-birthday"></span>
-                        <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
+                        <input type="date" id="birthday-input" class="user-value"
+                               style="display: none; width: 35%; border: none">
                         <i class="bi bi-pencil ms-2" onclick="toggleBirthdayEdit()"></i>
                     </div>
                     <span id="birthdayError" class="text-danger"></span>
@@ -188,26 +236,36 @@
     </div>
 
 
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changeLoginPasswordModal" tabindex="-1" aria-labelledby="changeLoginPasswordModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" style="border: none">
-                    <h5 class="modal-title" id="changePasswordModalLabel">Смена пароля</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeLoginPasswordModalLabel">Изменение пароля и логина</h5>
                 </div>
                 <div class="modal-body" style="border: none">
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">Новый пароль:</label>
-                            <input type="password" class="form-control form-control-lg" id="newPassword">
-                        </div>
-                        <div class="mb-1">
-                            <label for="confirmPassword" class="form-label">Подтвердите пароль:</label>
-                            <input type="password" class="form-control form-control-lg" id="confirmPassword">
-                        </div>
-                        <div id="errorMessage" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label for="newLogin" class="form-label">Новый логин</label>
+                        <input type="text" id="newLogin" class="form-control form-control-lg"
+                               placeholder="Введите новый логин">
+                        <div id="loginErrorMessage" class="text-danger mt-1"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Новый пароль</label>
+                        <input type="password" id="newPassword" class="form-control form-control-lg"
+                               placeholder="Введите новый пароль">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                        <input type="password" id="confirmPassword" class="form-control form-control-lg"
+                               placeholder="Повторите новый пароль">
+                        <div id="passwordErrorMessage" class="text-danger mt-1"></div>
+                    </div>
                 </div>
-                <div class="modal-footer text-center" style="border: none">
-                    <button type="button" class="btn btn-light edit-user-btn mx-auto" id="edit-password-button" onclick="savePassword()"><i class="bi bi-check2 fs-1"></i></button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="saveLoginAndPassword()">Сохранить изменения
+                    </button>
                 </div>
             </div>
         </div>

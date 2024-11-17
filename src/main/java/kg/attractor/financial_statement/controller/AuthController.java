@@ -17,11 +17,16 @@ public class AuthController {
 
     @GetMapping("login")
     public String login(HttpServletRequest request, Model model) {
-        UserDto userDto = userService.getUserDtoByCookie(request);
-        if (userDto != null) {
-            model.addAttribute("username", userDto.getName());
-            model.addAttribute("avatar", userDto.getAvatar());
+        try {
+            UserDto userDto = userService.getUserDtoByCookie(request);
+            if (userDto != null) {
+                model.addAttribute("username", userDto.getName());
+                model.addAttribute("avatar", userDto.getAvatar());
+            }
+            return "auth/login";
+        } catch (Exception e) {
+            System.err.println("Exception occurred in login method: " + e.getMessage());
+            return "auth/login";
         }
-        return "auth/login";
     }
 }

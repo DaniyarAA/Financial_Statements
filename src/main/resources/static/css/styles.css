@@ -318,10 +318,11 @@ thead td {
     gap: 10px;
 }
 
-.icon {
-    font-size: 20px;
+.icon i {
+    font-size: 27px;
     cursor: pointer;
     padding: 5px;
+    font-weight: bold;
 }
 
 .icon:hover {
@@ -372,18 +373,19 @@ thead td {
 .user-detail {
     margin-right: 10px;
     font-size: 14px;
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    line-height: 18px;
+
 }
 
-.user-status {
-    font-weight: bold;
-}
 
 .user-action-buttons {
     display: flex;
     align-items: center;
 }
 
-.edit-button, .add-user-button {
+.add-user-button {
     background-color: #4CAF50;
     color: white;
     padding: 8px 12px;
@@ -424,19 +426,20 @@ thead td {
 }
 
 .user-tile {
-    background-color: white;
     border-radius: 3px;
     height: 85%;
     box-shadow: 3px 2px 6px rgba(0, 0, 0, 0.2);
     text-align: center;
     position: relative;
+    background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
+
 
 }
 
 .user-name-surname{
     margin-left: 10px;
     font-family: Inter, sans-serif;
-    font-size: 15px;
+    font-size: 22px;
     font-weight: 400;
     line-height: 29px;
     text-align: left;
@@ -447,15 +450,14 @@ thead td {
 
 .user-tile-info {
     display: grid;
-    grid-template-columns: 150px 110px 80px 190px 50px;
+    grid-template-columns: 310px 120px 90px 110px 0;
     align-items: center;
 }
 
 .buttons-container {
     display: flex;
-    column-gap: 3px;
+    column-gap: 20px;
     align-items: center;
-    margin-left: 68px;
     margin-bottom: 18px;
 }
 
@@ -466,13 +468,15 @@ thead td {
 }
 
 .edit-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 12px;
+    padding: 0;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
+    font-size: 25px;
+    background: none;
+}
+.edit-button:hover{
+    background: none;
 }
 .user-modal-content {
     border-radius: 10px;

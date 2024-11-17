@@ -350,16 +350,19 @@ thead td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    background-color: #fff;
+    height: 100%;
     margin-bottom: 10px;
-    border-radius: 10px;
+    border-radius: 5px;
+    padding: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: white linear-gradient(90deg, #FFFFFF 96.38%, #6DF800 96.63%, #6DF800 98.5%);
+
 }
 
 .user-info {
     display: grid;
-    grid-template-columns: 200px 150px 70px 170px;
+    padding: 0;
+    grid-template-columns: 450px 350px 300px 100px 0;
     align-items: center;
 }
 
@@ -367,7 +370,14 @@ thead td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.user-table-detail{
     font-size: 14px;
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    line-height: 18px;
+    align-items: center;
 }
 
 .user-detail {
@@ -383,6 +393,8 @@ thead td {
 .user-action-buttons {
     display: flex;
     align-items: center;
+    column-gap: 30px;
+    margin-right: 6px;
 }
 
 .add-user-button {

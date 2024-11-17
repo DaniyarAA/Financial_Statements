@@ -112,7 +112,7 @@
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
-    <script src="/js/tasks/list.js"></script>
+    <script src="/js/list.js"></script>
 
     <style>
         .container {

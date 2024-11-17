@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +58,9 @@ public class AdminController {
     }
 
     @GetMapping("users")
-    public String getAllUsers(Model model, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-       var users = userService.getAllDtoUsers(pageable);
+    public String getAllUsers(Model model, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
+        var users = userService.getAllDtoUsers(pageable);
+        model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
         model.addAttribute("users", users);
         return "admin/users";
     }
@@ -92,6 +95,12 @@ public class AdminController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @GetMapping("/login-check")
+    public ResponseEntity<Boolean> checkFirstLogin(Principal principal) {
+        User user = userService.getUserByLogin(principal.getName());
+        return ResponseEntity.ok(user.isCredentialsNonExpired());
     }
 
     @GetMapping("roles")
@@ -154,11 +163,12 @@ public class AdminController {
         return ResponseEntity.ok(authorities);
     }
 
-    @PostMapping("users/change-password/{userId}")
-    public ResponseEntity<?> changeUserPassword(@PathVariable Long userId, String newPassword) {
+    @PostMapping("users/change-login-password/{userId}")
+    public ResponseEntity<?> changeUserLoginAndPassword(@PathVariable Long userId, @RequestBody Map<String, String> loginAndPassword) {
         try{
-            System.out.println("NEWPASSWORD:" + newPassword);
-            userService.updatePassword(userId, newPassword);
+            String newLogin = loginAndPassword.get("newLogin");
+            String newPassword = loginAndPassword.get("newPassword");
+            userService.updateLoginAndPassword(userId, newLogin, newPassword);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));

@@ -34,3 +34,4 @@ build/
 /db/
 /logs/
 /financialStatement.env
+/financialStatement.env/

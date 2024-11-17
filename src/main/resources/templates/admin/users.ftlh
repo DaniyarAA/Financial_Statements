@@ -1,66 +1,95 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
-   <div class="users-layout">
-       <div class="users-header mt-3">
-           <p class="users-list-title">Пользователи</p>
-           <div class="view-icons">
-               <span class="icon" onclick="switchToTileView()"><i class="bi bi-grid"></i></span>
-               <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul"></i></span>
-               <span class="icon" onclick="window.location.href='/admin/roles'"><i class="bi bi-person-fill-gear"></i></span>
-               <span class="icon" onclick="window.location.href='/admin/register'"><i class="bi bi-plus-circle"></i></span>
-           </div>
-       </div>
+  <div class="users-layout">
+    <div class="users-header mt-3">
+        <p class="users-list-title">Пользователи</p>
+        <div class="view-icons">
+            <span class="icon" onclick="switchToTileView()"><i class="bi bi-grid"></i></span>
+            <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul"></i></span>
+            <#assign known = SPRING_SECURITY_CONTEXT??>
+            <#if known>
+                <#assign
+                user = SPRING_SECURITY_CONTEXT.authentication.principal
+                name = user.getUsername()>
+                <#list user.authorities as auth>
+                    <#if auth=="VIEW_ROLES">
+                        <span class="icon" onclick="window.location.href='/admin/roles'"><i class="bi bi-person-fill-gear"></i></span>
+                    </#if>
+                    <#if auth = 'CREATE_USER'>
+                        <span class="icon" onclick="window.location.href='/admin/register'"><i class="bi bi-plus-circle"></i></span>
+                    </#if>
+                </#list>
+            </#if>
+        </div>
+    </div>
 
-       <div id="listView" class="view-container">
-           <div class="user-list-container">
-               <table class="user-table">
-                   <#list users.content as user>
-                       <tr class="user-row">
-                           <td class="user-info">
-                               <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
-                               <span>Reg: ${user.registerDate}</span>
-                               <span><#if user.enabled==true>
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
+        <#list user.authorities as auth>
+            <div id="listView" class="view-container hidden">
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <#list users.content as user>
+                            <tr class="user-row">
+                                <td class="user-info">
+                                    <span id="${user.id}-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
+                                    <span>Reg: ${user.registerDate}</span>
+                                    <span><#if user.enabled==true>
                                 Active
                                 <#else>
-                                       Disabled
-                                   </#if></span>
-                               <span id="${user.id}-role">${user.roleDto.roleName}</span>
-                           </td>
-                           <td class="user-action-buttons">
-                               <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
-                               <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}">✏️</button>
-                           </td>
-                       </tr>
-                   </#list>
-               </table>
-           </div>
-       </div>
+                                            Disabled
+                                        </#if></span>
+                                    <span id="${user.id}-role">${user.roleDto.roleName}</span>
+                                </td>
+                                <#if auth == "EDIT_USER">
+                                    <td class="user-action-buttons">
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
+                                                    class="bi bi-key"></i></button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                                data-user-id="${user.id}">✏️
+                                        </button>
+                                    </td> </#if>
+                                <input type="hidden" id="currentUserId" value="${currentUser.id}">
+                            </tr>
+                        </#list>
+                    </table>
+                </div>
+            </div>
 
-       <div id="tileView" class="view-container hidden">
-           <div class="user-tile-container">
-               <#list users.content as user>
-                   <div class="user-tile">
-                       <div class="user-tile-info">
-                           <span id="${user.id}-name-surname" class="user-name-surname">#${user.id}.${user.name} ${user.surname}</span>
-                           <span class="user-detail">Reg.: ${user.registerDate}</span>
-                           <#if user.enabled == true>
-                               <span class="user-status user-detail">Active</span>
-                           <#else>
-                               <span class="user-status user-detail">Disabled</span>
-                           </#if>
-                           <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
-                           <div class="buttons-container">
-                               <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-user-id="${user.id}">
-                                   <i class="bi bi-key"></i>
-                               </button>
-                               <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
-
-                           </div>
-                       </div>
-                   </div>
-               </#list>
-           </div>
-       </div>
+            <div id="tileView" class="view-container hidden">
+                <div class="user-tile-container">
+                    <#list users.content as user>
+                        <div class="user-tile">
+                            <div class="user-tile-info">
+                                <span id="${user.id}-name-surname" class="user-name-surname">#${user.id}.${user.name} ${user.surname}</span>
+                                <span class="user-detail">Reg.: ${user.registerDate}</span>
+                                <#if user.enabled == true>
+                                    <span class="user-status user-detail">Active</span>
+                                <#else>
+                                    <span class="user-status user-detail">Disabled</span>
+                                </#if>
+                                <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
+                                <#if auth == "EDIT_USER">
+                                    <div class="buttons-container">
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}">
+                                            <i class="bi bi-key"></i>
+                                        </button>
+                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
+                                                data-user-id="${user.id}">✏️
+                                        </button>
+                                    </div>
+                                </#if>
+                                <input type="hidden" id="currentUserId" value="${currentUser.id}">
+                            </div>
+                        </div>
+                    </#list>
+                </div>
+            </div>
+        </#list>
+    </#if>
 
        <div class="d-flex justify-content-center mt-5">
            <nav aria-label="Page navigation example">
@@ -95,13 +124,21 @@
    </div>
 
 
-
     <div class="modal fade user-fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
-                <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
-
+                <#assign known = SPRING_SECURITY_CONTEXT??>
+                <#if known>
+                    <#assign
+                    user = SPRING_SECURITY_CONTEXT.authentication.principal
+                    name = user.getUsername()>
+                    <#list user.authorities as auth>
+                        <#if auth=="DELETE_USER">
+                            <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
+                        </#if>
+                    </#list>
+                </#if>
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
@@ -179,26 +216,36 @@
     </div>
 
 
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changeLoginPasswordModal" tabindex="-1" aria-labelledby="changeLoginPasswordModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" style="border: none">
-                    <h5 class="modal-title" id="changePasswordModalLabel">Смена пароля</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeLoginPasswordModalLabel">Изменение пароля и логина</h5>
                 </div>
                 <div class="modal-body" style="border: none">
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">Новый пароль:</label>
-                            <input type="password" class="form-control form-control-lg" id="newPassword">
-                        </div>
-                        <div class="mb-1">
-                            <label for="confirmPassword" class="form-label">Подтвердите пароль:</label>
-                            <input type="password" class="form-control form-control-lg" id="confirmPassword">
-                        </div>
-                        <div id="errorMessage" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label for="newLogin" class="form-label">Новый логин</label>
+                        <input type="text" id="newLogin" class="form-control form-control-lg"
+                               placeholder="Введите новый логин">
+                        <div id="loginErrorMessage" class="text-danger mt-1"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Новый пароль</label>
+                        <input type="password" id="newPassword" class="form-control form-control-lg"
+                               placeholder="Введите новый пароль">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                        <input type="password" id="confirmPassword" class="form-control form-control-lg"
+                               placeholder="Повторите новый пароль">
+                        <div id="passwordErrorMessage" class="text-danger mt-1"></div>
+                    </div>
                 </div>
-                <div class="modal-footer text-center" style="border: none">
-                    <button type="button" class="btn btn-light edit-user-btn mx-auto" id="edit-password-button" onclick="savePassword()"><i class="bi bi-check2 fs-1"></i></button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="saveLoginAndPassword()">Сохранить изменения
+                    </button>
                 </div>
             </div>
         </div>

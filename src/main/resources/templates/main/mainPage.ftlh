@@ -78,7 +78,7 @@
                             </div>
                         </#list>
                     <#else>
-                        <span>Список компаний пуст</span>
+                        <span class="ms-3">Список компаний пуст</span>
                     </#if>
                 </div>
             </div>

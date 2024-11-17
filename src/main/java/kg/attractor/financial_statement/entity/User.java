@@ -26,6 +26,7 @@ public class User {
     private LocalDate registerDate;
 
     private String notes;
+    private boolean credentialsUpdated;
 
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "role_id")
@@ -33,4 +34,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserCompany> userCompanies;
+
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsUpdated;
+    }
 }

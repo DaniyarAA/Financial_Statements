@@ -50,17 +50,17 @@ Cal.prototype.showMonth = async function(y, m) {
 
     if (firstDayOfMonth < 0) firstDayOfMonth = 6;
 
-    var html = '<table>';
+    var html = '<table class="calendar-table">';
 
     html += '<thead><tr>';
-    html += '<td><button id="btnPrev"></button></td>';
-    html += '<td colspan="5">' + this.Months[m] + ' ' + y + '</td>';
-    html += '<td><button id="btnNext"></button></td>';
+    html += '<td class="td-calendar"><button id="btnPrev"></button></td>';
+    html += '<td class="td-calendar" colspan="5">' + this.Months[m] + ' ' + y + '</td>';
+    html += '<td class="td-calendar"><button id="btnNext"></button></td>';
     html += '</tr></thead>';
 
     html += '<tr class="days">';
     for (var i = 0; i < this.DaysOfWeek.length; i++) {
-        html += '<td>' + this.DaysOfWeek[i] + '</td>';
+        html += '<td class="td-calendar">' + this.DaysOfWeek[i] + '</td>';
     }
     html += '</tr>';
 
@@ -78,7 +78,7 @@ Cal.prototype.showMonth = async function(y, m) {
         if (i === 1 && dow !== 0) {
             var k = lastDayOfLastMonth - firstDayOfMonth + 1;
             for (var j = 0; j < firstDayOfMonth; j++) {
-                html += '<td class="not-current">' + k + '</td>';
+                html += '<td class="not-current td-calendar">' + k + '</td>';
                 k++;
             }
         }
@@ -87,7 +87,7 @@ Cal.prototype.showMonth = async function(y, m) {
         var chkY = chk.getFullYear();
         var chkM = chk.getMonth();
         if (chkY === this.currYear && chkM === this.currMonth && i === this.currDay) {
-            html += '<td class="today">' + i + '</td>';
+            html += '<td class="today td-calendar">' + i + '</td>';
         } else {
             const taskCount = data[`${y}-${String(m + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`] || 0;
             let style = 'background-color: white;';
@@ -102,7 +102,7 @@ Cal.prototype.showMonth = async function(y, m) {
                 style = 'background-color: #c0c0c0; color: black;';
             }
 
-            html += `<td style="${style}">${i}</td>`;
+            html += `<td class="td-calendar" style="${style}">${i}</td>`;
         }
 
         if (dow === 6) {

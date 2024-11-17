@@ -122,7 +122,6 @@ function closeModal(id) {
     document.getElementById(id).style.display = 'none';
 }
 
-
 function openEditRoleModal(roleId) {
     document.getElementById("editRoleId").value = roleId;
     const authoritiesContainer = document.getElementById("editAuthoritiesContainer");

@@ -28,7 +28,7 @@ a {
     border-radius: 4px;
 }
 
-table {
+.calendar-table {
     clear: both;
     width: 100%;
     border: 1px solid #f0f0f5;
@@ -37,7 +37,7 @@ table {
     color: #444;
 }
 
-td {
+.td-calendar {
     height: 48px;
     text-align: center;
     vertical-align: middle;
@@ -339,9 +339,9 @@ thead td {
     align-items: center;
     padding: 15px;
     background-color: #fff;
-    border: 1px solid #ccc;
     margin-bottom: 10px;
     border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-info {
@@ -942,4 +942,13 @@ h2 {
 
 .date.selected {
     color: #ffffff;
+}
+
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    width: 300px;
+    text-align: center;
 }

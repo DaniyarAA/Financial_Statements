@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDetailsDto;
 import kg.attractor.financial_statement.dto.UserDto;
@@ -26,7 +27,7 @@ public interface UserService {
 
     void editUser(Long id, UserDto userDto);
 
-    void updatePassword(Long userId, String newPassword);
+    void updateLoginAndPassword(Long userId, String newLogin, String newPassword);
 
     String updateAvatar(Long userId, MultipartFile file) throws IOException;
 

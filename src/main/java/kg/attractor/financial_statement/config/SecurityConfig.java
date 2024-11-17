@@ -47,6 +47,12 @@ public class SecurityConfig {
                         .requestMatchers("/company/add").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")
                         .requestMatchers("/company/delete").hasAuthority("DELETE_COMPANY")
+                        .requestMatchers("/tasks").hasAuthority("VIEW_TASK")
+                        .requestMatchers("/tasks/create").hasAuthority("CREATE_TASK")
+                        .requestMatchers("/tasks/edit/").hasAuthority("EDIT_TASK")
+                        .requestMatchers("/tasks/delete/").hasAuthority("DELETE_TASK")
+                        .requestMatchers("/").authenticated()
+
                         .anyRequest().permitAll());
         return http.build();
     }

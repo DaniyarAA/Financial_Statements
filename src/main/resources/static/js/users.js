@@ -1,6 +1,15 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
+window.onload = function () {
+    const viewMode = localStorage.getItem('viewMode');
+    if (viewMode === 'tile') {
+        switchToTileView();
+    } else {
+        switchToListView();
+    }
+};
+
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
@@ -13,7 +22,7 @@ function switchToListView() {
     localStorage.setItem('viewMode', 'list');
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const savedViewMode = localStorage.getItem('viewMode');
     if (savedViewMode === 'tile') {
         switchToTileView();
@@ -25,9 +34,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
+
     function handleSaveUserData(userId) {
         saveUserData(userId);
     }
+    const editUserBtn = document.getElementById("edit-user-info-button");
+    let currentUserId = null;
+
 
     const companySearchInput = document.getElementById("companySearch");
     const companyCheckboxes = document.getElementById("companyCheckboxes");
@@ -49,11 +62,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.relatedTarget;
         const avatarInput = document.getElementById("avatarInput");
         const deleteUserIcon = document.getElementById("delete-user-icon");
-        const userId = button.getAttribute("data-user-id");
-        deleteUserIcon.setAttribute("data-user-id", userId);
-        avatarInput.setAttribute("data-user-id", userId);
+        deleteUserIcon.setAttribute("data-user-id", currentUserId);
+        avatarInput.setAttribute("data-user-id", currentUserId);
+        currentUserId = button.getAttribute("data-user-id");
 
-        fetch(`/admin/users/edit/` + userId)
+        fetch(`/admin/users/edit/` + currentUserId)
             .then(response => response.json())
             .then(data => {
                 const user = data.user;
@@ -67,11 +80,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
                 document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
+                document.getElementById("user-login").innerText = user.login;
                 document.getElementById("notesInput").value = user.notes;
                 document.getElementById("userNameInput").value = user.name;
+                document.getElementById("birthday-input").value = birthday
                 document.getElementById("birthday-input").value = birthday;
-                document.getElementById("user-login").innerText = user.login;
-                document.getElementById("user-login-input").value = user.login
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
                 } else {
@@ -130,12 +143,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     companyCheckboxes.append(div);
                 });
-                const editUserBtn = document.getElementById("edit-user-info-button");
-                editUserBtn.removeEventListener("click", handleSaveUserData);
-                editUserBtn.addEventListener("click", () => handleSaveUserData(userId));
 
             })
             .catch(error => console.error("Error loading user data:", error));
+    });
+    editUserBtn.addEventListener("click", function () {
+        if (currentUserId) {
+            saveUserData(currentUserId);
+        }
     });
 });
 
@@ -179,61 +194,100 @@ function uploadAvatar() {
 
     avatarInput.click();
 }
+
 document.addEventListener("DOMContentLoaded", function () {
-    const changePasswordModal = document.getElementById("changePasswordModal");
-    let userId;
+    const changePasswordModal = document.getElementById("changeLoginPasswordModal");
+    let userId = document.getElementById("currentUserId").value || null;
 
     changePasswordModal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;
-        userId = button.getAttribute("data-user-id");
+        userId = button.getAttribute("data-user-id") || userId;
     });
 
-    function savePassword() {
+    async function saveLoginAndPassword() {
+        const newLogin = document.getElementById("newLogin").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
-        const errorMessage = document.getElementById("errorMessage");
+        const loginErrorMessage = document.getElementById("loginErrorMessage");
+        const passwordErrorMessage = document.getElementById("passwordErrorMessage");
 
+        loginErrorMessage.textContent = '';
+        passwordErrorMessage.textContent = '';
 
-        if (newPassword !== confirmPassword) {
-            errorMessage.textContent = 'Пароли не совпадают';
+        if (!userId) {
+            alert('Ошибка: userId отсутствует. Пожалуйста, обновите страницу.');
             return;
         }
 
-        fetch(`/admin/users/change-password/${userId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                [csrfHeader]: csrfToken
-            },
-            body: new URLSearchParams({ newPassword: newPassword })
-        })
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    return response.json().then(errorData => {
-                        errorMessage.textContent = errorData.message;
-                    });
+        if (newPassword !== confirmPassword) {
+            passwordErrorMessage.textContent = 'Пароли не совпадают';
+            return;
+        }
+
+        if (newLogin === "") {
+            loginErrorMessage.textContent = 'Заполните поле логин!';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/admin/users/change-login-password/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({newLogin, newPassword})
+            });
+
+            if (response.ok) {
+                const modalInstance = bootstrap.Modal.getInstance(changePasswordModal);
+                modalInstance.hide();
+                displaySuccessAlert('Данные обновлены');
+                setTimeout(() => location.reload(), 1000);
+
+            } else {
+                const errorData = await response.json();
+                if (errorData.message) {
+                    if (errorData.message.includes('логин')) {
+                        loginErrorMessage.textContent = errorData.message;
+                    } else {
+                        passwordErrorMessage.textContent = errorData.message;
+                    }
                 }
-            })
-            .catch(error => console.error("Ошибка при обновлении пароля:", error));
+            }
+        } catch (error) {
+            console.error("Ошибка при обновлении данных пользователя:", error);
+            passwordErrorMessage.textContent = 'Произошла ошибка при отправке запроса';
+        }
     }
 
-    window.savePassword = savePassword;
+    window.saveLoginAndPassword = saveLoginAndPassword;
 });
 
+function displaySuccessAlert(message) {
+    const alertContainer = document.createElement('div');
+    alertContainer.className = 'alert alert-success alert-dismissible fade show';
+    alertContainer.role = 'alert';
+    alertContainer.style.fontSize = '1.1rem';
+    alertContainer.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
 
-let isSaving = false;
+    document.body.appendChild(alertContainer);
+
+    setTimeout(() => {
+        alertContainer.remove();
+    }, 5000);
+}
+
 function saveUserData(userId) {
-    if (isSaving) {
-        return;
-    }
-    isSaving = true;
     const roleSelect = document.getElementById("roleSelect");
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
-    const login = document.getElementById("user-login-input").value;
     const surname = document.getElementById("surnameNameInput").value;
+    const fullnameDispay = document.getElementById(userId + "-name-surname");
+    const userRoleDisplay = document.getElementById(userId + "-role")
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -248,14 +302,12 @@ function saveUserData(userId) {
     });
 
 
-
     const userDto = {
         roleDto: selectedRoleDto,
         notes: notes,
         companies: companies,
         name: username,
         birthday: birthday,
-        login: login,
         surname: surname
 
     };
@@ -269,27 +321,29 @@ function saveUserData(userId) {
         body: JSON.stringify(userDto)
     })
         .then(response => {
-            isSaving = false;
             if (response.ok) {
-                location.reload();
+                fullnameDispay.innerText = `#${userId}. ${username} ${surname}`;
+                userRoleDisplay.innerText = selectedRoleDto.roleName;
+                const modalElement = document.getElementById('userModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                    modalElement.addEventListener('hidden.bs.modal', () => {
+                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    }, { once: true });
+                }
+                showNotification("Информация успешно обновлена!", "green");
+
+
             } else {
                 return response.json().then(errorData => {
-
-                    if (errorData && errorData.error) {
-                        if (errorData.error === "duplicate") {
-                            document.getElementById("loginError").innerText = errorData.message;
-                        } else {
-                            document.getElementById("birthdayError").innerText = errorData.message;
-                        }
-                    }
+                    document.getElementById("birthdayError").innerText = errorData.message;
                     showNotification("Ошибка при обновлении информации", "red");
                 });
             }
         })
         .catch(error => console.error("Error saving user data:", error));
 }
-
-
 
 function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
@@ -320,8 +374,6 @@ function deleteUser() {
     }
 }
 
-
-
 function showNotification(message, color) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -336,6 +388,7 @@ function showNotification(message, color) {
         }, 500);
     }, 3000);
 }
+
 function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
@@ -369,10 +422,6 @@ document.addEventListener('click', function(event) {
         closeDropdown();
     }
 });
-
-
-
-
 
 function toggleRoleEdit() {
     const roleDisplay = document.getElementById('roleDisplay');
@@ -412,23 +461,6 @@ function toggleNameEdit() {
     }
 }
 
-
-function toggleLoginEdit() {
-    const userLogin = document.getElementById('user-login');
-    const userLoginInput = document.getElementById('user-login-input');
-    if (userLoginInput.style.display === 'none') {
-        userLoginInput.style.display = 'inline-block';
-        userLogin.style.display = 'none';
-        userLoginInput.value = userLogin.innerText;
-        userLoginInput.focus();
-    } else {
-        userLogin.innerText = userLoginInput.value;
-        userLogin.style.display = 'block';
-        userLoginInput.style.display = 'none';
-
-    }
-}
-
 function toggleBirthdayEdit() {
     const birthdayDisplay = document.getElementById("user-birthday");
     const birthdayInput = document.getElementById("birthday-input");
@@ -447,5 +479,16 @@ function toggleBirthdayEdit() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const response = await fetch('/admin/login-check');
+        const requiresChange = await response.json();
 
-
+        if (!requiresChange) {
+            const userModal = new bootstrap.Modal(document.getElementById('changeLoginPasswordModal'));
+            userModal.show();
+        }
+    } catch (error) {
+        console.error("Ошибка при проверке данных пользователя:", error);
+    }
+});

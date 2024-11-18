@@ -27,4 +27,11 @@ public class UserCompany {
 
     @OneToMany(mappedBy = "userCompany", fetch = FetchType.LAZY)
     private List<Task> tasks;
+
+    @Column(name = "is_automatic")
+    private boolean isAutomatic;
+
+    public void setIsAutomatic(boolean isAutomatic) {
+        this.isAutomatic = isAutomatic;
+    }
 }

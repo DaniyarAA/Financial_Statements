@@ -201,6 +201,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskCreateDto.getDescription());
         task.setStartDate(taskCreateDto.getStartDate());
         task.setEndDate(taskCreateDto.getEndDate());
+        task.getUserCompany().setIsAutomatic(false);
 
         return task;
     }
@@ -213,6 +214,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskCreateDto.getDescription());
         task.setStartDate(taskCreateDto.getStartDate());
         task.setEndDate(taskCreateDto.getEndDate());
+        task.getUserCompany().setIsAutomatic(false);
 
         return task;
     }
@@ -259,10 +261,10 @@ public class TaskServiceImpl implements TaskService {
             List<Company> companies = companyService.findAll();
 
             for (Company company : companies) {
-                Optional<UserCompany> userCompanyOptional = userCompanyService.findByCompany(company);
 
-                if (userCompanyOptional.isPresent()) {
-                    UserCompany userCompany = userCompanyOptional.get();
+                List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
+
+                for (UserCompany userCompany : userCompanies) {
                     generateAutomaticTasks(userCompany, currentDate);
                 }
             }
@@ -275,7 +277,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
         TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
-
+        userCompany.setIsAutomatic(true);
 
         for (int i = 0; i < 12; i++) {
             YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);

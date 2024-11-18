@@ -141,6 +141,11 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     }
 
     @Override
+    public List<UserCompany> findByCompanyAndIsAutomatic(Company company, boolean isAutomatic) {
+        return userCompanyRepository.findByCompanyAndIsAutomatic(company, isAutomatic);
+    }
+
+    @Override
     public List<UserCompany> findAll() {
         return userCompanyRepository.findAll();
     }

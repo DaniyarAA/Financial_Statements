@@ -30,5 +30,7 @@ public interface UserCompanyService {
 
     Optional<UserCompany> findByCompany(Company company);
 
+    List<UserCompany> findByCompanyAndIsAutomatic(Company company, boolean isAutomatic);
+
     List<UserCompany> findAll();
 }

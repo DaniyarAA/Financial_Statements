@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 048
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: users_companies
+            columns:
+              - column:
+                  name: is_automatic
+                  type: boolean
+                  constraints:
+                    nullable: true

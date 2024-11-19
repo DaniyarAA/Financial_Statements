@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
@@ -57,7 +58,7 @@ public class AdminController {
     }
 
     @GetMapping("users")
-    public String getAllUsers(Model model, @PageableDefault(size = 6, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
+    public String getAllUsers(Model model, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
         var users = userService.getAllDtoUsers(pageable);
         model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
         model.addAttribute("users", users);

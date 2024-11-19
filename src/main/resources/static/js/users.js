@@ -10,6 +10,7 @@ window.onload = function () {
     }
 };
 
+
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
@@ -34,10 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
-
-    function handleSaveUserData(userId) {
-        saveUserData(userId);
-    }
     const editUserBtn = document.getElementById("edit-user-info-button");
     let currentUserId = null;
 
@@ -80,10 +77,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
                 document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
-                document.getElementById("user-login").innerText = user.login;
                 document.getElementById("notesInput").value = user.notes;
                 document.getElementById("userNameInput").value = user.name;
-                document.getElementById("birthday-input").value = birthday
                 document.getElementById("birthday-input").value = birthday;
                 if (user.avatar) {
                     document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
@@ -107,12 +102,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 const initialCompanies = document.getElementById("initialCompanies");
-                initialCompanies.innerHTML = user.companies.slice(0, 1).map(company => company.name).join(", ");
-                if (user.companies.length > 1) {
-                    initialCompanies.innerHTML += ", ...";
+                const maxLength = 19;
+                let displayText = user.companies.slice(0, 2).map(company => company.name).join(", ");
+                if (displayText.length > maxLength) {
+                    displayText = displayText.slice(0, maxLength - 3) + '...';
                 } else if (user.companies.length === 0){
-                    initialCompanies.innerHTML += "Отсутствуют"
+                    displayText = "Отсутствуют";
                 }
+                initialCompanies.innerHTML = displayText;
 
                 const companyCheckboxes = document.getElementById("companyCheckboxes");
                 companyCheckboxes.innerHTML = "";
@@ -349,7 +346,9 @@ function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
-    if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    confirmModal.show();
+    document.getElementById('confirmYes').onclick = function() {
         fetch('/admin/user/delete/' + userId, {
             method: 'DELETE',
             headers: {
@@ -359,16 +358,19 @@ function deleteUser() {
         })
             .then(response => {
                 if (response.ok) {
+                    confirmModal.hide();
                     showNotification("Пользователь успешно удалён.", "green");
                     userStatus.innerText = "Неактивен"
                 } else {
                     return response.json().then(errorData => {
+                        confirmModal.hide();
                         showNotification(errorData.message, "red");
                     });
                 }
             })
             .catch(error => {
                 console.error('Ошибка:', error);
+                confirmModal.hide();
                 showNotification("Ошибка при удалении пользователя.", "red");
             });
     }
@@ -397,10 +399,41 @@ function toggleCompanyEdit() {
         initialCompanies.style.display = 'none';
         companyDropdown.style.display = 'inline-block';
         editIcon.style.display = 'none';
+        attachCheckboxListeners();
     } else {
         closeDropdown();
     }
 }
+
+function attachCheckboxListeners() {
+    const checkboxes = document.querySelectorAll('#companyCheckboxes input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateInitialCompanies);
+    });
+}
+
+function updateInitialCompanies() {
+    const initialCompanies = document.getElementById('initialCompanies');
+    const selectedCompanies = Array.from(
+        document.querySelectorAll('#companyCheckboxes input[type="checkbox"]:checked')
+    ).map(checkbox => {
+        const label = checkbox.parentElement.querySelector('label');
+        return label ? label.textContent.replace(/^\d+\)\s*/, '').trim() : '';
+    });
+
+    const maxLength = 19;
+    if (selectedCompanies.length === 0) {
+        initialCompanies.innerHTML = 'Отсутствуют';
+    }
+    else {
+        let displayText = selectedCompanies.slice(0, 2).join(', ');
+        if (displayText.length > maxLength) {
+            displayText = displayText.slice(0, maxLength - 3) + '...';
+        }
+        initialCompanies.textContent = displayText;
+    }
+}
+
 
 function closeDropdown() {
     const initialCompanies = document.getElementById('initialCompanies');
@@ -436,6 +469,21 @@ function toggleRoleEdit() {
     }
 }
 
+document.addEventListener('mousedown', (event) => {
+    const roleSelect = document.getElementById('roleSelect');
+    const roleDisplay = document.getElementById('roleDisplay');
+
+    if (
+        roleSelect.style.display === 'inline-block' &&
+        !roleSelect.contains(event.target) &&
+        !event.target.classList.contains('bi-pencil')
+    ) {
+        roleDisplay.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+        roleDisplay.style.display = 'inline';
+        roleSelect.style.display = 'none';
+    }
+});
+
 function toggleNameEdit() {
     const userModalLabel = document.getElementById('userModalLabel');
     const surnameModalLabel = document.getElementById('surnameModalLabel');
@@ -461,6 +509,25 @@ function toggleNameEdit() {
     }
 }
 
+document.addEventListener('mousedown', (event) => {
+    const userNameInput = document.getElementById('userNameInput');
+    const surnameNameInput = document.getElementById('surnameNameInput');
+    const userModalLabel = document.getElementById('userModalLabel');
+    const surnameModalLabel = document.getElementById('surnameModalLabel');
+    if (
+        userNameInput.style.display === 'inline-block' &&
+        !userNameInput.contains(event.target) &&
+        !surnameNameInput.contains(event.target)
+    ) {
+        userModalLabel.innerText = userNameInput.value;
+        surnameModalLabel.innerText = surnameNameInput.value;
+        userModalLabel.style.display = 'block';
+        surnameModalLabel.style.display = 'block';
+        userNameInput.style.display = 'none';
+        surnameNameInput.style.display = 'none';
+    }
+});
+
 function toggleBirthdayEdit() {
     const birthdayDisplay = document.getElementById("user-birthday");
     const birthdayInput = document.getElementById("birthday-input");
@@ -478,6 +545,22 @@ function toggleBirthdayEdit() {
         birthdayInput.style.display = 'none';
     }
 }
+
+document.addEventListener('mousedown', (event) => {
+    const birthdayInput = document.getElementById("birthday-input");
+    const birthdayDisplay = document.getElementById("user-birthday");
+
+    if (
+        birthdayInput.style.display === 'inline-block' &&
+        !birthdayInput.contains(event.target) &&
+        !event.target.classList.contains('bi-pencil')
+    ) {
+        const dateParts = birthdayInput.value.split('-');
+        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        birthdayDisplay.style.display = 'inline';
+        birthdayInput.style.display = 'none';
+    }
+});
 
 document.addEventListener("DOMContentLoaded", async function () {
     try {

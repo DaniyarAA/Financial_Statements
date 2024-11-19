@@ -159,6 +159,52 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Scheduled(cron = "0 0 0 1 1 *")
+    public void tasksGenerator() {
+        LocalDate currentDate = LocalDate.now();
+
+        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
+            List<Company> companies = companyService.findAll();
+
+            for (Company company : companies) {
+
+                List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
+
+                for (UserCompany userCompany : userCompanies) {
+                    generateAutomaticTasks(userCompany, currentDate);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate) {
+        int currentYear = currentDate.getYear();
+
+        List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
+        TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
+        userCompany.setIsAutomatic(true);
+
+        for (int i = 0; i < 12; i++) {
+            YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);
+
+            if (nextMonth.getYear() == currentYear) {
+                for (DocumentType documentType : automaticDocumentTypes) {
+                    Task task = new Task();
+                    LocalDate startDate = nextMonth.atDay(1);
+                    LocalDate endDate = nextMonth.atEndOfMonth();
+                    task.setUserCompany(userCompany);
+                    task.setStartDate(startDate);
+                    task.setEndDate(endDate);
+                    task.setDocumentType(documentType);
+                    task.setTaskStatus(defaultStatus);
+                    taskRepository.save(task);
+                }
+            }
+        }
+    }
+
+    @Override
     public void editTask(Long id, TaskEditDto taskEditDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
 
@@ -249,52 +295,6 @@ public class TaskServiceImpl implements TaskService {
             return true;
         } catch (NumberFormatException e) {
             return false;
-        }
-    }
-
-    @Override
-    @Scheduled(cron = "0 0 0 1 1 *")
-    public void tasksGenerator() {
-        LocalDate currentDate = LocalDate.now();
-
-        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
-            List<Company> companies = companyService.findAll();
-
-            for (Company company : companies) {
-
-                List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
-
-                for (UserCompany userCompany : userCompanies) {
-                    generateAutomaticTasks(userCompany, currentDate);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate) {
-        int currentYear = currentDate.getYear();
-
-        List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
-        TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
-        userCompany.setIsAutomatic(true);
-
-        for (int i = 0; i < 12; i++) {
-            YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);
-
-            if (nextMonth.getYear() == currentYear) {
-                for (DocumentType documentType : automaticDocumentTypes) {
-                    Task task = new Task();
-                    LocalDate startDate = nextMonth.atDay(1);
-                    LocalDate endDate = nextMonth.atEndOfMonth();
-                    task.setUserCompany(userCompany);
-                    task.setStartDate(startDate);
-                    task.setEndDate(endDate);
-                    task.setDocumentType(documentType);
-                    task.setTaskStatus(defaultStatus);
-                    taskRepository.save(task);
-                }
-            }
         }
     }
 }

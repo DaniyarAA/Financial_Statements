@@ -7,6 +7,7 @@ import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserCompanyService {
     UserCompany findUserCompanyByTaskCreateDto(TaskCreateDto taskCreateDto);
@@ -16,7 +17,9 @@ public interface UserCompanyService {
     CompanyDto convertToCompanyToCompanyDto(Company company);
 
     List<UserCompany> findUserCompanyByUser(User user);
+
     List<Long> findUserCompanyIdsForUser(User user);
+
     void save(UserCompany userCompany);
 
     void updateUserCompanies(User user, List<Company> newCompanies);
@@ -24,4 +27,10 @@ public interface UserCompanyService {
     List<UserCompany> findByUser(User user);
 
     List<UserCompany> findByUserIdAndCompanyIdIn(Long userId, List<Long> collect);
+
+    Optional<UserCompany> findByCompany(Company company);
+
+    List<UserCompany> findByCompanyAndIsAutomatic(Company company, boolean isAutomatic);
+
+    List<UserCompany> findAll();
 }

@@ -22,4 +22,5 @@ public interface UserCompanyRepository extends JpaRepository<UserCompany, Long> 
 
     Optional<UserCompany> findByCompany(Company company);
 
+    List<UserCompany> findByCompanyAndIsAutomatic(Company company, boolean isAutomatic);
 }

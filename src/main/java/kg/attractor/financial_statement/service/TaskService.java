@@ -5,8 +5,10 @@ import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.dto.TaskEditDto;
 import kg.attractor.financial_statement.dto.TaskForTaskListEditDto;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.UserCompany;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -43,4 +45,9 @@ public interface TaskService {
     void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String name, Long id);
 
     boolean checkIsAuthor(String name, Long id);
+
+    @Scheduled(cron = "0 0 0 1 1 *")
+    void tasksGenerator();
+
+    void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
 }

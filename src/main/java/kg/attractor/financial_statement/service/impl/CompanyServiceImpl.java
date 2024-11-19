@@ -2,22 +2,21 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
-import kg.attractor.financial_statement.entity.Company;
-import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.entity.UserCompany;
+import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.repository.CompanyRepository;
-import kg.attractor.financial_statement.service.CompanyService;
-import kg.attractor.financial_statement.service.UserCompanyService;
-import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.validation.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserCompanyService userCompanyService;
+    private TaskService taskService;
     private UserService userService;
 
     @Autowired
@@ -35,13 +35,21 @@ public class CompanyServiceImpl implements CompanyService {
         this.userService = userService;
     }
 
+    @Autowired
+    @Lazy
+    private void setTaskService(TaskService taskService){this.taskService = taskService;}
+
 
     @Override
-    public void addCompany(CompanyDto companyDto,String login) {
+    public void addCompany(CompanyDto companyDto, String login) {
         Company company = convertToEntity(companyDto);
         company.setDeleted(Boolean.FALSE);
         Company companyCreated = companyRepository.save(company);
-        createdUserCompany(companyCreated, login);
+
+        assignUserToCompany(companyCreated, login);
+
+        LocalDate currentDate = LocalDate.now();
+        taskService.generateAutomaticTasks(userCompanyService.findByCompany(companyCreated).orElseThrow(), currentDate);
     }
 
     @Override
@@ -64,9 +72,27 @@ public class CompanyServiceImpl implements CompanyService {
         company.setDeleted(Boolean.FALSE);
         Company companyCreated = companyRepository.save(company);
 
-        createdUserCompany(companyCreated, login);
+        assignUserToCompany(companyCreated, login);
 
         return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
+    }
+
+    @Override
+    public void assignUserToCompany(Company company, String login) {
+        User user = userService.getUserByLogin(login);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasCreateTaskPermission = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("CREATE_TASK"));
+
+        UserCompany userCompany = new UserCompany();
+        userCompany.setCompany(company);
+        if (hasCreateTaskPermission) {
+            userCompany.setUser(user);
+        } else {
+            userCompany.setUser(null);
+        }
+
+        userCompanyService.save(userCompany);
     }
 
     @Override
@@ -205,7 +231,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() == 12) {
                     if (!existsByCompanyDirectorInn(newValue)) {
                         company.setDirectorInn(newValue);
-                    }else {
+                    } else {
                         return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН директором уже существует!"));
                     }
                 } else {
@@ -215,7 +241,7 @@ public class CompanyServiceImpl implements CompanyService {
             case "login":
                 if (!existsByCompanyLogin(newValue)) {
                     company.setLogin(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким логином уже существует!"));
                 }
                 break;
@@ -226,9 +252,9 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setEcp(newValue);
                 break;
             case "kabinetSalyk":
-                if (!existsByCompanySalykLogin(newValue)){
+                if (!existsByCompanySalykLogin(newValue)) {
                     company.setKabinetSalyk(newValue);
-                }else {
+                } else {
                     return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким логином Salyk.kg уже существует!"));
                 }
                 break;
@@ -291,14 +317,6 @@ public class CompanyServiceImpl implements CompanyService {
         companyRepository.save(company);
 
         return ResponseEntity.ok(Map.of("message", "Компания Успешно отредактирована."));
-    }
-
-    private void createdUserCompany(Company company, String login) {
-        User user = userService.getUserByLogin(login);
-        UserCompany userCompany = new UserCompany();
-        userCompany.setCompany(company);
-        userCompany.setUser(user);
-        userCompanyService.save(userCompany);
     }
 
     @Override
@@ -438,7 +456,6 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.existsByKabinetSalyk(salykLogin);
     }
 
-
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
         return CompanyForTaskDto.builder()
                 .id(company.getId())
@@ -465,8 +482,12 @@ public class CompanyServiceImpl implements CompanyService {
         return convertToCompanyForTaskDtoList(companies);
     }
 
+    @Override
+    public List<Company> findAll() {
+        return companyRepository.findByIsDeleted(Boolean.FALSE);
+    }
+
     private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
         return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }
-
 }

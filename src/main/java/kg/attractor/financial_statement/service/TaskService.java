@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.dto.TaskEditDto;
+import kg.attractor.financial_statement.dto.TaskForTaskListEditDto;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +37,10 @@ public interface TaskService {
     TaskDto getTaskDtoById(Long taskId);
 
     ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data);
+
+    Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth);
+
+    void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String name, Long id);
+
+    boolean checkIsAuthor(String name, Long id);
 }

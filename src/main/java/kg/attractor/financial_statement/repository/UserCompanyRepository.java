@@ -21,4 +21,5 @@ public interface UserCompanyRepository extends JpaRepository<UserCompany, Long> 
     List<UserCompany> findByUser(User user);
 
     Optional<UserCompany> findByCompany(Company company);
+
 }

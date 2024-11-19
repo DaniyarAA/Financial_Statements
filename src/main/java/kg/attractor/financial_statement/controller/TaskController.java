@@ -1,5 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
@@ -14,12 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -131,21 +128,6 @@ public class TaskController {
         return "tasks/edit";
     }
 
-//    @PostMapping("edit")
-//    public String editTask(
-//            @RequestParam Long id,
-//            @Valid TaskEditDto taskEditDto,
-//            BindingResult bindingResult,
-//            Model model
-//    ) {
-//        if (bindingResult.hasErrors()) {
-//            return "tasks/edit";
-//        }
-//        taskService.editTask(id, taskEditDto);
-//
-//        return "redirect:/tasks";
-//    }
-
     @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
@@ -157,8 +139,9 @@ public class TaskController {
             Model model,
             Authentication authentication,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "7") int size
-    ) {
+            @RequestParam(required = false, defaultValue = "8") int size,
+            @RequestParam(required = false, defaultValue = "") String yearMonth
+    ) throws JsonProcessingException {
         if (authentication == null) {
             return "redirect:/login";
         }
@@ -166,52 +149,16 @@ public class TaskController {
         String userLogin = authentication.getName();
         User user = userService.getUserByLogin(userLogin);
 
-        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
-        System.out.println("CompanyDtos" +companyDtos);
-        List<TaskDto> taskDtos = taskService.getAllTasksForUser(user);
+        Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        System.out.println("taskListData: " + taskListData);
 
-        Set<String> uniqueYearMonths = taskDtos.stream()
-                .map(task -> YearMonth.from(task.getStartDate()).format(DateTimeFormatter.ofPattern("MM.yyyy")))
-                .collect(Collectors.toSet());
+        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
+        System.out.println("Json: " + taskStatusDtosJson);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
-
-        Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
-
-        for (String yearMonth : uniqueYearMonths) {
-            Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
-            for (CompanyForTaskDto company : companyDtos) {
-                List<TaskDto> tasksForCompanyAndMonth = taskDtos.stream()
-                        .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
-                                && task.getCompany().getId().equals(company.getId()))
-                        .collect(Collectors.toList());
-                tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
-            }
-            tasksByYearMonthAndCompany.put(yearMonth, tasksForCompanies);
-        }
-
-        Map<String, String> monthsMap = uniqueYearMonths.stream()
-                .collect(Collectors.toMap(
-                        ym -> ym,
-                        ym -> YearMonth.parse(ym, formatter)
-                                .getMonth()
-                                .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
-                        (oldValue, newValue) -> oldValue,
-                        LinkedHashMap::new
-                ));
-
-        int totalCompanies = companyDtos.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        model.addAttribute("list", companyDtos.subList(start, end));
-
-        model.addAttribute("monthsMap", monthsMap);
-        model.addAttribute("companyDtos", companyDtos);
-        model.addAttribute("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
-
+        model.addAllAttributes(taskListData);
+        model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
 
         return "tasks/tasksList";
@@ -223,15 +170,23 @@ public class TaskController {
         return taskService.editTaskByField(data);
     }
 
-//    @PostMapping("/edit/{id}")
-//    public String updateTaskInListPage(
-//            @Valid @ModelAttribute("taskDto") TaskDto taskDto,
-//            @PathVariable Long id,
-//            BindingResult bindingResult,
-//            Model model,
-//            Authentication authentication
-//            ) {
-//
-//
-//    }
+    @PostMapping("/edit/{id}")
+    public String updateTaskInListPage(
+            @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
+            @PathVariable Long id,
+            BindingResult bindingResult,
+            Model model,
+            Authentication authentication
+    ) {
+        if (bindingResult.hasErrors() ) {
+            model.addAttribute("taskDto", taskDto);
+            return "tasks/tasksList";
+        }
+        if (!taskService.checkIsAuthor(authentication.getName(), id)) {
+            return "redirect:/login";
+        }
+        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+        return "redirect:/tasks/list";
+
+    }
 }

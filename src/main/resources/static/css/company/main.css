@@ -133,6 +133,47 @@ input[type="email"]:focus {
     color: #e74c3c;
 }
 
+.forms-back-color {
+    background-color: #d9d9d9;
+    padding: 1px 0 1px;
+}
+
+.forms {
+    margin: 20px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 1.8px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+.choice-company {
+    box-shadow: 0 4px 1.8px 2px rgba(0, 0, 0, 0.25);
+    padding-bottom: 13px;
+    padding-top: 13px;
+}
+
+.choice-company:nth-child(odd) {
+    background-color: white;
+}
+
+.choice-company:nth-child(even) {
+    background-color: #d9d9d9;
+}
+
+.choice-company.active {
+    border: 3px solid blue;
+    color: #1E1E1E;
+}
+
+.companies-nav{
+    background-color: #d9d9d9;
+}
+
+.form-group,
+.list-none-line {
+    border: none;
+}
+
 @media (max-width: 768px) {
     .col-md-6 {
         margin-bottom: 20px;

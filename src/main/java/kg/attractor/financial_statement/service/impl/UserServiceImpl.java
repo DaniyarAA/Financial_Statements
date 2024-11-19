@@ -42,19 +42,18 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private CompanyService companyService;
     private UserCompanyService userCompanyService;
+
     @Autowired
     @Lazy
     private void setUserCompanyService(UserCompanyService userCompanyService) {
         this.userCompanyService = userCompanyService;
     }
+
     @Autowired
     @Lazy
-    private void setCompanyService(CompanyService companyService){
+    private void setCompanyService(CompanyService companyService) {
         this.companyService = companyService;
     }
-
-
-
 
     @Override
     public void registerUser(UserDto userDto) {
@@ -69,15 +68,16 @@ public class UserServiceImpl implements UserService {
                 .role(roleService.getRoleById(userDto.getRoleDto().getId()))
                 .avatar("user.png")
                 .registerDate(LocalDate.now())
+                .credentialsUpdated(true)
                 .build();
         userRepository.save(newUser);
 
     }
 
     private void validateBirthday(LocalDate birthday) {
-        if(birthday.isAfter(LocalDate.now())) {
+        if (birthday.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Человек еще не родился");
-        } else if (birthday.isAfter(LocalDate.now().minusYears(18))){
+        } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
             throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
         }
     }
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsDto getUserDetailDto(Long userId){
+    public UserDetailsDto getUserDetailDto(Long userId) {
         UserDto userDto = getUserDtoById(userId);
         List<CompanyDto> companies = companyService.getAllCompanies();
         List<RoleDto> roles = roleService.getAll();
@@ -115,21 +115,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void editUser(Long id, UserDto userDto){
+    public void editUser(Long id, UserDto userDto) {
         User user = getUserById(id);
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        updateLoginIfChanged(userDto.getLogin(), user);
         validateBirthday(userDto.getBirthday());
         user.setRole(role);
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
-        if (!userDto.getName().isEmpty()){
+        if (!userDto.getName().isEmpty()) {
             user.setName(userDto.getName());
         }
-        if (!userDto.getSurname().isEmpty()){
+        if (!userDto.getSurname().isEmpty()) {
             user.setSurname(userDto.getSurname());
         }
-        System.out.println("LOGIN:" + user.getLogin());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
@@ -147,19 +145,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Long userId, String newPassword){
+    public void updateLoginAndPassword(Long userId, String newLogin, String newPassword) {
         validatePassword(newPassword);
         User user = getUserById(userId);
+        updateLoginIfChanged(newLogin, user);
         user.setPassword(passwordEncoder.encode(newPassword));
+        user.setCredentialsUpdated(true);
         userRepository.save(user);
     }
 
     private void validatePassword(String password) {
         if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("Заполните поля");
+            throw new IllegalArgumentException("Заполните поля поролей");
         }
         if (password.length() < 8 || password.length() > 20) {
-            throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20");
+            throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20 на латыни");
         }
         if (!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$")) {
             throw new IllegalArgumentException("Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ");
@@ -179,16 +179,16 @@ public class UserServiceImpl implements UserService {
     private boolean validateImageType(MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null &&
-                (contentType.equals("image/jpeg")
-                        || contentType.equals("image/jpg")
-                        || contentType.equals("image/webp")
-                        || contentType.equals("image/png"));
+               (contentType.equals("image/jpeg")
+                || contentType.equals("image/jpg")
+                || contentType.equals("image/webp")
+                || contentType.equals("image/png"));
     }
 
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
-        if(user.getRole().getRoleName().equals("SuperUser")){
+        if (user.getRole().getRoleName().equals("SuperUser")) {
             throw new IllegalArgumentException("Нельзя удалить администратора системы");
         }
         user.setEnabled(false);
@@ -218,18 +218,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserDtoByCookie(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        UserDto userDto = new UserDto();
-        if (cookies != null) {
-            userDto = Arrays.stream(cookies).sequential()
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .map(this::getUserDtoByLogin)
-                    .orElse(null);
+    public UserDto getUserDtoByCookie(HttpServletRequest request) {
+        try {
+            Cookie[] cookies = request.getCookies();
+            UserDto userDto = new UserDto();
+            if (cookies != null) {
+                userDto = Arrays.stream(cookies)
+                        .filter(cookie -> "username".equals(cookie.getName()))
+                        .map(Cookie::getValue)
+                        .findFirst()
+                        .map(username -> {
+                            try {
+                                return getUserDtoByLogin(username);
+                            } catch (UsernameNotFoundException e) {
+                                System.out.println("User not found: " + username);
+                                return null;
+                            }
+                        })
+                        .orElse(null);
+            }
+            return userDto;
+        } catch (Exception e) {
+            System.err.println("Exception occurred in getUserDtoByCookie: " + e.getMessage());
+            return null;
         }
-        return userDto;
     }
 
     @Override

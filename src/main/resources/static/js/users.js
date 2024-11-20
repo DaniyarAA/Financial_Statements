@@ -257,6 +257,37 @@ document.addEventListener("DOMContentLoaded", function () {
             passwordErrorMessage.textContent = 'Произошла ошибка при отправке запроса';
         }
     }
+    const toggleNewPassword = document.getElementById("toggleNewPassword");
+    const newPasswordInput = document.getElementById("newPassword");
+    const newPasswordEyeIcon = document.getElementById("newPasswordEyeIcon");
+
+    const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const confirmPasswordEyeIcon = document.getElementById("confirmPasswordEyeIcon");
+
+    toggleNewPassword.addEventListener("click", function () {
+        if (newPasswordInput.type === "password") {
+            newPasswordInput.type = "text";
+            newPasswordEyeIcon.classList.remove("bi-eye-slash");
+            newPasswordEyeIcon.classList.add("bi-eye");
+        } else {
+            newPasswordInput.type = "password";
+            newPasswordEyeIcon.classList.remove("bi-eye");
+            newPasswordEyeIcon.classList.add("bi-eye-slash");
+        }
+    });
+
+    toggleConfirmPassword.addEventListener("click", function () {
+        if (confirmPasswordInput.type === "password") {
+            confirmPasswordInput.type = "text";
+            confirmPasswordEyeIcon.classList.remove("bi-eye-slash");
+            confirmPasswordEyeIcon.classList.add("bi-eye");
+        } else {
+            confirmPasswordInput.type = "password";
+            confirmPasswordEyeIcon.classList.remove("bi-eye");
+            confirmPasswordEyeIcon.classList.add("bi-eye-slash");
+        }
+    });
 
     window.saveLoginAndPassword = saveLoginAndPassword;
 });

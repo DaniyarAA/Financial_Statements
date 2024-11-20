@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -32,7 +31,18 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findAll()
                 .stream()
                 .filter(role -> !"SuperUser".equals(role.getRoleName()))
-                .sorted(Comparator.comparing(Role::getId))
+                .sorted((role1, role2) -> {
+                    boolean canDelete1 = role1.getUsers().isEmpty();
+                    boolean canDelete2 = role2.getUsers().isEmpty();
+
+                    if (canDelete1 && !canDelete2) {
+                        return 1;
+                    } else if (!canDelete1 && canDelete2) {
+                        return -1;
+                    } else {
+                        return role1.getId().compareTo(role2.getId());
+                    }
+                })
                 .map(this::convertToDto)
                 .toList();
     }
@@ -81,13 +91,18 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void updateRole(Long roleId, RoleDto roleDto) {
         Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new NoSuchElementException("Role not found"));
+                .orElseThrow(() -> new NoSuchElementException("Роль не найдена"));
+
+        if ("Бухгалтер".equalsIgnoreCase(role.getRoleName()) &&
+            !role.getRoleName().equalsIgnoreCase(roleDto.getRoleName())) {
+            throw new IllegalArgumentException("Имя роли 'Бухгалтер' нельзя изменить.");
+        }
 
         if (roleDto.getRoleName() == null || roleDto.getRoleName().trim().isEmpty()) {
             throw new IllegalArgumentException("Имя роли не может быть пустым.");
         }
 
-        if (!role.getRoleName().equals(roleDto.getRoleName())) {
+        if (!role.getRoleName().equalsIgnoreCase(roleDto.getRoleName())) {
             boolean roleNameExists = roleRepository.findByRoleName(roleDto.getRoleName()).isPresent();
             if (roleNameExists) {
                 throw new IllegalArgumentException("Роль с таким именем уже существует.");
@@ -127,10 +142,17 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void deleteRole(Long roleId) {
         Role role = roleRepository.findById(roleId).orElseThrow();
+
+        if ("Бухгалтер".equalsIgnoreCase(role.getRoleName())) {
+            throw new IllegalArgumentException("Роль 'Бухгалтер' нельзя удалить.");
+        }
+
         if (role.getUsers().isEmpty()) {
             role.getAuthorities().forEach(authority -> authority.getRoles().remove(role));
             role.setAuthorities(new ArrayList<>());
             roleRepository.deleteById(roleId);
+        } else {
+            throw new IllegalArgumentException("Роль не может быть удалена, так как она назначена пользователям.");
         }
     }
 

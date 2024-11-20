@@ -39,7 +39,7 @@ function createRole() {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.getElementById("csrfToken").value
                 },
-                body: JSON.stringify({ roleName, authorityIds })
+                body: JSON.stringify({roleName, authorityIds})
             }).then(response => {
                 if (response.ok) location.reload();
             });
@@ -58,6 +58,11 @@ function saveRole() {
 
     if (!roleName) {
         document.getElementById("roleNameError").textContent = "Название роли не может быть пустым.";
+        hasErrors = true;
+    }
+
+    if (roleName !== "Бухгалтер" && document.getElementById("editRoleId").value) {
+        document.getElementById("roleNameError").textContent = "Название роли 'Бухгалтер' не может быть изменено.";
         hasErrors = true;
     }
 
@@ -82,7 +87,7 @@ function saveRole() {
         body: JSON.stringify({
             id: roleId,
             roleName,
-            authorities: selectedAuthorities.map(id => ({ id: parseInt(id) }))
+            authorities: selectedAuthorities.map(id => ({id: parseInt(id)}))
         })
     })
         .then(response => {
@@ -103,15 +108,25 @@ function saveRole() {
         .catch(error => console.error("Ошибка при сохранении роли:", error));
 }
 
-function deleteRole(roleId) {
+function deleteRole(roleId, roleName) {
+    if (roleName === 'Бухгалтер') {
+        alert("Роль 'Бухгалтер' нельзя удалить.");
+        return;
+    }
+
     fetch('/admin/roles/delete/' + roleId, {
         method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': document.getElementById("csrfToken").value
         }
     }).then(response => {
-        if (response.ok) location.reload();
-    });
+        if (!response.ok) {
+            return response.json().then(error => {
+                alert(`Ошибка: ${error.message}`);
+            });
+        }
+        location.reload();
+    }).catch(error => console.error('Error:', error));
 }
 
 function showModal(id) {
@@ -130,7 +145,9 @@ function openEditRoleModal(roleId) {
     fetch('/admin/roles/edit/' + roleId)
         .then(response => response.json())
         .then(roleDto => {
-            document.getElementById("editRoleName").value = roleDto.roleName;
+            document.getElementById("editRoleId").value = roleDto.id;
+            const editRoleNameInput = document.getElementById("editRoleName");
+            editRoleNameInput.value = roleDto.roleName;
 
             fetch('/admin/authorities')
                 .then(response => response.json())

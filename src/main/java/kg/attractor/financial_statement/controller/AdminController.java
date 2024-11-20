@@ -1,6 +1,5 @@
 package kg.attractor.financial_statement.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
@@ -152,9 +151,13 @@ public class AdminController {
 
     @DeleteMapping("roles/delete/{roleId}")
     @ResponseBody
-    public ResponseEntity<Void> deleteRole(@PathVariable Long roleId) {
-        roleService.deleteRole(roleId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteRole(@PathVariable Long roleId) {
+        try {
+            roleService.deleteRole(roleId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+        }
     }
 
     @GetMapping("/authorities")
@@ -165,12 +168,12 @@ public class AdminController {
 
     @PostMapping("users/change-login-password/{userId}")
     public ResponseEntity<?> changeUserLoginAndPassword(@PathVariable Long userId, @RequestBody Map<String, String> loginAndPassword) {
-        try{
+        try {
             String newLogin = loginAndPassword.get("newLogin");
             String newPassword = loginAndPassword.get("newPassword");
             userService.updateLoginAndPassword(userId, newLogin, newPassword);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }

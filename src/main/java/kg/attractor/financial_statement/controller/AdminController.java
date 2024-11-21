@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.controller;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.error.WrongRoleNameException;
 import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
@@ -83,7 +84,6 @@ public class AdminController {
             errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-
     }
 
     @DeleteMapping("/user/delete/{id}")
@@ -143,6 +143,8 @@ public class AdminController {
             if (e.getMessage().contains("существует")) {
                 return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
             }
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+        } catch (WrongRoleNameException e) {
             return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла ошибка на сервере");

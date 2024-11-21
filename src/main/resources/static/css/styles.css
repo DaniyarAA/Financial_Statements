@@ -1046,7 +1046,7 @@ h2 {
     border: none;
 }
 
-.btn-primary {
+.change-login-password-btn {
     background-color: #6c757d45;
     color: black;
     font-size: 25px;
@@ -1056,7 +1056,7 @@ h2 {
     border: none;
 }
 
-.btn-primary:hover {
+.change-login-password-btn:hover {
     background-color: #6c757d29;
     border-color: #6c757d29;
 }

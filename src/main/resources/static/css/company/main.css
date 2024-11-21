@@ -180,6 +180,29 @@ input[type="email"]:focus {
     }
 }
 
+.inline-block {
+    display: inline-block;
+}
+
+.edit-input {
+    width: auto;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+#cancelBtn, #saveBtn {
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.list-group-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
 
 
 

@@ -112,6 +112,9 @@
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
+    <script>
+        const availableYearMonths = ${availableYearMonthsJson?no_esc};
+    </script>
     <script src="/js/list.js"></script>
 
     <style>

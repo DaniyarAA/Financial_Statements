@@ -150,16 +150,23 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        List<String> availableYearMonths = taskService.getAllYearMonths();
         System.out.println("taskListData: " + taskListData);
 
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         ObjectMapper objectMapper = new ObjectMapper();
         String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
-        System.out.println("Json: " + taskStatusDtosJson);
+
+        String availableYearMonthsJson = objectMapper.writeValueAsString(availableYearMonths);
 
         model.addAllAttributes(taskListData);
+
+        model.addAttribute("availableYearMonthsJson", availableYearMonthsJson);
         model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
+
+        System.out.println("Json task statuses: " + taskStatusDtosJson);
+        System.out.println("Json year month: " + availableYearMonths);
 
         return "tasks/tasksList";
     }

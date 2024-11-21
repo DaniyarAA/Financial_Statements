@@ -178,11 +178,16 @@ function setupNavigationButtons() {
             prevButtonImage.style.width = "35px";
             prevButtonImage.style.height = "35px";
 
-            prevButtonImage.addEventListener("click", () => {
-                if (!prevButtonImage.classList.contains("disabled")) {
-                    navigateToYearMonth(-1, currentYearMonth);
-                }
-            });
+            const previousYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, -1);
+            if (!previousYearMonth) {
+                prevButtonImage.style.filter = "grayscale(100%)";
+                prevButtonImage.style.cursor = "not-allowed";
+                prevButtonImage.classList.add("disabled");
+            } else {
+                prevButtonImage.addEventListener("click", () => {
+                    window.location.href = updateURLParameter("yearMonth", previousYearMonth);
+                });
+            }
 
             firstColumn.style.position = "relative";
             firstColumn.appendChild(prevButtonImage);
@@ -201,26 +206,31 @@ function setupNavigationButtons() {
             nextButtonImage.style.width = "35px";
             nextButtonImage.style.height = "35px";
 
-            nextButtonImage.addEventListener("click", () => {
-                if (!nextButtonImage.classList.contains("disabled")) {
-                    navigateToYearMonth(1, currentYearMonth);
-                }
-            });
+            const nextYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, 1);
+            if (!nextYearMonth) {
+                nextButtonImage.style.filter = "grayscale(100%)";
+                nextButtonImage.style.cursor = "not-allowed";
+                nextButtonImage.classList.add("disabled");
+            } else {
+                nextButtonImage.addEventListener("click", () => {
+                    window.location.href = updateURLParameter("yearMonth", nextYearMonth);
+                });
+            }
 
             lastColumn.style.position = "relative";
             lastColumn.appendChild(nextButtonImage);
         }
     }
 
-    function navigateToYearMonth(delta, current) {
-        const newYearMonth = computeNewYearMonth(current, delta);
-        window.location.href = updateURLParameter("yearMonth", newYearMonth);
-    }
+    function getAdjacentYearMonth(current, yearMonths, delta) {
+        const currentIndex = yearMonths.indexOf(current);
+        const newIndex = currentIndex + delta;
 
-    function computeNewYearMonth(current, delta) {
-        const [month, year] = current.split(".").map(Number);
-        const date = new Date(year, month - 1 + delta);
-        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+        if (newIndex >= 0 && newIndex < yearMonths.length) {
+            return yearMonths[newIndex];
+        }
+
+        return null;
     }
 
     function updateURLParameter(key, value) {
@@ -234,5 +244,7 @@ function setupNavigationButtons() {
         return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
     }
 }
+
 document.addEventListener("DOMContentLoaded", setupNavigationButtons);
+
 

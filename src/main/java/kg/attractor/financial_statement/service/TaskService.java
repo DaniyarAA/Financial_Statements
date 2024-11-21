@@ -50,4 +50,6 @@ public interface TaskService {
     void tasksGenerator();
 
     void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
+
+    List<String> getAllYearMonths();
 }

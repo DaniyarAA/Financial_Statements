@@ -233,6 +233,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<String> getAllYearMonths() {
+        List<Task> tasks = taskRepository.findAll();
+        List<String> yearMonths = tasks.stream()
+                .map(Task::getStartDate)
+                .map(date -> date.format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .distinct()
+                .sorted()
+                .toList();
+
+        return yearMonths;
+    }
+
+    @Override
     public void editTask(Long id, TaskEditDto taskEditDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
 
@@ -281,7 +294,14 @@ public class TaskServiceImpl implements TaskService {
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = groupTasksByYearMonthAndCompany(
                 filteredTasks, companyDtos);
 
-        return buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        List<String> availableYearMonths = new ArrayList<>(tasksByYearMonthAndCompany.keySet());
+        Collections.sort(availableYearMonths);
+
+        System.out.println("Tasks Map: " + tasksByYearMonthAndCompany);
+
+        Map<String, Object> response = buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        response.put("availableYearMonths", availableYearMonths);
+        return response;
     }
 
 

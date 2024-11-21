@@ -262,7 +262,8 @@
                     </form>
                 </div>
                 <div class="d-flex justify-content-center align-items-center modal-footer change-login-password-footer">
-                    <button type="button" class="btn btn-primary" onclick="saveLoginAndPassword()">
+                    <button type="button" class="btn btn-primary change-login-password-btn"
+                            onclick="saveLoginAndPassword()">
                         <i class="bi bi-check2 check-icon"></i>
                     </button>
                 </div>

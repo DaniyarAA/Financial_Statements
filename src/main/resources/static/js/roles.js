@@ -61,11 +61,6 @@ function saveRole() {
         hasErrors = true;
     }
 
-    if (roleName !== "Бухгалтер" && document.getElementById("editRoleId").value) {
-        document.getElementById("roleNameError").textContent = "Название роли 'Бухгалтер' не может быть изменено.";
-        hasErrors = true;
-    }
-
     if (selectedAuthorities.length === 0) {
         document.getElementById("authorityError").textContent = "Роль должна иметь хотя бы одну привилегию.";
         hasErrors = true;
@@ -102,6 +97,8 @@ function saveRole() {
             if (data && data.error) {
                 if (data.error === "duplicate") {
                     document.getElementById("roleNameError").textContent = "Роль с таким именем уже существует.";
+                } else if (data.error === "validation") {
+                    document.getElementById("roleNameError").textContent = data.message;
                 }
             }
         })

@@ -347,6 +347,9 @@ function deleteUser() {
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const userStatusOnList = document.getElementById(`${userId}-list-status`);
+    const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
+
     confirmModal.show();
     document.getElementById('confirmYes').onclick = function() {
         fetch('/admin/user/delete/' + userId, {
@@ -358,9 +361,11 @@ function deleteUser() {
         })
             .then(response => {
                 if (response.ok) {
-                    confirmModal.hide();
                     showNotification("Пользователь успешно удалён.", "green");
-                    userStatus.innerText = "Неактивен"
+                    userStatus.innerText = "Неактивен";
+                    userStatusOnList.innerText = "Disabled";
+                    userStatusOnTile.innerText = "Disabled";
+                    confirmModal.hide();
                 } else {
                     return response.json().then(errorData => {
                         confirmModal.hide();

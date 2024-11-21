@@ -23,11 +23,11 @@
         </div>
     </div>
 
-    <#assign known = SPRING_SECURITY_CONTEXT??>
-    <#if known>
-        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>
-        <#list user.authorities as auth>
-            <div id="listView" class="view-container hidden">
+<#--    <#assign known = SPRING_SECURITY_CONTEXT??>-->
+<#--    <#if known>-->
+<#--        <#assign user = SPRING_SECURITY_CONTEXT.authentication.principal>-->
+<#--        <#list user.authorities as auth>-->
+            <div id="listView" class="view-container listView hidden">
                 <div class="user-list-container">
                     <table class="user-table">
                         <#list users.content as user>
@@ -35,7 +35,7 @@
                                 <td class="user-info">
                                     <span id="${user.id}-name-surname" class="user-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
                                     <span class="user-table-detail">Reg.: ${user.registerDate}</span>
-                                    <span class="user-table-detail"><#if user.enabled==true>
+                                    <span class="user-table-detail" id="${user.id}-list-status"><#if user.enabled==true>
                                 Active
                                 <#else>
                                             Disabled
@@ -55,34 +55,37 @@
                 </div>
             </div>
 
-            <div id="tileView" class="view-container hidden">
+            <div id="tileView" class="view-container tileView hidden">
                 <div class="user-tile-container">
                     <#list users.content as user>
                         <div class="user-tile">
                             <div class="user-tile-info">
                                 <span id="${user.id}-name-surname" class="user-name-surname">#${user.id}.${user.name} ${user.surname}</span>
                                 <span class="user-detail">Reg.: ${user.registerDate}</span>
-                                <#if user.enabled == true>
-                                    <span class="user-status user-detail">Active</span>
-                                <#else>
-                                    <span class="user-status user-detail">Disabled</span>
-                                </#if>
+
+                                <span class="user-table-detail" id="${user.id}-tile-status">
+                                    <#if user.enabled==true>
+                                        Active
+                                    <#else>
+                                        Disabled
+                                    </#if>
+                                </span>
+
                                 <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
-                                <#if auth == "EDIT_USER">
+<#--                                <#if auth == "EDIT_USER">-->
                                     <div class="buttons-container">
                                         <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i>
                                         </button>
                                         <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
                                     </div>
-                                </#if>
+<#--                                </#if>-->
                                 <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </div>
                         </div>
                     </#list>
                 </div>
             </div>
-        </#list>
-    </#if>
+
 
        <div class="d-flex justify-content-center mt-5">
            <nav aria-label="Page navigation example">

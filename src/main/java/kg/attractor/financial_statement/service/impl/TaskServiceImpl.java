@@ -239,7 +239,9 @@ public class TaskServiceImpl implements TaskService {
                 .map(Task::getStartDate)
                 .map(date -> date.format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .distinct()
-                .sorted()
+                .sorted(Comparator.comparing(
+                        yearMonth -> YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("MM.yyyy"))
+                ))
                 .toList();
 
         return yearMonths;

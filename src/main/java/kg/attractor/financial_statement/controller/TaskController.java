@@ -151,6 +151,7 @@ public class TaskController {
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
         List<String> availableYearMonths = taskService.getAllYearMonths();
+        System.out.println("availableYearMonths: " + availableYearMonths);
         System.out.println("taskListData: " + taskListData);
 
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();

@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import jakarta.annotation.PostConstruct;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.dto.TaskEditDto;
@@ -18,23 +19,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -211,6 +207,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
         TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
+        DocumentType enReport = documentTypeService.getDocumentTypeById(2L);
         userCompany.setIsAutomatic(true);
 
         for (int i = 0; i < 12; i++) {
@@ -218,6 +215,9 @@ public class TaskServiceImpl implements TaskService {
 
             if (nextMonth.getYear() == currentYear) {
                 for (DocumentType documentType : automaticDocumentTypes) {
+                    if (documentType.getId().equals(enReport.getId())) {
+                        continue;
+                    }
                     Task task = new Task();
                     LocalDate startDate = nextMonth.atDay(1);
                     LocalDate endDate = nextMonth.atEndOfMonth();
@@ -229,6 +229,36 @@ public class TaskServiceImpl implements TaskService {
                     taskRepository.save(task);
                 }
             }
+        }
+
+        int currentQuarter = (currentDate.getMonthValue() - 1) / 3 + 1;
+        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
+
+            for (int quarter = 1; quarter <= 4; quarter++) {
+                YearMonth quarterStartMonth = YearMonth.of(currentYear, (quarter - 1) * 3 + 1);
+                LocalDate startDate = quarterStartMonth.atDay(1);
+                LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
+
+                Task enTask = new Task();
+                enTask.setUserCompany(userCompany);
+                enTask.setStartDate(startDate);
+                enTask.setEndDate(endDate);
+                enTask.setDocumentType(enReport);
+                enTask.setTaskStatus(defaultStatus);
+                taskRepository.save(enTask);
+            }
+        } else {
+            YearMonth quarterStartMonth = YearMonth.of(currentYear, (currentQuarter - 1) * 3 + 1);
+            LocalDate startDate = quarterStartMonth.atDay(1);
+            LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
+
+            Task enTask = new Task();
+            enTask.setUserCompany(userCompany);
+            enTask.setStartDate(startDate);
+            enTask.setEndDate(endDate);
+            enTask.setDocumentType(enReport);
+            enTask.setTaskStatus(defaultStatus);
+            taskRepository.save(enTask);
         }
     }
 

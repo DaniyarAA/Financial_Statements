@@ -6,6 +6,7 @@ import kg.attractor.financial_statement.dto.RoleDto;
 import kg.attractor.financial_statement.entity.Authority;
 import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.error.WrongRoleNameException;
 import kg.attractor.financial_statement.repository.RoleRepository;
 import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
@@ -95,7 +96,7 @@ public class RoleServiceImpl implements RoleService {
 
         if ("Бухгалтер".equalsIgnoreCase(role.getRoleName()) &&
             !role.getRoleName().equalsIgnoreCase(roleDto.getRoleName())) {
-            throw new IllegalArgumentException("Имя роли 'Бухгалтер' нельзя изменить.");
+            throw new WrongRoleNameException("Имя роли 'Бухгалтер' нельзя изменить.");
         }
 
         if (roleDto.getRoleName() == null || roleDto.getRoleName().trim().isEmpty()) {

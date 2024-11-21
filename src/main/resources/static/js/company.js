@@ -60,28 +60,32 @@ function addNotification(message) {
     }, 3000);
 }
 
-function editText(elementId, companyID) {
+function editText(elementId, companyId) {
     const textElement = document.getElementById(elementId);
+    const inputElement = document.getElementById(`editInput${elementId}`);
+    const saveBtn = document.getElementById(`saveBtn${elementId}`);
+    const cancelBtn = document.getElementById(`cancelBtn${elementId}`);
+    const editBtn = document.getElementById(`editBtn${elementId}`);
     let currentText;
 
     if (textElement.hasAttribute('data-password')) {
         currentText = textElement.getAttribute('data-password');
     } else {
-        currentText = textElement.textContent;
+        currentText = textElement.textContent.trim();
     }
 
-    document.getElementById('editInput').value = currentText;
-    document.getElementById('editFieldId').value = elementId;
-    document.getElementById('editCompanyId').value = companyID;
-
-    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-    editModal.show();
+    textElement.classList.add('d-none');
+    inputElement.classList.remove('d-none');
+    saveBtn.classList.remove('d-none');
+    cancelBtn.classList.remove('d-none');
+    editBtn.classList.add('d-none');
+    inputElement.value = currentText;
 }
 
-function saveChanges() {
-    const elementId = document.getElementById('editFieldId').value;
-    const companyId = document.getElementById('editCompanyId').value;
-    const newText = document.getElementById('editInput').value.trim();
+
+function saveChanges(elementId, companyId) {
+    const inputElement = document.getElementById(`editInput${elementId}`);
+    const newText = inputElement.value.trim();
 
     if (newText !== '') {
         document.getElementById(elementId).textContent = newText;
@@ -105,15 +109,14 @@ function saveChanges() {
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(errData => {
-                        throw new Error(errData.message || 'Ошибка при сохранении изменений , не удалось получить сообщение об ошибке от сервера');
+                        throw new Error(errData.message || 'Ошибка при сохранении изменений');
                     });
                 }
                 return response.json();
             })
             .then(data => {
                 showResponseMessage(data.message);
-                const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
-                editModal.hide();
+                cancelEdit(elementId);
             })
             .catch(error => {
                 showResponseMessage(error.message, false);
@@ -122,7 +125,19 @@ function saveChanges() {
     }
 }
 
+function cancelEdit(elementId) {
+    const textElement = document.getElementById(elementId);
+    const inputElement = document.getElementById(`editInput${elementId}`);
+    const saveBtn = document.getElementById(`saveBtn${elementId}`);
+    const cancelBtn = document.getElementById(`cancelBtn${elementId}`);
+    const editBtn = document.getElementById(`editBtn${elementId}`);
 
+    textElement.classList.remove('d-none');
+    inputElement.classList.add('d-none');
+    saveBtn.classList.add('d-none');
+    cancelBtn.classList.add('d-none');
+    editBtn.classList.remove('d-none');
+}
 
 function showResponseMessage(message, isSuccess = true) {
     const notification = document.createElement('div');

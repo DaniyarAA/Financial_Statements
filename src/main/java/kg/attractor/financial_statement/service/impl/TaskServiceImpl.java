@@ -285,12 +285,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
         YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
-        YearMonth previousYearMonth = filterYearMonth.minusMonths(1);
+        YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
         List<TaskDto> taskDtos = getAllTasksForUser(user);
 
-        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, previousYearMonth);
+        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
         Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks);
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = groupTasksByYearMonthAndCompany(
@@ -300,6 +300,8 @@ public class TaskServiceImpl implements TaskService {
         Collections.sort(availableYearMonths);
 
         System.out.println("Tasks Map: " + tasksByYearMonthAndCompany);
+
+        System.out.println("Month map: " + monthsMap);
 
         Map<String, Object> response = buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
         response.put("availableYearMonths", availableYearMonths);
@@ -403,11 +405,11 @@ public class TaskServiceImpl implements TaskService {
                 : YearMonth.parse(paramYearMonth, formatter);
     }
 
-    private List<TaskDto> filterTasksByYearMonth(List<TaskDto> tasks, YearMonth filterYearMonth, YearMonth previousYearMonth) {
+    private List<TaskDto> filterTasksByYearMonth(List<TaskDto> tasks, YearMonth filterYearMonth, YearMonth nextYearMonth) {
         return tasks.stream()
                 .filter(task -> {
                     YearMonth taskYearMonth = YearMonth.from(task.getStartDate());
-                    return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(previousYearMonth);
+                    return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(nextYearMonth);
                 })
                 .collect(Collectors.toList());
     }
@@ -415,27 +417,34 @@ public class TaskServiceImpl implements TaskService {
     private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
         return tasks.stream()
+                .sorted(Comparator.comparing(task -> YearMonth.from(task.getStartDate())))
                 .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
                 .distinct()
                 .collect(Collectors.toMap(
                         ym -> ym,
                         ym -> YearMonth.parse(ym, formatter)
                                 .getMonth()
-                                .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
+                                .getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru")) + " "
+                                + YearMonth.parse(ym, formatter).getYear(),
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
     }
 
+
+
     private Map<String, Map<String, List<TaskDto>>> groupTasksByYearMonthAndCompany(
             List<TaskDto> tasks, List<CompanyForTaskDto> companies) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
-        Set<String> uniqueYearMonths = tasks.stream()
+
+        List<String> sortedYearMonths = tasks.stream()
                 .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
-                .collect(Collectors.toSet());
+                .distinct()
+                .sorted(Comparator.comparing(yearMonth -> YearMonth.parse(yearMonth, formatter)))
+                .toList();
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
-        for (String yearMonth : uniqueYearMonths) {
+        for (String yearMonth : sortedYearMonths) {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companies) {
                 List<TaskDto> tasksForCompanyAndMonth = tasks.stream()
@@ -448,6 +457,7 @@ public class TaskServiceImpl implements TaskService {
         }
         return tasksByYearMonthAndCompany;
     }
+
 
     private Map<String, Object> buildResponse(int page, int size, List<CompanyForTaskDto> companyDtos,
                                               Map<String, String> monthsMap,

@@ -70,14 +70,17 @@ public class UserServiceImpl implements UserService {
                 .registerDate(LocalDate.now())
                 .credentialsUpdated(true)
                 .build();
+        log.info("registering User: {} in process...", newUser);
         userRepository.save(newUser);
 
     }
 
     private void validateBirthday(LocalDate birthday) {
         if (birthday.isAfter(LocalDate.now())) {
+            log.info("Человек еще не родился");
             throw new IllegalArgumentException("Человек еще не родился");
         } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
+            log.info("Человеку должно быть больше 18 лет");
             throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
         }
     }
@@ -85,6 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserDtoById(Long id) {
         User user = getUserById(id);
+        log.info("get user by id {}", id);
         return convertToUserDto(user);
     }
 
@@ -132,14 +136,17 @@ public class UserServiceImpl implements UserService {
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
+        log.info("edit user {}in process...", userDto.getLogin());
         userRepository.save(user);
     }
 
     private void updateLoginIfChanged(String newLogin, User user) {
         if (!Objects.equals(newLogin, user.getLogin())) {
             if (checkIfUserExists(newLogin)) {
+                log.info("Пользователь с таким логином уже существует");
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
+            log.info("changed login for user");
             user.setLogin(newLogin);
         }
     }
@@ -151,17 +158,21 @@ public class UserServiceImpl implements UserService {
         updateLoginIfChanged(newLogin, user);
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setCredentialsUpdated(true);
+        log.info("changed login and password for user - {} successfully", user.getLogin());
         userRepository.save(user);
     }
 
     private void validatePassword(String password) {
         if (password == null || password.isBlank()) {
+            log.info("password is null");
             throw new IllegalArgumentException("Заполните поля поролей");
         }
         if (password.length() < 8 || password.length() > 20) {
+            log.info("length of password is less than 8 or more than 20");
             throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20 на латыни");
         }
         if (!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$")) {
+            log.info("The password have not any letter at least 1 uppercase letter, at least 1 lowercase letter in latin");
             throw new IllegalArgumentException("Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ");
         }
     }
@@ -172,6 +183,7 @@ public class UserServiceImpl implements UserService {
         validateImageType(file);
         String avatar = FileUtils.uploadFile(file);
         user.setAvatar(avatar);
+        log.info("changing avatar for user - {} in process", user.getLogin());
         userRepository.save(user);
         return avatar;
     }
@@ -188,9 +200,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
-        if (user.getRole().getRoleName().equals("SuperUser")) {
+        if (user.getRole().getRoleName().equals("SuperUser") || user.getRole().getRoleName().equals("Бухгалтер")) {
+            log.info("Нельзя удалить пользователей с ролью Бухгалтер или Бухгалтер");
             throw new IllegalArgumentException("Нельзя удалить администратора системы");
         }
+        log.info("deleting user - {} in process...", user.getLogin());
         user.setEnabled(false);
         userRepository.save(user);
     }
@@ -231,7 +245,6 @@ public class UserServiceImpl implements UserService {
                             try {
                                 return getUserDtoByLogin(username);
                             } catch (UsernameNotFoundException e) {
-                                System.out.println("User not found: " + username);
                                 return null;
                             }
                         })
@@ -239,7 +252,7 @@ public class UserServiceImpl implements UserService {
             }
             return userDto;
         } catch (Exception e) {
-            System.err.println("Exception occurred in getUserDtoByCookie: " + e.getMessage());
+            log.info("Exception occurred in getUserDtoByCookie: {}", e.getMessage());
             return null;
         }
     }
@@ -252,7 +265,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserForTaskDto getUserForTaskDto(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found for id: " + id));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found for id: " + id));
         return convertToUserForTaskDto(user);
     }
 

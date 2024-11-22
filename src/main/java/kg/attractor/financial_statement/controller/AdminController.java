@@ -103,11 +103,12 @@ public class AdminController {
     }
 
     @GetMapping("roles")
-    public String getAllRoles(Model model) {
+    public String getAllRoles(Model model, Principal principal) {
         List<RoleDto> roles = roleService.getAll();
         model.addAttribute("roles", roles);
         model.addAttribute("authorities", authorityService.getAll());
         model.addAttribute("createRoleDto", new CreateRoleDto());
+        model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
         return "admin/roles";
     }
 

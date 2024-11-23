@@ -7,6 +7,7 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
+import kg.attractor.financial_statement.repository.UserPageableRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
@@ -20,6 +21,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserPageableRepository userPageableRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private CompanyService companyService;
@@ -117,22 +121,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(Long id, UserDto userDto) {
         User user = getUserById(id);
-        Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        validateBirthday(userDto.getBirthday());
-        user.setRole(role);
-        user.setBirthday(userDto.getBirthday());
-        user.setNotes(userDto.getNotes());
-        if (!userDto.getName().isEmpty()) {
-            user.setName(userDto.getName());
+        if(user.isEnabled()){
+            Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+            validateBirthday(userDto.getBirthday());
+            user.setRole(role);
+            user.setBirthday(userDto.getBirthday());
+            user.setNotes(userDto.getNotes());
+            if (!userDto.getName().isEmpty()) {
+                user.setName(userDto.getName());
+            }
+            if (!userDto.getSurname().isEmpty()) {
+                user.setSurname(userDto.getSurname());
+            }
+            List<Company> newCompanies = userDto.getCompanies().stream()
+                    .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
+                    .toList();
+            userCompanyService.updateUserCompanies(user, newCompanies);
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать");
         }
-        if (!userDto.getSurname().isEmpty()) {
-            user.setSurname(userDto.getSurname());
-        }
-        List<Company> newCompanies = userDto.getCompanies().stream()
-                .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
-                .toList();
-        userCompanyService.updateUserCompanies(user, newCompanies);
-        userRepository.save(user);
     }
 
     private void updateLoginIfChanged(String newLogin, User user) {
@@ -169,20 +177,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateAvatar(Long userId, MultipartFile file) throws IOException {
         User user = getUserById(userId);
-        validateImageType(file);
-        String avatar = FileUtils.uploadFile(file);
-        user.setAvatar(avatar);
-        userRepository.save(user);
-        return avatar;
+        if(user.isEnabled()){
+            validateImageType(file);
+            String avatar = FileUtils.uploadFile(file);
+            user.setAvatar(avatar);
+            userRepository.save(user);
+            return avatar;
+        } else {
+            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать");
+        }
+
     }
 
-    private boolean validateImageType(MultipartFile file) {
+    private void validateImageType(MultipartFile file) {
         String contentType = file.getContentType();
-        return contentType != null &&
-               (contentType.equals("image/jpeg")
-                || contentType.equals("image/jpg")
-                || contentType.equals("image/webp")
-                || contentType.equals("image/png"));
+        if (contentType == null ||
+                !(contentType.equals("image/jpeg") ||
+                        contentType.equals("image/jpg") ||
+                        contentType.equals("image/webp") ||
+                        contentType.equals("image/png"))) {
+            throw new IllegalArgumentException("Invalid image type: " + contentType);
+        }
     }
 
     @Override
@@ -191,14 +206,19 @@ public class UserServiceImpl implements UserService {
         if (user.getRole().getRoleName().equals("SuperUser")) {
             throw new IllegalArgumentException("Нельзя удалить администратора системы");
         }
+        user.setRole(null);
         user.setEnabled(false);
         userRepository.save(user);
     }
 
     @Override
     public Page<UserDto> getAllDtoUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = getUserByLogin(auth.getName());
+        Page<User> users = userPageableRepository.findAllByOrderByEnabledDesc(pageable);
+        boolean isCurrentUserSuperUser = currentUser.getRole().getRoleName().equals("SuperUser");
         var list = users.get()
+                .filter(user -> isCurrentUserSuperUser || user.getRole() == null || !"SuperUser".equals(user.getRole().getRoleName()))
                 .map(this::convertToUserDto)
                 .toList();
         return new PageImpl<>(list, pageable, users.getTotalElements());
@@ -281,6 +301,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto convertToUserDto(User user) {
+        RoleDto roleDto = (user.getRole() != null) ? roleService.convertToDto(user.getRole()) : null;
         return UserDto
                 .builder()
                 .id(user.getId())
@@ -293,7 +314,7 @@ public class UserServiceImpl implements UserService {
                 .notes(user.getNotes())
                 .registerDate(user.getRegisterDate())
                 .avatar(user.getAvatar())
-                .roleDto(roleService.convertToDto(user.getRole()))
+                .roleDto(roleDto)
                 .companies(getCompaniesByUserId(user.getId()))
                 .build();
     }

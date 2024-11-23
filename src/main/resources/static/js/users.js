@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
     const editUserBtn = document.getElementById("edit-user-info-button");
     let currentUserId = null;
+    console.log(document.querySelectorAll("#userModal").length);
+
 
 
     const companySearchInput = document.getElementById("companySearch");
@@ -59,16 +61,29 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.relatedTarget;
         const avatarInput = document.getElementById("avatarInput");
         const deleteUserIcon = document.getElementById("delete-user-icon");
+        currentUserId = button.getAttribute("data-user-id");
         deleteUserIcon.setAttribute("data-user-id", currentUserId);
         avatarInput.setAttribute("data-user-id", currentUserId);
-        currentUserId = button.getAttribute("data-user-id");
 
+        console.log("Fetching user data for:", currentUserId);
         fetch(`/admin/users/edit/` + currentUserId)
             .then(response => response.json())
             .then(data => {
+                console.log("Data fetched for user:", data.user);
                 const user = data.user;
                 const companies = data.companies;
                 const roles = data.roles;
+                if(!user.enabled){
+                    document.getElementById('edit-company-icon').style.display = 'none';
+                    document.getElementById('edit-name-icon').style.display = 'none';
+                    document.getElementById('edit-birthday-icon').style.display = 'none';
+                    document.getElementById('change-avatar-icon').style.display = 'none';
+                    document.getElementById('edit-role-icon').style.display = 'none';
+                    document.getElementById('delete-user-icon').style.display = 'none';
+                    document.getElementById('companyDropdown').disabled = true;
+                    document.getElementById('notesInput').disabled = true;
+                    document.getElementById('edit-user-info-button').disabled = true;
+                }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
@@ -89,17 +104,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const roleDisplay = document.getElementById("roleDisplay");
                 const roleSelect = document.getElementById("roleSelect");
-                roleDisplay.innerText = user.roleDto.roleName;
-                roleSelect.innerHTML = "";
-                roles.forEach(role => {
-                    const option = document.createElement("option");
-                    option.value = role.id;
-                    option.textContent = role.roleName;
-                    if (role.id === user.roleDto.id) {
-                        option.selected = true;
-                    }
-                    roleSelect.append(option);
-                });
+                if(user.roleDto){
+                    roleDisplay.innerText = user.roleDto.roleName;
+                } else {
+                    roleDisplay.innerText = "Отсутствует";
+                }
+
+
+                if(user.roleDto){
+                    roleSelect.innerHTML = "";
+                    roles.forEach(role => {
+                        const option = document.createElement("option");
+                        option.value = role.id;
+                        option.textContent = role.roleName;
+                        if (role.id === user.roleDto.id) {
+                            option.selected = true;
+                        }
+                        roleSelect.append(option);
+                    });
+                }
 
                 const initialCompanies = document.getElementById("initialCompanies");
                 const maxLength = 19;
@@ -143,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             })
             .catch(error => console.error("Error loading user data:", error));
-    });
+    },{ once: true });
     editUserBtn.addEventListener("click", function () {
         if (currentUserId) {
             saveUserData(currentUserId);
@@ -181,7 +204,7 @@ function uploadAvatar() {
                 avatarImg.src = `/api/files/download/${resultFileName}`;
                 showNotification("Аватарка успешно обновлена!", "green");
             } else {
-                showNotification("Ошибка при обновлении аватарки.", "red");
+                showNotification(data.message, "red");
             }
         } catch (error) {
             console.error("Ошибка:", error);
@@ -344,6 +367,7 @@ function saveUserData(userId) {
 
 function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
+    const displayRole = document.getElementById("roleDisplay");
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
@@ -363,6 +387,7 @@ function deleteUser() {
                 if (response.ok) {
                     showNotification("Пользователь успешно удалён.", "green");
                     userStatus.innerText = "Неактивен";
+                    displayRole.innerText = "Отсутвует";
                     userStatusOnList.innerText = "Disabled";
                     userStatusOnTile.innerText = "Disabled";
                     confirmModal.hide();

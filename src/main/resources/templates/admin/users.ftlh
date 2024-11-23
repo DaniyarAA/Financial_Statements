@@ -33,21 +33,32 @@
                         <#list users.content as user>
                             <tr class="user-row">
                                 <td class="user-info">
-                                    <span id="${user.id}-name-surname" class="user-name-surname">#${user.id}. ${user.name} ${user.surname}</span>
+                                    <span id="${user.id}-name-surname" class="user-name-surname">${user_index + 1}. ${user.name} ${user.surname}</span>
                                     <span class="user-table-detail">Reg.: ${user.registerDate}</span>
                                     <span class="user-table-detail" id="${user.id}-list-status"><#if user.enabled==true>
                                 Active
                                 <#else>
                                             Disabled
                                         </#if></span>
-                                    <span id="${user.id}-role" class="user-table-detail">${user.roleDto.roleName}</span>
+                                    <#if user.roleDto??>
+
+                                    </#if>
+                                    <span id="${user.id}-role" class="user-table-detail">
+                                        <#if user.roleDto??>
+                                            ${user.roleDto.roleName}
+                                            <#else >
+                                            Удален
+                                        </#if>
+                                    </span>
                                 </td>
-
-                                    <td class="user-action-buttons">
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
-                                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
-                                    </td>
-
+<#--                                <#list currentUser.getRole().authorities as authority>-->
+<#--                                    <#if authority.authority == "EDIT_USER">-->
+                                        <td class="user-action-buttons">
+                                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i></button>
+                                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
+                                        </td>
+<#--                                    </#if>-->
+<#--                                </#list>-->
                                 <input type="hidden" id="currentUserId" value="${currentUser.id}">
                             </tr>
                         </#list>
@@ -71,7 +82,13 @@
                                     </#if>
                                 </span>
 
-                                <span class="user-detail" id="${user.id}-role">${user.roleDto.roleName}</span>
+                                <span class="user-detail" id="${user.id}-role">
+                                   <#if user.roleDto??>
+                                       ${user.roleDto.roleName}
+                                   <#else >
+                                       Удален
+                                   </#if>
+                                </span>
 <#--                                <#if auth == "EDIT_USER">-->
                                     <div class="buttons-container">
                                         <button class="edit-button" data-bs-toggle="modal" data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i class="bi bi-key"></i>
@@ -124,29 +141,19 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
-                <#assign known = SPRING_SECURITY_CONTEXT??>
-                <#if known>
-                    <#assign
-                    user = SPRING_SECURITY_CONTEXT.authentication.principal
-                    name = user.getUsername()>
-                    <#list user.authorities as auth>
-                        <#if auth=="DELETE_USER">
-                            <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
-                        </#if>
-                    </#list>
-                </#if>
+                <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
                     <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
                     <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
-                    <i class="bi bi-pencil ms-2" onclick="toggleNameEdit()"></i>
+                    <i class="bi bi-pencil ms-2" id="edit-name-icon" onclick="toggleNameEdit()"></i>
                 </div>
 
                 <div class="modal-body text-center">
                     <div class="avatar-container">
                         <img src="/api/files/download/user.png" id="avatar" alt="avatar" class="profile-info-avatar-img">
-                        <div id="change-avatar-icon" class="change-avatar-icon"  onclick="uploadAvatar()">
+                        <div id="change-avatar-icon" class="change-avatar-icon" onclick="uploadAvatar()">
                             <i class="bi bi-camera fs-5"></i>
                         </div>
                         <input type="file" id="avatarInput" style="display: none;" accept="image/*">
@@ -160,7 +167,7 @@
                             <select id="roleSelect" class="form-select" style="display: none; width: 85%;">
 
                             </select>
-                            <i class="bi bi-pencil" onclick="toggleRoleEdit()"></i>
+                            <i class="bi bi-pencil" id="edit-role-icon" onclick="toggleRoleEdit()"></i>
                         </span>
                     </div>
 
@@ -189,7 +196,7 @@
                         <span class="user-label">День Рождения:</span>
                         <span class="user-value" id="user-birthday"></span>
                         <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
-                        <i class="bi bi-pencil ms-2" onclick="toggleBirthdayEdit()"></i>
+                        <i class="bi bi-pencil ms-2" id="edit-birthday-icon" onclick="toggleBirthdayEdit()"></i>
                     </div>
                     <span id="birthdayError" class="text-danger"></span>
 

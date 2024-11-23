@@ -234,6 +234,11 @@ public class UserServiceImpl implements UserService {
                 .filter(user -> isCurrentUserSuperUser || user.getRole() == null || !"SuperUser".equals(user.getRole().getRoleName()))
                 .map(this::convertToUserDto)
                 .toList();
+
+        int startIndex = pageable.getPageNumber() * pageable.getPageSize();
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setDisplayIndex(startIndex + i + 1);
+        }
         return new PageImpl<>(list, pageable, users.getTotalElements());
     }
 

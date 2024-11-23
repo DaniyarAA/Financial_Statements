@@ -28,7 +28,7 @@
                     <#list users.content as user>
                         <tr class="user-row">
                             <td class="user-info">
-                                    <span id="${user.id}-name-surname" class="user-name-surname">${user_index + 1}. ${user.name} ${user.surname}</span>
+                                    <span id="${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                     <span class="user-table-detail">Reg.: ${user.registerDate}</span>
                                     <span class="user-table-detail" id="${user.id}-list-status"><#if user.enabled==true>
                                 Active
@@ -71,7 +71,7 @@
                     <#list users.content as user>
                         <div class="user-tile">
                             <div class="user-tile-info">
-                                <span id="${user.id}-name-surname" class="user-name-surname">#${user.id}.${user.name} ${user.surname}</span>
+                                <span id="${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                 <span class="user-detail">Reg.: ${user.registerDate}</span>
 
                                 <span class="user-table-detail" id="${user.id}-tile-status">

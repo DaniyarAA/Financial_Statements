@@ -34,7 +34,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    Page<UserDto> getAllDtoUsers(Pageable pageable);
+    Page<UserDto> getAllDtoUsers(Pageable pageable, String login);
 
     boolean checkIfUserExists(String login);
 

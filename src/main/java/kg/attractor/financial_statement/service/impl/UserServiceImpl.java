@@ -226,9 +226,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDto> getAllDtoUsers(Pageable pageable) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = getUserByLogin(auth.getName());
+    public Page<UserDto> getAllDtoUsers(Pageable pageable, String login) {
+        User currentUser = getUserByLogin(login);
         Page<User> users = userPageableRepository.findAllByOrderByEnabledDesc(pageable);
         boolean isCurrentUserSuperUser = currentUser.getRole().getRoleName().equals("SuperUser");
         var list = users.get()

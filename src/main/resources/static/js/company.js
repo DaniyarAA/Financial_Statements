@@ -15,18 +15,12 @@ function copyText(elementId) {
     });
 }
 
-function toggleCreateForm() {
-    const createCompanyForm = document.getElementById('createCompanyForm');
-    const companyInfo = document.getElementById('companyInfo');
 
-    if (createCompanyForm.style.display === "block") {
-        createCompanyForm.style.display = "none";
-        companyInfo.style.display = "block";
-    } else {
-        companyInfo.style.display = "none";
-        createCompanyForm.style.display = "block";
-    }
+function closeModalCreate() {
+    var modal = bootstrap.Modal.getInstance(document.getElementById('createCompanyModal'));
+    modal.hide();
 }
+
 
 async function submitForm(event) {
     event.preventDefault();
@@ -40,6 +34,8 @@ async function submitForm(event) {
     if (response.ok) {
         const result = await response.json();
         showResponseMessage(result.message);
+        var modal = bootstrap.Modal.getInstance(document.getElementById('createCompanyModal'));
+        modal.hide();
     } else {
         const errors = await response.json();
         const errorMessages = Object.values(errors).join('\n');

@@ -494,7 +494,7 @@ thead td {
 }
 
 .user-fade{
-    padding: 100px;
+    padding: 0;
 }
 
 .user-modal-header {
@@ -522,7 +522,7 @@ thead td {
 
 .user-label {
     color: #6c757d;
-    min-width: 150px;
+    min-width: 40%;
     text-align: right;
     margin-right: 10px;
     font-size: 14px;
@@ -1296,6 +1296,10 @@ h2 {
     .user-action-buttons{
         column-gap: 15px;
         margin-right: 2px;
+    }
+
+    .notes-form{
+        margin-left: 18px;
     }
 
 }

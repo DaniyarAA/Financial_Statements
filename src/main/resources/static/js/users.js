@@ -52,8 +52,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const avatarInput = document.getElementById("avatarInput");
         const deleteUserIcon = document.getElementById("delete-user-icon");
         currentUserId = button.getAttribute("data-user-id");
-        deleteUserIcon.setAttribute("data-user-id", currentUserId);
-        avatarInput.setAttribute("data-user-id", currentUserId);
+        if (deleteUserIcon){
+            deleteUserIcon.setAttribute("data-user-id", currentUserId);
+        }
+        if(avatarInput){
+            avatarInput.setAttribute("data-user-id", currentUserId);
+        }
 
         console.log("Fetching user data for:", currentUserId);
         fetch(`/admin/users/edit/` + currentUserId)
@@ -445,11 +449,9 @@ function showNotification(message, color) {
 function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-    const editIcon = document.getElementById('edit-company-icon');
     if (companyDropdown.style.display === 'none') {
         initialCompanies.style.display = 'none';
         companyDropdown.style.display = 'inline-block';
-        editIcon.style.display = 'none';
         attachCheckboxListeners();
     } else {
         closeDropdown();
@@ -489,11 +491,9 @@ function updateInitialCompanies() {
 function closeDropdown() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-    const editIcon = document.getElementById('edit-company-icon');
 
     initialCompanies.style.display = 'inline';
     companyDropdown.style.display = 'none';
-    editIcon.style.display = 'inline';
 
     document.removeEventListener('click', closeDropdown);
 }

@@ -53,9 +53,13 @@
                                 </td>
 
                             <td class="user-action-buttons">
-                                <button class="edit-button" data-bs-toggle="modal"
-                                        data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
-                                            class="bi bi-key"></i></button>
+                                <#list currentUser.roleDto.authorities as auth>
+                                    <#if auth.authority=="EDIT_USER">
+                                        <button class="edit-button" data-bs-toggle="modal"
+                                                data-bs-target="#changeLoginPasswordModal" data-user-id="${user.id}"><i
+                                                    class="bi bi-key"></i></button>                                    </#if>
+                                </#list>
+
                                 <button class="edit-button" data-bs-toggle="modal" data-bs-target="#userModal"
                                         data-user-id="${user.id}"><i class="bi bi-pencil"></i></button>
                             </td>
@@ -136,36 +140,44 @@
     </div>
 
     <div class="modal fade user-fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <#assign hasEditUserAuthority = false />
+        <#list currentUser.roleDto.authorities as auth>
+            <#if auth.authority == "EDIT_USER">
+                <#assign hasEditUserAuthority = true />
+                <#break>
+            </#if>
+        </#list>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
-                <#assign known = SPRING_SECURITY_CONTEXT??>
-                <#if known>
-                    <#assign
-                    user = SPRING_SECURITY_CONTEXT.authentication.principal
-                    name = user.getUsername()>
-                    <#list user.authorities as auth>
-                        <#if auth=="DELETE_USER">
-                            <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
-                        </#if>
-                    </#list>
-                </#if>
+                <#list currentUser.roleDto.authorities as auth>
+                    <#if auth.authority=="DELETE_USER">
+                        <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>
+                    </#if>
+                </#list>
+
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
                     <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
                     <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
-                    <i class="bi bi-pencil ms-2" id="edit-name-icon" onclick="toggleNameEdit()"></i>
+
+                    <#if hasEditUserAuthority>
+                        <i class="bi bi-pencil ms-2" id="edit-name-icon" onclick="toggleNameEdit()"></i>
+                    </#if>
                 </div>
 
                 <div class="modal-body text-center">
                     <div class="avatar-container">
                         <img src="/api/files/download/user.png" id="avatar" alt="avatar"
                              class="profile-info-avatar-img">
-                        <div id="change-avatar-icon" class="change-avatar-icon" onclick="uploadAvatar()">
-                            <i class="bi bi-camera fs-5"></i>
-                        </div>
-                        <input type="file" id="avatarInput" style="display: none;" accept="image/*">
+                        <#if hasEditUserAuthority>
+                            <div id="change-avatar-icon" class="change-avatar-icon" onclick="uploadAvatar()">
+                                <i class="bi bi-camera fs-5"></i>
+                            </div>
+                            <input type="file" id="avatarInput" style="display: none;" accept="image/*">
+                        </#if>
+
                     </div>
 
 
@@ -176,7 +188,10 @@
                             <select id="roleSelect" class="form-select" style="display: none; width: 85%;">
 
                             </select>
-                            <i class="bi bi-pencil" id="edit-role-icon" onclick="toggleRoleEdit()"></i>
+
+                            <#if hasEditUserAuthority>
+                                <i class="bi bi-pencil" id="edit-role-icon" onclick="toggleRoleEdit()"></i>
+                            </#if>
                         </span>
                     </div>
 
@@ -197,8 +212,12 @@
 
                             </div>
                         </div>
-                        <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon"></i>
-                    </span>
+
+                            <#if hasEditUserAuthority>
+                                <i class="bi bi-pencil" onclick="toggleCompanyEdit()" id="edit-company-icon"></i>
+                            </#if>
+
+                        </span>
                     </div>
 
 
@@ -206,7 +225,11 @@
                         <span class="user-label">День Рождения:</span>
                         <span class="user-value" id="user-birthday"></span>
                         <input type="date" id="birthday-input" class="user-value" style="display: none; width: 35%; border: none">
-                        <i class="bi bi-pencil ms-2" id="edit-birthday-icon" onclick="toggleBirthdayEdit()"></i>
+
+                        <#if hasEditUserAuthority>
+                            <i class="bi bi-pencil ms-2" id="edit-birthday-icon" onclick="toggleBirthdayEdit()"></i>
+                        </#if>
+
                     </div>
                     <span id="birthdayError" class="text-danger"></span>
 
@@ -217,10 +240,14 @@
 
                     <div class="mt-3">
                         <p class="user-label text-start ms-4">Заметки:</p>
-                        <textarea id="notesInput" name="notes" class="form-control notes-form p-3 pb-5 mt-2"></textarea>
+                        <textarea id="notesInput" name="notes" class="form-control notes-form p-3 pb-5 mt-2"
+                                  <#if !hasEditUserAuthority>disabled</#if>
+                        ></textarea>
                     </div>
 
-                    <button class="btn btn-light edit-user-btn mt-1 mb-3" id="edit-user-info-button">
+                    <button class="btn btn-light edit-user-btn mt-1 mb-3" id="edit-user-info-button"
+                            <#if !hasEditUserAuthority>disabled</#if>
+                    >
                         <i class="bi bi-check2 fs-1"></i>
                     </button>
                 </div>

@@ -6,24 +6,19 @@
             <div class="view-icons">
                 <span class="icon" onclick="switchToTileView()"><i class="bi bi-grid"></i></span>
                 <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul"></i></span>
-                <#assign known = SPRING_SECURITY_CONTEXT??>
-                <#if known>
-                    <#assign
-                    user = SPRING_SECURITY_CONTEXT.authentication.principal
-                    name = user.getUsername()>
-                    <#list user.authorities as auth>
-                        <#if auth=="VIEW_ROLES">
-                            <span class="icon" onclick="window.location.href='/admin/roles'">
+
+                <#list currentUser.roleDto.authorities as auth>
+                    <#if auth.authority=="VIEW_ROLES">
+                        <span class="icon" onclick="window.location.href='/admin/roles'">
                                 <i class="bi bi-person-fill-gear"></i>
-                            </span>
-                        </#if>
-                        <#if auth == 'CREATE_USER'>
-                            <span class="icon" onclick="window.location.href='/admin/register'">
+                        </span>
+                    </#if>
+                    <#if auth.authority=="CREATE_USER">
+                        <span class="icon" onclick="window.location.href='/admin/register'">
                                 <i class="bi bi-plus-circle"></i>
                             </span>
-                        </#if>
-                    </#list>
-                </#if>
+                    </#if>
+                </#list>
             </div>
         </div>
 

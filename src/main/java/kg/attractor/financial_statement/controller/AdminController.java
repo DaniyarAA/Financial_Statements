@@ -60,7 +60,7 @@ public class AdminController {
     @GetMapping("users")
     public String getAllUsers(Model model, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
         var users = userService.getAllDtoUsers(pageable);
-        model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
+        model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
         model.addAttribute("users", users);
         return "admin/users";
     }
@@ -108,7 +108,7 @@ public class AdminController {
         model.addAttribute("roles", roles);
         model.addAttribute("authorities", authorityService.getAll());
         model.addAttribute("createRoleDto", new CreateRoleDto());
-        model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
+        model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
         return "admin/roles";
     }
 

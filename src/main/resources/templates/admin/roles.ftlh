@@ -7,7 +7,7 @@
                 <div class="role-item">
                     <span>${role.roleName}</span>
                     <div class="button-group">
-                        <#list currentUser.role.authorities as auth>
+                        <#list currentUser.roleDto.authorities as auth>
                             <#if auth.authority=="DELETE_ROLE">
                                 <#if !role.userIds ? has_content && role.roleName != "Бухгалтер">
                                     <button class="btn btn-danger" onclick="deleteRole(${role.id}, '${role.roleName}')">
@@ -34,7 +34,7 @@
                 </div>
             </#list>
         </div>
-        <#list currentUser.role.authorities as auth>
+        <#list currentUser.roleDto.authorities as auth>
             <#if auth.authority=="CREATE_ROLE">
                 <button class="btn btn-create-role mt-3" onclick="openCreateRoleModal()">Создать новую роль</button>
             </#if>

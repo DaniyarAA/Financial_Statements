@@ -1,6 +1,5 @@
 package kg.attractor.financial_statement.service.impl;
 
-import jakarta.annotation.PostConstruct;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.dto.TaskEditDto;
@@ -8,6 +7,7 @@ import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.enums.ReportFrequency;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -191,24 +191,24 @@ public class TaskServiceImpl implements TaskService {
             List<Company> companies = companyService.findAll();
 
             for (Company company : companies) {
+                ReportFrequency frequency = company.getReportFrequency();
 
                 List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
 
                 for (UserCompany userCompany : userCompanies) {
-                    generateAutomaticTasks(userCompany, currentDate);
+                    generateAutomaticTasks(userCompany, currentDate, frequency);
                 }
             }
         }
     }
 
     @Override
-    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate) {
+    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency) {
         int currentYear = currentDate.getYear();
-
         List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
         TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
         DocumentType enReport = documentTypeService.getDocumentTypeById(2L);
-        userCompany.setIsAutomatic(true);
+        DocumentType nspReport = documentTypeService.getDocumentTypeById(14L);
 
         for (int i = 0; i < 12; i++) {
             YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);
@@ -218,6 +218,11 @@ public class TaskServiceImpl implements TaskService {
                     if (documentType.getId().equals(enReport.getId())) {
                         continue;
                     }
+
+                    if (documentType.getId().equals(nspReport.getId()) && frequency == ReportFrequency.QUARTERLY) {
+                        continue;
+                    }
+
                     Task task = new Task();
                     LocalDate startDate = nextMonth.atDay(1);
                     LocalDate endDate = nextMonth.atEndOfMonth();
@@ -232,8 +237,8 @@ public class TaskServiceImpl implements TaskService {
         }
 
         int currentQuarter = (currentDate.getMonthValue() - 1) / 3 + 1;
-        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
 
+        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
             for (int quarter = 1; quarter <= 4; quarter++) {
                 YearMonth quarterStartMonth = YearMonth.of(currentYear, (quarter - 1) * 3 + 1);
                 LocalDate startDate = quarterStartMonth.atDay(1);
@@ -246,6 +251,16 @@ public class TaskServiceImpl implements TaskService {
                 enTask.setDocumentType(enReport);
                 enTask.setTaskStatus(defaultStatus);
                 taskRepository.save(enTask);
+
+                if (frequency == ReportFrequency.QUARTERLY) {
+                    Task nspTask = new Task();
+                    nspTask.setUserCompany(userCompany);
+                    nspTask.setStartDate(startDate);
+                    nspTask.setEndDate(endDate);
+                    nspTask.setDocumentType(nspReport);
+                    nspTask.setTaskStatus(defaultStatus);
+                    taskRepository.save(nspTask);
+                }
             }
         } else {
             YearMonth quarterStartMonth = YearMonth.of(currentYear, (currentQuarter - 1) * 3 + 1);
@@ -259,6 +274,16 @@ public class TaskServiceImpl implements TaskService {
             enTask.setDocumentType(enReport);
             enTask.setTaskStatus(defaultStatus);
             taskRepository.save(enTask);
+
+            if (frequency == ReportFrequency.QUARTERLY) {
+                Task nspTask = new Task();
+                nspTask.setUserCompany(userCompany);
+                nspTask.setStartDate(startDate);
+                nspTask.setEndDate(endDate);
+                nspTask.setDocumentType(nspReport);
+                nspTask.setTaskStatus(defaultStatus);
+                taskRepository.save(nspTask);
+            }
         }
     }
 

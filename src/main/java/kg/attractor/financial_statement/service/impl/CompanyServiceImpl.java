@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.entity.*;
+import kg.attractor.financial_statement.enums.ReportFrequency;
 import kg.attractor.financial_statement.repository.CompanyRepository;
 import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.validation.EmailValidator;
@@ -39,17 +40,23 @@ public class CompanyServiceImpl implements CompanyService {
     @Lazy
     private void setTaskService(TaskService taskService){this.taskService = taskService;}
 
-
     @Override
     public void addCompany(CompanyDto companyDto, String login) {
         Company company = convertToEntity(companyDto);
         company.setDeleted(Boolean.FALSE);
+
+        ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
+        company.setReportFrequency(frequency);
+
         Company companyCreated = companyRepository.save(company);
 
         assignUserToCompany(companyCreated, login);
 
         LocalDate currentDate = LocalDate.now();
-        taskService.generateAutomaticTasks(userCompanyService.findByCompany(companyCreated).orElseThrow(), currentDate);
+        UserCompany userCompany = userCompanyService.findByCompany(companyCreated)
+                .orElseThrow(() -> new RuntimeException("UserCompany not found"));
+
+        taskService.generateAutomaticTasks(userCompany, currentDate, frequency);
     }
 
     @Override
@@ -70,9 +77,19 @@ public class CompanyServiceImpl implements CompanyService {
 
         Company company = convertToEntity(companyDto);
         company.setDeleted(Boolean.FALSE);
+
+        ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
+        company.setReportFrequency(frequency);
+
         Company companyCreated = companyRepository.save(company);
 
         assignUserToCompany(companyCreated, login);
+
+        LocalDate currentDate = LocalDate.now();
+        UserCompany userCompany = userCompanyService.findByCompany(companyCreated)
+                .orElseThrow(() -> new RuntimeException("UserCompany not found"));
+
+        taskService.generateAutomaticTasks(userCompany, currentDate, frequency);
 
         return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }
@@ -91,7 +108,7 @@ public class CompanyServiceImpl implements CompanyService {
         } else {
             userCompany.setUser(null);
         }
-
+        userCompany.setIsAutomatic(true);
         userCompanyService.save(userCompany);
     }
 

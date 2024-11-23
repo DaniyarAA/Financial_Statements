@@ -6,6 +6,7 @@ import kg.attractor.financial_statement.dto.TaskEditDto;
 import kg.attractor.financial_statement.dto.TaskForTaskListEditDto;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
+import kg.attractor.financial_statement.enums.ReportFrequency;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,5 +50,5 @@ public interface TaskService {
     @Scheduled(cron = "0 0 0 1 1 *")
     void tasksGenerator();
 
-    void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
+    void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency);
 }

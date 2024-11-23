@@ -1026,6 +1026,50 @@ h2 {
     text-align: center;
 }
 
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.change-login-password-footer{
+    border: 0;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.bg-color-for-change-login-password{
+    background-color: #6c757d29;
+}
+
+.input-group .btn {
+    border: none;
+}
+
+.change-login-password-btn {
+    background-color: #6c757d45;
+    color: black;
+    font-size: 25px;
+    width: 300px;
+    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 14px;
+    border: none;
+}
+
+.change-login-password-btn:hover {
+    background-color: #6c757d29;
+    border-color: #6c757d29;
+}
+
+.text-danger {
+    font-size: 0.85rem;
+}
+
+#changeLoginPasswordForm input {
+    border-radius: 5px;
+}
+
 
 
 @media (min-width: 1025px) and (max-width: 1440px) {

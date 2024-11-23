@@ -43,33 +43,15 @@ main {
     flex: 1;
     margin-bottom: 100px;
 }
-.pagination {
-    background-color: #4CAF50;
-    padding: 5px;
-    border-radius: 5px;
+
+nav .page-link, nav .pagination, nav .aria-hidden-1 {
+    color: #6DF800 !important;
 }
 
-.pagination .page-link {
-    color: #fff;
-    background-color: #4CAF50;
-    border: none;
-}
-
-.pagination .page-link:hover {
-    background-color: #45a049;
-    color: #fff;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #388E3C;
-    border-color: #388E3C;
-    color: #fff;
-}
-
-.pagination .page-item.disabled .page-link {
-    color: #a5d6a7;
-    background-color: #4CAF50;
-    border-color: #4CAF50;
+.page-item.active .page-link {
+    background-color: #6DF800 !important;
+    border-color: #6DF800 !important;
+    color: black !important;
 }
 
 footer {

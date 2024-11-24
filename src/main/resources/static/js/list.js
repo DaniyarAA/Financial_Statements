@@ -50,8 +50,8 @@ function showTaskDetails(button) {
                 <p>Компания:</p>
                 <p>ИНН:</p>
                 <p>Период:</p>
-                <p>Сумма:</p>
-                <p>Статус:</p>
+                <p style="margin-top: 7px">Сумма:</p>
+                <p style="margin-top: 15px">Статус:</p>
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
@@ -62,38 +62,34 @@ function showTaskDetails(button) {
                     <p>${amount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
                 <div id="amount-input" style="display: none;">
-    <input type="text" id="amount" name="amount" value="${amount}" style="
-        width: 70px;
-        height: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        margin: 0;
-    ">
-    <button type="button" onclick="cancelEditAmount()" style="
-        background: none;
-        color: #007bff;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        text-decoration: underline;
-        font-size: 14px;
-    ">Отменить</button>
-</div>
+                    <input type="text" id="amount" name="amount" value="${amount}" style="
+                        width: 100px;
+                        height: 33px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        font-size: 14px;
+                        margin: 0;
+                    ">
+                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
+
+                </div>
                 <div id="status-display" style="display: block">
                     <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
                 <div id="status-input" style="display: none;">
-                    <select class="form-select" id="taskStatus" name="statusId">
+                    <select class="form-select" id="taskStatus" name="statusId" style="
+                    width: 200px;
+                    ">
                         ${statusOptions}
                     </select>
-                <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Отменить</button>
+                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
+          
                 </div>
             </div>
         </div>
 
   <label for="description" style="margin-top: 55px; font-size: 14px; font-style: italic; font-weight: 100">Описание</label>
-<textarea id="description" name="description" style="width: 324px;
+        <textarea id="description" name="description" style="width: 324px;
     height: 112px;
     background-color: #d9d9d9;
     color: #333;
@@ -105,7 +101,7 @@ function showTaskDetails(button) {
     font-size: 16px;
     resize: none;
     overflow-y: auto;">${description}</textarea>
-    <div style="display: flex; justify-content: center; margin-top: 50px">
+        <div style="display: flex; justify-content: center; margin-top: 50px">
 
         <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center;             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>

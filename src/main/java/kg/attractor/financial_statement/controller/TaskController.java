@@ -150,7 +150,7 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
-        List<String> availableYearMonths = taskService.getAllYearMonths();
+        List<String> availableYearMonths = taskService.getAllYearMonths(authentication.getName());
         System.out.println("availableYearMonths: " + availableYearMonths);
         System.out.println("taskListData: " + taskListData);
 

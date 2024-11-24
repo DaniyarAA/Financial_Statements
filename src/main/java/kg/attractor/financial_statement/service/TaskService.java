@@ -32,7 +32,7 @@ public interface TaskService {
 
     List<TaskDto> getTaskDtosForUserAndMonth(User user, Integer month);
 
-    List<TaskDto> getAllTasksForUser(User user);
+    List<TaskDto> getAllTaskDtosForUser(User user);
 
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
 
@@ -51,5 +51,5 @@ public interface TaskService {
 
     void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
 
-    List<String> getAllYearMonths();
+    List<String> getAllYearMonths(String login);
 }

@@ -18,23 +18,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,11 +105,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getAllTasksForUser(User user) {
+    public List<TaskDto> getAllTaskDtosForUser(User user) {
         List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
 
         List<Task> tasks = taskRepository.findByUserCompanyIdIn(userCompanyIds);
         return convertToDtoList(tasks);
+    }
+
+    private List<Task> getAllTasksForUser(User user) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        return taskRepository.findByUserCompanyIdIn(userCompanyIds);
     }
 
     @Override
@@ -233,8 +234,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<String> getAllYearMonths() {
-        List<Task> tasks = taskRepository.findAll();
+    public List<String> getAllYearMonths(String login) {
+        User user = userService.getUserByLogin(login);
+        List<Task> tasks = getAllTasksForUser(user);
         List<String> yearMonths = tasks.stream()
                 .map(Task::getStartDate)
                 .map(date -> date.format(DateTimeFormatter.ofPattern("MM.yyyy")))
@@ -243,6 +245,11 @@ public class TaskServiceImpl implements TaskService {
                         yearMonth -> YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("MM.yyyy"))
                 ))
                 .toList();
+
+        if (yearMonths.isEmpty()) {
+            String currentYearMonth = YearMonth.now().format(DateTimeFormatter.ofPattern("MM.yyyy"));
+            yearMonths = List.of(currentYearMonth);
+        }
 
         return yearMonths;
     }
@@ -288,7 +295,7 @@ public class TaskServiceImpl implements TaskService {
         YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
-        List<TaskDto> taskDtos = getAllTasksForUser(user);
+        List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 
         List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
         Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks);

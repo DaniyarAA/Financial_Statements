@@ -78,7 +78,7 @@ function showTaskDetails(button) {
         padding: 0;
         text-decoration: underline;
         font-size: 14px;
-    ">Cancel</button>
+    ">Отменить</button>
 </div>
                 <div id="status-display" style="display: block">
                     <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
@@ -87,7 +87,7 @@ function showTaskDetails(button) {
                     <select class="form-select" id="taskStatus" name="statusId">
                         ${statusOptions}
                     </select>
-                <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Cancel</button>
+                <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Отменить</button>
                 </div>
             </div>
         </div>
@@ -120,11 +120,42 @@ function showTaskDetails(button) {
 function editAmount() {
     document.getElementById('amount-display').style.display = 'none';
     document.getElementById('amount-input').style.display = 'block';
+
+    const amountInput = document.getElementById('amount');
+    const form = document.getElementById('task-edit-form');
+
+    amountInput.addEventListener('input', validateAmount);
+
+    function validateAmount() {
+        const errorMessage = document.getElementById('amount-error');
+        const value = amountInput.value.trim();
+
+        if (!value || isNaN(value) || Number(value) <= 0) {
+            if (!errorMessage) {
+                const error = document.createElement('p');
+                error.id = 'amount-error';
+                error.textContent = 'Введите положительное число.';
+                error.style.color = 'red';
+                error.style.fontSize = '14px';
+                error.style.marginTop = '5px';
+                amountInput.parentNode.appendChild(error);
+            }
+            form.querySelector('button[type="submit"]').disabled = true;
+        } else {
+            if (errorMessage) errorMessage.remove();
+            form.querySelector('button[type="submit"]').disabled = false;
+        }
+    }
 }
 
 function cancelEditAmount() {
     document.getElementById('amount-display').style.display = 'block';
     document.getElementById('amount-input').style.display = 'none';
+
+    const errorMessage = document.getElementById('amount-error');
+    if (errorMessage) errorMessage.remove();
+    const form = document.getElementById('task-edit-form');
+    form.querySelector('button[type="submit"]').disabled = false;
 }
 
 function editStatus() {

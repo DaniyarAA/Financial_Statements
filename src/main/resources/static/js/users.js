@@ -1,16 +1,6 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-window.onload = function () {
-    const viewMode = localStorage.getItem('viewMode');
-    if (viewMode === 'tile') {
-        switchToTileView();
-    } else {
-        switchToListView();
-    }
-};
-
-
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
@@ -37,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
     const editUserBtn = document.getElementById("edit-user-info-button");
     let currentUserId = null;
+    console.log(document.querySelectorAll("#userModal").length);
+
 
 
     const companySearchInput = document.getElementById("companySearch");
@@ -59,16 +51,33 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.relatedTarget;
         const avatarInput = document.getElementById("avatarInput");
         const deleteUserIcon = document.getElementById("delete-user-icon");
-        deleteUserIcon.setAttribute("data-user-id", currentUserId);
-        avatarInput.setAttribute("data-user-id", currentUserId);
         currentUserId = button.getAttribute("data-user-id");
+        if (deleteUserIcon){
+            deleteUserIcon.setAttribute("data-user-id", currentUserId);
+        }
+        if(avatarInput){
+            avatarInput.setAttribute("data-user-id", currentUserId);
+        }
 
+        console.log("Fetching user data for:", currentUserId);
         fetch(`/admin/users/edit/` + currentUserId)
             .then(response => response.json())
             .then(data => {
+                console.log("Data fetched for user:", data.user);
                 const user = data.user;
                 const companies = data.companies;
                 const roles = data.roles;
+                if(!user.enabled){
+                    document.getElementById('edit-company-icon').style.display = 'none';
+                    document.getElementById('edit-name-icon').style.display = 'none';
+                    document.getElementById('edit-birthday-icon').style.display = 'none';
+                    document.getElementById('change-avatar-icon').style.display = 'none';
+                    document.getElementById('edit-role-icon').style.display = 'none';
+                    document.getElementById('delete-user-icon').style.display = 'none';
+                    document.getElementById('companyDropdown').disabled = true;
+                    document.getElementById('notesInput').disabled = true;
+                    document.getElementById('edit-user-info-button').disabled = true;
+                }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
@@ -89,17 +98,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const roleDisplay = document.getElementById("roleDisplay");
                 const roleSelect = document.getElementById("roleSelect");
-                roleDisplay.innerText = user.roleDto.roleName;
-                roleSelect.innerHTML = "";
-                roles.forEach(role => {
-                    const option = document.createElement("option");
-                    option.value = role.id;
-                    option.textContent = role.roleName;
-                    if (role.id === user.roleDto.id) {
-                        option.selected = true;
-                    }
-                    roleSelect.append(option);
-                });
+                if(user.roleDto){
+                    roleDisplay.innerText = user.roleDto.roleName;
+                } else {
+                    roleDisplay.innerText = "Отсутствует";
+                }
+
+
+                if(user.roleDto){
+                    roleSelect.innerHTML = "";
+                    roles.forEach(role => {
+                        const option = document.createElement("option");
+                        option.value = role.id;
+                        option.textContent = role.roleName;
+                        if (role.id === user.roleDto.id) {
+                            option.selected = true;
+                        }
+                        roleSelect.append(option);
+                    });
+                }
 
                 const initialCompanies = document.getElementById("initialCompanies");
                 const maxLength = 19;
@@ -181,7 +198,7 @@ function uploadAvatar() {
                 avatarImg.src = `/api/files/download/${resultFileName}`;
                 showNotification("Аватарка успешно обновлена!", "green");
             } else {
-                showNotification("Ошибка при обновлении аватарки.", "red");
+                showNotification(data.message, "red");
             }
         } catch (error) {
             console.error("Ошибка:", error);
@@ -257,6 +274,37 @@ document.addEventListener("DOMContentLoaded", function () {
             passwordErrorMessage.textContent = 'Произошла ошибка при отправке запроса';
         }
     }
+    const toggleNewPassword = document.getElementById("toggleNewPassword");
+    const newPasswordInput = document.getElementById("newPassword");
+    const newPasswordEyeIcon = document.getElementById("newPasswordEyeIcon");
+
+    const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const confirmPasswordEyeIcon = document.getElementById("confirmPasswordEyeIcon");
+
+    toggleNewPassword.addEventListener("click", function () {
+        if (newPasswordInput.type === "password") {
+            newPasswordInput.type = "text";
+            newPasswordEyeIcon.classList.remove("bi-eye-slash");
+            newPasswordEyeIcon.classList.add("bi-eye");
+        } else {
+            newPasswordInput.type = "password";
+            newPasswordEyeIcon.classList.remove("bi-eye");
+            newPasswordEyeIcon.classList.add("bi-eye-slash");
+        }
+    });
+
+    toggleConfirmPassword.addEventListener("click", function () {
+        if (confirmPasswordInput.type === "password") {
+            confirmPasswordInput.type = "text";
+            confirmPasswordEyeIcon.classList.remove("bi-eye-slash");
+            confirmPasswordEyeIcon.classList.add("bi-eye");
+        } else {
+            confirmPasswordInput.type = "password";
+            confirmPasswordEyeIcon.classList.remove("bi-eye");
+            confirmPasswordEyeIcon.classList.add("bi-eye-slash");
+        }
+    });
 
     window.saveLoginAndPassword = saveLoginAndPassword;
 });
@@ -284,6 +332,8 @@ function saveUserData(userId) {
     const birthday = document.getElementById("birthday-input").value;
     const surname = document.getElementById("surnameNameInput").value;
     const fullnameDispay = document.getElementById(userId + "-name-surname");
+    const currentNameSurname = fullnameDispay.innerText;
+    const parts = currentNameSurname.split('.');
     const userRoleDisplay = document.getElementById(userId + "-role")
     const selectedRoleDto = {
         id: roleSelect.value,
@@ -319,7 +369,7 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `#${userId}. ${username} ${surname}`;
+                fullnameDispay.innerText = `${parts[0]} ${username} ${surname}`;
                 userRoleDisplay.innerText = selectedRoleDto.roleName;
                 const modalElement = document.getElementById('userModal');
                 const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -344,9 +394,13 @@ function saveUserData(userId) {
 
 function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
+    const displayRole = document.getElementById("roleDisplay");
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const userStatusOnList = document.getElementById(`${userId}-list-status`);
+    const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
+
     confirmModal.show();
     document.getElementById('confirmYes').onclick = function() {
         fetch('/admin/user/delete/' + userId, {
@@ -358,9 +412,12 @@ function deleteUser() {
         })
             .then(response => {
                 if (response.ok) {
-                    confirmModal.hide();
                     showNotification("Пользователь успешно удалён.", "green");
-                    userStatus.innerText = "Неактивен"
+                    userStatus.innerText = "Неактивен";
+                    displayRole.innerText = "Отсутвует";
+                    userStatusOnList.innerText = "Disabled";
+                    userStatusOnTile.innerText = "Disabled";
+                    confirmModal.hide();
                 } else {
                     return response.json().then(errorData => {
                         confirmModal.hide();
@@ -394,11 +451,9 @@ function showNotification(message, color) {
 function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-    const editIcon = document.getElementById('edit-company-icon');
     if (companyDropdown.style.display === 'none') {
         initialCompanies.style.display = 'none';
         companyDropdown.style.display = 'inline-block';
-        editIcon.style.display = 'none';
         attachCheckboxListeners();
     } else {
         closeDropdown();
@@ -438,11 +493,9 @@ function updateInitialCompanies() {
 function closeDropdown() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-    const editIcon = document.getElementById('edit-company-icon');
 
     initialCompanies.style.display = 'inline';
     companyDropdown.style.display = 'none';
-    editIcon.style.display = 'inline';
 
     document.removeEventListener('click', closeDropdown);
 }

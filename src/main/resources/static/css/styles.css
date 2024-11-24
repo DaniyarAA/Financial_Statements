@@ -463,6 +463,7 @@ thead td {
     display: grid;
     grid-template-columns: 310px 120px 90px 110px 0;
     align-items: center;
+    text-align: start;
 }
 
 .buttons-container {
@@ -493,7 +494,7 @@ thead td {
 }
 
 .user-fade{
-    padding: 100px;
+    padding: 0;
 }
 
 .user-modal-header {
@@ -521,7 +522,7 @@ thead td {
 
 .user-label {
     color: #6c757d;
-    min-width: 150px;
+    min-width: 40%;
     text-align: right;
     margin-right: 10px;
     font-size: 14px;
@@ -1025,11 +1026,89 @@ h2 {
     text-align: center;
 }
 
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-@media (max-width: 1024px) {
+.change-login-password-footer{
+    border: 0;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.bg-color-for-change-login-password{
+    background-color: #6c757d29;
+}
+
+.input-group .btn {
+    border: none;
+}
+
+.change-login-password-btn {
+    background-color: #6c757d45;
+    color: black;
+    font-size: 25px;
+    width: 300px;
+    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 14px;
+    border: none;
+}
+
+.change-login-password-btn:hover {
+    background-color: #6c757d29;
+    border-color: #6c757d29;
+}
+
+.text-danger {
+    font-size: 0.85rem;
+}
+
+#changeLoginPasswordForm input {
+    border-radius: 5px;
+}
+
+
+@media (min-width: 1360px) and (max-width: 1440px) {
+
+    /* ВИД ПЛИТОК*/
+    .user-tile {
+        padding: 6px 0;
+        background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
+    }
+
+    .user-tile:nth-child(odd) {
+        margin-left: 25px;
+    }
+
+    .user-tile:nth-child(even) {
+        margin-right: 25px;
+    }
+
+    .user-detail {
+        margin-right: 5px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 16px;
+    }
+
+    .buttons-container {
+        column-gap: 17px;
+    }
+
+    .user-tile-info {
+        grid-template-columns: 255px 130px 80px 90px 0;
+    }
+
+
+
+
+    /* ВИД СПИСКА*/
     .user-info {
         display: grid;
-        grid-template-columns: 300px 150px 150px 100px 0;
+        grid-template-columns: 400px 280px 200px 200px 0;
         align-items: center;
     }
     .user-row{
@@ -1040,15 +1119,133 @@ h2 {
     }
 
     .user-name-surname {
+        font-size: 23px;
+    }
+
+    .user-table-detail {
+        font-size: 16px;
+    }
+
+    .user-action-buttons {
+        column-gap: 20px;
+    }
+
+    .edit-button {
+        font-size: 26px;
+    }
+
+    .users-list-title {
+        font-size: 18px;
+        margin-left: 550px;
+    }
+}
+
+
+
+@media (min-width: 1025px) and (max-width: 1360px) {
+
+    /* ВИД ПЛИТОК*/
+    .user-tile {
+        padding: 6px 0;
+        background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
+    }
+
+    .user-tile:nth-child(odd) {
+        margin-left: 25px;
+    }
+
+    .user-tile:nth-child(even) {
+        margin-right: 25px;
+    }
+
+    .user-detail {
+        margin-right: 5px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 16px;
+    }
+
+    .buttons-container {
+        column-gap: 17px;
+    }
+
+    .user-tile-info {
+        grid-template-columns: 245px 115px 70px 84px 0;
+    }
+
+
+
+
+    /* ВИД СПИСКА*/
+    .user-info {
+        display: grid;
+        grid-template-columns: 400px 280px 200px 200px 0;
+        align-items: center;
+    }
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 96.18%, #6DF800 96.23%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 370px;
+    }
+
+    .user-name-surname {
+        font-size: 23px;
+    }
+
+    .user-table-detail {
+        font-size: 16px;
+    }
+
+    .user-action-buttons {
+        column-gap: 20px;
+    }
+
+    .edit-button {
+        font-size: 26px;
+    }
+
+    .users-list-title {
+        font-size: 18px;
+        margin-left: 550px;
+    }
+}
+
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+
+    /* ВИД СПИСКА*/
+    .user-info {
+        display: grid;
+        grid-template-columns: 250px 150px 150px 100px 0;
+        align-items: center;
+    }
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 95.58%, #6DF800 95.63%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 370px;
+    }
+
+    .user-name-surname {
         font-size: 18px;
     }
 
     .user-table-detail {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .user-action-buttons {
-        column-gap: 10px;
+        column-gap: 15px;
     }
 
     .edit-button {
@@ -1060,10 +1257,19 @@ h2 {
     }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 768px) {
+    /* ВИД ПЛИТОК*/
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+    /* ВИД СПИСКА*/
     .user-info {
         display: grid;
-        grid-template-columns: 200px 120px 100px 120px 0;
+        grid-template-columns: 195px 103px 55px 60px 0;
         align-items: center;
     }
     .users-list-title{
@@ -1079,12 +1285,12 @@ h2 {
     }
 
     .user-name-surname {
-        font-size: 16px;
+        font-size: 17px;
         margin: 5px 0;
     }
 
     .user-table-detail {
-        font-size: 10px;
+        font-size: 12px;
         margin: 2px 0;
     }
 
@@ -1101,15 +1307,30 @@ h2 {
         font-size: 20px;
     }
     .user-action-buttons{
-        column-gap: 20px;
+        column-gap: 15px;
+        margin-right: 2px;
+    }
+
+    .edit-button {
+        font-size: 18px;
     }
 }
 
 
 @media (max-width: 480px) {
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+
+
+    /* ВИД СПИСКА*/
     .user-info {
         display: grid;
-        grid-template-columns: 170px 60px 50px 60px 0;
+        grid-template-columns: 95px 75px 40px 50px 0;
         align-items: center;
     }
 
@@ -1121,11 +1342,67 @@ h2 {
     }
 
     .user-name-surname {
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .user-table-detail {
-        font-size: 7px;
+        font-size: 9px;
+    }
+
+    .edit-button {
+        font-size: 11px;
+    }
+
+    .users-header {
+        padding: 5px;
+    }
+
+    .users-list-title {
+        font-size: 16px;
+    }
+
+    .icon i {
+        font-size: 18px;
+    }
+    .user-action-buttons{
+        column-gap: 15px;
+        margin-right: 2px;
+    }
+
+    .notes-form{
+        margin-left: 18px;
+    }
+
+}
+
+@media (max-width: 360px) {
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+
+    .user-info {
+        display: grid;
+        grid-template-columns: 120px 50px 35px 40px 0;
+        align-items: center;
+    }
+
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 92.58%, #6DF800 92.93%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 0;
+    }
+
+    .user-name-surname {
+        font-size: 9px;
+    }
+
+    .user-table-detail {
+        font-size: 6px;
     }
 
     .edit-button {
@@ -1143,4 +1420,9 @@ h2 {
     .icon i {
         font-size: 18px;
     }
+    .user-action-buttons{
+        column-gap: 10px;
+        margin-right: 0;
+    }
+
 }

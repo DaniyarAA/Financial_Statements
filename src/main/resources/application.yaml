@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 spring:
   application:
     name: FinancialStatement
@@ -11,6 +11,7 @@ spring:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

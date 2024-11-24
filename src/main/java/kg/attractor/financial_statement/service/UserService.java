@@ -17,6 +17,7 @@ import java.util.List;
 
 public interface UserService {
     void registerUser(UserDto user);
+
     UserDto getUserDtoById(Long id);
 
     UserDetailsDto getUserDetailDto(Long userId);
@@ -32,9 +33,8 @@ public interface UserService {
     String updateAvatar(Long userId, MultipartFile file) throws IOException;
 
     void deleteUser(Long id);
-    //List<UserDto> getAllDtoUsers();
 
-    Page<UserDto> getAllDtoUsers(Pageable pageable);
+    Page<UserDto> getAllDtoUsers(Pageable pageable, String login);
 
     boolean checkIfUserExists(String login);
 

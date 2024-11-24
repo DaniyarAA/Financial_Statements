@@ -332,6 +332,8 @@ function saveUserData(userId) {
     const birthday = document.getElementById("birthday-input").value;
     const surname = document.getElementById("surnameNameInput").value;
     const fullnameDispay = document.getElementById(userId + "-name-surname");
+    const currentNameSurname = fullnameDispay.innerText;
+    const parts = currentNameSurname.split('.');
     const userRoleDisplay = document.getElementById(userId + "-role")
     const selectedRoleDto = {
         id: roleSelect.value,
@@ -367,7 +369,7 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `#${userId}. ${username} ${surname}`;
+                fullnameDispay.innerText = `${parts[0]} ${username} ${surname}`;
                 userRoleDisplay.innerText = selectedRoleDto.roleName;
                 const modalElement = document.getElementById('userModal');
                 const modalInstance = bootstrap.Modal.getInstance(modalElement);

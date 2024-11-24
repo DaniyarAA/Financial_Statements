@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             })
             .catch(error => console.error("Error loading user data:", error));
-    },{ once: true });
+    });
     editUserBtn.addEventListener("click", function () {
         if (currentUserId) {
             saveUserData(currentUserId);

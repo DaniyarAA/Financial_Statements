@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <div id="listView" class="view-container hidden">
+        <div id="listView" class="view-container listView hidden">
             <div class="user-list-container">
                 <table class="user-table">
                     <#list users.content as user>

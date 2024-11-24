@@ -1100,7 +1100,7 @@ h2 {
     }
 
     .user-tile-info {
-        grid-template-columns: 250px 150px 90px 100px 0;
+        grid-template-columns: 245px 115px 70px 84px 0;
     }
 
 
@@ -1137,6 +1137,7 @@ h2 {
 
     .users-list-title {
         font-size: 18px;
+        margin-left: 550px;
     }
 }
 

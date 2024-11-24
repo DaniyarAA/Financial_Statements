@@ -298,12 +298,13 @@ public class TaskServiceImpl implements TaskService {
         List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 
         List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
-        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks);
+        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks, paramYearMonth);
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = groupTasksByYearMonthAndCompany(
                 filteredTasks, companyDtos);
 
         List<String> availableYearMonths = new ArrayList<>(tasksByYearMonthAndCompany.keySet());
+
         Collections.sort(availableYearMonths);
 
         System.out.println("Tasks Map: " + tasksByYearMonthAndCompany);
@@ -421,9 +422,9 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.toList());
     }
 
-    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks) {
+    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks, String paramYearMonth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
-        return tasks.stream()
+        Map<String, String> monthsMap = tasks.stream()
                 .sorted(Comparator.comparing(task -> YearMonth.from(task.getStartDate())))
                 .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
                 .distinct()
@@ -436,9 +437,20 @@ public class TaskServiceImpl implements TaskService {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
+
+        if (paramYearMonth == null || paramYearMonth.trim().isEmpty()) {
+            String currentYearMonth = YearMonth.now().format(formatter);
+            if (!monthsMap.containsKey(currentYearMonth)) {
+                YearMonth currentYM = YearMonth.now();
+                monthsMap.put(
+                        currentYearMonth,
+                        currentYM.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru")) + " " + currentYM.getYear()
+                );
+            }
+        }
+
+        return monthsMap;
     }
-
-
 
     private Map<String, Map<String, List<TaskDto>>> groupTasksByYearMonthAndCompany(
             List<TaskDto> tasks, List<CompanyForTaskDto> companies) {
@@ -464,6 +476,7 @@ public class TaskServiceImpl implements TaskService {
         }
         return tasksByYearMonthAndCompany;
     }
+
 
 
     private Map<String, Object> buildResponse(int page, int size, List<CompanyForTaskDto> companyDtos,

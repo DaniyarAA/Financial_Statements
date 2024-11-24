@@ -220,6 +220,18 @@ thead td {
     background-color: #45a049;
 }
 
+
+/*иконки для сортировок*/
+.calendar-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.calendar-link svg {
+    color: black;
+}
+/*иконки для сортировок*/
+
 .login-container {
     background-color: white;
     padding: 20px 100px;

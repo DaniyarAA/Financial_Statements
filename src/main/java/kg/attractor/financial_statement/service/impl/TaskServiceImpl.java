@@ -114,6 +114,33 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskDto> getAllTasksForUserSorted(User user, String sortBy, String sort) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        List<Task> tasks;
+
+        if ("id".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUserCompanyIdInOrderByIdAsc(userCompanyIds);
+            } else {
+                tasks = taskRepository.findByUserCompanyIdInOrderByIdDesc(userCompanyIds);
+            }
+        }
+
+        else if ("endDate".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUserCompanyIdInOrderByEndDateAsc(userCompanyIds);
+            } else {
+                tasks = taskRepository.findByUserCompanyIdInOrderByEndDateDesc(userCompanyIds);
+            }
+        } else {
+            tasks = taskRepository.findByUserCompanyIdInOrderByEndDateAsc(userCompanyIds);
+        }
+
+        return convertToDtoList(tasks);
+    }
+
+    @Override
     public List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear) {
         List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
 

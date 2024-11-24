@@ -47,40 +47,50 @@
                         </svg>
                     </a>
                 </div>
+
                 <div class="task-list">
-                    <#if userDto.userCompanies ? has_content>
-                        <#list userDto.userCompanies as company>
+                    <#if userTasks?has_content>
+                        <#list userTasks as task>
                             <div class="task-item mt-4">
-                                <span>#${company.id} ${company.company.name}</span>
+
+                             <span>
+                                 <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=id" style="text-decoration: none; color: inherit; display: inline;">
+                                #${task.id}.
+                                </a>${task.company.name}${task.documentTypeName}
+                             </span>
+
                                 <div class="task-details">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                         fill="currentColor" class="bi bi-calendar4" viewBox="0 0 16 16">
-                                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
-                                    </svg>
-                                    <span class="task-date">
-                        <#if userDto.createdDate ? has_content>
-                            ${userDto.createdDate?string("dd.MM.yyyy")}
-                        <#else>55.55.5555
-                        </#if>
-                    </span>
+
+                                    <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=endDate" class="calendar-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar4" viewBox="0 0 16 16">
+                                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
+                                        </svg>
+                                    </a>
+
+                                    <span class="task-date">${dateUtils.formatDateTime(task.endDate, "dd.MM.yyyy")}</span>
+
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                          class="bi bi-tag" viewBox="0 0 16 16">
                                         <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
                                         <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
                                     </svg>
+
                                     <span class="task-tag pe-1">RSA...</span>
+
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                          class="bi bi-caret-up me-3" viewBox="0 0 16 16">
                                         <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
                                     </svg>
-                                    <div class="task-priority-bar"></div>
+
                                 </div>
                             </div>
                         </#list>
                     <#else>
-                        <span class="ms-3">Список компаний пуст</span>
+                        <span class="ms-3">Список задач пуст</span>
                     </#if>
                 </div>
+
+
             </div>
         </div>
     </div>

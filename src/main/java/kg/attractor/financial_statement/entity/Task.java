@@ -50,6 +50,9 @@ public class Task {
     @Column(name = "time_spent")
     private LocalDateTime timeSpent;
 
+    @Column(name = "tag")
+    private String tag;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
     private List<Report> reports;
 }

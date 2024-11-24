@@ -35,6 +35,8 @@ public interface TaskService {
 
     List<TaskDto> getAllTasksForUser(User user);
 
+    List<TaskDto> getAllTasksForUserSorted(User user, String sortDirection, String sortBy);
+
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
 
     TaskDto getTaskDtoById(Long taskId);

@@ -1071,8 +1071,78 @@ h2 {
 }
 
 
+@media (min-width: 1360px) and (max-width: 1440px) {
 
-@media (min-width: 1025px) and (max-width: 1440px) {
+    /* ВИД ПЛИТОК*/
+    .user-tile {
+        padding: 6px 0;
+        background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
+    }
+
+    .user-tile:nth-child(odd) {
+        margin-left: 25px;
+    }
+
+    .user-tile:nth-child(even) {
+        margin-right: 25px;
+    }
+
+    .user-detail {
+        margin-right: 5px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 16px;
+    }
+
+    .buttons-container {
+        column-gap: 17px;
+    }
+
+    .user-tile-info {
+        grid-template-columns: 255px 130px 80px 90px 0;
+    }
+
+
+
+
+    /* ВИД СПИСКА*/
+    .user-info {
+        display: grid;
+        grid-template-columns: 400px 280px 200px 200px 0;
+        align-items: center;
+    }
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 96.18%, #6DF800 96.23%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 370px;
+    }
+
+    .user-name-surname {
+        font-size: 23px;
+    }
+
+    .user-table-detail {
+        font-size: 16px;
+    }
+
+    .user-action-buttons {
+        column-gap: 20px;
+    }
+
+    .edit-button {
+        font-size: 26px;
+    }
+
+    .users-list-title {
+        font-size: 18px;
+        margin-left: 550px;
+    }
+}
+
+
+
+@media (min-width: 1025px) and (max-width: 1360px) {
 
     /* ВИД ПЛИТОК*/
     .user-tile {

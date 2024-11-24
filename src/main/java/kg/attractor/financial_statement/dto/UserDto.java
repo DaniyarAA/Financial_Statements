@@ -49,5 +49,6 @@ public class UserDto {
 
     private String notes;
 
+    private int displayIndex;
     private List<CompanyDto> companies;
 }

@@ -58,8 +58,8 @@ public class AdminController {
     }
 
     @GetMapping("users")
-    public String getAllUsers(Model model, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
-        var users = userService.getAllDtoUsers(pageable);
+    public String getAllUsers(Model model, @PageableDefault(size = 8) Pageable pageable, Principal principal) {
+        var users = userService.getAllDtoUsers(pageable, principal.getName());
         model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
         model.addAttribute("users", users);
         return "admin/users";

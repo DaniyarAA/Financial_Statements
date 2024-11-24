@@ -26,8 +26,12 @@ public class FileController {
         try {
             String resultFileName = userService.updateAvatar(userId, file);
             return ResponseEntity.ok(Map.of("success", true, "resultFileName", resultFileName));
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Internal server error"));
         }
+
     }
 }

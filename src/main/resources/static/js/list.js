@@ -9,12 +9,16 @@ function showTaskDetails(button) {
     const taskId = button.getAttribute("data-task-id");
     const documentType = button.getAttribute("data-document-type");
     const startDate = button.getAttribute("data-start-date");
+    const endDate = button.getAttribute("data-end-date");
     const companyName = button.getAttribute("data-company-name");
     const companyInn = button.getAttribute("data-company-inn");
     const description = button.getAttribute("data-description");
     const amount = button.getAttribute("data-amount");
     const status = button.getAttribute("data-status");
     const isCompleted = status === "Сдан";
+
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
 
     let statusOptions = '';
     taskStatusDtos.forEach((statusDto) => {
@@ -57,7 +61,7 @@ function showTaskDetails(button) {
             <div class="values" style="font-size: 20px; display: inline">
                 <p>${companyName}</p>
                 <p>${companyInn}</p>
-                <p>${startDate}</p>
+                <p>${formattedStartDate} - ${formattedEndDate}</p>
                 <div id="amount-display" style="display: block;">
                     <p>${amount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
@@ -112,6 +116,10 @@ function showTaskDetails(button) {
     `;
 }
 
+function formatDate(dateString) {
+    const [year, month, day] = dateString.split("-");
+    return `${day}.${month}.${year}`;
+}
 
 function editAmount() {
     document.getElementById('amount-display').style.display = 'none';

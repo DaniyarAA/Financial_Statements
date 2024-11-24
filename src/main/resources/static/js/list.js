@@ -61,7 +61,17 @@ function showTaskDetails(button) {
             <div class="values" style="font-size: 20px; display: inline">
                 <p>${companyName}</p>
                 <p>${companyInn}</p>
-                <p>${formattedStartDate} - ${formattedEndDate}</p>
+                <div id="date-display" style="display: block;">
+                    <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                </div>
+                <div id="date-input" style="display: none">
+                    <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
+                    <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
+                    <button type="button" class="btn btn-link" onclick="cancelEditDate()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
+
+                </div>
+                
+
                 <div id="amount-display" style="display: block;">
                     <p>${amount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
@@ -114,6 +124,23 @@ function showTaskDetails(button) {
     </form>
 </div>
     `;
+
+    var dateFormat = "mm/dd/yy";
+    var from = $("#from").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 1
+    }).on("change", function () {
+        to.datepicker("option", "minDate", getDate(this));
+    });
+
+    var to = $("#to").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 1
+    }).on("change", function () {
+        from.datepicker("option", "maxDate", getDate(this));
+    });
 }
 
 function formatDate(dateString) {
@@ -170,6 +197,16 @@ function editStatus() {
 function cancelEditStatus() {
     document.getElementById('status-display').style.display = 'block';
     document.getElementById('status-input').style.display = 'none';
+}
+
+function editDate() {
+    document.getElementById('date-display').style.display = 'none';
+    document.getElementById('date-input').style.display = 'block';
+}
+
+function cancelEditDate() {
+    document.getElementById('date-display').style.display = 'block';
+    document.getElementById('date-input').style.display = 'none';
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -283,3 +320,12 @@ function setupNavigationButtons() {
 document.addEventListener("DOMContentLoaded", setupNavigationButtons);
 
 
+function getDate(element) {
+    var date;
+    try {
+        date = $.datepicker.parseDate(dateFormat, element.value);
+    } catch (error) {
+        date = null;
+    }
+    return date;
+}

@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,13 +54,12 @@ public class RoleServiceImpl implements RoleService {
     public Role getRoleById(Long id) {
         log.info("get user by id{}", id);
         return roleRepository.findById(id).orElseThrow(() ->
-                new NotFoundRoleException("can not find role with id" + id));
+                new NotFoundRoleException("can not find role with id " + id));
     }
 
     @Override
     public RoleDto getRoleDtoById(Long id) {
-        return convertToDto(roleRepository.findById(id).orElseThrow(() ->
-                new NotFoundRoleException("can not find role with id" + id)));
+        return convertToDto(getRoleById(id));
     }
 
     @Override
@@ -69,29 +70,43 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public RoleDto convertToDto(Role role) {
-        List<AuthorityDto> authorities = role.getAuthorities().stream()
-                .map(auth -> new AuthorityDto(auth.getId(),
-                        auth.getAuthority(),
-                        auth.getAuthorityName(),
-                        true))
-                .toList();
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
 
+        List<AuthorityDto> authorities = Optional.ofNullable(role.getAuthorities())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(auth -> new AuthorityDto(auth.getId(),auth.getAuthority(), auth.getAuthorityName(), true))
+                .toList();
         return RoleDto.builder()
                 .id(role.getId())
                 .roleName(role.getRoleName())
                 .authorities(authorities)
-                .userIds(role.getUsers().stream().map(User::getId).toList())
+                .userIds(Optional.ofNullable(role.getUsers())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(User::getId)
+                        .toList())
                 .build();
     }
 
     @Override
     public void createNewRole(CreateRoleDto createRoleDto) {
-        List<Authority> authorities = authorityService.findAllById(createRoleDto.getAuthorityIds());
+        if (createRoleDto.getAuthorityIds() == null || createRoleDto.getAuthorityIds().isEmpty()) {
+            throw new IllegalArgumentException("Роль должна иметь хотя бы одну привилегию.");
+        }
         Role role = new Role();
         role.setRoleName(createRoleDto.getRoleName());
+        List<Authority> authorities = authorityService.findAllById(createRoleDto.getAuthorityIds());
         role.setAuthorities(authorities);
-        authorities.forEach(authority -> authority.getRoles().add(role));
-        log.info("created new role {}successfully", createRoleDto.getRoleName());
+        authorities.forEach(authority -> {
+            if (authority.getRoles() == null) {
+                authority.setRoles(new ArrayList<>());
+            }
+            authority.getRoles().add(role);
+        });
+        log.info("created new role {} successfully", createRoleDto.getRoleName());
         roleRepository.save(role);
     }
 
@@ -99,6 +114,11 @@ public class RoleServiceImpl implements RoleService {
     public void updateRole(Long roleId, RoleDto roleDto) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NotFoundRoleException("Роль не найдена"));
+
+        if ("SuperUser".equals(role.getRoleName())) {
+            log.info("Роль 'SuperUser' нельзя редактировать или удалять.");
+            throw new IllegalArgumentException("Роль 'SuperUser' нельзя редактировать или удалять.");
+        }
 
         if ("Бухгалтер".equalsIgnoreCase(role.getRoleName()) &&
             !role.getRoleName().equalsIgnoreCase(roleDto.getRoleName())) {
@@ -122,10 +142,6 @@ public class RoleServiceImpl implements RoleService {
         if (roleDto.getAuthorities() == null || roleDto.getAuthorities().isEmpty()) {
             log.info("Роль должна иметь хотя бы одну привилегию.");
             throw new IllegalArgumentException("Роль должна иметь хотя бы одну привилегию.");
-        }
-        if ("SuperUser".equals(role.getRoleName())) {
-            log.info("Роль 'SuperUser' нельзя редактировать или удалять.");
-            throw new IllegalArgumentException("Роль 'SuperUser' нельзя редактировать или удалять.");
         }
 
         role.setRoleName(roleDto.getRoleName());

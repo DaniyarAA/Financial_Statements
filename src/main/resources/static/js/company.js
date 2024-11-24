@@ -190,3 +190,34 @@ function clearSortFilter() {
     localStorage.removeItem('companySort');
 }
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('#search').oninput = function () {
+        let value = this.value.trim().toLowerCase();
+        let totalCompany = document.querySelectorAll('.search li');
+        let dropdownMenu = document.querySelector('#total');
+        let matches = 0;
+
+        totalCompany.forEach(function (elem) {
+            let link = elem.querySelector('a');
+            let text = link.innerText.toLowerCase();
+
+            if (text.includes(value)) {
+                elem.classList.remove('hide');
+                matches++;
+            } else {
+                elem.classList.add('hide');
+            }
+        });
+
+        if (matches > 0) {
+            dropdownMenu.classList.add('show');
+        } else {
+            dropdownMenu.classList.remove('show');
+        }
+    };
+});
+
+
+
+

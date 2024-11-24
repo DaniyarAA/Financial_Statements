@@ -2,6 +2,11 @@
 <meta name="_csrf_header" content="${_csrf.headerName}">
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
+    <#if errorMsg??>
+        <div class="alert alert-danger">
+            <p>На вас нет зарегестрированных компаний!</p>
+        </div>
+    </#if>
     <div class="container p-3">
         <div class="main-content">
             <div class="table-container company-table">
@@ -431,6 +436,23 @@
             font-weight: bold;
             color: #333;
         }
+
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .alert p {
+            margin: 0;
+        }
+
 
     </style>
 </@layout.layout>

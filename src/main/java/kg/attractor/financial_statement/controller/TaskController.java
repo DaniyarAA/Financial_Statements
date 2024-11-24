@@ -150,6 +150,10 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        List<CompanyForTaskDto> companyDtos = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
+        if (companyDtos == null || companyDtos.isEmpty()) {
+            model.addAttribute("errorMsg", "У вас нет компаний");
+        }
         List<String> availableYearMonths = taskService.getAllYearMonths(authentication.getName());
         System.out.println("availableYearMonths: " + availableYearMonths);
         System.out.println("taskListData: " + taskListData);

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserPageableRepository extends PagingAndSortingRepository<User, Long> {
-    Page<User> findAllByOrderByEnabledDesc(Pageable pageable);
+    Page<User> findAllByOrderByEnabledDescIdAsc(Pageable pageable);
 }

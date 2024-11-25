@@ -23,17 +23,19 @@ a {
 .calendar-wrapper {
     width: 360px;
     margin-left: 12px;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 1.8px 2px rgba(0, 0, 0, 0.25);
-    border-radius: 4px;
 }
+
 
 .calendar-table {
     clear: both;
     width: 100%;
     border-collapse: collapse;
     color: #444;
+    background: #FFFFFF;
+    box-shadow: 2px 7px 5px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
 }
+
 
 .td-calendar {
     height: 48px;
@@ -59,26 +61,32 @@ thead td {
     font-size: 1.5em;
 }
 
-.calendar-h{
+.calendar-h {
     color: #1E1E1E;
     font-weight: normal;
+    background: #FFFFFF;
+    box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.25);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 3px;
 }
 
-.calendar-month-date{
+.calendar-month-date {
     font-size: 18px;
     font-weight: bold;
 }
 
-.calendar-left{
+.calendar-left {
     padding-top: 20px;
     padding-left: 25px;
 }
-.calendar-right{
+
+.calendar-right {
     padding-top: 20px;
     padding-right: 25px;
 }
 
-.divCal{
+.divCal {
     background: #FFFFFF;
     box-shadow: 1.8px 4px 1.8px 2px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
@@ -134,22 +142,26 @@ thead td {
     text-align: center;
     margin: 100px auto 0;
 }
+
 .user-form-container h2 {
     font-size: 20px;
     color: #333;
     margin-bottom: 10px;
 }
+
 .user-form-container img {
     width: 80px;
     height: 80px;
     margin-bottom: 10px;
 }
+
 .user-form-container label {
     display: block;
     font-size: 14px;
     margin-bottom: 5px;
     color: #666;
 }
+
 .user-form-container input[type="text"],
 .user-form-container input[type="date"],
 .user-form-container select,
@@ -160,6 +172,7 @@ thead td {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
 .user-form-container button {
     width: 100%;
     padding: 10px;
@@ -169,24 +182,30 @@ thead td {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .user-form-container button:hover {
     background-color: #45a049;
 }
+
 .delete-icon, .archive-icon {
     position: absolute;
     top: 10px;
     cursor: pointer;
 }
+
 .delete-icon {
     right: 10px;
 }
+
 .archive-icon {
     left: 10px;
 }
+
 .status {
     color: green;
     font-weight: bold;
 }
+
 .icon-button {
     display: flex;
     align-items: center;
@@ -197,6 +216,7 @@ thead td {
     border-radius: 50%;
     margin: 0 auto;
 }
+
 .user-form-container {
     background-color: white;
     padding: 20px;
@@ -206,17 +226,20 @@ thead td {
     text-align: center;
     position: relative;
 }
+
 .user-form-container h2 {
     font-size: 22px;
     color: #333;
     margin-bottom: 20px;
 }
+
 .user-form-container label {
     display: block;
     font-size: 14px;
     margin-bottom: 5px;
     color: #666;
 }
+
 .user-form-container input[type="text"],
 .user-form-container input[type="date"],
 .user-form-container input[type="password"],
@@ -228,6 +251,7 @@ thead td {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
 .user-form-container button {
     width: 100%;
     padding: 10px;
@@ -237,6 +261,7 @@ thead td {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .user-form-container button:hover {
     background-color: #45a049;
 }
@@ -253,7 +278,8 @@ thead td {
     margin: 100px auto 0;
 
 }
-.card-registration{
+
+.card-registration {
     box-shadow: 0 3px 2px 3px rgba(0, 0, 0, 0.25);
     border: 1px solid;
     border-image-source: linear-gradient(0deg, #FFFFFF 80.26%, #11C24D 80.36%, #11C24D 98.68%);
@@ -276,7 +302,7 @@ thead td {
 }
 
 
-.login-button{
+.login-button {
     margin-top: 40px;
     font-family: Inter, sans-serif;
     padding: 8px 55px;
@@ -287,16 +313,16 @@ thead td {
 
 }
 
-.login-button:hover{
+.login-button:hover {
     background: rgb(230, 230, 230);
 }
 
-.login-input{
+.login-input {
     border: 1px solid rgba(195, 195, 195, 1);
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25);
 }
 
-.bi-star-fill{
+.bi-star-fill {
     top: 41px;
     right: -40px;
     border: 3px solid black;
@@ -316,7 +342,7 @@ thead td {
     margin-bottom: 20px;
 }
 
-.users-list-title{
+.users-list-title {
     margin-left: 650px;
     margin-bottom: 0;
     font-family: Inter, sans-serif;
@@ -393,7 +419,7 @@ thead td {
     text-overflow: ellipsis;
 }
 
-.user-table-detail{
+.user-table-detail {
     font-size: 14px;
     font-family: Inter, sans-serif;
     font-weight: 400;
@@ -450,6 +476,7 @@ thead td {
     column-gap: 15px;
     row-gap: 15px;
 }
+
 .user-tile:nth-child(odd) {
     margin-left: 30px;
 }
@@ -468,7 +495,7 @@ thead td {
     background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
 }
 
-.user-name-surname{
+.user-name-surname {
     margin-left: 10px;
     font-family: Inter, sans-serif;
     font-size: 22px;
@@ -505,15 +532,17 @@ thead td {
     font-size: 25px;
     background: none;
 }
-.edit-button:hover{
+
+.edit-button:hover {
     background: none;
 }
+
 .user-modal-content {
     border-radius: 10px;
     padding: 0 50px;
 }
 
-.user-fade{
+.user-fade {
     padding: 100px;
 }
 
@@ -557,16 +586,15 @@ thead td {
     font-size: large;
 }
 
-.users-layout{
+.users-layout {
     width: 100%;
     min-height: 90vh;
     background: rgba(217, 217, 217, 1);
     border-right: 5px solid rgba(255, 255, 255, 1);
     border-left: 5px solid rgba(255, 255, 255, 1);
 
-    box-shadow:
-            -5px 0 0 rgba(241, 241, 241, 1),
-             5px 0 0 rgba(241, 241, 241, 1);
+    box-shadow: -5px 0 0 rgba(241, 241, 241, 1),
+    5px 0 0 rgba(241, 241, 241, 1);
 }
 
 .delete-icon {
@@ -576,27 +604,30 @@ thead td {
     font-size: 1.5rem;
     cursor: pointer;
 }
-.edit-user-btn{
+
+.edit-user-btn {
     padding: 0 85px;
     border-radius: 20px;
     background-color: rgba(236, 230, 240, 1);
     box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15);
 
 }
-.profile-info-avatar-img{
+
+.profile-info-avatar-img {
     width: 100px;
     height: 120px;
     border-radius: 6px;
     object-fit: cover;
 }
-.login-info-avatar-img{
+
+.login-info-avatar-img {
     width: 80px;
     height: 100px;
     border-radius: 6px;
     object-fit: cover;
 }
 
-.view-icons a{
+.view-icons a {
     font-size: 20px;
     color: black;
 }
@@ -604,11 +635,13 @@ thead td {
 .container {
     padding: 20px;
 }
-.main-page{
+
+.main-page {
     display: flex;
     margin-top: 50px;
     margin-bottom: 50px;
 }
+
 h2 {
     color: #4CAF50;
     margin-bottom: 20px;
@@ -720,8 +753,9 @@ h2 {
     color: red;
     font-size: 0.9em;
 }
-.notes-form{
-    box-shadow:0 4px 4px 0 rgba(0, 0, 0, 0.25) inset;
+
+.notes-form {
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25) inset;
     width: 85%;
     margin-left: 27px;
     border: none;
@@ -773,6 +807,7 @@ h2 {
     padding: 5px 0;
     cursor: pointer;
 }
+
 .dropdown-menu {
     max-height: 200px;
     overflow-y: auto;
@@ -821,6 +856,7 @@ h2 {
     width: 100px;
     height: 120px;
 }
+
 .change-avatar-icon {
     position: absolute;
     bottom: -4px;
@@ -832,6 +868,7 @@ h2 {
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
 .container, .container-lg, .container-md, .container-sm, .container-xl {
     max-width: 100%;
     width: 100%;
@@ -842,12 +879,13 @@ h2 {
     .container {
         padding: 0 10px;
     }
+
     .button.lock::after {
         right: 5px;
     }
 }
 
-.sidebar, .center-column, .archive, .calendar{
+.sidebar, .center-column, .archive, .calendar {
     margin: 0 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #d9d9d9;
@@ -855,11 +893,11 @@ h2 {
     flex-direction: column;
 }
 
-.sidebar{
+.sidebar {
     padding-bottom: 30px;
 }
 
-.center-column{
+.center-column {
     padding-top: 3px;
     padding-bottom: 5px;
 }
@@ -1053,10 +1091,12 @@ h2 {
         grid-template-columns: 300px 150px 150px 100px 0;
         align-items: center;
     }
-    .user-row{
+
+    .user-row {
         background: white linear-gradient(90deg, #FFFFFF 96.18%, #6DF800 96.23%, #6DF800 98.5%);
     }
-    .users-list-title{
+
+    .users-list-title {
         margin-left: 370px;
     }
 
@@ -1087,11 +1127,12 @@ h2 {
         grid-template-columns: 200px 120px 100px 120px 0;
         align-items: center;
     }
-    .users-list-title{
+
+    .users-list-title {
         margin-left: 0;
     }
 
-    .user-row{
+    .user-row {
         background: white linear-gradient(90deg, #FFFFFF 94.18%, #6DF800 94.53%, #6DF800 98.5%);
     }
 
@@ -1121,7 +1162,8 @@ h2 {
     .icon i {
         font-size: 20px;
     }
-    .user-action-buttons{
+
+    .user-action-buttons {
         column-gap: 20px;
     }
 }
@@ -1134,10 +1176,11 @@ h2 {
         align-items: center;
     }
 
-    .user-row{
+    .user-row {
         background: white linear-gradient(90deg, #FFFFFF 92.58%, #6DF800 92.93%, #6DF800 98.5%);
     }
-    .users-list-title{
+
+    .users-list-title {
         margin-left: 0;
     }
 

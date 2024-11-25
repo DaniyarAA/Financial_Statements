@@ -57,7 +57,8 @@
 
                 <div>
                     <div>
-                        <label for="search" class="w-100"><input type="text" class="w-100" id="search" placeholder="Поиск..."></label>
+                        <label for="search" class="w-100"><input type="text" class="w-100" id="search"
+                                                                 placeholder="Поиск..."></label>
                     </div>
                     <div id="total">
                         <ul class="search">
@@ -190,7 +191,8 @@
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Пароль:</strong>
-                                        <span id="password" data-password="${company.password!}">••••••</span>
+                                        <span id="password"
+                                              data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></span>
                                         <button onclick="copyText('password')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -258,7 +260,7 @@
                                     <li class="list-group-item list-none-line">
                                         <strong>Salyk.kg пароль:</strong>
                                         <span id="kabinetSalykPassword"
-                                              data-password="${company.kabinetSalykPassword!}">••••••</span>
+                                              data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></span>
                                         <button onclick="copyText('kabinetSalykPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -478,7 +480,7 @@
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Пароль от почты:</strong> <span id="emailPassword"
-                                                                                data-password="${company.emailPassword!}">••••••</span>
+                                                                                data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></span>
                                         <button onclick="copyText('emailPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -543,7 +545,7 @@
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭСФ пароль:</strong> <span id="esfPassword"
-                                                                           data-password="${company.esfPassword!}">••••••</span>
+                                                                           data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></span>
                                         <button onclick="copyText('esfPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -588,7 +590,7 @@
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ККМ пароль:</strong> <span id="kkmPassword"
-                                                                           data-password="${company.kkmPassword!}">••••••</span>
+                                                                           data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></span>
                                         <button onclick="copyText('kkmPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -634,9 +636,8 @@
                                         </button>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>1С Фреш пароль:</strong>
-                                        <span id="fresh1cPassword"
-                                              data-password="${company.fresh1cPassword!}">••••••</span>
+                                        <strong>1С Фреш пароль:</strong> <span id="fresh1cPassword"
+                                                                               data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></span>
                                         <button onclick="copyText('fresh1cPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -683,7 +684,7 @@
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭТТН пароль:</strong>
                                         <span id="ettnPassword"
-                                              data-password="${company.ettnPassword!}">••••••</span>
+                                              data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></span>
                                         <button onclick="copyText('ettnPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>

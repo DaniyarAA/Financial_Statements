@@ -162,10 +162,10 @@ function togglePasswordVisibility(passwordFieldId) {
     const passwordField = document.getElementById(passwordFieldId);
     const password = passwordField.getAttribute('data-password');
 
-    if (passwordField.innerText === '••••••') {
+    if (passwordField.innerText === '•'.repeat(password.length)) {
         passwordField.innerText = password;
     } else {
-        passwordField.innerText = '••••••';
+        passwordField.innerText = '•'.repeat(password.length);
     }
 }
 

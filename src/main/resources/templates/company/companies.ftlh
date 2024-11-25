@@ -57,7 +57,7 @@
 
                 <div>
                     <div>
-                        <label for="search"><input type="text" id="search" placeholder="Поиск..."></label>
+                        <label for="search" class="w-100"><input type="text" class="w-100" id="search" placeholder="Поиск..."></label>
                     </div>
                     <div id="total">
                         <ul class="search">

@@ -29,7 +29,7 @@
                     </div>
                     <div class="left col">
                             <div class="calendar-wrapper">
-                                <h2 class="text-center">КАЛЕНДАРЬ</h2>
+                                <h3 class="text-center calendar-h">КАЛЕНДАРЬ</h3>
                                 <div id="divCal"></div>
                                 <input type="hidden" name="_csrf" value="${csrfToken.token}">
                             </div>

@@ -78,6 +78,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('notesInput').disabled = true;
                     document.getElementById('edit-user-info-button').disabled = true;
                 }
+                if(user.roleDto && user.roleDto.roleName === "SuperUser"){
+                    console.error(user.roleDto.roleName);
+                    document.getElementById("delete-user-icon").style.display = 'none';
+                    document.getElementById("edit-role-icon").style.display = 'none';
+                }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
@@ -369,7 +374,7 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `${parts[0]} ${username} ${surname}`;
+                fullnameDispay.innerText = `${parts[0]}.${username} ${surname}`;
                 userRoleDisplay.innerText = selectedRoleDto.roleName;
                 const modalElement = document.getElementById('userModal');
                 const modalInstance = bootstrap.Modal.getInstance(modalElement);

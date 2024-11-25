@@ -1,8 +1,11 @@
 package kg.attractor.financial_statement.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kg.attractor.financial_statement.dto.PriorityDto;
 import kg.attractor.financial_statement.dto.TaskDto;
+import kg.attractor.financial_statement.entity.Priority;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.service.PriorityService;
 import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.DateUtils;
@@ -23,9 +26,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping()
 public class MainController {
-
     private final UserService userService;
     private final TaskService taskService;
+    private final PriorityService priorityService;
 
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
@@ -39,6 +42,7 @@ public class MainController {
             return "redirect:/login";
         }
         List<TaskDto> userTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
+        List<PriorityDto> priorities = priorityService.getAllPriorities();
 
         model.addAttribute("userTasks", userTasks);
 
@@ -49,6 +53,8 @@ public class MainController {
         model.addAttribute("dateUtils", new DateUtils());
         model.addAttribute("sort", sort);
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("priorities", priorities);
+
         return "main/mainPage";
     }
 

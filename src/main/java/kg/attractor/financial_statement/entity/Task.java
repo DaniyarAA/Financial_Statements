@@ -50,6 +50,9 @@ public class Task {
     @Column(name = "time_spent")
     private LocalDateTime timeSpent;
 
+    @Column(name = "priority_id")
+    private Long priorityId;
+
     @Column(name = "tag")
     private String tag;
 

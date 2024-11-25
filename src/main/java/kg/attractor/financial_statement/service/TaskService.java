@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface TaskService {
 
     Long createTask(TaskCreateDto taskCreateDto, String name);
 
-    ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth);
+    ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth, String principal);
 
     Page<TaskDto> getTasksPage(int page, int size, String sort, String direction, Long documentTypeId, Long statusId);
 

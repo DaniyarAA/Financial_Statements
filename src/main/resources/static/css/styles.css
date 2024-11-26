@@ -274,13 +274,63 @@ thead td {
     border: 1px solid rgba(195, 195, 195, 1);
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25);
 }
+@media (max-width: 768px) {
+    .login-container {
+        max-width: 90%;
+        padding: 15px;
+    }
 
-.bi-star-fill{
-    top: 41px;
-    right: -40px;
+    .fs-3 {
+        font-size: 1.5rem;
+    }
+
+    .login-button {
+        font-size: 1.2rem;
+        padding: 10px;
+    }
+
+    .bi-star-fill{
+        display: none;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .fs-3 {
+        font-size: 1.2rem;
+    }
+
+    .profile-info-avatar-img,
+    .login-info-avatar-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .login-input {
+        padding: 8px;
+    }
+
+    .login-button {
+        font-size: 1rem;
+        padding: 8px;
+    }
+
+    .bi-star-fill{
+        display: none;
+    }
+}
+
+
+.bi-star-fill {
     border: 3px solid black;
     border-radius: 50%;
     padding: 0 5px 1px 5px;
+    position: absolute;
+    top: 70%;
+    left: 104%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    pointer-events: none;
 }
 
 
@@ -1071,7 +1121,7 @@ h2 {
 }
 
 
-@media (min-width: 1360px) and (max-width: 1440px) {
+@media (min-width: 1360px) and (max-width: 1708px) {
 
     /* ВИД ПЛИТОК*/
     .user-tile {
@@ -1099,11 +1149,8 @@ h2 {
     }
 
     .user-tile-info {
-        grid-template-columns: 255px 130px 80px 90px 0;
+        grid-template-columns: 255px 130px 100px 235px 0;
     }
-
-
-
 
     /* ВИД СПИСКА*/
     .user-info {
@@ -1127,7 +1174,7 @@ h2 {
     }
 
     .user-action-buttons {
-        column-gap: 20px;
+        column-gap: 40px;
     }
 
     .edit-button {

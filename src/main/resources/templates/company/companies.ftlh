@@ -54,22 +54,10 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group">
-
                 <div>
-                    <div>
-                        <label for="search" class="w-100"><input type="text" class="w-100" id="search"
-                                                                 placeholder="Поиск..."></label>
-                    </div>
-                    <div id="total">
-                        <ul class="search">
-                            <#list list as item>
-                                <li>
-                                    <a href="/company/all?companyId=${item.id}&sort=${sort}"
-                                       class="list-group-item list-group-item-action">${item.name}</a>
-                                </li>
-                            </#list>
-                        </ul>
-                    </div>
+                    <label for="search" class="w-100">
+                        <input type="text" class="w-100" id="search" placeholder="Поиск...">
+                    </label>
                 </div>
 
                 <#assign sort = sort! "actual">
@@ -85,17 +73,18 @@
                 </form>
 
                 <p class="list-group-item list-group-item-action titleList">Название</p>
-                <div style="overflow-y: scroll; max-height: 600px;">
-                    <#list list as item>
-
-                        <a href="/company/all?companyId=${item.id}&sort=${sort}"
-                           class="list-group-item choice-company list-group-item-action <#if companyId == item.id>active</#if>">${item.name}</a>
-
-                    </#list>
+                <div id="total" style="overflow-y: scroll; max-height: 600px;">
+                    <ul class="search">
+                        <#list list as item>
+                            <li class="choice-company list-group-item list-group-item-action <#if companyId == item.id>active</#if>">
+                                <a href="/company/all?companyId=${item.id}&sort=${sort}"
+                                  >${item.name}</a>
+                            </li>
+                        </#list>
+                    </ul>
                 </div>
             </div>
         </div>
-
 
         <div class="col-md-10 companies-nav">
             <div class="forms-back-color">

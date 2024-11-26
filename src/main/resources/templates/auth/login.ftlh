@@ -22,7 +22,7 @@
                 <div data-mdb-input-init class="form-outline mb-4 text-start position-relative">
                     <label for="form2Example2">Пароль:</label>
                     <input type="password" id="form2Example2" class="form-control login-input" name="password"/>
-                    <i class="bi bi-star-fill position-absolute"></i>
+                    <i class="bi bi-star-fill"></i>
                 </div>
             </form>
         </div>

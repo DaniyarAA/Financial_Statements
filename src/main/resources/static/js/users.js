@@ -78,6 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('notesInput').disabled = true;
                     document.getElementById('edit-user-info-button').disabled = true;
                 }
+                if(user.roleDto && user.roleDto.roleName === "SuperUser"){
+                    document.getElementById("delete-user-icon").style.display = 'none';
+                    document.getElementById("edit-role-icon").style.display = 'none';
+                } else {
+                    document.getElementById("delete-user-icon").style.display = 'block';
+                    document.getElementById("edit-role-icon").style.display = 'block';
+                }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
@@ -327,6 +334,7 @@ function displaySuccessAlert(message) {
 }
 
 function saveUserData(userId) {
+    const modalElement = document.getElementById('userModal');
     const roleSelect = document.getElementById("roleSelect");
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
@@ -369,16 +377,9 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `${parts[0]} ${username} ${surname}`;
+                fullnameDispay.innerText = `${parts[0]}.${username} ${surname}`;
                 userRoleDisplay.innerText = selectedRoleDto.roleName;
-                const modalElement = document.getElementById('userModal');
-                const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                if (modalInstance) {
-                    modalInstance.hide();
-                    modalElement.addEventListener('hidden.bs.modal', () => {
-                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-                    }, { once: true });
-                }
+                const modalInstance = bootstrap.Modal.getInstance(modalElement).hide();
                 showNotification("Информация успешно обновлена!", "green");
 
 

@@ -15,6 +15,7 @@
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                            value="${(_csrf.token)!'csrf-token'}"/>
                 </#if>
+                <span class="login-text"></span>
                 <div data-mdb-input-init class="form-outline mb-4 text-start">
                     <label for="form2Example1">Логин:</label>
                     <input type="text" id="form2Example1" class="form-control login-input" name="username"/>
@@ -30,4 +31,19 @@
         <button type="submit" form="login-form" class="login-button fs-3">Войти</button>
     </div>
 
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script>
+        let params = new URLSearchParams(window.location.search);
+        if (params.has("error")) {
+            window.onload = () => {
+                let msg = $('.login-text')
+
+                $(msg).text('Неверный login или пароль...')
+                $(msg).addClass('text-danger');
+                $(msg).removeClass('text-black-50');
+            }
+        }
+    </script>
 </@layout.layout>

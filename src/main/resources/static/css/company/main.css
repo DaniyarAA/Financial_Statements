@@ -229,6 +229,7 @@ input[type="email"]:focus {
     justify-content: center;
     align-items: center;
     position: relative;
+    border: none;
 }
 
 .modal-header-create .modal-title-create {

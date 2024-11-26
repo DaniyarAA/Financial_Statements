@@ -796,9 +796,9 @@
                         <div class="modal-dialog custom-modal-width col-md-10">
                             <div class="modal-content">
 
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="createCompanyModalLabel">Создание Компании</h5>
-                                    <button type="button" class="btn-close" id="closeModalButton" aria-label="Close"
+                                <div class="modal-header modal-header-create">
+                                    <h5 class="modal-title modal-title-create" id="createCompanyModalLabel">Создание Компании</h5>
+                                    <button type="button" class="btn-close btn-close-create" id="closeModalButton" aria-label="Close"
                                             onclick="closeModalCreate()"></button>
                                 </div>
 

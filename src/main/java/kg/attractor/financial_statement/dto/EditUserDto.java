@@ -31,6 +31,9 @@ public class EditUserDto {
     private LocalDate birthday;
     private MultipartFile avatar;
 
+    @NotBlank(message = "Заполните адрес элюпочты!")
+    private String email;
+
     @Valid
     private RoleDto roleDto;
 }

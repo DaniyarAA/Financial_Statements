@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -73,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .avatar("user.png")
                 .registerDate(LocalDate.now())
                 .credentialsUpdated(true)
+                .email(userDto.getEmail())
                 .build();
         log.info("registering User: {} in process...", newUser);
         userRepository.save(newUser);
@@ -141,6 +139,10 @@ public class UserServiceImpl implements UserService {
         }
         if (!userDto.getSurname().isEmpty()) {
             user.setSurname(userDto.getSurname());
+        }
+
+        if (!userDto.getEmail().isEmpty()) {
+            user.setEmail(userDto.getEmail());
         }
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
@@ -336,6 +338,7 @@ public class UserServiceImpl implements UserService {
                 .registerDate(user.getRegisterDate())
                 .avatar(user.getAvatar())
                 .roleDto(roleDto)
+                .email(user.getEmail())
                 .companies(getCompaniesByUserId(user.getId()))
                 .build();
     }

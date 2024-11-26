@@ -1,3 +1,5 @@
+--liquibase formatted sql
+--changeset Kamilla:056
 insert into authorities(authority, authority_name)
 values ('CREATE_STATUS', 'Создать новый статус для задач'),
        ('EDIT_STATUS', 'Изменить название статуса'),

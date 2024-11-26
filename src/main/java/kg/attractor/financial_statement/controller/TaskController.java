@@ -189,4 +189,11 @@ public class TaskController {
         return "redirect:/tasks/list";
 
     }
+
+    @PostMapping("/{taskId}/priority")
+    public ResponseEntity<String> updateTaskPriority(@PathVariable Long taskId, @RequestParam Long priorityId) {
+        System.out.println("Task ID: " + taskId + ", Priority ID: " + priorityId);
+        taskService.updateTaskPriority(taskId, priorityId);
+        return ResponseEntity.ok("Priority updated successfully");
+    }
 }

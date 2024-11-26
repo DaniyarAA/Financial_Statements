@@ -82,8 +82,7 @@
                                         <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
                                     </svg>
 
-                                    <div class="task-priority-bar"></div>
-
+                                    <div class="task-priority-bar" data-task-id="${task.id}"></div>
 
                                     <div id="priorityModal" class="priority-modal" style="display: none;">
                                         <div class="priority-modal-content">
@@ -91,7 +90,7 @@
                                             <h2 class="priority-modal-title">Выберите приоритет для задачи</h2>
                                             <ul class="priority-list">
                                                 <#list priorities as priority>
-                                                    <li class="priority-item">
+                                                    <li class="priority-item" data-priority-id="${priority.id}">
                                                         <span class="priority-badge">${priority.name?substring(0, 1)}</span>
                                                         <span class="priority-name">${priority.name}</span>
                                                     </li>
@@ -99,6 +98,7 @@
                                             </ul>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </#list>

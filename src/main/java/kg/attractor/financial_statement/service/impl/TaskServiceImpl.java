@@ -526,4 +526,13 @@ public class TaskServiceImpl implements TaskService {
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
         return response;
     }
+
+    @Override
+    public void updateTaskPriority(Long taskId, Long priorityId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        task.setPriorityId(priorityId);
+        taskRepository.save(task);
+    }
 }

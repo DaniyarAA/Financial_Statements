@@ -950,17 +950,29 @@ h2 {
     padding: 4px 4px;
 }
 
+/*стили для приоритетов*/
 .task-priority-bar {
     position: absolute;
     right: 0;
     top: 0;
     width: 40px;
     height: 100%;
-    background-color: #EBE30E;
+    background-color: #bdbdbd;
     border-radius: 0 2px 2px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
 }
 
-/*стили для приоритетов*/
+.task-priority-bar:hover {
+    background-color: #969696;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .priority-modal {
     position: fixed;
     z-index: 1000;
@@ -1060,7 +1072,7 @@ h2 {
 }
 
 .priority-badge.low {
-    background-color: #d3d3d3;
+    background-color: #5b5b5b;
 }
 
 .priority-badge.urgent {
@@ -1077,6 +1089,61 @@ h2 {
 
 .priority-badge.normal {
     background-color: #90ee90;
+}
+
+.priority-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    opacity: 0;
+    font-size: 14px; /
+    z-index: 1000;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease-in-out;
+    width: auto;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.priority-notification.success {
+    background-color: #4CAF50;
+}
+
+.priority-notification.error {
+    background-color: #f44336;
+}
+
+.priority-notification.show {
+    display: block;
+    opacity: 1;
+}
+
+.task-priority-bar.low {
+    background-color: #5b5b5b;
+}
+
+.task-priority-bar.normal {
+    background-color: #90ee90;
+}
+
+.task-priority-bar.serious {
+    background-color: #ffcc00;
+}
+
+.task-priority-bar.urgent {
+    background-color: #ff4d4d;
+}
+
+.task-priority-bar.critical {
+    background-color: #ff80ff;
 }
 /*стили для приоритетов*/
 

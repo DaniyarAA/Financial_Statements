@@ -74,7 +74,8 @@ function showTaskDetails(button) {
                 
 
                 <div id="amount-display" style="display: block;">
-                    <p>${formattedAmount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                    <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+
                 </div>
                 <div id="amount-input" style="display: none;">
                     <input type="text" id="amount" name="amount" value="${formattedAmount}" style="
@@ -152,6 +153,9 @@ function formatDate(dateString) {
 }
 
 function formatAmount(amount) {
+    if (!amount || amount === "Не задано") {
+        return "Не задано";
+    }
     return parseFloat(amount.replace(/,/g, '')).toFixed(2);
 }
 

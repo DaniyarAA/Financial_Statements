@@ -81,7 +81,11 @@
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
                                                             data-description="${task.description}"
-                                                            data-amount="${task.amount}"
+                                                            <#if task.amount??>
+                                                                data-amount="${task.amount}"
+                                                            <#else>
+                                                                data-amount="Не задано"
+                                                            </#if>
                                                             data-status="${task.statusId}">
                                                         ${task.documentTypeName}
                                                         <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>"></div>

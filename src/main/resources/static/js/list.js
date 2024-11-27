@@ -19,6 +19,7 @@ function showTaskDetails(button) {
 
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
+    const formattedAmount = formatAmount(amount);
 
     let statusOptions = '';
     taskStatusDtos.forEach((statusDto) => {
@@ -73,10 +74,10 @@ function showTaskDetails(button) {
                 
 
                 <div id="amount-display" style="display: block;">
-                    <p>${amount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                    <p>${formattedAmount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
                 <div id="amount-input" style="display: none;">
-                    <input type="text" id="amount" name="amount" value="${amount}" style="
+                    <input type="text" id="amount" name="amount" value="${formattedAmount}" style="
                         width: 100px;
                         height: 33px;
                         border: 1px solid #ccc;
@@ -148,6 +149,10 @@ function showTaskDetails(button) {
 function formatDate(dateString) {
     const [year, month, day] = dateString.split("-");
     return `${day}.${month}.${year}`;
+}
+
+function formatAmount(amount) {
+    return parseFloat(amount.replace(/,/g, '')).toFixed(2);
 }
 
 function editAmount() {

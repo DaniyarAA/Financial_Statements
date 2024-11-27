@@ -22,6 +22,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -66,8 +67,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth , String login) {
-        User user = userService.getUserByLogin(login);
+    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth , Principal principal) {
+        if (principal == null || principal.getName().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        User user = userService.getUserByLogin(principal.getName());
         List<UserCompany> userCompany = userCompanyService.findByUser(user);
         int year = yearMonth.get("year");
         int month = yearMonth.get("month");

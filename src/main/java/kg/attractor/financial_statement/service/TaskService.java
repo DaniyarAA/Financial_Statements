@@ -23,7 +23,7 @@ public interface TaskService {
 
     Long createTask(TaskCreateDto taskCreateDto, String name);
 
-    ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth, String principal);
+    ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth, Principal principal);
 
     Page<TaskDto> getTasksPage(int page, int size, String sort, String direction, Long documentTypeId, Long statusId);
 

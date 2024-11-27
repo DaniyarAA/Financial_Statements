@@ -45,7 +45,7 @@ public class MainController {
 
     @PostMapping("/calendar")
     public ResponseEntity<Map<LocalDate, Long>> getTaskCounts(@RequestBody Map<String, Integer> yearMonth, Principal principal) {
-        return taskService.countOfTaskForDay(yearMonth,principal.getName());
+        return taskService.countOfTaskForDay(yearMonth,principal);
     }
 
 }

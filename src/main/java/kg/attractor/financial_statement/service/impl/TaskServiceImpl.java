@@ -8,6 +8,7 @@ import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.enums.ReportFrequency;
+import kg.attractor.financial_statement.enums.TaskPriority;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -436,6 +437,8 @@ public class TaskServiceImpl implements TaskService {
                 .amount(task.getAmount())
                 .description(task.getDescription())
                 .isCompleted(taskStatusService.getIsCompleted(task.getTaskStatus()))
+                .priorityId(task.getPriorityId())
+                .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
                 .build();
     }
 

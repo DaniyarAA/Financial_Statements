@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             priorityBar.classList.remove("low", "normal", "serious", "urgent", "critical");
             priorityBar.classList.add(priorityClass);
-            priorityBar.style.backgroundColor = getPriorityColor(priorityClass);
+            const priorityColor = getPriorityColor(priorityClass);
+            priorityBar.style.backgroundColor = priorityColor;
 
             fetch(`/tasks/${taskId}/priority`, {
                 method: "POST",
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "X-CSRF-TOKEN": csrfToken
                 },
-                body: new URLSearchParams({ priorityId })
+                body: new URLSearchParams({ priorityId, priorityColor: priorityColor })
             })
                 .then(response => {
                     if (response.ok) {

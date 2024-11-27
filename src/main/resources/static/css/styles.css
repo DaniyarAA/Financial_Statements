@@ -1126,24 +1126,20 @@ h2 {
     opacity: 1;
 }
 
-.task-priority-bar.low {
-    background-color: #5b5b5b;
+.task-priority-arrows {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 5px;
+    padding: 0;
+    width: auto;
 }
 
-.task-priority-bar.normal {
-    background-color: #90ee90;
-}
-
-.task-priority-bar.serious {
-    background-color: #ffcc00;
-}
-
-.task-priority-bar.urgent {
-    background-color: #ff4d4d;
-}
-
-.task-priority-bar.critical {
-    background-color: #ff80ff;
+.task-priority-arrows svg {
+    display: block;
+    margin-bottom: -5px;
+    margin-right: 40px;
 }
 /*стили для приоритетов*/
 

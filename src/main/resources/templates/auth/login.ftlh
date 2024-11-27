@@ -40,7 +40,7 @@
             window.onload = () => {
                 let msg = $('.login-text')
 
-                $(msg).text('Неверный login или пароль...')
+                $(msg).text('Неверный логин или пароль...')
                 $(msg).addClass('text-danger');
                 $(msg).removeClass('text-black-50');
             }

@@ -6,6 +6,6 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:21
 WORKDIR /app
-COPY --from=build /build/target/financial_statement-0.0.1-SNAPSHOT.jar ./financial_statement.jar
-EXPOSE 8089
+COPY --from=build /build/target/*.jar ./financial_statement.jar
+EXPOSE 8081
 CMD ["java", "-jar", "financial_statement.jar"]

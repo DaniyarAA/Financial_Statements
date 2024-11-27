@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ,maximum-scale=1.0,minimum-scale=1.0">
     <title>Список Компаний</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -813,9 +813,9 @@
                                             <div class="col-md-6">
                                                 <fieldset class="p-4 mb-4">
                                                     <div class="form-group row">
-                                                        <label for="name" class="col-sm-4 col-form-label">Название
+                                                        <label for="name" class="col-md-4 col-form-label">Название
                                                             компании:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="name" name="name"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("name"))>
@@ -825,8 +825,8 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="companyInn"
-                                                               class="col-sm-4 col-form-label">ИНН:</label>
-                                                        <div class="col-sm-8">
+                                                               class="col-md-4 col-form-label">ИНН:</label>
+                                                        <div class="col-md-8">
                                                             <input type="text" id="companyInn" name="companyInn"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("inn"))>
@@ -835,9 +835,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="directorInn" class="col-sm-4 col-form-label">ИНН
+                                                        <label for="directorInn" class="col-md-4 col-form-label">ИНН
                                                             руководителя:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="directorInn" name="directorInn"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("directorInn"))>
@@ -847,8 +847,8 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="login"
-                                                               class="col-sm-4 col-form-label">Логин:</label>
-                                                        <div class="col-sm-8">
+                                                               class="col-md-4 col-form-label">Логин:</label>
+                                                        <div class="col-md-8">
                                                             <input type="text" id="login" name="login"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("login"))>
@@ -858,8 +858,8 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="password"
-                                                               class="col-sm-4 col-form-label">Пароль:</label>
-                                                        <div class="col-sm-8">
+                                                               class="col-md-4 col-form-label">Пароль:</label>
+                                                        <div class="col-md-8">
                                                             <input type="password" id="password" name="password"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("password"))>
@@ -868,8 +868,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="ecp" class="col-sm-4 col-form-label">ЭЦП:</label>
-                                                        <div class="col-sm-8">
+                                                        <label for="ecp" class="col-md-4 col-form-label">ЭЦП:</label>
+                                                        <div class="col-md-8">
                                                             <input type="text" id="ecp" name="ecp" class="form-control"
                                                                    required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("ecp"))>
@@ -878,9 +878,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="kabinetSalyk" class="col-sm-4 col-form-label">Salyk.kg
+                                                        <label for="kabinetSalyk" class="col-md-4 col-form-label">Salyk.kg
                                                             логин:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="kabinetSalyk" name="kabinetSalyk"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("kabinetSalyk"))>
@@ -890,8 +890,8 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="kabinetSalykPassword"
-                                                               class="col-sm-4 col-form-label">Salyk.kg пароль:</label>
-                                                        <div class="col-sm-8">
+                                                               class="col-md-4 col-form-label">Salyk.kg пароль:</label>
+                                                        <div class="col-md-8">
                                                             <input type="password" id="kabinetSalykPassword"
                                                                    name="kabinetSalykPassword" class="form-control"
                                                                    required>
@@ -901,9 +901,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="taxMode" class="col-sm-4 col-form-label">Режим
+                                                        <label for="taxMode" class="col-md-4 col-form-label">Режим
                                                             налогооблажения:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="taxMode" name="taxMode"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("taxMode"))>
@@ -912,8 +912,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="opf" class="col-sm-4 col-form-label">ОПФ:</label>
-                                                        <div class="col-sm-8">
+                                                        <label for="opf" class="col-md-4 col-form-label">ОПФ:</label>
+                                                        <div class="col-md-8">
                                                             <input type="text" id="opf" name="opf" class="form-control"
                                                                    required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("opf"))>
@@ -922,9 +922,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="districtGns" class="col-sm-4 col-form-label">Район
+                                                        <label for="districtGns" class="col-md-4 col-form-label">Район
                                                             ГНС:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="districtGns" name="districtGns"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("districtGns"))>
@@ -933,9 +933,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="socfundNumber" class="col-sm-4 col-form-label">Номер
+                                                        <label for="socfundNumber" class="col-md-4 col-form-label">Номер
                                                             соцфонда:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="socfundNumber" name="socfundNumber"
                                                                    class="form-control" required>
                                                             <#if (errors?has_content && errors.hasFieldErrors("socfundNumber"))>
@@ -945,9 +945,9 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="registrationNumberMj"
-                                                               class="col-sm-4 col-form-label">Регистрационный номер
+                                                               class="col-md-4 col-form-label">Регистрационный номер
                                                             МЮ:</label>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-md-8">
                                                             <input type="text" id="registrationNumberMj"
                                                                    name="registrationNumberMj" class="form-control"
                                                                    required>

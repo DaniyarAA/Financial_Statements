@@ -320,7 +320,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String name, Long id) {
         System.out.println("TaskEditDto: " + taskDto.getFrom() + " " + taskDto.getTo());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
         if (taskDto.getStatusId() != null) {

@@ -53,8 +53,8 @@ function showTaskDetails(button) {
             <div class="labels" style="font-size: 14px; font-style: italic; font-weight: 100; display: inline">
                 <p>Компания:</p>
                 <p>ИНН:</p>
-                <p>Период:</p>
-                <p style="margin-top: 7px">Сумма:</p>
+                <p style="margin-top: 8px">Период:</p>
+                <p style="margin-top: 15px">Сумма:</p>
                 <p style="margin-top: 15px">Статус:</p>
             </div>
         
@@ -125,11 +125,12 @@ function showTaskDetails(button) {
 </div>
     `;
 
-    var dateFormat = "mm/dd/yy";
+    var dateFormat = "dd.mm.yy";
     var from = $("#from").datepicker({
         defaultDate: "+1w",
         changeMonth: true,
-        numberOfMonths: 1
+        numberOfMonths: 1,
+        dateFormat: dateFormat
     }).on("change", function () {
         to.datepicker("option", "minDate", getDate(this));
     });
@@ -137,7 +138,8 @@ function showTaskDetails(button) {
     var to = $("#to").datepicker({
         defaultDate: "+1w",
         changeMonth: true,
-        numberOfMonths: 1
+        numberOfMonths: 1,
+        dateFormat: dateFormat
     }).on("change", function () {
         from.datepicker("option", "maxDate", getDate(this));
     });

@@ -27,10 +27,10 @@
                     </table>
                 </div>
 
-                <div class="pagination-container
-        <#if currentPage == 0 && currentPage == totalPages - 1>
-            single-button
-        </#if>">
+                <div class="pagination-container">
+                    <#if currentPage == 0 && currentPage == totalPages - 1>
+
+                    </#if>
                     <#if currentPage != 0>
                         <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">
                             <div class="button-container">
@@ -141,7 +141,9 @@
             position: relative;
         }
         .company-table {
-            width: 250px;
+            width: 244px;
+            min-width: 244px;
+            max-width: 244px;
 
             margin-right: 5px;
             background-color: #d9d9d9;
@@ -170,10 +172,9 @@
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 650px;
-            min-height: 650px;
-            max-height: 650px;
-
+            height: 550px;
+            min-height: 550px;
+            max-height: 550px;
         }
 
         .table-main {
@@ -234,6 +235,12 @@
             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);
         }
+
+        .task-button:hover {
+            background-color: #e0e0e0;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
         .button-alert {
             position: absolute;
 
@@ -264,31 +271,33 @@
             color: #6c757d;
         }
 
-        .pagination-container {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        .pagination-container{
             display: flex;
-            justify-content: center;
+            justify-content: end;
             align-items: center;
-            padding: 1rem;
             flex-direction: column;
-        }
+            width: 244px;
+            height: 150px;
 
-        .pagination-container a {
-            margin: 0 0.5rem;
+            transition: all 0.3s ease;
         }
-
 
         .button-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 244px;
+            width: 237px;
             height: 70px;
             background-color: #f9f9f9;
             border-radius: 8px;
             border: 1px solid #ddd;
+            margin-bottom: 4px;
+            box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3);
+        }
+        .button-container:hover {
+            background-color: #e0e0e0; /* A light grey color */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+            cursor: pointer; /* Change the cursor to a pointer for a clickable effect */
         }
 
         .status-indicator {

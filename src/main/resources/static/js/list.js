@@ -68,7 +68,7 @@ function showTaskDetails(button) {
                 <div id="date-input" style="display: none">
                     <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
                     <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
-                    <button type="button" class="btn btn-link" onclick="cancelEditDate()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
+                    <button type="button" class="btn btn-link" onclick="cancelEditDate()"><img alt="Edit pen" src="/images/cross.png" style="width: 20px; height: 20px;"></button>
 
                 </div>
                 
@@ -78,7 +78,7 @@ function showTaskDetails(button) {
 
                 </div>
                 <div id="amount-input" style="display: none;">
-                    <input type="text" id="amount" name="amount" value="${formattedAmount}" style="
+                    <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
                         width: 100px;
                         height: 33px;
                         border: 1px solid #ccc;
@@ -87,7 +87,6 @@ function showTaskDetails(button) {
                         margin: 0;
                     ">
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
-
                 </div>
                 <div id="status-display" style="display: block">
                     <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
@@ -119,7 +118,7 @@ function showTaskDetails(button) {
     overflow-y: auto;">${description}</textarea>
         <div style="display: flex; justify-content: center; margin-top: 50px">
 
-        <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center;             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
+        <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
     </div>
 

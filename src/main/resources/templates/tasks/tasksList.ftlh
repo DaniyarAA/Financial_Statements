@@ -55,7 +55,7 @@
                         <thead>
                         <tr class="year-month-column">
                             <#list monthsMap?keys as yearMonth>
-                                <th class="year-month-th">
+                                <th class="year-month-th <#if yearMonth_index == 0>first-th<#elseif yearMonth_index == 1>second-th</#if>">
                                     <div class="year-month-header">
                                         <span class="year-month-label">${monthsMap[yearMonth]}</span>
                                     </div>
@@ -163,10 +163,21 @@
         .year-month-column {
             background-color: #ffffff;
             height: 35px;
+
         }
 
         .year-month-th {
             padding: 5px;
+
+        }
+
+        .year-month-th.first-th {
+            background-color: #d9d9d9;
+        }
+
+        .year-month-th.second-th {
+            background-color: #ededed;
+            border-right: 2px solid #c8c8c8;
         }
 
         .table-wrapper {

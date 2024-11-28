@@ -52,7 +52,7 @@
                value="${(_csrf.token)!'csrf-token'}"/>
     </#if>
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-2 col-sm-3">
             <div class="list-group">
                 <div>
                     <label for="search" class="w-100">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <div class="col-md-10 companies-nav">
+        <div class="col-md-10 col-sm-9 companies-nav">
             <div class="forms-back-color">
                 <div class="forms">
                     <#if company?? && company.id?has_content>
@@ -97,6 +97,11 @@
                             <button onclick="copyText('companyName')" title="Скопировать" class="btn btn-link p-0">
                                 <i class="bi bi-clipboard" style="color: black;"></i>
                             </button>
+                            <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
+                                    title="Редактировать" class="btn btn-link p-0">
+                                <i class="bi bi-pencil" style="color: black;"></i>
+                            </button>
+                            <div class="company-name-edit">
                             <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
                                    value="${company.name!}">
                             <button id="cancelBtncompanyName" class="btn btn-danger d-none"
@@ -105,10 +110,7 @@
                             <button id="saveBtncompanyName" class="btn btn-success d-none"
                                     onclick="saveChanges('companyName', ${company.id})">&#10003;
                             </button>
-                            <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
-                                    title="Редактировать" class="btn btn-link p-0">
-                                <i class="bi bi-pencil" style="color: black;"></i>
-                            </button>
+                            </div>
                         </h2>
                         <div class="row">
                             <div class="col-md-6">
@@ -120,6 +122,12 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtncompanyInn"
+                                                onclick="editText('companyInn', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputcompanyInn"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.companyInn!}">
@@ -129,11 +137,7 @@
                                         <button id="saveBtncompanyInn" class="btn btn-success d-none"
                                                 onclick="saveChanges('companyInn', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtncompanyInn"
-                                                onclick="editText('companyInn', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ИНН руководителя:</strong>
@@ -142,6 +146,12 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtndirectorInn"
+                                                onclick="editText('directorInn', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputdirectorInn"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.directorInn!}">
@@ -151,11 +161,7 @@
                                         <button id="saveBtndirectorInn" class="btn btn-success d-none"
                                                 onclick="saveChanges('directorInn', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtndirectorInn"
-                                                onclick="editText('directorInn', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Логин:</strong>
@@ -164,6 +170,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnlogin" onclick="editText('login', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputlogin"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.login!}">
@@ -173,10 +184,7 @@
                                         <button id="saveBtnlogin" class="btn btn-success d-none"
                                                 onclick="saveChanges('login', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnlogin" onclick="editText('login', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Пароль:</strong>
@@ -186,6 +194,15 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnpassword" onclick="editText('password', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <button onclick="togglePasswordVisibility('password')" title="Увидеть"
+                                                class="btn btn-link p-0">
+                                            <i class="bi bi-eye" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputpassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.password!}">
@@ -195,14 +212,7 @@
                                         <button id="saveBtnpassword" class="btn btn-success d-none"
                                                 onclick="saveChanges('password', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnpassword" onclick="editText('password', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('password')" title="Увидеть"
-                                                class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭЦП:</strong>
@@ -211,6 +221,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputecp"
                                                class="form-control edit-input d-none fs-5" value="${company.ecp!}">
                                         <button id="cancelBtnecp" class="btn btn-danger d-none"
@@ -219,10 +234,7 @@
                                         <button id="saveBtnecp" class="btn btn-success d-none"
                                                 onclick="saveChanges('ecp', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Salyk.kg логин:</strong>
@@ -231,6 +243,12 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnkabinetSalyk"
+                                                onclick="editText('kabinetSalyk', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalyk"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.kabinetSalyk!}">
@@ -240,11 +258,7 @@
                                         <button id="saveBtnkabinetSalyk" class="btn btn-success d-none"
                                                 onclick="saveChanges('kabinetSalyk', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnkabinetSalyk"
-                                                onclick="editText('kabinetSalyk', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Salyk.kg пароль:</strong>
@@ -253,16 +267,6 @@
                                         <button onclick="copyText('kabinetSalykPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
-                                        </button>
-                                        <input type="text" id="editInputkabinetSalykPassword"
-                                               class="form-control edit-input d-none fs-5"
-                                               value="${company.kabinetSalykPassword!}">
-                                        <button id="cancelBtnkabinetSalykPassword" class="btn btn-danger d-none"
-                                                onclick="cancelEdit('kabinetSalykPassword')">&#10005;
-                                        </button>
-                                        <button id="saveBtnkabinetSalykPassword" class="btn btn-success d-none"
-                                                onclick="saveChanges('kabinetSalykPassword', ${company.id})">
-                                            &#10003;
                                         </button>
                                         <button id="editBtnkabinetSalykPassword"
                                                 onclick="editText('kabinetSalykPassword', ${company.id})"
@@ -273,6 +277,18 @@
                                                 title="Увидеть" class="btn btn-link p-0">
                                             <i class="bi bi-eye" style="color: black;"></i>
                                         </button>
+                                        <div class="company-edit">
+                                        <input type="text" id="editInputkabinetSalykPassword"
+                                               class="form-control edit-input d-none fs-5"
+                                               value="${company.kabinetSalykPassword!}">
+                                        <button id="cancelBtnkabinetSalykPassword" class="btn btn-danger d-none"
+                                                onclick="cancelEdit('kabinetSalykPassword')">&#10005;
+                                        </button>
+                                        <button id="saveBtnkabinetSalykPassword" class="btn btn-success d-none"
+                                                onclick="saveChanges('kabinetSalykPassword', ${company.id})">
+                                            &#10003;
+                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Режим налогообложения:</strong>
@@ -281,6 +297,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputtaxMode"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.taxMode!}">
@@ -290,10 +311,7 @@
                                         <button id="saveBtntaxMode" class="btn btn-success d-none"
                                                 onclick="saveChanges('taxMode', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ОПФ:</strong>
@@ -302,6 +320,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnopf" onclick="editText('opf', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputopf"
                                                class="form-control edit-input d-none fs-5" value="${company.opf!}">
                                         <button id="cancelBtnopf" class="btn btn-danger d-none"
@@ -310,10 +333,7 @@
                                         <button id="saveBtnopf" class="btn btn-success d-none"
                                                 onclick="saveChanges('opf', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnopf" onclick="editText('opf', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Район ГНС:</strong>
@@ -322,6 +342,12 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtndistrictGns"
+                                                onclick="editText('districtGns', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputdistrictGns"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.districtGns!}">
@@ -331,11 +357,7 @@
                                         <button id="saveBtndistrictGns" class="btn btn-success d-none"
                                                 onclick="saveChanges('districtGns', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtndistrictGns"
-                                                onclick="editText('districtGns', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Номер социального фонда:</strong>
@@ -344,6 +366,12 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnsocfundNumber"
+                                                onclick="editText('socfundNumber', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputsocfundNumber"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.socfundNumber!}">
@@ -353,11 +381,7 @@
                                         <button id="saveBtnsocfundNumber" class="btn btn-success d-none"
                                                 onclick="saveChanges('socfundNumber', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnsocfundNumber"
-                                                onclick="editText('socfundNumber', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Регистрационный номер МЮ:</strong>
@@ -366,6 +390,12 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnregistrationNumberMj"
+                                                onclick="editText('registrationNumberMj', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputregistrationNumberMj"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.registrationNumberMj!}">
@@ -376,11 +406,7 @@
                                                 onclick="saveChanges('registrationNumberMj', ${company.id})">
                                             &#10003;
                                         </button>
-                                        <button id="editBtnregistrationNumberMj"
-                                                onclick="editText('registrationNumberMj', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ОКПО:</strong>
@@ -389,6 +415,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputokpo"
                                                class="form-control edit-input d-none fs-5" value="${company.okpo!}">
                                         <button id="cancelBtnokpo" class="btn btn-danger d-none"
@@ -397,10 +428,7 @@
                                         <button id="saveBtnokpo" class="btn btn-success d-none"
                                                 onclick="saveChanges('okpo', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ФИО руководителя:</strong>
@@ -409,6 +437,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtndirector" onclick="editText('director', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputdirector"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.director!}">
@@ -418,10 +451,7 @@
                                         <button id="saveBtndirector" class="btn btn-success d-none"
                                                 onclick="saveChanges('director', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtndirector" onclick="editText('director', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>КЭД:</strong>
@@ -430,6 +460,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnked" onclick="editText('ked', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputked"
                                                class="form-control edit-input d-none fs-5" value="${company.ked!}">
                                         <button id="cancelBtnked" class="btn btn-danger d-none"
@@ -438,10 +473,7 @@
                                         <button id="saveBtnked" class="btn btn-success d-none"
                                                 onclick="saveChanges('ked', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnked" onclick="editText('ked', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -453,6 +485,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnemail" onclick="editText('email', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputemail"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.email!}">
@@ -462,10 +499,7 @@
                                         <button id="saveBtnemail" class="btn btn-success d-none"
                                                 onclick="saveChanges('email', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnemail" onclick="editText('email', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Пароль от почты:</strong> <span id="emailPassword"
@@ -473,15 +507,6 @@
                                         <button onclick="copyText('emailPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
-                                        </button>
-                                        <input type="text" id="editInputemailPassword"
-                                               class="form-control edit-input d-none fs-5"
-                                               value="${company.emailPassword!}">
-                                        <button id="cancelBtnemailPassword" class="btn btn-danger d-none"
-                                                onclick="cancelEdit('emailPassword')">&#10005;
-                                        </button>
-                                        <button id="saveBtnemailPassword" class="btn btn-success d-none"
-                                                onclick="saveChanges('emailPassword', ${company.id})">&#10003;
                                         </button>
                                         <button id="editBtnemailPassword"
                                                 onclick="editText('emailPassword', ${company.id})"
@@ -492,6 +517,17 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-eye" style="color: black;"></i>
                                         </button>
+                                        <div class="company-edit">
+                                        <input type="text" id="editInputemailPassword"
+                                               class="form-control edit-input d-none fs-5"
+                                               value="${company.emailPassword!}">
+                                        <button id="cancelBtnemailPassword" class="btn btn-danger d-none"
+                                                onclick="cancelEdit('emailPassword')">&#10005;
+                                        </button>
+                                        <button id="saveBtnemailPassword" class="btn btn-success d-none"
+                                                onclick="saveChanges('emailPassword', ${company.id})">&#10003;
+                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>Телефон:</strong> <span id="phone">${company.phone!}</span>
@@ -499,6 +535,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnphone" onclick="editText('phone', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputphone"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.phone!}">
@@ -508,10 +549,7 @@
                                         <button id="saveBtnphone" class="btn btn-success d-none"
                                                 onclick="saveChanges('phone', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnphone" onclick="editText('phone', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭСФ логин:</strong> <span id="esf">${company.esf!}</span>
@@ -519,6 +557,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnesf" onclick="editText('esf', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputesf"
                                                class="form-control edit-input d-none fs-5" value="${company.esf!}">
                                         <button id="cancelBtnesf" class="btn btn-danger d-none"
@@ -527,10 +570,7 @@
                                         <button id="saveBtnesf" class="btn btn-success d-none"
                                                 onclick="saveChanges('esf', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnesf" onclick="editText('esf', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭСФ пароль:</strong> <span id="esfPassword"
@@ -538,15 +578,6 @@
                                         <button onclick="copyText('esfPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
-                                        </button>
-                                        <input type="text" id="editInputesfPassword"
-                                               class="form-control edit-input d-none fs-5"
-                                               value="${company.esfPassword!}">
-                                        <button id="cancelBtnesfPassword" class="btn btn-danger d-none"
-                                                onclick="cancelEdit('esfPassword')">&#10005;
-                                        </button>
-                                        <button id="saveBtnesfPassword" class="btn btn-success d-none"
-                                                onclick="saveChanges('esfPassword', ${company.id})">&#10003;
                                         </button>
                                         <button id="editBtnesfPassword"
                                                 onclick="editText('esfPassword', ${company.id})"
@@ -557,6 +588,17 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-eye" style="color: black;"></i>
                                         </button>
+                                        <div class="company-edit">
+                                        <input type="text" id="editInputesfPassword"
+                                               class="form-control edit-input d-none fs-5"
+                                               value="${company.esfPassword!}">
+                                        <button id="cancelBtnesfPassword" class="btn btn-danger d-none"
+                                                onclick="cancelEdit('esfPassword')">&#10005;
+                                        </button>
+                                        <button id="saveBtnesfPassword" class="btn btn-success d-none"
+                                                onclick="saveChanges('esfPassword', ${company.id})">&#10003;
+                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ККМ логин:</strong> <span id="kkm">${company.kkm!}</span>
@@ -564,6 +606,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputkkm"
                                                class="form-control edit-input d-none fs-5" value="${company.kkm!}">
                                         <button id="cancelBtnkkm" class="btn btn-danger d-none"
@@ -572,10 +619,7 @@
                                         <button id="saveBtnkkm" class="btn btn-success d-none"
                                                 onclick="saveChanges('kkm', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ККМ пароль:</strong> <span id="kkmPassword"
@@ -583,15 +627,6 @@
                                         <button onclick="copyText('kkmPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
-                                        </button>
-                                        <input type="text" id="editInputkkmPassword"
-                                               class="form-control edit-input d-none fs-5"
-                                               value="${company.kkmPassword!}">
-                                        <button id="cancelBtnkkmPassword" class="btn btn-danger d-none"
-                                                onclick="cancelEdit('kkmPassword')">&#10005;
-                                        </button>
-                                        <button id="saveBtnkkmPassword" class="btn btn-success d-none"
-                                                onclick="saveChanges('kkmPassword', ${company.id})">&#10003;
                                         </button>
                                         <button id="editBtnkkmPassword"
                                                 onclick="editText('kkmPassword', ${company.id})"
@@ -602,6 +637,17 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-eye" style="color: black;"></i>
                                         </button>
+                                        <div class="company-edit">
+                                        <input type="text" id="editInputkkmPassword"
+                                               class="form-control edit-input d-none fs-5"
+                                               value="${company.kkmPassword!}">
+                                        <button id="cancelBtnkkmPassword" class="btn btn-danger d-none"
+                                                onclick="cancelEdit('kkmPassword')">&#10005;
+                                        </button>
+                                        <button id="saveBtnkkmPassword" class="btn btn-success d-none"
+                                                onclick="saveChanges('kkmPassword', ${company.id})">&#10003;
+                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>1С Фреш логин:</strong>
@@ -610,6 +656,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputfresh1c"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.fresh1c!}">
@@ -619,10 +670,7 @@
                                         <button id="saveBtnfresh1c" class="btn btn-success d-none"
                                                 onclick="saveChanges('fresh1c', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>1С Фреш пароль:</strong> <span id="fresh1cPassword"
@@ -630,15 +678,6 @@
                                         <button onclick="copyText('fresh1cPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
-                                        </button>
-                                        <input type="text" id="editInputfresh1cPassword"
-                                               class="form-control edit-input d-none fs-5"
-                                               value="${company.fresh1cPassword!}">
-                                        <button id="cancelBtnfresh1cPassword" class="btn btn-danger d-none"
-                                                onclick="cancelEdit('fresh1cPassword')">&#10005;
-                                        </button>
-                                        <button id="saveBtnfresh1cPassword" class="btn btn-success d-none"
-                                                onclick="saveChanges('fresh1cPassword', ${company.id})">&#10003;
                                         </button>
                                         <button id="editBtnfresh1cPassword"
                                                 onclick="editText('fresh1cPassword', ${company.id})"
@@ -649,6 +688,17 @@
                                                 title="Увидеть" class="btn btn-link p-0">
                                             <i class="bi bi-eye" style="color: black;"></i>
                                         </button>
+                                        <div class="company-edit">
+                                        <input type="text" id="editInputfresh1cPassword"
+                                               class="form-control edit-input d-none fs-5"
+                                               value="${company.fresh1cPassword!}">
+                                        <button id="cancelBtnfresh1cPassword" class="btn btn-danger d-none"
+                                                onclick="cancelEdit('fresh1cPassword')">&#10005;
+                                        </button>
+                                        <button id="saveBtnfresh1cPassword" class="btn btn-success d-none"
+                                                onclick="saveChanges('fresh1cPassword', ${company.id})">&#10003;
+                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭТТН логин:</strong>
@@ -657,6 +707,11 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
                                         </button>
+                                        <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
+                                                title="Редактировать" class="btn btn-link p-0">
+                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                        </button>
+                                        <div class="company-edit">
                                         <input type="text" id="editInputettn"
                                                class="form-control edit-input d-none fs-5" value="${company.ettn!}">
                                         <button id="cancelBtnettn" class="btn btn-danger d-none"
@@ -665,10 +720,7 @@
                                         <button id="saveBtnettn" class="btn btn-success d-none"
                                                 onclick="saveChanges('ettn', ${company.id})">&#10003;
                                         </button>
-                                        <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
-                                        </button>
+                                        </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
                                         <strong>ЭТТН пароль:</strong>
@@ -677,15 +729,6 @@
                                         <button onclick="copyText('ettnPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
-                                        </button>
-                                        <input type="text" id="editInputettnPassword"
-                                               class="form-control edit-input d-none fs-5"
-                                               value="${company.ettnPassword!}">
-                                        <button id="cancelBtnettnPassword" class="btn btn-danger d-none"
-                                                onclick="cancelEdit('ettnPassword')">&#10005;
-                                        </button>
-                                        <button id="saveBtnettnPassword" class="btn btn-success d-none"
-                                                onclick="saveChanges('ettnPassword', ${company.id})">&#10003;
                                         </button>
                                         <button id="editBtnettnPassword"
                                                 onclick="editText('ettnPassword', ${company.id})"
@@ -696,6 +739,17 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-eye" style="color: black;"></i>
                                         </button>
+                                        <div class="company-edit">
+                                        <input type="text" id="editInputettnPassword"
+                                               class="form-control edit-input d-none fs-5"
+                                               value="${company.ettnPassword!}">
+                                        <button id="cancelBtnettnPassword" class="btn btn-danger d-none"
+                                                onclick="cancelEdit('ettnPassword')">&#10005;
+                                        </button>
+                                        <button id="saveBtnettnPassword" class="btn btn-success d-none"
+                                                onclick="saveChanges('ettnPassword', ${company.id})">&#10003;
+                                        </button>
+                                        </div>
                                     </li>
 
                                     <li class="list-group-item list-none-line">

@@ -1101,5 +1101,6 @@
 
     </div>
 </div>
+<input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 </body>
 </html>

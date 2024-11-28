@@ -15,6 +15,15 @@ function copyText(elementId) {
     });
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    const openModal = document.getElementById('openModal').value;
+    const createCompanyModalElement = document.getElementById('createCompanyModal');
+    const createCompanyModal = new bootstrap.Modal(createCompanyModalElement);
+
+    if (openModal === 'true') {
+        createCompanyModal.show();
+    }
+});
 
 function closeModalCreate() {
     var modal = bootstrap.Modal.getInstance(document.getElementById('createCompanyModal'));
@@ -36,6 +45,9 @@ async function submitForm(event) {
         showResponseMessage(result.message);
         var modal = bootstrap.Modal.getInstance(document.getElementById('createCompanyModal'));
         modal.hide();
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('openModal');
+        window.location.href = currentUrl.toString();
     } else {
         const errors = await response.json();
         const errorMessages = Object.values(errors).join('\n');

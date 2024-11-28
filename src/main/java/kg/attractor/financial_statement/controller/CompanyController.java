@@ -31,31 +31,13 @@ public class CompanyController {
         return companyService.createCompany(companyDto, principal.getName(), bindingResult);
     }
 
-    @PostMapping("/add")
-    public String create(@Valid CompanyDto companyDto, BindingResult bindingResult, Model model, Principal principal) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("company", companyDto);
-            model.addAttribute("errors", bindingResult);
-            return "company/add";
-        }
-        companyService.addCompany(companyDto, principal.getName());
-        return "redirect:/company/all?sort=actual";
-    }
-
-    @GetMapping("/add")
-    public String add(Model model) {
-        model.addAttribute("company", new CompanyDto());
-        return "company/add";
-    }
-
-
     @GetMapping("/all")
     public String getAll(@RequestParam(required = false, defaultValue = "0") Long companyId,
                          @RequestParam(value = "sort", defaultValue = "actual") String sort,
+                         @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal,
                          Model model, Principal principal) {
 
         List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort);
-
         model.addAttribute("list", allCompanies);
 
         if (companyId != 0) {
@@ -75,6 +57,7 @@ public class CompanyController {
         }
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("sort", sort);
+        model.addAttribute("openModal", openModal);
 
         return "company/companies";
     }

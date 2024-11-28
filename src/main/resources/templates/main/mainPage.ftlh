@@ -77,7 +77,7 @@
 
                                     <span class="task-tag pe-1">RSA...</span>
 
-                                    <div class="task-priority-arrows">
+                                    <div class="task-priority-arrows" data-task-id="${task.id}">
                                         <#if task.priorityId?has_content>
                                             <#list 1..task.priorityId as i>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -85,6 +85,8 @@
                                                     <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
                                                 </svg>
                                             </#list>
+                                        <#else>
+                                            <span class="no-priority-message"></span>
                                         </#if>
                                     </div>
 

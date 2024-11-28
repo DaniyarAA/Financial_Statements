@@ -4,8 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const priorityList = modal.querySelector(".priority-list");
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
-    document.querySelector(".task-priority-bar").addEventListener("click", function (event) {
-        modal.style.display = "block";
+    document.querySelectorAll(".task-priority-bar").forEach(function (priorityBar) {
+        priorityBar.addEventListener("click", function (event) {
+            const taskId = priorityBar.dataset.taskId;
+            modal.style.display = "block";
+            priorityList.dataset.taskId = taskId;
+        });
     });
 
     closeButton.addEventListener("click", function () {
@@ -48,18 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
     priorityList.addEventListener("click", function (event) {
         const clickedItem = event.target.closest(".priority-item");
         if (clickedItem) {
-            const taskId = document.querySelector(".task-priority-bar").dataset.taskId;
+            const taskId = priorityList.dataset.taskId;
             const priorityId = clickedItem.dataset.priorityId;
             const priorityName = clickedItem.querySelector(".priority-name").textContent;
             const priorityClass = clickedItem.querySelector(".priority-badge").classList[1];
             const priorityBar = document.querySelector(".task-priority-bar[data-task-id='" + taskId + "']");
 
-            priorityBar.classList.remove("low", "normal", "serious", "urgent", "critical");
-            priorityBar.classList.add(priorityClass);
-            const priorityColor = getPriorityColor(priorityClass);
-            priorityBar.style.backgroundColor = priorityColor;
-
-            updatePriorityArrows(priorityClass);
+            updatePriorityForTask(taskId, priorityClass, priorityBar);
 
             fetch(`/tasks/${taskId}/priority`, {
                 method: "POST",
@@ -67,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "X-CSRF-TOKEN": csrfToken
                 },
-                body: new URLSearchParams({ priorityId, priorityColor: priorityColor })
+                body: new URLSearchParams({ priorityId, priorityColor: getPriorityColor(priorityClass) })
             })
                 .then(response => {
                     if (response.ok) {
@@ -101,8 +100,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function updatePriorityArrows(priorityClass) {
-        const arrowContainer = document.querySelector(".task-priority-arrows");
+    function updatePriorityForTask(taskId, priorityClass, priorityBar) {
+        priorityBar.classList.remove("low", "normal", "serious", "urgent", "critical");
+        priorityBar.classList.add(priorityClass);
+        const priorityColor = getPriorityColor(priorityClass);
+        priorityBar.style.backgroundColor = priorityColor;
+
+        const arrowContainer = document.querySelector(".task-priority-arrows[data-task-id='" + taskId + "']");
         const arrowCount = getArrowCount(priorityClass);
 
         arrowContainer.innerHTML = '';
@@ -160,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function showErrorNotification(message) {
         const notification = document.createElement("div");
         notification.classList.add("priority-notification", "error");
-        notification.innerHTML = ` ${message}`;
+        notification.innerHTML = `${message}`;
         document.body.appendChild(notification);
 
         setTimeout(() => {

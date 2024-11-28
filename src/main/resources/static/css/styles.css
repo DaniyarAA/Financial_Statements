@@ -1141,6 +1141,10 @@ h2 {
     margin-bottom: -5px;
     margin-right: 40px;
 }
+
+.no-priority-message {
+    margin-left: 59px;
+}
 /*стили для приоритетов*/
 
 .calendar {

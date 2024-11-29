@@ -176,12 +176,6 @@ public class TaskController {
         return "tasks/tasksList";
     }
 
-    @PostMapping("/edit")
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> updateTaskByField(@RequestBody Map<String, String> data) {
-        return taskService.editTaskByField(data);
-    }
-
     @PostMapping("/edit/{id}")
     public String updateTaskInListPage(
             @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,

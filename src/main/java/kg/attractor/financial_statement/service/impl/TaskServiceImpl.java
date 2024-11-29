@@ -138,45 +138,6 @@ public class TaskServiceImpl implements TaskService {
         return convertToDto(task);
     }
 
-    @Override
-    public ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data) {
-        String taskIdStr = data.get("taskId");
-        String fieldToEdit = data.get("field");
-        String newValue = data.get("value");
-        System.out.println("edit " + newValue);
-
-        if (taskIdStr == null || fieldToEdit == null || newValue == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
-        }
-
-        Long taskId;
-        try {
-            taskId = Long.parseLong(taskIdStr);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
-        }
-
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new NoSuchElementException("Task not found for id" + taskId));
-
-        switch (fieldToEdit) {
-            case "amount":
-                String cleanedValue = newValue.replaceAll("[,\\s]", "");
-                if (isValidBigDecimal(cleanedValue)) {
-                    task.setAmount(new BigDecimal(cleanedValue));
-                } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Amount!"));
-                }
-                break;
-            case "description":
-                task.setDescription(newValue);
-                break;
-        }
-
-        taskRepository.save(task);
-        return ResponseEntity.ok(Map.of("message", "Задача Успешно отредактирована."));
-
-    }
 
     @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {

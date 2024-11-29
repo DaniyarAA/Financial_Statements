@@ -207,9 +207,9 @@ public class RoleServiceImplTest {
         testRole.setAuthorities(List.of(fakeAuthority, fakeAuthority1));
         testRole.setUsers(new ArrayList<>());
         User fakeUser1 = new User(1L, "Test", "Testov", "test_testov", "superSecretPassword123!",
-                true, LocalDate.now(), "avatar", LocalDate.now(), "not notes", true, testRole, new ArrayList<>());
+                true, LocalDate.now(), "avatar", LocalDate.now(), "not notes", true, "fakeEmail@gmail.com",testRole, new ArrayList<>());
         User fakeUser2 = new User(2L, "Test2", "Testova", "test2_testova", "anotherPassword123!",
-                true, LocalDate.now(), "avatar2", LocalDate.now(), "other notes", true, testRole, new ArrayList<>());
+                true, LocalDate.now(), "avatar2", LocalDate.now(), "other notes", true,"fakeSecondEmail@gmail.com", testRole, new ArrayList<>());
         testRole.setUsers(List.of(fakeUser1, fakeUser2));
         List<AuthorityDto> expectedAuthorities = List.of(
                 new AuthorityDto(1L, "ROLE_READ", "Read Authority", true),

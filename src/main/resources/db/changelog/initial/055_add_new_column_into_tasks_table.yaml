@@ -11,7 +11,7 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     foreignKeyName: fk_priority_id_tasks
-                    references: priorities(id)
+                    references: tasks(id)
               - column:
                   name: tag
                   type: varchar(55)

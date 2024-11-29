@@ -53,8 +53,9 @@ public class Task {
     @Column(name = "priority_id")
     private Long priorityId;
 
-    @Column(name = "tag")
-    private String tag;
+    @ManyToOne
+    @Column(name = "tag_id")
+    private Tag tag;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
     private List<Report> reports;

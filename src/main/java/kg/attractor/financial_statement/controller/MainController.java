@@ -3,7 +3,6 @@ package kg.attractor.financial_statement.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.PriorityDto;
 import kg.attractor.financial_statement.dto.TaskDto;
-import kg.attractor.financial_statement.entity.Priority;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.service.PriorityService;
 import kg.attractor.financial_statement.service.TaskService;

@@ -54,7 +54,7 @@ public class Task {
     private Long priorityId;
 
     @ManyToOne
-    @Column(name = "tag_id")
+    @JoinColumn(name = "tag_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_tag_id_tasks"))
     private Tag tag;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")

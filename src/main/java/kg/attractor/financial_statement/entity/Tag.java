@@ -22,4 +22,8 @@ public class Tag {
 
     @OneToMany(mappedBy = "tag")
     private List<Task> tasks;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

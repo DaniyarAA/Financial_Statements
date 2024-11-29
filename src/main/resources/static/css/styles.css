@@ -999,22 +999,20 @@ h2 {
 }
 
 .priority-close-button {
-    color: #000;
-    font-size: 18px;
+    color: #999;
+    font-size: 24px;
     font-weight: bold;
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
 }
 
-.priority-close-button:hover {
-    color: #ff4d4d;
-}
-
 .priority-modal-title {
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 600;
     margin-bottom: 15px;
+    color: #333;
 }
 
 .priority-list {
@@ -1146,6 +1144,81 @@ h2 {
     margin-left: 59px;
 }
 /*стили для приоритетов*/
+
+/*стили для тегов*/
+.tag-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.tag-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative;
+    transform: translate(130%, -50%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.tag-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#tag-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.tag-close-button {
+    color: #999;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.tag-save-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.tag-save-button:hover {
+    background-color: #45a049;
+}
+
+.tag-modal.show {
+    opacity: 1;
+    transform: scale(1);
+}
+/*стили для тегов*/
 
 .calendar {
     display: flex;

@@ -439,6 +439,7 @@ public class TaskServiceImpl implements TaskService {
                 .isCompleted(taskStatusService.getIsCompleted(task.getTaskStatus()))
                 .priorityId(task.getPriorityId())
                 .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
+                .tag(task.getTag() != null ? task.getTag().getTag() : null)
                 .build();
     }
 
@@ -536,6 +537,15 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new NoSuchElementException("Task not found"));
 
         task.setPriorityId(priorityId);
+        taskRepository.save(task);
+    }
+
+    @Override
+    public void updateTaskTag(Long taskId, Tag tag) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        task.setTag(tag);
         taskRepository.save(task);
     }
 }

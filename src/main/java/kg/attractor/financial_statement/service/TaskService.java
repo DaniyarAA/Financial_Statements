@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Tag;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.enums.ReportFrequency;
@@ -52,4 +53,6 @@ public interface TaskService {
     void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency);
 
     void updateTaskPriority(Long taskId, Long priorityId);
+
+    void updateTaskTag(Long taskId, Tag tag);
 }

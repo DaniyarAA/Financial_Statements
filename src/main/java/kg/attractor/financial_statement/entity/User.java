@@ -35,6 +35,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserCompany> userCompanies;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags;
+
     public boolean isCredentialsNonExpired() {
         return this.credentialsUpdated;
     }

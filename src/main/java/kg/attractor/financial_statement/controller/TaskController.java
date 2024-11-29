@@ -9,6 +9,7 @@ import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class TaskController {
     private final UserService userService;
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
+    private final TagService tagService;
 
     @GetMapping("test")
     public String getTasks(Model model) {
@@ -195,5 +197,20 @@ public class TaskController {
         System.out.println("Task ID: " + taskId + ", Priority ID: " + priorityId);
         taskService.updateTaskPriority(taskId, priorityId);
         return ResponseEntity.ok("Priority updated successfully");
+    }
+
+    @PostMapping("/tag")
+    public ResponseEntity<Void> createTag(@RequestBody TagDto tagDto, Authentication authentication) {
+        String login = authentication.getName();
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        tagDto.setUserId(user.getId());
+        tagService.createTag(tagDto);
+
+        return ResponseEntity.ok().build();
     }
 }

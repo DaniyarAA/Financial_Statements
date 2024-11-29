@@ -27,4 +27,5 @@ public class TaskDto {
     private Boolean isCompleted;
     private String priorityColor;
     private Long priorityId;
+    private String tag;
 }

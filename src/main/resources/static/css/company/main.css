@@ -345,13 +345,23 @@ input[type="email"]:focus {
     }
 }
 
-@media (min-width: 1190px) {
+@media (min-width: 1620px) {
     .companies-sidebar-main {
-        width: 20%;
+        width: 15%;
     }
 
     .companies-info-main {
-        width: 80%;
+        width: 85%;
+    }
+}
+
+@media (min-width: 1372px) {
+    .companies-sidebar-main {
+        width: 17%;
+    }
+
+    .companies-info-main {
+        width: 83%;
     }
 }
 

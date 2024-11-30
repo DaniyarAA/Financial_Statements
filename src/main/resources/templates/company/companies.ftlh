@@ -12,40 +12,40 @@
     <link rel="stylesheet" href="/css/company/main.css">
 </head>
 <body>
-<header>
-    <div class="container">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/"><i class="bi bi-house-door"></i></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <p class="nav-link active nav-com">Companies list</p>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <p class="nav-link active">Компании</p>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <button type="button" class="btn btn-light plus-btn-over" id="createCompanyButton"
-                                    data-bs-toggle="modal" data-bs-target="#createCompanyModal">
-                                <i class="bi bi-plus-circle plus-btn"></i>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"><i class="bi bi-house-door"></i></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-lg-0">
+                <li class="nav-item">
+                    <p class="nav-link active nav-com">Companies list</p>
+                </li>
+            </ul>
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <p class="nav-link active">Компании</p>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-light plus-btn-over" id="createCompanyButton"
+                            data-bs-toggle="modal" data-bs-target="#createCompanyModal">
+                        <i class="bi bi-plus-circle plus-btn"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
     </div>
-</header>
+</nav>
+
 <div class="container">
     <#if _csrf??>
         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"

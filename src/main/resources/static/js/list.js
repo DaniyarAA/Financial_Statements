@@ -339,3 +339,44 @@ function getDate(element) {
     }
     return date;
 }
+
+function setupCompanyToggleButton() {
+    const companyHeader = document.querySelector(".company-column-th .company-header");
+
+    if (!companyHeader) return;
+
+    if (!companyHeader.querySelector(".btn-nav-img-toggle")) {
+        const toggleButtonImage = document.createElement("img");
+        toggleButtonImage.src = "/images/company-arrow.png";
+        toggleButtonImage.alt = "Toggle Company Table";
+        toggleButtonImage.classList.add("btn-nav-img", "btn-nav-img-toggle");
+        toggleButtonImage.style.position = "absolute";
+        toggleButtonImage.style.right = "5px";
+        toggleButtonImage.style.top = "50%";
+        toggleButtonImage.style.transform = "translateY(-50%)";
+        toggleButtonImage.style.cursor = "pointer";
+        toggleButtonImage.style.width = "24px";
+        toggleButtonImage.style.height = "24px";
+
+        toggleButtonImage.addEventListener("click", () => {
+            toggleCompanyTable();
+        });
+
+        companyHeader.style.position = "relative";
+        companyHeader.appendChild(toggleButtonImage);
+    }
+}
+
+function toggleCompanyTable() {
+    const companyTable = document.getElementById("company-table");
+    if (companyTable) {
+        const isHidden = companyTable.style.display === "none";
+        companyTable.style.display = isHidden ? "block" : "none";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupCompanyToggleButton();
+});
+
+

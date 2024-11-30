@@ -9,12 +9,16 @@
     </#if>
     <div class="container p-3">
         <div class="main-content">
-            <div class="table-container company-table">
+            <div class="table-container company-table" id="company-table" style="display: block">
                 <div class="table-wrapper">
                     <table class="table-main">
                         <thead>
                         <tr class="company-column-tr">
-                            <th class="company-column-th">Компании</th>
+                            <th class="company-column-th">
+                                <div class="company-header">
+                                    <span>Компании</span>
+                                </div>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -154,12 +158,14 @@
             height: 61px;
         }
         .tasks-table {
-            width: 75%;
+            width: 100%;
             background-color: #d9d9d9;
+            flex: 1;
             margin-right: 10px;
             margin-top: 26px;
-        }
+            box-sizing: border-box;
 
+        }
         .year-month-column {
             background-color: #ffffff;
             height: 35px;
@@ -273,7 +279,7 @@
         }
 
         .container.with-details .task-details {
-            width: 40%;
+            width: 30%;
             border: 1px solid #dee2e6;
         }
 
@@ -306,9 +312,9 @@
             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3);
         }
         .button-container:hover {
-            background-color: #e0e0e0; /* A light grey color */
-            transition: background-color 0.3s ease; /* Smooth transition effect */
-            cursor: pointer; /* Change the cursor to a pointer for a clickable effect */
+            background-color: #e0e0e0;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
         .status-indicator {
@@ -476,6 +482,21 @@
         }
         .alert p {
             margin: 0;
+        }
+
+        .collapse-button {
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .collapse-button:hover {
+            background-color: #0056b3;
         }
 
 

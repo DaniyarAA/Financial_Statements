@@ -197,32 +197,32 @@ public class RoleServiceImplTest {
         verifyNoInteractions(roleRepository);
     }
 
-//    @Test
-//    void testConvertRoleToRoleDto() {
-//        Authority fakeAuthority = new Authority(1L, "ROLE_READ", "Read Authority", new ArrayList<>());
-//        Authority fakeAuthority1 = new Authority(2L, "ROLE_WRITE", "Write Authority", new ArrayList<>());
-//        Role testRole = new Role();
-//        testRole.setId(1L);
-//        testRole.setRoleName("Admin");
-//        testRole.setAuthorities(List.of(fakeAuthority, fakeAuthority1));
-//        testRole.setUsers(new ArrayList<>());
-//        User fakeUser1 = new User(1L, "Test", "Testov", "test_testov", "superSecretPassword123!",
-//                true, LocalDate.now(), "avatar", LocalDate.now(), "not notes", true, testRole, new ArrayList<>());
-//        User fakeUser2 = new User(2L, "Test2", "Testova", "test2_testova", "anotherPassword123!",
-//                true, LocalDate.now(), "avatar2", LocalDate.now(), "other notes", true, testRole, new ArrayList<>());
-//        testRole.setUsers(List.of(fakeUser1, fakeUser2));
-//        List<AuthorityDto> expectedAuthorities = List.of(
-//                new AuthorityDto(1L, "ROLE_READ", "Read Authority", true),
-//                new AuthorityDto(2L, "ROLE_WRITE", "Write Authority", true)
-//        );
-//
-//        List<Long> expectedUserIds = List.of(1L, 2L);
-//        RoleDto result = roleService.convertToDto(testRole);
-//        assertThat(result.getId()).isEqualTo(1L);
-//        assertThat(result.getRoleName()).isEqualTo("Admin");
-//        assertThat(result.getAuthorities()).isEqualTo(expectedAuthorities);
-//        assertThat(result.getUserIds()).isEqualTo(expectedUserIds);
-//    }
+    @Test
+    void testConvertRoleToRoleDto() {
+        Authority fakeAuthority = new Authority(1L, "ROLE_READ", "Read Authority", new ArrayList<>());
+        Authority fakeAuthority1 = new Authority(2L, "ROLE_WRITE", "Write Authority", new ArrayList<>());
+        Role testRole = new Role();
+        testRole.setId(1L);
+        testRole.setRoleName("Admin");
+        testRole.setAuthorities(List.of(fakeAuthority, fakeAuthority1));
+        testRole.setUsers(new ArrayList<>());
+        User fakeUser1 = new User(1L, "Test", "Testov", "test_testov", "superSecretPassword123!",
+                true, LocalDate.now(), "avatar", LocalDate.now(), "not notes", true, "fakeEmail@gmail.com",testRole, new ArrayList<>());
+        User fakeUser2 = new User(2L, "Test2", "Testova", "test2_testova", "anotherPassword123!",
+                true, LocalDate.now(), "avatar2", LocalDate.now(), "other notes", true,"fakeSecondEmail@gmail.com", testRole, new ArrayList<>());
+        testRole.setUsers(List.of(fakeUser1, fakeUser2));
+        List<AuthorityDto> expectedAuthorities = List.of(
+                new AuthorityDto(1L, "ROLE_READ", "Read Authority", true),
+                new AuthorityDto(2L, "ROLE_WRITE", "Write Authority", true)
+        );
+
+        List<Long> expectedUserIds = List.of(1L, 2L);
+        RoleDto result = roleService.convertToDto(testRole);
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getRoleName()).isEqualTo("Admin");
+        assertThat(result.getAuthorities()).isEqualTo(expectedAuthorities);
+        assertThat(result.getUserIds()).isEqualTo(expectedUserIds);
+    }
 
 
     @Test

@@ -47,6 +47,9 @@ public class UserDto {
     @Valid
     private RoleDto roleDto;
 
+    @NotNull(message = "Введите адрес эл.почты!")
+    private String email;
+
     private String notes;
 
     private int displayIndex;

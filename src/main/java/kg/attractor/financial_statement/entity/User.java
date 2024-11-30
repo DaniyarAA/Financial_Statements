@@ -28,6 +28,8 @@ public class User {
     private String notes;
     private boolean credentialsUpdated;
 
+    private String email;
+
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "role_id")
     private Role role;

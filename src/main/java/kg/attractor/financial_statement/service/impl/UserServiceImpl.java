@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -73,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .avatar("user.png")
                 .registerDate(LocalDate.now())
                 .credentialsUpdated(true)
+                .email(userDto.getEmail())
                 .build();
         log.info("registering User: {} in process...", newUser);
         userRepository.save(newUser);
@@ -125,27 +123,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(Long id, UserDto userDto) {
         User user = getUserById(id);
-        if(user.isEnabled()){
-            Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-            validateBirthday(userDto.getBirthday());
-            user.setRole(role);
-            user.setBirthday(userDto.getBirthday());
-            user.setNotes(userDto.getNotes());
-            if (!userDto.getName().isEmpty()) {
-                user.setName(userDto.getName());
-            }
-            if (!userDto.getSurname().isEmpty()) {
-                user.setSurname(userDto.getSurname());
-            }
-            List<Company> newCompanies = userDto.getCompanies().stream()
-                    .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
-                    .toList();
-            userCompanyService.updateUserCompanies(user, newCompanies);
-            log.info("edit user {}in process...", userDto.getLogin());
-            userRepository.save(user);
-        } else {
+        if(!user.isEnabled()){
             throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать");
         }
+
+        Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+        validateBirthday(userDto.getBirthday());
+        if(!user.getRole().getRoleName().equals("SuperUser")){
+            user.setRole(role);
+        }
+        user.setBirthday(userDto.getBirthday());
+        user.setNotes(userDto.getNotes());
+        if (!userDto.getName().isEmpty()) {
+            user.setName(userDto.getName());
+        }
+        if (!userDto.getSurname().isEmpty()) {
+            user.setSurname(userDto.getSurname());
+        }
+
+        if (!userDto.getEmail().isEmpty()) {
+            user.setEmail(userDto.getEmail());
+        }
+        List<Company> newCompanies = userDto.getCompanies().stream()
+                .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
+                .toList();
+        userCompanyService.updateUserCompanies(user, newCompanies);
+        log.info("edit user {}in process...", userDto.getLogin());
+        userRepository.save(user);
+
+
     }
 
     private void updateLoginIfChanged(String newLogin, User user) {
@@ -215,8 +221,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
-        if (user.getRole().getRoleName().equals("SuperUser") || user.getRole().getRoleName().equals("Бухгалтер")) {
-            log.info("Нельзя удалить пользователей с ролью Бухгалтер или Бухгалтер");
+        if (user.getRole().getRoleName().equals("SuperUser")) {
+            log.info("Нельзя удалить администратора системы");
             throw new IllegalArgumentException("Нельзя удалить администратора системы");
         }
         log.info("deleting user - {} in process...", user.getLogin());
@@ -228,7 +234,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllDtoUsers(Pageable pageable, String login) {
         User currentUser = getUserByLogin(login);
-        Page<User> users = userPageableRepository.findAllByOrderByEnabledDesc(pageable);
+        Page<User> users = userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable);
         boolean isCurrentUserSuperUser = currentUser.getRole().getRoleName().equals("SuperUser");
         var list = users.get()
                 .filter(user -> isCurrentUserSuperUser || user.getRole() == null || !"SuperUser".equals(user.getRole().getRoleName()))
@@ -332,6 +338,7 @@ public class UserServiceImpl implements UserService {
                 .registerDate(user.getRegisterDate())
                 .avatar(user.getAvatar())
                 .roleDto(roleDto)
+                .email(user.getEmail())
                 .companies(getCompaniesByUserId(user.getId()))
                 .build();
     }

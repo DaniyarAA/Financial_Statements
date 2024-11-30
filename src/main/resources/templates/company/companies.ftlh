@@ -52,7 +52,7 @@
                value="${(_csrf.token)!'csrf-token'}"/>
     </#if>
     <div class="row">
-        <div class="col-md-2 col-sm-3">
+        <div class="companies-sidebar-main">
             <div class="list-group">
                 <div>
                     <label for="search" class="w-100">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <div class="col-md-10 col-sm-9 companies-nav">
+        <div class="companies-info-main companies-nav">
             <div class="forms-back-color">
                 <div class="forms">
                     <#if company?? && company.id?has_content>
@@ -113,7 +113,7 @@
                             </div>
                         </h2>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="company-not-required-info">
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line">
                                         <strong>ИНН:</strong>
@@ -477,7 +477,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="col-md-6">
+                            <div class="company-required-info">
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line">
                                         <strong>Почта:</strong> <span id="email">${company.email!}</span>

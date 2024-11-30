@@ -71,24 +71,30 @@
 
                                     <div class="tag-container">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                                             class="bi bi-tag" viewBox="0 0 16 16" onclick="openTagModal()">
+                                             class="bi bi-tag" viewBox="0 0 16 16" onclick="toggleTagSelect()">
                                             <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
                                             <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
                                         </svg>
-                                        <span class="task-tag pe-1" id="tag-text">
-                                        <#if task.tag?has_content>
-                                        <span class="tag-text-short">${task.tag?substring(0, 3)}...</span>
-                                        <span class="tag-text-full" style="display: none;">${task.tag}</span>
-                                        <#else>
 
-                                        </#if>
-                                        </span>
-
+                                        <div id="tag-modal" class="tag-select-modal" style="display: none;">
+                                            <div class="tag-select-modal-content">
+                                                <span class="tag-close-button" onclick="closeTagModal('select')">&times;</span>
+                                                <h3>Выберите тег</h3>
+                                                <select id="user-tags-select" onchange="applySelectedTag(this.value)">
+                                                    <option value="" disabled selected>Выберите тег</option>
+                                                </select>
+                                                <button onclick="openTagModal()" class="tag-add-button">+</button>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div id="tag-modal" class="tag-modal" style="display: none;">
-                                        <div class="tag-modal-content">
-                                            <span class="tag-close-button" onclick="closeTagModal()">&times;</span>
+                                    <div>
+                                        <span id="tag-text"></span>
+                                    </div>
+
+                                    <div id="tag-modal-create" class="tag-select-modal" style="display: none;">
+                                        <div class="tag-select-modal-content">
+                                            <span class="tag-close-button" onclick="closeTagModal('create')">&times;</span>
                                             <h3 class="tag-modal-title">Добавьте текст для тега</h3>
                                             <input type="text" id="tag-input" placeholder="Введите текст тега">
                                             <input type="hidden" id="task-id" value="${task.id}">

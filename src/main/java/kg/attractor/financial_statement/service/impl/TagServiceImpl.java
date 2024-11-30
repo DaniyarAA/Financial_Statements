@@ -3,9 +3,9 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.TagDto;
 import kg.attractor.financial_statement.entity.Tag;
 import kg.attractor.financial_statement.repository.TagRepository;
-import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.TagService;
 import kg.attractor.financial_statement.service.TaskService;
+import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
-    private final UserRepository userRepository;
     private final TaskService taskService;
+    private final UserService userService;
 
     @Override
     public TagDto getTagById(Long id) {
@@ -47,6 +47,31 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    @Override
+    public List<TagDto> getTagsByUserId(Long userId) {
+        return tagRepository.findByUserId(userId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public TagDto getTagForTask(Long taskId) {
+        return tagRepository.findByTasks_Id(taskId)
+                .map(this::convertToDto)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found for task with ID " + taskId));
+    }
+
+    @Override
+    public void updateTagForTask(Long taskId, Long tagId) {
+        Tag tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found"));
+
+        taskService.updateTaskTag(taskId, tag);
+    }
+
+    //todo тег применяется только к первой задаче, скрытый тег появляется только после обновления страницы, добавить проверку на то что тег не должен быть меньше трех символов(а именно лучше сделать проверку на любое количество символов, но если привышает больше трех то уже укороченный вариант, сделать ограничение на больше 10 тегов и выборка с админом
+
     private TagDto convertToDto(Tag tag) {
         return TagDto.builder()
                 .id(tag.getId())
@@ -58,8 +83,7 @@ public class TagServiceImpl implements TagService {
     public Tag convertToEntity(TagDto tagDto) {
         Tag tag = new Tag();
         tag.setTag(tagDto.getTag());
-        tag.setUser(userRepository.findById(tagDto.getUserId())
-                .orElseThrow(() -> new NoSuchElementException("User not found")));
+        tag.setUser(userService.getUserById(tagDto.getUserId()));
         return tag;
     }
 }

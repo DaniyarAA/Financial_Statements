@@ -10,4 +10,10 @@ public interface TagService {
     List<TagDto> getAllTags();
 
     void createTag(TagDto tagDto);
+
+    List<TagDto> getTagsByUserId(Long userId);
+
+    TagDto getTagForTask(Long taskId);
+
+    void updateTagForTask(Long taskId, Long tagId);
 }

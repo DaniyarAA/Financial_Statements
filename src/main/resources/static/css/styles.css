@@ -1218,6 +1218,29 @@ h2 {
     opacity: 1;
     transform: scale(1);
 }
+
+.tag-select-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.tag-select-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    transform: translate(130%, -50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 /*стили для тегов*/
 
 .calendar {

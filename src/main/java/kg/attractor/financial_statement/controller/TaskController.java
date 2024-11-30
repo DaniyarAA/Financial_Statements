@@ -213,4 +213,40 @@ public class TaskController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/tags/user")
+    @ResponseBody
+    public List<TagDto> getUserTags(Authentication authentication) {
+        String login = authentication.getName();
+        User userDto = userService.getUserByLogin(login);
+
+        if (userDto == null) {
+            throw new NoSuchElementException("User not found");
+        }
+
+        return tagService.getTagsByUserId(userDto.getId());
+    }
+
+    @GetMapping("/{taskId}/tag")
+    public ResponseEntity<TagDto> getTaskTag(@PathVariable Long taskId) {
+        TagDto tag = tagService.getTagForTask(taskId);
+        if (tag == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tag);
+    }
+
+    @PostMapping("/tag/update")
+    public ResponseEntity<Void> updateTag(@RequestBody TagUpdateDto tagUpdateDto, Authentication authentication) {
+        String login = authentication.getName();
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        tagService.updateTagForTask(tagUpdateDto.getTaskId(), tagUpdateDto.getTagId());
+
+        return ResponseEntity.ok().build();
+    }
 }

@@ -345,6 +345,75 @@ input[type="email"]:focus {
     }
 }
 
+@media (min-width: 1190px) {
+    .companies-sidebar-main {
+        width: 20%;
+    }
+
+    .companies-info-main {
+        width: 80%;
+    }
+}
+
+@media (min-width: 1150px) {
+    .companies-sidebar-main {
+        width: 23%;
+    }
+
+    .companies-info-main {
+        width: 77%;
+    }
+}
+
+@media (max-width: 1150px) {
+    .companies-sidebar-main {
+        width: 100%;
+    }
+    .companies-info-main {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+@media (min-width: 892px) {
+    .company-not-required-info {
+        width: 50%;
+    }
+
+    .company-required-info {
+        width: 50%;
+    }
+}
+
+@media (max-width: 892px) {
+    .company-not-required-info {
+        width: 100%;
+    }
+
+    .company-required-info {
+        width: 100%;
+    }
+}
+
+@media (max-width: 580px) {
+    .forms{
+        padding: 0;
+    }
+    .company-not-required-info {
+        padding: 0;
+    }
+
+    .company-required-info {
+        padding: 0;
+    }
+}
+
+
+@media (max-width: 450px) {
+    .edit-input{
+        width: 160px;
+    }
+}
 
 
 

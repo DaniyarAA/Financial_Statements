@@ -91,27 +91,116 @@
                 <div class="forms">
                     <#if company?? && company.id?has_content>
 
-                        <h2 class="text-center titleInfoCreate">
-                            Наименование компании:
-                            <span id="companyName" class="inline-block">${company.name!}</span>
-                            <button onclick="copyText('companyName')" title="Скопировать" class="btn btn-link p-0">
-                                <i class="bi bi-clipboard" style="color: black;"></i>
-                            </button>
-                            <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
-                                    title="Редактировать" class="btn btn-link p-0">
-                                <i class="bi bi-pencil" style="color: black;"></i>
-                            </button>
-                            <div class="company-name-edit">
-                            <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
-                                   value="${company.name!}">
-                            <button id="cancelBtncompanyName" class="btn btn-danger d-none"
-                                    onclick="cancelEdit('companyName')">&#10005;
-                            </button>
-                            <button id="saveBtncompanyName" class="btn btn-success d-none"
-                                    onclick="saveChanges('companyName', ${company.id})">&#10003;
-                            </button>
-                            </div>
-                        </h2>
+                    <div class="row">
+
+                        <div class="h-company-info">
+                            <h2 class="text-center titleInfoCreate">
+                                Наименование компании:
+                                <span id="companyName" class="inline-block">${company.name!}</span>
+                                <button onclick="copyText('companyName')" title="Скопировать" class="btn btn-link p-0">
+                                    <i class="bi bi-clipboard" style="color: black;"></i>
+                                </button>
+                                <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
+                                        title="Редактировать" class="btn btn-link p-0">
+                                    <i class="bi bi-pencil" style="color: black;"></i>
+                                </button>
+                                <div class="company-name-edit">
+                                    <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
+                                           value="${company.name!}">
+                                    <button id="cancelBtncompanyName" class="btn btn-danger d-none"
+                                            onclick="cancelEdit('companyName')">&#10005;
+                                    </button>
+                                    <button id="saveBtncompanyName" class="btn btn-success d-none"
+                                            onclick="saveChanges('companyName', ${company.id})">&#10003;
+                                    </button>
+                                </div>
+                            </h2>
+                        </div>
+
+                        <div class="company-info-buttons d-flex justify-content-end">
+                            <#if isAdmin>
+                                <#if company.deleted>
+                                    <button type="button" class="btn  btn-custom-delete"
+                                            data-bs-toggle="modal" data-bs-target="#returnModal">
+                                        <i class="bi bi-reply-all"></i>
+                                    </button>
+
+                                    <div class="modal fade" id="returnModal" tabindex="-1"
+                                         aria-labelledby="returnModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="returnModalLabel">Подтверждение
+                                                        восстановления</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Вы уверены, что хотите восстановить эту компанию?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Отмена
+                                                    </button>
+                                                    <form action="/company/return" method="post" id="returnForm">
+                                                        <#if _csrf??>
+                                                            <input type="hidden"
+                                                                   name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                                   value="${(_csrf.token)!'csrf-token'}"/>
+                                                        </#if>
+                                                        <input type="hidden" name="companyId" value="${company.id}">
+                                                        <button type="submit" class="btn btn-danger"
+                                                                onclick="clearSortFilter()">Востановить
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <#else>
+                                    <button type="button" class="btn  btn-custom-delete"
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon"></i>
+                                    </button>
+
+                                    <div class="modal fade" id="deleteModal" tabindex="-1"
+                                         aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Подтверждение
+                                                        удаления</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Вы уверены, что хотите удалить эту компанию?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Отмена
+                                                    </button>
+                                                    <form action="/company/delete" method="post" id="deleteForm">
+                                                        <#if _csrf??>
+                                                            <input type="hidden"
+                                                                   name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                                   value="${(_csrf.token)!'csrf-token'}"/>
+                                                        </#if>
+                                                        <input type="hidden" name="companyId" value="${company.id}">
+                                                        <button type="submit" class="btn btn-danger"
+                                                                onclick="clearSortFilter()">Удалить
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </#if>
+                            </#if>
+                        </div>
+
+                    </div>
+
                         <div class="row">
                             <div class="company-not-required-info">
                                 <ul class="list-group">
@@ -761,89 +850,8 @@
                                     </li>
                                 </ul>
                             </div>
-                            <#if isAdmin>
-                                <#if company.deleted>
-                                    <button type="button" class="btn btn-danger btn-custom-delete"
-                                            data-bs-toggle="modal" data-bs-target="#returnModal">
-                                        Восстановить Компанию
-                                    </button>
-
-                                    <div class="modal fade" id="returnModal" tabindex="-1"
-                                         aria-labelledby="returnModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="returnModalLabel">Подтверждение
-                                                        восстановления</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Вы уверены, что хотите восстановить эту компанию?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Отмена
-                                                    </button>
-                                                    <form action="/company/return" method="post" id="returnForm">
-                                                        <#if _csrf??>
-                                                            <input type="hidden"
-                                                                   name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                                                   value="${(_csrf.token)!'csrf-token'}"/>
-                                                        </#if>
-                                                        <input type="hidden" name="companyId" value="${company.id}">
-                                                        <button type="submit" class="btn btn-danger"
-                                                                onclick="clearSortFilter()">Востановить
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <#else>
-                                    <button type="button" class="btn btn-danger btn-custom-delete"
-                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                        Удалить Компанию
-                                    </button>
-
-                                    <div class="modal fade" id="deleteModal" tabindex="-1"
-                                         aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="deleteModalLabel">Подтверждение
-                                                        удаления</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Вы уверены, что хотите удалить эту компанию?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Отмена
-                                                    </button>
-                                                    <form action="/company/delete" method="post" id="deleteForm">
-                                                        <#if _csrf??>
-                                                            <input type="hidden"
-                                                                   name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                                                   value="${(_csrf.token)!'csrf-token'}"/>
-                                                        </#if>
-                                                        <input type="hidden" name="companyId" value="${company.id}">
-                                                        <button type="submit" class="btn btn-danger"
-                                                                onclick="clearSortFilter()">Удалить
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </#if>
-                            </#if>
                         </div>
-
                     </#if>
-
 
                     <div class="modal fade" id="createCompanyModal" tabindex="-1"
                          aria-labelledby="createCompanyModalLabel" aria-hidden="true">

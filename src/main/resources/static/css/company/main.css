@@ -99,9 +99,24 @@ form {
 }
 
 .btn-custom-delete {
-    width: 180px;
-    margin-top: 20px;
-    margin-left: 20px;
+    padding: 0;
+}
+
+.delete-icon::before{
+    font-size: 30px;
+}
+
+.bi-reply-all::before{
+    font-size: 30px;
+}
+
+
+.h-company-info{
+    width: 80%;
+}
+
+.company-info-buttons{
+    width: 20%;
 }
 
 .row {

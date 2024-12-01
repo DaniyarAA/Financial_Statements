@@ -238,6 +238,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const url = link.getAttribute('href');
             const companyId = url.split('companyId=')[1].split('&')[0];
 
+            document.querySelectorAll('.choice-company').forEach(item => {
+                item.classList.remove('active');
+            });
+            link.closest('li').classList.add('active');
+
             fetch(`/company/${companyId}`, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -279,7 +284,10 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('fresh1cPassword').innerText = company.fresh1cPassword;
         document.getElementById('ettn').innerText = company.ettn;
         document.getElementById('ettnPassword').innerText = company.ettnPassword;
-        document.getElementById('isDeleted').innerText = company.isDeleted ? "Yes" : "No";
+        // document.getElementById('isDeleted').innerText = company.isDeleted ? "Yes" : "No";
+        // console.log(document.getElementById('companyId').value);
+        // document.getElementById('companyId').value = company.id;
+        // console.log(document.getElementById('companyId').value); надо настроить логику
     }
 
 });

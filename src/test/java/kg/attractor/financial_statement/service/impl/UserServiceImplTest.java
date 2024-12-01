@@ -44,10 +44,10 @@ public class UserServiceImplTest {
     void setUp() {
         existingUser = new User();
         existingUser.setId(1L);
-        existingUser.setName("Test");
-        existingUser.setSurname("User");
-        existingUser.setLogin("test_user");
-        existingUser.setPassword("password");
+        existingUser.setName("Шерлок");
+        existingUser.setSurname("Холмс");
+        existingUser.setLogin("Shelli");
+        existingUser.setPassword("Sher_lock123");
         existingUser.setEnabled(true);
         existingUser.setBirthday(LocalDate.of(1990, 1, 1));
         existingUser.setRegisterDate(LocalDate.now());
@@ -56,21 +56,23 @@ public class UserServiceImplTest {
 
     @Test
     void testRegisterUser_Success() {
-        UserDto userDto = new UserDto();
-        userDto.setName("Test");
-        userDto.setSurname("User");
-        userDto.setLogin("test_user");
-        userDto.setPassword("password");
-        userDto.setBirthday(LocalDate.of(1990, 1, 1));
-        RoleDto roleDto = new RoleDto();
-        roleDto.setId(1L);
-        userDto.setRoleDto(roleDto);
-
+        RoleDto roleDto = RoleDto.builder().id(1L).roleName("Test").build();
         Role role = new Role();
         role.setId(1L);
-
+        role.setRoleName("Test");
+        UserDto userDto = UserDto.builder()
+                .name("Том")
+                .surname("Харди")
+                .login("Venom")
+                .password("Wearevenom123")
+                .birthday(LocalDate.now().minusYears(20))
+                .registerDate(LocalDate.now())
+                .roleDto(roleDto)
+                .build();
         when(roleService.getRoleById(1L)).thenReturn(role);
         when(passwordEncoder.encode(userDto.getPassword())).thenReturn("encoded_password");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
 
         userService.registerUser(userDto);
 
@@ -84,6 +86,16 @@ public class UserServiceImplTest {
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(userDto));
         assertEquals("Человеку должно быть больше 18 лет", exception.getMessage());
+    }
+
+
+    @Test
+    void testRegisterUser_BirthdayInFuture_ThrowsException() {
+        UserDto userDto = new UserDto();
+        userDto.setBirthday(LocalDate.now().plusDays(1));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(userDto));
+        assertEquals("Человек еще не родился", exception.getMessage());
     }
 
 

@@ -62,6 +62,11 @@ public class CompanyController {
         return "company/companies";
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CompanyDto> getCompanyById(@PathVariable Long id) {
+        return ResponseEntity.ok(companyService.findById(id));
+    }
+
     @PostMapping("/edit")
     @ResponseBody
     public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data) {

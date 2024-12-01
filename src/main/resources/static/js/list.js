@@ -118,7 +118,7 @@ function showTaskDetails(button) {
     overflow-y: auto;">${description}</textarea>
         <div style="display: flex; justify-content: center; margin-top: 50px">
 
-        <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
+        <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
     </div>
 
@@ -372,6 +372,7 @@ function toggleCompanyTable() {
     if (companyTable) {
         const isHidden = companyTable.style.display === "none";
         companyTable.style.display = isHidden ? "block" : "none";
+        companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
     }
 }
 
@@ -379,4 +380,40 @@ document.addEventListener("DOMContentLoaded", () => {
     setupCompanyToggleButton();
 });
 
+
+function addCollapseButtonToTaskDetails() {
+    const taskDetailsHeader = document.querySelector('.task-details-header');
+
+    if (!taskDetailsHeader.querySelector('.btn-collapse-task-details')) {
+        const collapseButton = document.createElement('button');
+        collapseButton.type = 'button';
+        collapseButton.className = 'btn-collapse-task-details';
+        collapseButton.style.cssText = `
+            background: none;
+            border: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        `;
+
+        collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
+
+        collapseButton.addEventListener('click', () => {
+            const taskDetails = document.getElementById('task-details');
+            if (taskDetails) {
+                taskDetails.style.display = 'none';
+            }
+            const container = document.querySelector('.container');
+            if (container) {
+                container.classList.remove('with-details');
+            }
+        });
+
+        taskDetailsHeader.appendChild(collapseButton);
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    addCollapseButtonToTaskDetails();
+});
 

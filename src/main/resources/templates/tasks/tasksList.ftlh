@@ -151,6 +151,8 @@
 
             margin-right: 5px;
             background-color: #d9d9d9;
+
+            transition: width 0.3s ease, padding 0.3s ease;
         }
 
         .company-column-tr{
@@ -333,6 +335,7 @@
             height: 100%;
         }
         .task-details-header {
+            position: relative;
             height: 61px;
             background-color: #ffffff;
             display: flex;
@@ -496,8 +499,34 @@
         }
 
         .collapse-button:hover {
-            background-color: #0056b3;
+            opacity: 0.8;
+            transform: scale(1.1);
         }
+
+        .btn-collapse-task-details {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-collapse-task-details:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        .btn-save-task:hover {
+            opacity: 0.8;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-nav-img-toggle:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+
 
 
     </style>

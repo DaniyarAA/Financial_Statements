@@ -2,7 +2,6 @@ function showTaskDetails(button) {
     console.log(taskStatusDtos);
 
     const container = document.querySelector('.container');
-    container.classList.add('with-details');
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 
@@ -20,6 +19,12 @@ function showTaskDetails(button) {
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
     const formattedAmount = formatAmount(amount);
+
+    const taskDetails = document.getElementById('task-details');
+    if (taskDetails) {
+        taskDetails.style.width = '30%';
+        taskDetails.border = '1px solid #dee2e6'
+    }
 
     let statusOptions = '';
     taskStatusDtos.forEach((statusDto) => {
@@ -402,11 +407,10 @@ function addCollapseButtonToTaskDetails() {
         collapseButton.addEventListener('click', () => {
             const taskDetails = document.getElementById('task-details');
             if (taskDetails) {
-                taskDetails.style.display = 'none';
-            }
-            const container = document.querySelector('.container');
-            if (container) {
-                container.classList.remove('with-details');
+                taskDetails.style.width = '0';
+                taskDetails.overflow = 'hidden';
+                taskDetails.padding = '0';
+                taskDetails.transition = 'width 0.3s ease, padding 0.3s ease';
             }
         });
 

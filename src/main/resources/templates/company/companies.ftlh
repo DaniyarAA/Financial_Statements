@@ -76,9 +76,10 @@
                 <div id="total" style="overflow-y: scroll; max-height: 600px;">
                     <ul class="search">
                         <#list list as item>
-                            <li class="choice-company list-group-item list-group-item-action <#if companyId == item.id>active</#if>">
-                                <a href="/company/all?companyId=${item.id}&sort=${sort}"
-                                  >${item.name}</a>
+                            <li class="choice-company list-group-item list-group-item-action<#if companyId == item.id>active</#if>">
+                                <a href="/company/all?companyId=${item.id}&sort=${sort}">
+                                    ${item.name}
+                                </a>
                             </li>
                         </#list>
                     </ul>

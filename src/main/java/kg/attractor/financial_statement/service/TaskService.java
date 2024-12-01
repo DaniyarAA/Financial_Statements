@@ -50,4 +50,10 @@ public interface TaskService {
     void tasksGenerator();
 
     void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
+
+    List<TaskDto> getAllFinishedTasks();
+
+    List<TaskDto> getFinishedTasksForUser();
+
+    void updateTaskStatus(Long taskId, Long newStatusId);
 }

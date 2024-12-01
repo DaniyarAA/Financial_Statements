@@ -351,4 +351,18 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public List<UserDto> getDeletedUsers() {
+        return convertToDtoList(userRepository.findAllByEnabledIsFalse());
+    }
+
+    @Override
+    public void resumeUser(Long id, Long roleId) {
+        User user = getUserById(id);
+        log.info("resume user - {} in process...", user.getLogin());
+        user.setRole(roleService.getRoleById(roleId));
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
 }

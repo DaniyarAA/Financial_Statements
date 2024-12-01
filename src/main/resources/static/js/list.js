@@ -70,11 +70,12 @@ function showTaskDetails(button) {
                 <div id="date-display" style="display: block;">
                     <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
-                <div id="date-input" style="display: none">
+                <div id="date-input" style="display: none; height: 36px; align-items: center;">
                     <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
                     <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
-                    <button type="button" class="btn btn-link" onclick="cancelEditDate()"><img alt="Edit pen" src="/images/cross.png" style="width: 20px; height: 20px;"></button>
-
+                    <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
+                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                    </button>
                 </div>
                 
 
@@ -91,19 +92,25 @@ function showTaskDetails(button) {
                         font-size: 14px;
                         margin: 0;
                     ">
-                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
+                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                 </div>
                 <div id="status-display" style="display: block">
                     <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
-                <div id="status-input" style="display: none;">
-                    <select class="form-select" id="taskStatus" name="statusId" style="
-                    width: 200px;
-                    ">
-                        ${statusOptions}
-                    </select>
-                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()"><img alt="Edit pen" src="/images/cross.png" style="max-width: 20px; max-height: 20px;"></button>
-          
+                <div id="status-input" style="display: none; align-items: center;">
+                    <div style="display: flex; flex-direction: row">
+                    <div>
+                        <select class="form-select" id="taskStatus" name="statusId" style="
+                        width: 200px; height: 38px;
+                        ">
+                            ${statusOptions}
+                        </select>
+                    </div>
+      
+                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
+                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                    </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,8 +1,5 @@
 function showTaskDetails(button) {
     console.log(taskStatusDtos);
-
-    const container = document.querySelector('.container');
-
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 
     const taskId = button.getAttribute("data-task-id");
@@ -433,3 +430,27 @@ document.addEventListener('DOMContentLoaded', () => {
     addCollapseButtonToTaskDetails();
 });
 
+function addCreateTaskButton() {
+    const addTaskButton = document.createElement('button');
+    addTaskButton.className = 'btn-create-task';
+    addTaskButton.style.cssText = `
+        background: none;
+            border: none;
+            position: absolute;
+            top: 2px;
+            right: 34px;
+            cursor: pointer;
+    `;
+
+    addTaskButton.innerHTML = `<img src="/images/add.png" alt="Collapse" style="width: 40px; height: 40px;">`;
+
+    addTaskButton.addEventListener('click', () => {
+        alert('Add Task button clicked!');
+    });
+
+    document.body.appendChild(addTaskButton);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    addCreateTaskButton();
+});

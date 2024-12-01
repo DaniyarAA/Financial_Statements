@@ -445,7 +445,7 @@ function addCreateTaskButton() {
     addTaskButton.innerHTML = `<img src="/images/add.png" alt="Collapse" style="width: 40px; height: 40px;">`;
 
     addTaskButton.addEventListener('click', () => {
-        alert('Add Task button clicked!');
+        toggleCreateTaskForm();
     });
 
     document.body.appendChild(addTaskButton);
@@ -454,3 +454,53 @@ function addCreateTaskButton() {
 document.addEventListener('DOMContentLoaded', () => {
     addCreateTaskButton();
 });
+
+
+function toggleCreateTaskForm() {
+    const createTaskForm = document.getElementById('create-task-form');
+    const taskContent = document.getElementById('task-content');
+
+    if (createTaskForm.style.display === 'none') {
+        taskContent.style.display = 'none';
+        createTaskForm.style.display = 'block';
+        renderCreateTaskForm();
+    } else {
+        createTaskForm.style.display = 'none';
+        taskContent.style.display = 'block';
+    }
+}
+
+function renderCreateTaskForm() {
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+
+    document.getElementById('create-task-form').innerHTML = `
+        <form id="create-task" action="/tasks/create" method="post">
+            <input type="hidden" name="_csrf" value="${csrfToken}">
+            <div>
+                <label for="documentType">Тип документа:</label>
+                <input type="text" id="documentType" name="documentType" required />
+            </div>
+            <div>
+                <label for="companyName">Компания:</label>
+                <input type="text" id="companyName" name="companyName" required />
+            </div>
+            <div>
+                <label for="startDate">Дата начала:</label>
+                <input type="date" id="startDate" name="startDate" required />
+            </div>
+            <div>
+                <label for="endDate">Дата окончания:</label>
+                <input type="date" id="endDate" name="endDate" required />
+            </div>
+            <div>
+                <label for="amount">Сумма:</label>
+                <input type="number" id="amount" name="amount" min="0" required />
+            </div>
+            <div>
+                <label for="description">Описание:</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <button type="submit">Создать задачу</button>
+        </form>
+    `;
+}

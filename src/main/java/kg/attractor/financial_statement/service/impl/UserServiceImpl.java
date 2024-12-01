@@ -34,26 +34,30 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserPageableRepository userPageableRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private CompanyService companyService;
-    private UserCompanyService userCompanyService;
+    private final CompanyService companyService;
+    private final UserCompanyService userCompanyService;
 
     @Autowired
-    @Lazy
-    private void setUserCompanyService(UserCompanyService userCompanyService) {
-        this.userCompanyService = userCompanyService;
-    }
-
-    @Autowired
-    @Lazy
-    private void setCompanyService(CompanyService companyService) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            UserPageableRepository userPageableRepository,
+            PasswordEncoder passwordEncoder,
+            RoleService roleService,
+            @Lazy CompanyService companyService,
+            @Lazy UserCompanyService userCompanyService
+    ) {
+        this.userRepository = userRepository;
+        this.userPageableRepository = userPageableRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
         this.companyService = companyService;
+        this.userCompanyService = userCompanyService;
     }
 
     @Override

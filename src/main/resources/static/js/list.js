@@ -374,9 +374,14 @@ function setupCompanyToggleButton() {
 
 function toggleCompanyTable() {
     const companyTable = document.getElementById("company-table");
-    if (companyTable) {
-        const isHidden = companyTable.style.display === "none";
-        companyTable.style.display = isHidden ? "block" : "none";
+    const isHidden = companyTable.style.display === "none";
+    if (isHidden) {
+        companyTable.style.width = '244px';
+        companyTable.style.marginRight = '5px';
+        companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
+    } else {
+        companyTable.style.width = '0';
+        companyTable.style.marginRight = '0';
         companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
     }
 }

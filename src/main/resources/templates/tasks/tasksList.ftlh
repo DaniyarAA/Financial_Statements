@@ -146,9 +146,7 @@
         }
         .company-table {
             width: 244px;
-            min-width: 244px;
-            max-width: 244px;
-
+            overflow: hidden;
             margin-right: 5px;
             background-color: #d9d9d9;
 

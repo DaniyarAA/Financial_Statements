@@ -123,14 +123,6 @@
             color: #333;
         }
 
-        .radio-label {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            color: #333;
-            cursor: pointer;
-        }
-
         input[type="radio"] {
             margin-right: 10px;
             width: 16px;
@@ -142,25 +134,6 @@
         input[type="radio"]:focus {
             outline: none;
             box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-        }
-
-        .btn-submit {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 4px;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-
-        .btn-submit:hover {
-            background-color: #45a049;
         }
 
         .action-button {
@@ -319,20 +292,15 @@
     </div>
 
     <div id="roleModal" class="modal">
-        <div class="modal-content mx-auto mt-5">
-            <span class="close" onclick="closeModal()">×</span>
-            <form id="roleForm">
-                <label>Выберите роль:</label>
-                <div class="radio-group">
-                    <#list roles as role>
-                        <label class="radio-label">
-                            <input type="radio" name="role" value="${role.roleName}">
-                            ${role.roleName}
-                        </label>
-                    </#list>
-                </div>
-                <button type="submit" class="btn-submit">Сохранить</button>
-            </form>
+        <div class="modal-content  mx-auto mt-5">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Выберите роль</h2>
+            <select id="roleSelect">
+                <#list roles as role>
+                    <option value="${role.id}">${role.roleName}</option>
+                </#list>
+            </select>
+            <button class="action-button" onclick="confirmRole()">Подтвердить</button>
         </div>
     </div>
 

@@ -232,63 +232,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".choice-company a").forEach(function(link) {
-        link.addEventListener("click", function(event) {
-            event.preventDefault();
-            const url = link.getAttribute('href');
-            const companyId = url.split('companyId=')[1].split('&')[0];
+    const container = document.getElementById('total');
 
-            document.querySelectorAll('.choice-company').forEach(item => {
-                item.classList.remove('active');
-            });
-            link.closest('li').classList.add('active');
-
-            fetch(`/company/${companyId}`, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    updateCompanyInfo(data);
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-    function updateCompanyInfo(company) {
-        document.getElementById('companyName').innerText = company.name;
-        document.getElementById('companyInn').innerText = company.companyInn;
-        document.getElementById('directorInn').innerText = company.directorInn;
-        document.getElementById('login').innerText = company.login;
-        document.getElementById('password').innerText = company.password;
-        document.getElementById('ecp').innerText = company.ecp;
-        document.getElementById('kabinetSalyk').innerText = company.kabinetSalyk;
-        document.getElementById('kabinetSalykPassword').innerText = company.kabinetSalykPassword;
-        document.getElementById('taxMode').innerText = company.taxMode;
-        document.getElementById('opf').innerText = company.opf;
-        document.getElementById('districtGns').innerText = company.districtGns;
-        document.getElementById('socfundNumber').innerText = company.socfundNumber;
-        document.getElementById('registrationNumberMj').innerText = company.registrationNumberMj;
-        document.getElementById('okpo').innerText = company.okpo;
-        document.getElementById('director').innerText = company.director;
-        document.getElementById('ked').innerText = company.ked;
-        document.getElementById('email').innerText = company.email;
-        document.getElementById('emailPassword').innerText = company.emailPassword;
-        document.getElementById('phone').innerText = company.phone;
-        document.getElementById('esf').innerText = company.esf;
-        document.getElementById('esfPassword').innerText = company.esfPassword;
-        document.getElementById('kkm').innerText = company.kkm;
-        document.getElementById('kkmPassword').innerText = company.kkmPassword;
-        document.getElementById('fresh1c').innerText = company.fresh1c;
-        document.getElementById('fresh1cPassword').innerText = company.fresh1cPassword;
-        document.getElementById('ettn').innerText = company.ettn;
-        document.getElementById('ettnPassword').innerText = company.ettnPassword;
-        // document.getElementById('isDeleted').innerText = company.isDeleted ? "Yes" : "No";
-        // console.log(document.getElementById('companyId').value);
-        // document.getElementById('companyId').value = company.id;
-        // console.log(document.getElementById('companyId').value); надо настроить логику
+    const scrollTop = localStorage.getItem('scrollTop');
+    if (scrollTop !== null) {
+        container.scrollTop = scrollTop;
     }
 
-});
 
+    const activeElement = document.querySelector('.choice-company.active');
+    if (activeElement) {
+        activeElement.scrollIntoView({
+            behavior: 'auto',
+            block: 'nearest'
+        });
+    }
+
+
+    container.addEventListener('scroll', function() {
+        localStorage.setItem('scrollTop', container.scrollTop);
+    });
+});

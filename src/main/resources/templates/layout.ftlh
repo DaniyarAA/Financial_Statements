@@ -25,6 +25,11 @@
         <script src="/js/calendar.js"></script>
         <title>Financial Statement</title>
         <link rel="stylesheet" href="/css/styles.css">
+
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">
+        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+        <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
     </head>
     <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">

@@ -205,8 +205,8 @@
                             <div class="company-not-required-info">
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line">
-                                        <strong>ИНН:</strong>
-                                        <span id="companyInn">${company.companyInn!}</span>
+                                        <span>ИНН:</span>
+                                        <strong id="companyInn">${company.companyInn!}</strong>
                                         <button onclick="copyText('companyInn')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -229,8 +229,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ИНН руководителя:</strong>
-                                        <span id="directorInn">${company.directorInn!}</span>
+                                        <span>ИНН руководителя:</span>
+                                        <strong id="directorInn">${company.directorInn!}</strong>
                                         <button onclick="copyText('directorInn')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -253,8 +253,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Логин:</strong>
-                                        <span id="login">${company.login!}</span>
+                                        <span>Логин:</span>
+                                        <strong id="login">${company.login!}</strong>
                                         <button onclick="copyText('login')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -276,9 +276,9 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Пароль:</strong>
-                                        <span id="password"
-                                              data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></span>
+                                        <span>Пароль:</span>
+                                        <strong id="password"
+                                              data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></strong>
                                         <button onclick="copyText('password')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -304,8 +304,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ЭЦП:</strong>
-                                        <span id="ecp">${company.ecp!}</span>
+                                        <span>ЭЦП:</span>
+                                        <strong id="ecp">${company.ecp!}</strong>
                                         <button onclick="copyText('ecp')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -326,8 +326,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Salyk.kg логин:</strong>
-                                        <span id="kabinetSalyk">${company.kabinetSalyk!}</span>
+                                        <span>Salyk.kg логин:</span>
+                                        <strong id="kabinetSalyk">${company.kabinetSalyk!}</strong>
                                         <button onclick="copyText('kabinetSalyk')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -350,9 +350,9 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Salyk.kg пароль:</strong>
-                                        <span id="kabinetSalykPassword"
-                                              data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></span>
+                                        <span>Salyk.kg пароль:</span>
+                                        <strong id="kabinetSalykPassword"
+                                              data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('kabinetSalykPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -380,8 +380,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Режим налогообложения:</strong>
-                                        <span id="taxMode">${company.taxMode!}</span>
+                                        <span>Режим налогообложения:</span>
+                                        <strong id="taxMode">${company.taxMode!}</strong>
                                         <button onclick="copyText('taxMode')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -403,8 +403,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ОПФ:</strong>
-                                        <span id="opf">${company.opf!}</span>
+                                        <span>ОПФ:</span>
+                                        <strong id="opf">${company.opf!}</strong>
                                         <button onclick="copyText('opf')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -425,8 +425,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Район ГНС:</strong>
-                                        <span id="districtGns">${company.districtGns!}</span>
+                                        <span>Район ГНС:</span>
+                                        <strong id="districtGns">${company.districtGns!}</strong>
                                         <button onclick="copyText('districtGns')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -449,8 +449,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Номер социального фонда:</strong>
-                                        <span id="socfundNumber">${company.socfundNumber!}</span>
+                                        <span>Номер социального фонда:</span>
+                                        <strong id="socfundNumber">${company.socfundNumber!}</strong>
                                         <button onclick="copyText('socfundNumber')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -473,8 +473,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Регистрационный номер МЮ:</strong>
-                                        <span id="registrationNumberMj">${company.registrationNumberMj!}</span>
+                                        <span>Регистрационный номер МЮ:</span>
+                                        <strong id="registrationNumberMj">${company.registrationNumberMj!}</strong>
                                         <button onclick="copyText('registrationNumberMj')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -498,8 +498,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ОКПО:</strong>
-                                        <span id="okpo">${company.okpo!}</span>
+                                        <span>ОКПО:</span>
+                                        <strong id="okpo">${company.okpo!}</strong>
                                         <button onclick="copyText('okpo')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -520,8 +520,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ФИО руководителя:</strong>
-                                        <span id="director">${company.director!}</span>
+                                        <span>ФИО руководителя:</span>
+                                        <strong id="director">${company.director!}</strong>
                                         <button onclick="copyText('director')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -543,8 +543,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>КЭД:</strong>
-                                        <span id="ked">${company.ked!}</span>
+                                        <span>КЭД:</span>
+                                        <strong id="ked">${company.ked!}</strong>
                                         <button onclick="copyText('ked')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -569,7 +569,7 @@
                             <div class="company-required-info">
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line">
-                                        <strong>Почта:</strong> <span id="email">${company.email!}</span>
+                                        <span>Почта:</span> <strong id="email">${company.email!}</strong>
                                         <button onclick="copyText('email')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -591,8 +591,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Пароль от почты:</strong> <span id="emailPassword"
-                                                                                data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></span>
+                                        <span>Пароль от почты:</span> <strong id="emailPassword"
+                                                                                data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('emailPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -619,7 +619,7 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>Телефон:</strong> <span id="phone">${company.phone!}</span>
+                                        <span>Телефон:</span> <strong id="phone">${company.phone!}</strong>
                                         <button onclick="copyText('phone')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -641,7 +641,7 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ЭСФ логин:</strong> <span id="esf">${company.esf!}</span>
+                                        <span>ЭСФ логин:</span> <strong id="esf">${company.esf!}</strong>
                                         <button onclick="copyText('esf')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -662,8 +662,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ЭСФ пароль:</strong> <span id="esfPassword"
-                                                                           data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></span>
+                                        <span>ЭСФ пароль:</span> <strong id="esfPassword"
+                                                                           data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('esfPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -690,7 +690,7 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ККМ логин:</strong> <span id="kkm">${company.kkm!}</span>
+                                        <span>ККМ логин:</span> <strong id="kkm">${company.kkm!}</strong>
                                         <button onclick="copyText('kkm')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -711,8 +711,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ККМ пароль:</strong> <span id="kkmPassword"
-                                                                           data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></span>
+                                        <span>ККМ пароль:</span> <strong id="kkmPassword"
+                                                                           data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('kkmPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -739,8 +739,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>1С Фреш логин:</strong>
-                                        <span id="fresh1c">${company.fresh1c!}</span>
+                                        <span>1С Фреш логин:</span>
+                                        <strong id="fresh1c">${company.fresh1c!}</strong>
                                         <button onclick="copyText('fresh1c')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -762,8 +762,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>1С Фреш пароль:</strong> <span id="fresh1cPassword"
-                                                                               data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></span>
+                                        <span>1С Фреш пароль:</span> <strong id="fresh1cPassword"
+                                                                               data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('fresh1cPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -790,8 +790,8 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ЭТТН логин:</strong>
-                                        <span id="ettn">${company.ettn!}</span>
+                                        <span>ЭТТН логин:</span>
+                                        <strong id="ettn">${company.ettn!}</strong>
                                         <button onclick="copyText('ettn')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -812,9 +812,9 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item list-none-line">
-                                        <strong>ЭТТН пароль:</strong>
-                                        <span id="ettnPassword"
-                                              data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></span>
+                                        <span>ЭТТН пароль:</span>
+                                        <strong id="ettnPassword"
+                                              data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('ettnPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-clipboard" style="color: black;"></i>
@@ -843,9 +843,9 @@
 
                                     <li class="list-group-item list-none-line">
                                         <#if company.deleted>
-                                            <strong>Состояние:</strong> <span> Удаленная компания</span>
+                                            <span>Состояние:</span> <strong> Удаленная компания</strong>
                                         <#else>
-                                            <strong>Состояние:</strong> <span> Актуальная компания</span>
+                                            <span>Состояние:</span> <strong> Актуальная компания</strong>
                                         </#if>
                                     </li>
                                 </ul>

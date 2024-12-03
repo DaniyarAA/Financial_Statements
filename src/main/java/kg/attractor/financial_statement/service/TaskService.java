@@ -38,7 +38,7 @@ public interface TaskService {
 
     TaskDto getTaskDtoById(Long taskId);
 
-    Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth);
+    Map<String, Object> getTaskListData(User user, int size, String paramYearMonth);
 
     void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String name, Long id);
 

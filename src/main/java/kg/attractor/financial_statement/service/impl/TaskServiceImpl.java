@@ -251,7 +251,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
+    public Map<String, Object> getTaskListData(User user, int size, String paramYearMonth) {
         YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
         YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
 
@@ -272,7 +272,7 @@ public class TaskServiceImpl implements TaskService {
 
         System.out.println("Month map: " + monthsMap);
 
-        Map<String, Object> response = buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        Map<String, Object> response = buildResponse(size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
         response.put("availableYearMonths", availableYearMonths);
         return response;
     }
@@ -450,18 +450,11 @@ public class TaskServiceImpl implements TaskService {
 
 
 
-    private Map<String, Object> buildResponse(int page, int size, List<CompanyForTaskDto> companyDtos,
+    private Map<String, Object> buildResponse(int size, List<CompanyForTaskDto> companyDtos,
                                               Map<String, String> monthsMap,
                                               Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany) {
-        int totalCompanies = companyDtos.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-        List<CompanyForTaskDto> paginatedCompanies = companyDtos.subList(start, end);
-
         Map<String, Object> response = new HashMap<>();
-        response.put("currentPage", page);
-        response.put("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        response.put("list", paginatedCompanies);
+        response.put("list", companyDtos);
         response.put("monthsMap", monthsMap);
         response.put("companyDtos", companyDtos);
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);

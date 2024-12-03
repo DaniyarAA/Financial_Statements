@@ -31,25 +31,7 @@
                     </table>
                 </div>
 
-                <div class="pagination-container">
-                    <#if currentPage == 0 && currentPage == totalPages - 1>
 
-                    </#if>
-                    <#if currentPage != 0>
-                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">
-                            <div class="button-container">
-                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
-                            </div>
-                        </a>
-                    </#if>
-                    <#if currentPage < totalPages - 1>
-                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">
-                            <div class="button-container">
-                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
-                            </div>
-                        </a>
-                    </#if>
-                </div>
 
             </div>
 
@@ -164,6 +146,7 @@
             margin-right: 10px;
             margin-top: 26px;
             box-sizing: border-box;
+            overflow: hidden;
 
         }
         .year-month-column {
@@ -286,17 +269,6 @@
         .no-tasks {
             font-style: italic;
             color: #6c757d;
-        }
-
-        .pagination-container{
-            display: flex;
-            justify-content: end;
-            align-items: center;
-            flex-direction: column;
-            width: 244px;
-            height: 150px;
-
-            transition: all 0.3s ease;
         }
 
         .button-container {

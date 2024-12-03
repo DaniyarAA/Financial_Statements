@@ -138,7 +138,6 @@ public class TaskController {
     public String getTaskListPage(
             Model model,
             Authentication authentication,
-            @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "8") int size,
             @RequestParam(required = false, defaultValue = "") String yearMonth
     ) throws JsonProcessingException {
@@ -149,7 +148,7 @@ public class TaskController {
         String userLogin = authentication.getName();
         User user = userService.getUserByLogin(userLogin);
 
-        Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        Map<String, Object> taskListData = taskService.getTaskListData(user, size, yearMonth);
         List<CompanyForTaskDto> companyDtos = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
         if (companyDtos == null || companyDtos.isEmpty()) {
             model.addAttribute("errorMsg", "У вас нет компаний");

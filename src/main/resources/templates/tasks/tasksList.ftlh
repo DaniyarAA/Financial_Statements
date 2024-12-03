@@ -119,7 +119,7 @@
         .main-content {
             display: flex;
             width: 100%;
-
+            height: 677px;
         }
 
         .table-container {
@@ -184,9 +184,6 @@
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 600px;
-            max-height: 600px;
-            min-height: 600px;
         }
 
         .table-main {

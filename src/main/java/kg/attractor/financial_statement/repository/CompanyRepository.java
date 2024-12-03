@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.repository;
 
 import kg.attractor.financial_statement.entity.Company;
+import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,4 +36,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     Boolean existsByKabinetSalyk(String kabinetSalyk);
 
     List<Company> findByNameContainingIgnoreCase(String name);
+
+    List<Company> findAllByIsDeletedTrue();
+
+    @Query("SELECT c FROM Company c JOIN UserCompany uc ON c.id = uc.company.id WHERE uc.user = :user AND c.isDeleted = true")
+    List<Company> findDeletedCompaniesByUser(@Param("user") User user);
 }

@@ -32,13 +32,11 @@ public interface TaskService {
 
     List<TaskDto> getTaskDtosForUserAndMonth(User user, Integer month);
 
-    List<TaskDto> getAllTasksForUser(User user);
+    List<TaskDto> getAllTaskDtosForUser(User user);
 
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
 
     TaskDto getTaskDtoById(Long taskId);
-
-    ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data);
 
     Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth);
 
@@ -50,6 +48,8 @@ public interface TaskService {
     void tasksGenerator();
 
     void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
+
+    List<String> getAllYearMonths(String login);
 
     List<TaskDto> getAllFinishedTasks();
 

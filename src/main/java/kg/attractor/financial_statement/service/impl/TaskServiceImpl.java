@@ -20,6 +20,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Map;
+import java.util.function.Function;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -99,11 +105,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getAllTasksForUser(User user) {
+    public List<TaskDto> getAllTaskDtosForUser(User user) {
         List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
 
         List<Task> tasks = taskRepository.findByUserCompanyIdIn(userCompanyIds);
         return convertToDtoList(tasks);
+    }
+
+    private List<Task> getAllTasksForUser(User user) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        return taskRepository.findByUserCompanyIdIn(userCompanyIds);
     }
 
     @Override
@@ -126,45 +138,6 @@ public class TaskServiceImpl implements TaskService {
         return convertToDto(task);
     }
 
-    @Override
-    public ResponseEntity<Map<String, String>> editTaskByField(Map<String, String> data) {
-        String taskIdStr = data.get("taskId");
-        String fieldToEdit = data.get("field");
-        String newValue = data.get("value");
-        System.out.println("edit " + newValue);
-
-        if (taskIdStr == null || fieldToEdit == null || newValue == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
-        }
-
-        Long taskId;
-        try {
-            taskId = Long.parseLong(taskIdStr);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID компании !"));
-        }
-
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new NoSuchElementException("Task not found for id" + taskId));
-
-        switch (fieldToEdit) {
-            case "amount":
-                String cleanedValue = newValue.replaceAll("[,\\s]", "");
-                if (isValidBigDecimal(cleanedValue)) {
-                    task.setAmount(new BigDecimal(cleanedValue));
-                } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Неправильный формат Amount!"));
-                }
-                break;
-            case "description":
-                task.setDescription(newValue);
-                break;
-        }
-
-        taskRepository.save(task);
-        return ResponseEntity.ok(Map.of("message", "Задача Успешно отредактирована."));
-
-    }
 
     @Override
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
@@ -222,6 +195,27 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<String> getAllYearMonths(String login) {
+        User user = userService.getUserByLogin(login);
+        List<Task> tasks = getAllTasksForUser(user);
+        List<String> yearMonths = tasks.stream()
+                .map(Task::getStartDate)
+                .map(date -> date.format(DateTimeFormatter.ofPattern("MM.yyyy")))
+                .distinct()
+                .sorted(Comparator.comparing(
+                        yearMonth -> YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("MM.yyyy"))
+                ))
+                .toList();
+
+        if (yearMonths.isEmpty()) {
+            String currentYearMonth = YearMonth.now().format(DateTimeFormatter.ofPattern("MM.yyyy"));
+            yearMonths = List.of(currentYearMonth);
+        }
+
+        return yearMonths;
+    }
+
+    @Override
     public void editTask(Long id, TaskEditDto taskEditDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
 
@@ -259,23 +253,35 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
         YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
-        YearMonth previousYearMonth = filterYearMonth.minusMonths(1);
+        YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
-        List<TaskDto> taskDtos = getAllTasksForUser(user);
+        List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 
-        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, previousYearMonth);
-        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks);
+        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
+        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks, paramYearMonth);
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = groupTasksByYearMonthAndCompany(
                 filteredTasks, companyDtos);
 
-        return buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        List<String> availableYearMonths = new ArrayList<>(tasksByYearMonthAndCompany.keySet());
+
+        Collections.sort(availableYearMonths);
+
+        System.out.println("Tasks Map: " + tasksByYearMonthAndCompany);
+
+        System.out.println("Month map: " + monthsMap);
+
+        Map<String, Object> response = buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        response.put("availableYearMonths", availableYearMonths);
+        return response;
     }
 
 
     @Override
     public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String name, Long id) {
+        System.out.println("TaskEditDto: " + taskDto.getFrom() + " " + taskDto.getTo());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
         if (taskDto.getStatusId() != null) {
@@ -289,6 +295,14 @@ public class TaskServiceImpl implements TaskService {
         }
         if (taskDto.getDescription() != null) {
             newVersionOfTask.setDescription(taskDto.getDescription());
+        }
+        if (taskDto.getFrom() != null) {
+            LocalDate startDate = LocalDate.parse(taskDto.getFrom(), formatter);
+            newVersionOfTask.setStartDate(startDate);
+        }
+        if (taskDto.getTo() != null) {
+            LocalDate endDate = LocalDate.parse(taskDto.getTo(), formatter);
+            newVersionOfTask.setEndDate(endDate);
         }
         newVersionOfTask.setId(id);
         taskRepository.save(newVersionOfTask);
@@ -370,44 +384,62 @@ public class TaskServiceImpl implements TaskService {
                 : YearMonth.parse(paramYearMonth, formatter);
     }
 
-    private List<TaskDto> filterTasksByYearMonth(List<TaskDto> tasks, YearMonth filterYearMonth, YearMonth previousYearMonth) {
+    private List<TaskDto> filterTasksByYearMonth(List<TaskDto> tasks, YearMonth filterYearMonth, YearMonth nextYearMonth) {
         return tasks.stream()
                 .filter(task -> {
                     YearMonth taskYearMonth = YearMonth.from(task.getStartDate());
-                    return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(previousYearMonth);
+                    return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(nextYearMonth);
                 })
                 .collect(Collectors.toList());
     }
 
-    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks) {
+    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks, String paramYearMonth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
-        return tasks.stream()
+        Map<String, String> monthsMap = tasks.stream()
+                .sorted(Comparator.comparing(task -> YearMonth.from(task.getStartDate())))
                 .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
                 .distinct()
                 .collect(Collectors.toMap(
                         ym -> ym,
                         ym -> YearMonth.parse(ym, formatter)
-                                      .getMonth()
-                                      .getDisplayName(TextStyle.FULL, new Locale("ru")) + " " + YearMonth.parse(ym, formatter).getYear(),
+                                .getMonth()
+                                .getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru")) + " "
+                                + YearMonth.parse(ym, formatter).getYear(),
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
+
+        if (paramYearMonth == null || paramYearMonth.trim().isEmpty()) {
+            String currentYearMonth = YearMonth.now().format(formatter);
+            if (!monthsMap.containsKey(currentYearMonth)) {
+                YearMonth currentYM = YearMonth.now();
+                monthsMap.put(
+                        currentYearMonth,
+                        currentYM.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru")) + " " + currentYM.getYear()
+                );
+            }
+        }
+
+        return monthsMap;
     }
 
     private Map<String, Map<String, List<TaskDto>>> groupTasksByYearMonthAndCompany(
             List<TaskDto> tasks, List<CompanyForTaskDto> companies) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
-        Set<String> uniqueYearMonths = tasks.stream()
+
+        List<String> sortedYearMonths = tasks.stream()
                 .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
-                .collect(Collectors.toSet());
+                .distinct()
+                .sorted(Comparator.comparing(yearMonth -> YearMonth.parse(yearMonth, formatter)))
+                .toList();
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = new LinkedHashMap<>();
-        for (String yearMonth : uniqueYearMonths) {
+        for (String yearMonth : sortedYearMonths) {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companies) {
                 List<TaskDto> tasksForCompanyAndMonth = tasks.stream()
                         .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
-                                        && task.getCompany().getId().equals(company.getId()))
+                                && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
                 tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
             }

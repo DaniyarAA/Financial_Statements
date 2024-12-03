@@ -107,10 +107,10 @@
                                 <div class="company-name-edit">
                                     <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
                                            value="${company.name!}">
-                                    <button id="cancelBtncompanyName" class="btn btn-danger d-none"
+                                    <button id="cancelBtncompanyName" class="btn btn-light d-none"
                                             onclick="cancelEdit('companyName')">&#10005;
                                     </button>
-                                    <button id="saveBtncompanyName" class="btn btn-success d-none"
+                                    <button id="saveBtncompanyName" class="btn btn-light d-none"
                                             onclick="saveChanges('companyName', ${company.id})">&#10003;
                                     </button>
                                 </div>
@@ -220,10 +220,10 @@
                                         <input type="text" id="editInputcompanyInn"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.companyInn!}">
-                                        <button id="cancelBtncompanyInn" class="btn btn-danger d-none"
+                                        <button id="cancelBtncompanyInn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('companyInn')">&#10005;
                                         </button>
-                                        <button id="saveBtncompanyInn" class="btn btn-success d-none"
+                                        <button id="saveBtncompanyInn" class="btn btn-light d-none"
                                                 onclick="saveChanges('companyInn', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -244,10 +244,10 @@
                                         <input type="text" id="editInputdirectorInn"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.directorInn!}">
-                                        <button id="cancelBtndirectorInn" class="btn btn-danger d-none"
+                                        <button id="cancelBtndirectorInn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('directorInn')">&#10005;
                                         </button>
-                                        <button id="saveBtndirectorInn" class="btn btn-success d-none"
+                                        <button id="saveBtndirectorInn" class="btn btn-light d-none"
                                                 onclick="saveChanges('directorInn', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -267,10 +267,10 @@
                                         <input type="text" id="editInputlogin"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.login!}">
-                                        <button id="cancelBtnlogin" class="btn btn-danger d-none"
+                                        <button id="cancelBtnlogin" class="btn btn-light d-none"
                                                 onclick="cancelEdit('login')">&#10005;
                                         </button>
-                                        <button id="saveBtnlogin" class="btn btn-success d-none"
+                                        <button id="saveBtnlogin" class="btn btn-light d-none"
                                                 onclick="saveChanges('login', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -295,10 +295,10 @@
                                         <input type="text" id="editInputpassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.password!}">
-                                        <button id="cancelBtnpassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnpassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('password')">&#10005;
                                         </button>
-                                        <button id="saveBtnpassword" class="btn btn-success d-none"
+                                        <button id="saveBtnpassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('password', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -317,10 +317,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputecp"
                                                class="form-control edit-input d-none fs-5" value="${company.ecp!}">
-                                        <button id="cancelBtnecp" class="btn btn-danger d-none"
+                                        <button id="cancelBtnecp" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ecp')">&#10005;
                                         </button>
-                                        <button id="saveBtnecp" class="btn btn-success d-none"
+                                        <button id="saveBtnecp" class="btn btn-light d-none"
                                                 onclick="saveChanges('ecp', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -341,10 +341,10 @@
                                         <input type="text" id="editInputkabinetSalyk"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.kabinetSalyk!}">
-                                        <button id="cancelBtnkabinetSalyk" class="btn btn-danger d-none"
+                                        <button id="cancelBtnkabinetSalyk" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kabinetSalyk')">&#10005;
                                         </button>
-                                        <button id="saveBtnkabinetSalyk" class="btn btn-success d-none"
+                                        <button id="saveBtnkabinetSalyk" class="btn btn-light d-none"
                                                 onclick="saveChanges('kabinetSalyk', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -370,10 +370,10 @@
                                         <input type="text" id="editInputkabinetSalykPassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.kabinetSalykPassword!}">
-                                        <button id="cancelBtnkabinetSalykPassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnkabinetSalykPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kabinetSalykPassword')">&#10005;
                                         </button>
-                                        <button id="saveBtnkabinetSalykPassword" class="btn btn-success d-none"
+                                        <button id="saveBtnkabinetSalykPassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('kabinetSalykPassword', ${company.id})">
                                             &#10003;
                                         </button>
@@ -394,10 +394,10 @@
                                         <input type="text" id="editInputtaxMode"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.taxMode!}">
-                                        <button id="cancelBtntaxMode" class="btn btn-danger d-none"
+                                        <button id="cancelBtntaxMode" class="btn btn-light d-none"
                                                 onclick="cancelEdit('taxMode')">&#10005;
                                         </button>
-                                        <button id="saveBtntaxMode" class="btn btn-success d-none"
+                                        <button id="saveBtntaxMode" class="btn btn-light d-none"
                                                 onclick="saveChanges('taxMode', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -416,10 +416,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputopf"
                                                class="form-control edit-input d-none fs-5" value="${company.opf!}">
-                                        <button id="cancelBtnopf" class="btn btn-danger d-none"
+                                        <button id="cancelBtnopf" class="btn btn-light d-none"
                                                 onclick="cancelEdit('opf')">&#10005;
                                         </button>
-                                        <button id="saveBtnopf" class="btn btn-success d-none"
+                                        <button id="saveBtnopf" class="btn btn-light d-none"
                                                 onclick="saveChanges('opf', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -440,10 +440,10 @@
                                         <input type="text" id="editInputdistrictGns"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.districtGns!}">
-                                        <button id="cancelBtndistrictGns" class="btn btn-danger d-none"
+                                        <button id="cancelBtndistrictGns" class="btn btn-light d-none"
                                                 onclick="cancelEdit('districtGns')">&#10005;
                                         </button>
-                                        <button id="saveBtndistrictGns" class="btn btn-success d-none"
+                                        <button id="saveBtndistrictGns" class="btn btn-light d-none"
                                                 onclick="saveChanges('districtGns', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -464,10 +464,10 @@
                                         <input type="text" id="editInputsocfundNumber"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.socfundNumber!}">
-                                        <button id="cancelBtnsocfundNumber" class="btn btn-danger d-none"
+                                        <button id="cancelBtnsocfundNumber" class="btn btn-light d-none"
                                                 onclick="cancelEdit('socfundNumber')">&#10005;
                                         </button>
-                                        <button id="saveBtnsocfundNumber" class="btn btn-success d-none"
+                                        <button id="saveBtnsocfundNumber" class="btn btn-light d-none"
                                                 onclick="saveChanges('socfundNumber', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -488,10 +488,10 @@
                                         <input type="text" id="editInputregistrationNumberMj"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.registrationNumberMj!}">
-                                        <button id="cancelBtnregistrationNumberMj" class="btn btn-danger d-none"
+                                        <button id="cancelBtnregistrationNumberMj" class="btn btn-light d-none"
                                                 onclick="cancelEdit('registrationNumberMj')">&#10005;
                                         </button>
-                                        <button id="saveBtnregistrationNumberMj" class="btn btn-success d-none"
+                                        <button id="saveBtnregistrationNumberMj" class="btn btn-light d-none"
                                                 onclick="saveChanges('registrationNumberMj', ${company.id})">
                                             &#10003;
                                         </button>
@@ -511,10 +511,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputokpo"
                                                class="form-control edit-input d-none fs-5" value="${company.okpo!}">
-                                        <button id="cancelBtnokpo" class="btn btn-danger d-none"
+                                        <button id="cancelBtnokpo" class="btn btn-light d-none"
                                                 onclick="cancelEdit('okpo')">&#10005;
                                         </button>
-                                        <button id="saveBtnokpo" class="btn btn-success d-none"
+                                        <button id="saveBtnokpo" class="btn btn-light d-none"
                                                 onclick="saveChanges('okpo', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -534,10 +534,10 @@
                                         <input type="text" id="editInputdirector"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.director!}">
-                                        <button id="cancelBtndirector" class="btn btn-danger d-none"
+                                        <button id="cancelBtndirector" class="btn btn-light d-none"
                                                 onclick="cancelEdit('director')">&#10005;
                                         </button>
-                                        <button id="saveBtndirector" class="btn btn-success d-none"
+                                        <button id="saveBtndirector" class="btn btn-light d-none"
                                                 onclick="saveChanges('director', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -556,10 +556,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputked"
                                                class="form-control edit-input d-none fs-5" value="${company.ked!}">
-                                        <button id="cancelBtnked" class="btn btn-danger d-none"
+                                        <button id="cancelBtnked" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ked')">&#10005;
                                         </button>
-                                        <button id="saveBtnked" class="btn btn-success d-none"
+                                        <button id="saveBtnked" class="btn btn-light d-none"
                                                 onclick="saveChanges('ked', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -582,10 +582,10 @@
                                         <input type="text" id="editInputemail"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.email!}">
-                                        <button id="cancelBtnemail" class="btn btn-danger d-none"
+                                        <button id="cancelBtnemail" class="btn btn-light d-none"
                                                 onclick="cancelEdit('email')">&#10005;
                                         </button>
-                                        <button id="saveBtnemail" class="btn btn-success d-none"
+                                        <button id="saveBtnemail" class="btn btn-light d-none"
                                                 onclick="saveChanges('email', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -610,10 +610,10 @@
                                         <input type="text" id="editInputemailPassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.emailPassword!}">
-                                        <button id="cancelBtnemailPassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnemailPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('emailPassword')">&#10005;
                                         </button>
-                                        <button id="saveBtnemailPassword" class="btn btn-success d-none"
+                                        <button id="saveBtnemailPassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('emailPassword', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -632,10 +632,10 @@
                                         <input type="text" id="editInputphone"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.phone!}">
-                                        <button id="cancelBtnphone" class="btn btn-danger d-none"
+                                        <button id="cancelBtnphone" class="btn btn-light d-none"
                                                 onclick="cancelEdit('phone')">&#10005;
                                         </button>
-                                        <button id="saveBtnphone" class="btn btn-success d-none"
+                                        <button id="saveBtnphone" class="btn btn-light d-none"
                                                 onclick="saveChanges('phone', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -653,10 +653,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputesf"
                                                class="form-control edit-input d-none fs-5" value="${company.esf!}">
-                                        <button id="cancelBtnesf" class="btn btn-danger d-none"
+                                        <button id="cancelBtnesf" class="btn btn-light d-none"
                                                 onclick="cancelEdit('esf')">&#10005;
                                         </button>
-                                        <button id="saveBtnesf" class="btn btn-success d-none"
+                                        <button id="saveBtnesf" class="btn btn-light d-none"
                                                 onclick="saveChanges('esf', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -681,10 +681,10 @@
                                         <input type="text" id="editInputesfPassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.esfPassword!}">
-                                        <button id="cancelBtnesfPassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnesfPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('esfPassword')">&#10005;
                                         </button>
-                                        <button id="saveBtnesfPassword" class="btn btn-success d-none"
+                                        <button id="saveBtnesfPassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('esfPassword', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -702,10 +702,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkm"
                                                class="form-control edit-input d-none fs-5" value="${company.kkm!}">
-                                        <button id="cancelBtnkkm" class="btn btn-danger d-none"
+                                        <button id="cancelBtnkkm" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kkm')">&#10005;
                                         </button>
-                                        <button id="saveBtnkkm" class="btn btn-success d-none"
+                                        <button id="saveBtnkkm" class="btn btn-light d-none"
                                                 onclick="saveChanges('kkm', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -730,10 +730,10 @@
                                         <input type="text" id="editInputkkmPassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.kkmPassword!}">
-                                        <button id="cancelBtnkkmPassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnkkmPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kkmPassword')">&#10005;
                                         </button>
-                                        <button id="saveBtnkkmPassword" class="btn btn-success d-none"
+                                        <button id="saveBtnkkmPassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('kkmPassword', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -753,10 +753,10 @@
                                         <input type="text" id="editInputfresh1c"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.fresh1c!}">
-                                        <button id="cancelBtnfresh1c" class="btn btn-danger d-none"
+                                        <button id="cancelBtnfresh1c" class="btn btn-light d-none"
                                                 onclick="cancelEdit('fresh1c')">&#10005;
                                         </button>
-                                        <button id="saveBtnfresh1c" class="btn btn-success d-none"
+                                        <button id="saveBtnfresh1c" class="btn btn-light d-none"
                                                 onclick="saveChanges('fresh1c', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -781,10 +781,10 @@
                                         <input type="text" id="editInputfresh1cPassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.fresh1cPassword!}">
-                                        <button id="cancelBtnfresh1cPassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnfresh1cPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('fresh1cPassword')">&#10005;
                                         </button>
-                                        <button id="saveBtnfresh1cPassword" class="btn btn-success d-none"
+                                        <button id="saveBtnfresh1cPassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('fresh1cPassword', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -803,10 +803,10 @@
                                         <div class="company-edit">
                                         <input type="text" id="editInputettn"
                                                class="form-control edit-input d-none fs-5" value="${company.ettn!}">
-                                        <button id="cancelBtnettn" class="btn btn-danger d-none"
+                                        <button id="cancelBtnettn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ettn')">&#10005;
                                         </button>
-                                        <button id="saveBtnettn" class="btn btn-success d-none"
+                                        <button id="saveBtnettn" class="btn btn-light d-none"
                                                 onclick="saveChanges('ettn', ${company.id})">&#10003;
                                         </button>
                                         </div>
@@ -832,10 +832,10 @@
                                         <input type="text" id="editInputettnPassword"
                                                class="form-control edit-input d-none fs-5"
                                                value="${company.ettnPassword!}">
-                                        <button id="cancelBtnettnPassword" class="btn btn-danger d-none"
+                                        <button id="cancelBtnettnPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ettnPassword')">&#10005;
                                         </button>
-                                        <button id="saveBtnettnPassword" class="btn btn-success d-none"
+                                        <button id="saveBtnettnPassword" class="btn btn-light d-none"
                                                 onclick="saveChanges('ettnPassword', ${company.id})">&#10003;
                                         </button>
                                         </div>

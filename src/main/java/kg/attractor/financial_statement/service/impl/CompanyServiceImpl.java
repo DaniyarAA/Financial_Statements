@@ -490,4 +490,31 @@ public class CompanyServiceImpl implements CompanyService {
     private List<CompanyForTaskDto> convertToCompanyForTaskDtoList(List<Company> companies) {
         return companies.stream().map(this::convertToCompanyForTaskDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<CompanyDto> getDeletedCompaniesByUser(Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.getUserByLogin(authentication.getName());
+        return companyRepository.findDeletedCompaniesByUser(user)
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @Override
+    public List<CompanyDto> getAllDeletedCompanies() {
+        return companyRepository.findAllByIsDeletedTrue()
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @Override
+    public void resumeCompany(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("Company not found: " + companyId));
+        company.setDeleted(false);
+        companyRepository.save(company);
+    }
+
 }

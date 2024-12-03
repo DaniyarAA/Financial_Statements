@@ -1,12 +1,7 @@
 package kg.attractor.financial_statement.service.impl;
 
-import kg.attractor.financial_statement.dto.TaskCreateDto;
-import kg.attractor.financial_statement.dto.TaskDto;
-import kg.attractor.financial_statement.dto.TaskEditDto;
-import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.dto.*;
-import kg.attractor.financial_statement.entity.Task;
-import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -18,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,7 +26,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.function.Function;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -448,8 +448,6 @@ public class TaskServiceImpl implements TaskService {
         return tasksByYearMonthAndCompany;
     }
 
-
-
     private Map<String, Object> buildResponse(int page, int size, List<CompanyForTaskDto> companyDtos,
                                               Map<String, String> monthsMap,
                                               Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany) {
@@ -466,5 +464,32 @@ public class TaskServiceImpl implements TaskService {
         response.put("companyDtos", companyDtos);
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
         return response;
+    }
+
+    @Override
+    public List<TaskDto> getAllFinishedTasks() {
+        return taskRepository.findAllByTaskStatus(taskStatusService.getStatusDone())
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @Override
+    public List<TaskDto> getFinishedTasksForUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.getUserByLogin(authentication.getName());
+        TaskStatus taskStatus = taskStatusService.getStatusDone();
+        return taskRepository.findAllByUserCompany_UserAndTaskStatus(user, taskStatus)
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @Override
+    public void updateTaskStatus(Long taskId, Long newStatusId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found: " + taskId));
+        task.setTaskStatus(taskStatusService.getTaskStatusById(newStatusId));
+        taskRepository.save(task);
     }
 }

@@ -50,4 +50,10 @@ public interface TaskService {
     void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
 
     List<String> getAllYearMonths(String login);
+
+    List<TaskDto> getAllFinishedTasks();
+
+    List<TaskDto> getFinishedTasksForUser();
+
+    void updateTaskStatus(Long taskId, Long newStatusId);
 }

@@ -20,25 +20,34 @@
                     </div>
                     <div class="left col">
                         <div class="archive">
-                            <h3><a href="/archive/user" class="btn type-btn">АРХИВ</a></h3>
-                            <ul>
-                                <li>&bull;</li>
-                                <li>&bull;</li>
-                            </ul>
+                            <#assign hasAccess = false />
+                            <#list userDto.role.authorities as auth>
+                                <#if auth.authority == "VIEW_ARCHIVE">
+                                    <#assign hasAccess = true />
+                                    <#break>
+                                </#if>
+                            </#list>
+                            <a href="${hasAccess?then('/archive/all', '/archive')}" class="btn type-btn">
+                                <h3>АРХИВ</h3>
+                                <ul>
+                                    <li>&bull;</li>
+                                    <li>&bull;</li>
+                                </ul>
+                            </a>
                         </div>
                     </div>
                     <div class="left col">
-                            <div class="calendar-wrapper">
-                                <h2 class="text-center">КАЛЕНДАРЬ</h2>
-                                <div id="divCal"></div>
-                                <input type="hidden" name="_csrf" value="${csrfToken.token}">
-                            </div>
+                        <div class="calendar-wrapper">
+                            <h2 class="text-center">КАЛЕНДАРЬ</h2>
+                            <div id="divCal"></div>
+                            <input type="hidden" name="_csrf" value="${csrfToken.token}">
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col tasks">
                 <div class="tasks-header">
-                    <h3><a href="/tasks" class="btn type-submit">ЗАДАЧИ</a> </h3>
+                    <h3><a href="/tasks" class="btn type-submit">ЗАДАЧИ</a></h3>
                     <a href="/tasks/create" class="btn type-btn add-task">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" font-weight="bold"
                              fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">

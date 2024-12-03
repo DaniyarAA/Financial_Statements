@@ -49,4 +49,8 @@ public interface UserService {
     UserDto convertToUserDto(User user);
 
     Boolean isAdmin(String name);
+
+    List<UserDto> getDeletedUsers();
+
+    void resumeUser(Long id, Long roleId);
 }

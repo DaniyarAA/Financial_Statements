@@ -98,11 +98,11 @@
                                 Наименование компании:
                                 <span id="companyName" class="inline-block">${company.name!}</span>
                                 <button onclick="copyText('companyName')" title="Скопировать" class="btn btn-link p-0">
-                                    <i class="bi bi-clipboard" style="color: black;"></i>
+                                    <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                 </button>
                                 <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
                                         title="Редактировать" class="btn btn-link p-0">
-                                    <i class="bi bi-pencil" style="color: black;"></i>
+                                    <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                 </button>
                                 <div class="company-name-edit">
                                     <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
@@ -209,12 +209,12 @@
                                         <strong id="companyInn">${company.companyInn!}</strong>
                                         <button onclick="copyText('companyInn')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtncompanyInn"
                                                 onclick="editText('companyInn', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputcompanyInn"
@@ -233,12 +233,12 @@
                                         <strong id="directorInn">${company.directorInn!}</strong>
                                         <button onclick="copyText('directorInn')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtndirectorInn"
                                                 onclick="editText('directorInn', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdirectorInn"
@@ -257,11 +257,11 @@
                                         <strong id="login">${company.login!}</strong>
                                         <button onclick="copyText('login')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnlogin" onclick="editText('login', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputlogin"
@@ -281,15 +281,15 @@
                                               data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></strong>
                                         <button onclick="copyText('password')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnpassword" onclick="editText('password', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('password')" title="Увидеть"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputpassword"
@@ -308,11 +308,11 @@
                                         <strong id="ecp">${company.ecp!}</strong>
                                         <button onclick="copyText('ecp')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputecp"
@@ -330,12 +330,12 @@
                                         <strong id="kabinetSalyk">${company.kabinetSalyk!}</strong>
                                         <button onclick="copyText('kabinetSalyk')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnkabinetSalyk"
                                                 onclick="editText('kabinetSalyk', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalyk"
@@ -355,16 +355,16 @@
                                               data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('kabinetSalykPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnkabinetSalykPassword"
                                                 onclick="editText('kabinetSalykPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('kabinetSalykPassword')"
                                                 title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalykPassword"
@@ -384,11 +384,11 @@
                                         <strong id="taxMode">${company.taxMode!}</strong>
                                         <button onclick="copyText('taxMode')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputtaxMode"
@@ -407,11 +407,11 @@
                                         <strong id="opf">${company.opf!}</strong>
                                         <button onclick="copyText('opf')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnopf" onclick="editText('opf', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputopf"
@@ -429,12 +429,12 @@
                                         <strong id="districtGns">${company.districtGns!}</strong>
                                         <button onclick="copyText('districtGns')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtndistrictGns"
                                                 onclick="editText('districtGns', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdistrictGns"
@@ -453,12 +453,12 @@
                                         <strong id="socfundNumber">${company.socfundNumber!}</strong>
                                         <button onclick="copyText('socfundNumber')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnsocfundNumber"
                                                 onclick="editText('socfundNumber', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputsocfundNumber"
@@ -477,12 +477,12 @@
                                         <strong id="registrationNumberMj">${company.registrationNumberMj!}</strong>
                                         <button onclick="copyText('registrationNumberMj')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnregistrationNumberMj"
                                                 onclick="editText('registrationNumberMj', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputregistrationNumberMj"
@@ -502,11 +502,11 @@
                                         <strong id="okpo">${company.okpo!}</strong>
                                         <button onclick="copyText('okpo')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom"  style="color: black;"></i>
                                         </button>
                                         <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputokpo"
@@ -524,11 +524,11 @@
                                         <strong id="director">${company.director!}</strong>
                                         <button onclick="copyText('director')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtndirector" onclick="editText('director', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdirector"
@@ -547,11 +547,11 @@
                                         <strong id="ked">${company.ked!}</strong>
                                         <button onclick="copyText('ked')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnked" onclick="editText('ked', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputked"
@@ -572,11 +572,11 @@
                                         <span>Почта:</span> <strong id="email">${company.email!}</strong>
                                         <button onclick="copyText('email')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnemail" onclick="editText('email', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemail"
@@ -595,16 +595,16 @@
                                                                                 data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('emailPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnemailPassword"
                                                 onclick="editText('emailPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('emailPassword')" title="Увидеть"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemailPassword"
@@ -622,11 +622,11 @@
                                         <span>Телефон:</span> <strong id="phone">${company.phone!}</strong>
                                         <button onclick="copyText('phone')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnphone" onclick="editText('phone', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputphone"
@@ -644,11 +644,11 @@
                                         <span>ЭСФ логин:</span> <strong id="esf">${company.esf!}</strong>
                                         <button onclick="copyText('esf')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnesf" onclick="editText('esf', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesf"
@@ -666,16 +666,16 @@
                                                                            data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('esfPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnesfPassword"
                                                 onclick="editText('esfPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('esfPassword')" title="Увидеть"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesfPassword"
@@ -693,11 +693,11 @@
                                         <span>ККМ логин:</span> <strong id="kkm">${company.kkm!}</strong>
                                         <button onclick="copyText('kkm')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkm"
@@ -715,16 +715,16 @@
                                                                            data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('kkmPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnkkmPassword"
                                                 onclick="editText('kkmPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('kkmPassword')" title="Увидеть"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkmPassword"
@@ -743,11 +743,11 @@
                                         <strong id="fresh1c">${company.fresh1c!}</strong>
                                         <button onclick="copyText('fresh1c')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1c"
@@ -766,16 +766,16 @@
                                                                                data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('fresh1cPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnfresh1cPassword"
                                                 onclick="editText('fresh1cPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('fresh1cPassword')"
                                                 title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1cPassword"
@@ -794,11 +794,11 @@
                                         <strong id="ettn">${company.ettn!}</strong>
                                         <button onclick="copyText('ettn')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettn"
@@ -817,16 +817,16 @@
                                               data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></strong>
                                         <button onclick="copyText('ettnPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-clipboard" style="color: black;"></i>
+                                            <i class="bi bi-clipboard icon-custom" style="color: black;"></i>
                                         </button>
                                         <button id="editBtnettnPassword"
                                                 onclick="editText('ettnPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil" style="color: black;"></i>
+                                            <i class="bi bi-pencil icon-custom" style="color: black;"></i>
                                         </button>
                                         <button onclick="togglePasswordVisibility('ettnPassword')" title="Увидеть"
                                                 class="btn btn-link p-0">
-                                            <i class="bi bi-eye" style="color: black;"></i>
+                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettnPassword"

@@ -9,7 +9,7 @@
     </#if>
     <div class="container p-3">
         <div class="main-content">
-            <div class="table-container company-table" id="company-table" style="display: block">
+            <div class="table-container company-table" id="company-scroll-container" style="display: block">
                 <div class="table-wrapper">
                     <table class="table-main">
                         <thead>
@@ -30,12 +30,9 @@
                         </tbody>
                     </table>
                 </div>
-
-
-
             </div>
 
-            <div class="table-container tasks-table">
+            <div class="table-container tasks-table" id="tasks-scroll-container">
                 <div class="table-wrapper">
                     <table class="table-main">
                         <thead>
@@ -58,7 +55,7 @@
                                             <div class="task-buttons">
                                                 <#list tasksByYearMonthAndCompany[yearMonth][company.id?string] as task>
                                                     <button
-                                                            class=" task-button"
+                                                            class="task-button"
                                                             onclick="showTaskDetails(this)"
                                                             data-task-id="${task.id}"
                                                             data-document-type="${task.documentTypeName}"
@@ -89,6 +86,7 @@
                     </table>
                 </div>
             </div>
+
 
             <div id="task-details" class="task-details">
                 <input type="hidden" id="csrfToken" value="${(_csrf.token)!'csrf-token'}"/>
@@ -121,24 +119,34 @@
         .main-content {
             display: flex;
             width: 100%;
+
         }
 
         .table-container {
             position: relative;
+            overflow-y: auto;
         }
         .company-table {
             width: 244px;
-            overflow: hidden;
+            overflow-y: auto; /* Enable vertical scrolling */
             margin-right: 5px;
             background-color: #d9d9d9;
-
             transition: width 0.3s ease, padding 0.3s ease;
         }
 
-        .company-column-tr{
-            background-color: #ffffff;
-            height: 61px;
+        .company-table .table-wrapper {
+            height: auto;
         }
+
+        .company-column-th {
+            height: 61px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #ffffff;
+            border-bottom: 2px solid #dee2e6;
+        }
+
         .tasks-table {
             width: 100%;
             background-color: #d9d9d9;
@@ -146,8 +154,8 @@
             margin-right: 10px;
             margin-top: 26px;
             box-sizing: border-box;
-            overflow: hidden;
 
+            flex: 1;
         }
         .year-month-column {
             background-color: #ffffff;
@@ -155,9 +163,13 @@
 
         }
 
-        .year-month-th {
-            padding: 5px;
-
+        .year-month-column {
+            position: sticky;
+            top: 0; /* Sticks to the top of the container */
+            z-index: 10; /* Ensures it stays above other content */
+            background-color: #ffffff; /* Background color to prevent overlap artifacts */
+            border-bottom: 2px solid #dee2e6; /* Visual separator */
+            padding: 5px; /* Padding for better appearance */
         }
 
         .year-month-th.first-th {
@@ -172,14 +184,13 @@
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 550px;
-            min-height: 550px;
-            max-height: 550px;
+            height: 600px;
+            max-height: 600px;
+            min-height: 600px;
         }
 
         .table-main {
             width: 100%;
-            margin-bottom: 20px;
 
         }
 
@@ -195,7 +206,6 @@
         }
         .table-main {
             background-color: #d9d9d9;
-
         }
 
         .company-columns {

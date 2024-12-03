@@ -504,3 +504,19 @@ function renderCreateTaskForm() {
         </form>
     `;
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const companyScrollContainer = document.getElementById('company-scroll-container');
+    const tasksScrollContainer = document.getElementById('tasks-scroll-container');
+
+    function syncScroll(event) {
+        const source = event.target;
+        const target = source === companyScrollContainer ? tasksScrollContainer : companyScrollContainer;
+
+        target.scrollTop = source.scrollTop;
+    }
+
+    companyScrollContainer.addEventListener('scroll', syncScroll);
+    tasksScrollContainer.addEventListener('scroll', syncScroll);
+});

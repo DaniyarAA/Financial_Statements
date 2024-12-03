@@ -83,11 +83,14 @@ public class UserServiceImpl implements UserService {
 
     private void validateBirthday(LocalDate birthday) {
         if (birthday.isAfter(LocalDate.now())) {
-            log.info("Человек еще не родился");
-            throw new IllegalArgumentException("Человек еще не родился");
+            log.info("Дата рождения указана неверно: сотрудник еще не родился");
+            throw new IllegalArgumentException("Дата рождения указана неверно: сотрудник еще не родился");
         } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
-            log.info("Человеку должно быть больше 18 лет");
-            throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
+            log.info("Возраст сотрудника должен быть не менее 18 лет для трудоустройства");
+            throw new IllegalArgumentException("Возраст сотрудника должен быть не менее 18 лет для трудоустройства");
+        } else if (birthday.isBefore(LocalDate.now().minusYears(100))) {
+            log.info("Возраст сотрудника не должен превышать 100 лет");
+            throw new IllegalArgumentException("Возраст сотрудника не должен превышать 100 лет");
         }
     }
 

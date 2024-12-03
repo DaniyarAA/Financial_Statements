@@ -589,12 +589,17 @@ function toggleBirthdayEdit() {
     if (birthdayInput.style.display === 'none') {
         const displayDate = birthdayDisplay.innerText;
         const dateParts = displayDate.split('.');
-        birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]){
+            birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        }
         birthdayInput.style.display = 'inline-block';
         birthdayDisplay.style.display = 'none';
     } else {
         const dateParts = birthdayInput.value.split('-');
-        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]
+        && dateParts[0] !== "0000" && dateParts[1] !== '00' && dateParts[2] !== '00'){
+            birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        }
         birthdayDisplay.style.display = 'inline';
         birthdayInput.style.display = 'none';
     }
@@ -610,7 +615,11 @@ document.addEventListener('mousedown', (event) => {
         !event.target.classList.contains('bi-pencil')
     ) {
         const dateParts = birthdayInput.value.split('-');
-        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]
+            && dateParts[0] !== "0000" && dateParts[1] !== '00' && dateParts[2] !== '00'){
+            birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        }
         birthdayDisplay.style.display = 'inline';
         birthdayInput.style.display = 'none';
     }

@@ -14,7 +14,6 @@ import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -163,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
     private void updateLoginIfChanged(String newLogin, User user) {
         if (!Objects.equals(newLogin, user.getLogin())) {
-            if (checkIfUserExists(newLogin)) {
+            if (checkIfUserExistsByLogin(newLogin)) {
                 log.info("Пользователь с таким логином уже существует");
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
@@ -259,8 +258,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkIfUserExists(String login) {
+    public boolean checkIfUserExistsByLogin(String login) {
         return userRepository.findByLogin(login).isPresent();
+    }
+
+    @Override
+    public boolean checkIfUserExistsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     private List<CompanyDto> getCompaniesByUserId(Long userId) {

@@ -38,7 +38,7 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
 
-                                        <div data-mdb-input-init class="form-outline datepicker w-100">
+                                        <div data-mdb-input-init class="form-outline w-100">
                                             <label for="login" class="form-label text">Логин:</label>
                                             <@spring.formInput "userDto.login" 'id="login" class="form-control form-control-lg login-input"' />
                                         </div>
@@ -89,6 +89,18 @@
 
                                     <div class="col-md-6 mb-4 pb-2">
 
+                                        <div data-mdb-input-init class="form-outline w-100">
+                                            <label for="email" class="form-label text">Электронная почта:</label>
+                                            <@spring.formInput "userDto.email" 'id="email" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+
                                         <div data-mdb-input-init class="form-outline">
                                             <label for="birthday" class="form-label">Дата рождения:</label>
                                             <input type="date" class="form-control form-control-lg login-input" id="birthday" name="birthday" required>
@@ -96,7 +108,11 @@
                                         <#if error??>
                                             <b class="text-danger text-center mb-3">${error}</b>
                                         </#if>
+
                                     </div>
+
+
+
                                 </div>
 
 

@@ -1477,3 +1477,10 @@ h2 {
 .login-text{
     text-align: center;
 }
+
+.user-modal-close-button{
+    position: absolute;
+    top: 10px;
+    cursor: pointer;
+    left: 10px;
+}

@@ -145,6 +145,8 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content user-modal-content">
 
+                <button type="button" class="btn-close user-modal-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
+
                 <#list currentUser.roleDto.authorities as auth>
                     <#if auth.authority=="DELETE_USER">
                         <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon" onclick="deleteUser()"></i>

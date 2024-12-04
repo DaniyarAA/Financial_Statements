@@ -67,23 +67,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 const user = data.user;
                 const companies = data.companies;
                 const roles = data.roles;
-                if(!user.enabled){
-                    document.getElementById('edit-company-icon').style.display = 'none';
-                    document.getElementById('edit-name-icon').style.display = 'none';
-                    document.getElementById('edit-birthday-icon').style.display = 'none';
-                    document.getElementById('change-avatar-icon').style.display = 'none';
-                    document.getElementById('edit-role-icon').style.display = 'none';
-                    document.getElementById('delete-user-icon').style.display = 'none';
-                    document.getElementById('companyDropdown').disabled = true;
-                    document.getElementById('notesInput').disabled = true;
-                    document.getElementById('edit-user-info-button').disabled = true;
+                const deleteUserIcon = document.getElementById("delete-user-icon");
+                const editRoleIcon = document.getElementById("edit-role-icon");
+                if (!user.enabled) {
+                    const iconsToHide = [
+                        'edit-company-icon',
+                        'edit-name-icon',
+                        'edit-birthday-icon',
+                        'change-avatar-icon',
+                        'edit-role-icon',
+                        'delete-user-icon',
+                    ];
+
+                    iconsToHide.forEach(iconId => {
+                        const element = document.getElementById(iconId);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
+
+
+                    const companyDropdown = document.getElementById('companyDropdown');
+                    const notesInput = document.getElementById('notesInput');
+                    const editUserInfoButton = document.getElementById('edit-user-info-button');
+
+                    if (companyDropdown) companyDropdown.disabled = true;
+                    if (notesInput) notesInput.disabled = true;
+                    if (editUserInfoButton) editUserInfoButton.disabled = true;
                 }
                 if(user.roleDto && user.roleDto.roleName === "SuperUser"){
-                    document.getElementById("delete-user-icon").style.display = 'none';
-                    document.getElementById("edit-role-icon").style.display = 'none';
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'none';
+                    if (editRoleIcon) editRoleIcon.style.display = 'none';
                 } else {
-                    document.getElementById("delete-user-icon").style.display = 'block';
-                    document.getElementById("edit-role-icon").style.display = 'block';
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'block';
+                    if (editRoleIcon) editRoleIcon.style.display = 'block';
                 }
 
                 document.getElementById("userModalLabel").innerText = user.name;

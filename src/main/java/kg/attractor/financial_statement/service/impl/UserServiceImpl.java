@@ -241,13 +241,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllDtoUsers(Pageable pageable, String login) {
         User currentUser = getUserByLogin(login);
-        Page<User> users = userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable);
         boolean isCurrentUserSuperUser = currentUser.getRole().getRoleName().equals("SuperUser");
-        var list = users.get()
-                .filter(user -> isCurrentUserSuperUser || user.getRole() == null || !"SuperUser".equals(user.getRole().getRoleName()))
+        Page<User> users;
+        if (isCurrentUserSuperUser) {
+            users = userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable);
+        } else {
+            users = userPageableRepository.findAllByRole_RoleNameNotOrRoleIsNullOrderByEnabledDescIdAsc("SuperUser", pageable);
+        }
+        var list = users.stream()
                 .map(this::convertToUserDto)
                 .toList();
-
         int startIndex = pageable.getPageNumber() * pageable.getPageSize();
         for (int i = 0; i < list.size(); i++) {
             list.get(i).setDisplayIndex(startIndex + i + 1);

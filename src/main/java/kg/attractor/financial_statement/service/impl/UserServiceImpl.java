@@ -130,12 +130,16 @@ public class UserServiceImpl implements UserService {
     public void editUser(Long id, UserDto userDto) {
         User user = getUserById(id);
         if(!user.isEnabled()){
-            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать");
+            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
         }
 
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
         if(userDto.getBirthday() == null){
             throw new IllegalArgumentException("Заполните дату рождения!");
+        }
+        if(userDto.getName() == null || userDto.getSurname() == null
+        || userDto.getName().isEmpty() || userDto.getSurname().isEmpty()){
+            throw new IllegalArgumentException("Заполните имя и фамилию!");
         }
         validateBirthday(userDto.getBirthday());
         updateEmailIfChanged(userDto.getEmail(), user);
@@ -144,12 +148,9 @@ public class UserServiceImpl implements UserService {
         }
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
-        if (!userDto.getName().isEmpty()) {
-            user.setName(userDto.getName());
-        }
-        if (!userDto.getSurname().isEmpty()) {
-            user.setSurname(userDto.getSurname());
-        }
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+
 
         if (!userDto.getEmail().isEmpty()) {
             user.setEmail(userDto.getEmail());
@@ -158,7 +159,7 @@ public class UserServiceImpl implements UserService {
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
-        log.info("edit user {}in process...", userDto.getLogin());
+        log.info("edit user {}in process...", user.getLogin());
         userRepository.save(user);
 
 

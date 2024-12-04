@@ -360,10 +360,12 @@ function saveUserData(userId) {
     const birthday = document.getElementById("birthday-input").value;
     const surname = document.getElementById("surnameNameInput").value;
     const email = document.getElementById("emailInput").value;
-    const fullnameDispay = document.getElementById(userId + "-name-surname");
-    const currentNameSurname = fullnameDispay.innerText;
+    const fullnameDispayInList = document.getElementById("list-" + userId + "-name-surname");
+    const fullnameDispayInTile = document.getElementById("tile-" + userId + "-name-surname");
+    const currentNameSurname = fullnameDispayInList? fullnameDispayInList.innerText : fullnameDispayInTile.innerText;
     const parts = currentNameSurname.split('.');
-    const userRoleDisplay = document.getElementById(userId + "-role")
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -399,10 +401,14 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `${parts[0]}.${username} ${surname}`;
-                userRoleDisplay.innerText = selectedRoleDto.roleName;
-
-                const modalInstance = bootstrap.Modal.getInstance(modalElement).hide();
+                if(fullnameDispayInList){
+                    fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}`;
+                    userRoleDisplayInList.innerText = selectedRoleDto.roleName;
+                } else {
+                    fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}`;
+                    userRoleDisplayInTile.innerText = selectedRoleDto.roleName;
+                }
+                bootstrap.Modal.getInstance(modalElement).hide();
                 showNotification("Информация успешно обновлена!", "green");
 
 

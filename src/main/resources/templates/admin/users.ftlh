@@ -28,9 +28,9 @@
                     <#list users.content as user>
                         <tr class="user-row">
                             <td class="user-info">
-                                    <span id="${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
+                                    <span id="list-${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                     <span class="user-table-detail">Reg.: ${user.registerDate}</span>
-                                    <span class="user-table-detail" id="${user.id}-list-status"><#if user.enabled==true>
+                                    <span class="user-table-detail" id="list-${user.id}-list-status"><#if user.enabled==true>
                                 Active
                                 <#else>
                                             Disabled
@@ -38,7 +38,7 @@
                                     <#if user.roleDto??>
 
                                     </#if>
-                                    <span id="${user.id}-role" class="user-table-detail">
+                                    <span id="list-${user.id}-role" class="user-table-detail">
                                         <#if user.roleDto??>
                                             ${user.roleDto.roleName}
                                             <#else >
@@ -71,7 +71,7 @@
                     <#list users.content as user>
                         <div class="user-tile">
                             <div class="user-tile-info">
-                                <span id="${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
+                                <span id="tile-${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                 <span class="user-detail">Reg.: ${user.registerDate}</span>
 
                                 <span class="user-table-detail" id="${user.id}-tile-status">
@@ -82,7 +82,7 @@
                                     </#if>
                                 </span>
 
-                                <span class="user-detail" id="${user.id}-role">
+                                <span class="user-detail" id="tile-${user.id}-role">
                                    <#if user.roleDto??>
                                        ${user.roleDto.roleName}
                                    <#else >
@@ -134,7 +134,7 @@
         </div>
     </div>
 
-    <div class="modal fade user-fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal fade user-fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true" style="display: none">
         <#assign hasEditUserAuthority = false />
         <#list currentUser.roleDto.authorities as auth>
             <#if auth.authority == "EDIT_USER">

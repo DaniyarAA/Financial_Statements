@@ -72,8 +72,8 @@
                     </div>
                 </form>
 
-                <p class="list-group-item list-group-item-action titleList">Название</p>
-                <div id="total" style="overflow-y: scroll; max-height: 600px;">
+                <p class="list-group-item list-group-item-action titleList top-title">Название</p>
+                <div id="total" style="overflow-y: scroll; max-height: 665px;">
                     <ul class="search">
                         <#list list as item>
                             <li class="choice-company list-group-item list-group-item-action <#if companyId == item.id>active</#if>">
@@ -94,8 +94,7 @@
                     <div class="row">
 
                         <div class="h-company-info">
-                            <h2 class="text-center titleInfoCreate">
-                                Наименование компании:
+                            <h2 class="titleInfoCreate">
                                 <span id="companyName" class="inline-block">${company.name!}</span>
                                 <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
                                         title="Редактировать" class="btn btn-link p-0">

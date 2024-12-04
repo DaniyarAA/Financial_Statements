@@ -612,6 +612,15 @@ thead td {
     font-size: 1.5rem;
     cursor: pointer;
 }
+
+.resume-user-icon{
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 35px;
+    cursor: pointer;
+}
+
 .edit-user-btn{
     padding: 0 85px;
     border-radius: 20px;

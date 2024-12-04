@@ -69,6 +69,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 const roles = data.roles;
                 const deleteUserIcon = document.getElementById("delete-user-icon");
                 const editRoleIcon = document.getElementById("edit-role-icon");
+
+                if(user.roleDto && user.roleDto.roleName === "SuperUser"){
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'none';
+                    if (editRoleIcon) editRoleIcon.style.display = 'none';
+                } else {
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'block';
+                    if (editRoleIcon) editRoleIcon.style.display = 'block';
+                }
+
                 if (!user.enabled) {
                     const iconsToHide = [
                         'edit-company-icon',
@@ -76,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         'edit-birthday-icon',
                         'change-avatar-icon',
                         'edit-role-icon',
-                        'delete-user-icon',
                         'edit-email-icon',
                     ];
 
@@ -87,6 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
 
+                    deleteUserIcon.className = "bi bi-arrow-repeat resume-user-icon";
+                    deleteUserIcon.title = "Восстановить пользователя";
+
 
                     const companyDropdown = document.getElementById('companyDropdown');
                     const notesInput = document.getElementById('notesInput');
@@ -96,18 +107,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (notesInput) notesInput.disabled = true;
                     if (editUserInfoButton) editUserInfoButton.disabled = true;
                 }
-                if(user.roleDto && user.roleDto.roleName === "SuperUser"){
-                    if (deleteUserIcon) deleteUserIcon.style.display = 'none';
-                    if (editRoleIcon) editRoleIcon.style.display = 'none';
-                } else {
-                    if (deleteUserIcon) deleteUserIcon.style.display = 'block';
-                    if (editRoleIcon) editRoleIcon.style.display = 'block';
-                }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
                 document.getElementById("surnameNameInput").value = user.surname;
                 document.getElementById("user-email").innerText = user.email;
+                document.getElementById("user-email").title = user.email;
+
                 document.getElementById("emailInput").value = user.email;
                 const birthday = user.birthday;
                 const [year, month, day] = birthday.split('-');
@@ -600,7 +606,8 @@ document.addEventListener('mousedown', (event) => {
     if (
         userNameInput.style.display === 'inline-block' &&
         !userNameInput.contains(event.target) &&
-        !surnameNameInput.contains(event.target)
+        !surnameNameInput.contains(event.target) &&
+        event.target.classList.contains('bi-pencil')
     ) {
         userModalLabel.innerText = userNameInput.value;
         surnameModalLabel.innerText = surnameNameInput.value;
@@ -624,7 +631,7 @@ function toggleEmailEdit() {
     } else {
         email.innerText = emailInput.value;
         email.style.display = 'block';
-        emailInput.style.display = 'block';
+        emailInput.style.display = 'none';
     }
 }
 
@@ -634,7 +641,8 @@ document.addEventListener('mousedown', (event) => {
 
     if (
         emailInput.style.display === 'inline-block' &&
-        !emailInput.contains(event.target)
+        !emailInput.contains(event.target) &&
+        !event.target.classList.contains('bi-pencil')
     ) {
         email.innerText = emailInput.value;
         email.style.display = 'block';

@@ -446,6 +446,7 @@
 
     <div id="companies" class="tab-content">
         <h2 class="text-center">Удаленные компании</h2>
+        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
         <#if deletedCompanies?has_content>
             <div class="accordion shadow-sm rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>
@@ -772,6 +773,34 @@
                 zeroRecords: "Совпадений не найдено",
             },
             responsive: true
+        });
+    });
+
+    document.getElementById('searchCompanies').addEventListener('input', function () {
+        const searchValue = this.value.toLowerCase();
+        const accordionItems = document.querySelectorAll('.accordion-item');
+
+        accordionItems.forEach(item => {
+            const companyName = item.querySelector('.accordion-button span').textContent.toLowerCase();
+            if (companyName.includes(searchValue)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+                const noResultsMessage = document.getElementById('noResultsMessage');
+                if (!hasResults) {
+                    if (!noResultsMessage) {
+                        const message = document.createElement('div');
+                        message.id = 'noResultsMessage';
+                        message.textContent = 'Нет результатов.';
+                        message.className = 'text-center text-muted my-3';
+                        document.querySelector('.accordion').appendChild(message);
+                    }
+                } else {
+                    if (noResultsMessage) {
+                        noResultsMessage.remove();
+                    }
+                }
+            }
         });
     });
 

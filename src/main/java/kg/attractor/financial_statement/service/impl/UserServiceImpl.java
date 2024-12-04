@@ -134,7 +134,11 @@ public class UserServiceImpl implements UserService {
         }
 
         Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+        if(userDto.getBirthday() == null){
+            throw new IllegalArgumentException("Заполните дату рождения!");
+        }
         validateBirthday(userDto.getBirthday());
+        updateEmailIfChanged(userDto.getEmail(), user);
         if(!user.getRole().getRoleName().equals("SuperUser")){
             user.setRole(role);
         }
@@ -168,6 +172,17 @@ public class UserServiceImpl implements UserService {
             }
             log.info("changed login for user");
             user.setLogin(newLogin);
+        }
+    }
+
+    private void updateEmailIfChanged(String newEmail, User user) {
+        if (!Objects.equals(newEmail, user.getEmail())) {
+            if (checkIfUserExistsByEmail(newEmail)) {
+                log.info("Пользователь с такой почтой уже существует");
+                throw new IllegalArgumentException("Пользователь с такой почтой уже существует");
+            }
+            log.info("changed email for user");
+            user.setEmail(newEmail);
         }
     }
 

@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         'change-avatar-icon',
                         'edit-role-icon',
                         'delete-user-icon',
+                        'edit-email-icon',
                     ];
 
                     iconsToHide.forEach(iconId => {
@@ -106,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
                 document.getElementById("surnameNameInput").value = user.surname;
+                document.getElementById("user-email").innerText = user.email;
+                document.getElementById("emailInput").value = user.email;
                 const birthday = user.birthday;
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
@@ -356,6 +359,7 @@ function saveUserData(userId) {
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
     const surname = document.getElementById("surnameNameInput").value;
+    const email = document.getElementById("emailInput").value;
     const fullnameDispay = document.getElementById(userId + "-name-surname");
     const currentNameSurname = fullnameDispay.innerText;
     const parts = currentNameSurname.split('.');
@@ -380,7 +384,8 @@ function saveUserData(userId) {
         companies: companies,
         name: username,
         birthday: birthday,
-        surname: surname
+        surname: surname,
+        email: email
 
     };
 
@@ -396,6 +401,7 @@ function saveUserData(userId) {
             if (response.ok) {
                 fullnameDispay.innerText = `${parts[0]}.${username} ${surname}`;
                 userRoleDisplay.innerText = selectedRoleDto.roleName;
+
                 const modalInstance = bootstrap.Modal.getInstance(modalElement).hide();
                 showNotification("Информация успешно обновлена!", "green");
 
@@ -596,6 +602,37 @@ document.addEventListener('mousedown', (event) => {
         surnameModalLabel.style.display = 'block';
         userNameInput.style.display = 'none';
         surnameNameInput.style.display = 'none';
+    }
+});
+
+function toggleEmailEdit() {
+    const email = document.getElementById('user-email');
+    const emailInput = document.getElementById('emailInput');
+
+    const isEditing = emailInput.style.display === 'inline-block';
+
+    if (!isEditing) {
+        emailInput.style.display = 'inline-block';
+        email.style.display = 'none';
+        emailInput.value = email.innerText;
+    } else {
+        email.innerText = emailInput.value;
+        email.style.display = 'block';
+        emailInput.style.display = 'block';
+    }
+}
+
+document.addEventListener('mousedown', (event) => {
+    const email = document.getElementById('user-email');
+    const emailInput = document.getElementById('emailInput');
+
+    if (
+        emailInput.style.display === 'inline-block' &&
+        !emailInput.contains(event.target)
+    ) {
+        email.innerText = emailInput.value;
+        email.style.display = 'block';
+        emailInput.style.display = 'none';
     }
 });
 

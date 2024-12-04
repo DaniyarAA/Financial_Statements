@@ -156,8 +156,8 @@
                 <div class="modal-header user-modal-header">
                     <h5 class="modal-title user-modal-title ms-3" id="userModalLabel"></h5>
                     <h5 class="modal-title user-modal-title ms-2" id="surnameModalLabel"></h5>
-                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; border: none; padding: 0; width: 28%">
-                    <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; border: none; padding: 0; width: 32%">
+                    <input type="text" class="form-control fs-5" id="userNameInput" style="display: none; padding: 0; width: 28%">
+                    <input type="text" class="form-control fs-5" id="surnameNameInput" style="display: none; padding: 0; width: 32%">
 
                     <#if hasEditUserAuthority>
                         <i class="bi bi-pencil ms-2" id="edit-name-icon" onclick="toggleNameEdit()"></i>
@@ -195,6 +195,15 @@
                     <div class="user-info-row mb-2">
                         <span class="user-label">Статус:</span>
                         <span class="user-value" id="user-status"></span>
+                    </div>
+
+                    <div class="user-info-row mb-2">
+                        <span class="user-label">Почта:</span>
+                        <span class="user-value" id="user-email" style="overflow: hidden; text-overflow: ellipsis;"></span>
+                        <input type="text" class="form-control fs-5" id="emailInput" style="display: none; padding: 0;">
+                        <#if hasEditUserAuthority>
+                            <i class="bi bi-pencil ms-2" id="edit-email-icon" onclick="toggleEmailEdit()"></i>
+                        </#if>
                     </div>
 
 

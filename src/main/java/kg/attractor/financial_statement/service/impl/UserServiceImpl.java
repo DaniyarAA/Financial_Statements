@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -80,18 +81,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private void validateBirthday(LocalDate birthday) {
-        if (birthday.isAfter(LocalDate.now())) {
-            log.info("Дата рождения указана неверно: сотрудник еще не родился");
-            throw new IllegalArgumentException("Дата рождения указана неверно: сотрудник еще не родился");
-        } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
-            log.info("Возраст сотрудника должен быть не менее 18 лет для трудоустройства");
-            throw new IllegalArgumentException("Возраст сотрудника должен быть не менее 18 лет для трудоустройства");
-        } else if (birthday.isBefore(LocalDate.now().minusYears(100))) {
-            log.info("Возраст сотрудника не должен превышать 100 лет");
-            throw new IllegalArgumentException("Возраст сотрудника не должен превышать 100 лет");
-        }
-    }
 
     @Override
     public UserDto getUserDtoById(Long id) {
@@ -132,29 +121,16 @@ public class UserServiceImpl implements UserService {
         if(!user.isEnabled()){
             throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
         }
-
-        Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        if(userDto.getBirthday() == null){
-            throw new IllegalArgumentException("Заполните дату рождения!");
-        }
-        if(userDto.getName() == null || userDto.getSurname() == null
-        || userDto.getName().isEmpty() || userDto.getSurname().isEmpty()){
-            throw new IllegalArgumentException("Заполните имя и фамилию!");
-        }
-        validateBirthday(userDto.getBirthday());
+        validateUserDto(userDto);
         updateEmailIfChanged(userDto.getEmail(), user);
         if(!user.getRole().getRoleName().equals("SuperUser")){
+            Role role = roleService.getRoleById(userDto.getRoleDto().getId());
             user.setRole(role);
         }
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
-
-
-        if (!userDto.getEmail().isEmpty()) {
-            user.setEmail(userDto.getEmail());
-        }
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
@@ -163,6 +139,41 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
 
+    }
+
+
+    private void validateUserDto(UserDto userDto) {
+        if (userDto.getBirthday() == null) {
+            throw new IllegalArgumentException("Заполните дату рождения!");
+        }
+        validateBirthday(userDto.getBirthday());
+
+        if (isNullOrEmpty(userDto.getName()) || isNullOrEmpty(userDto.getSurname())) {
+            throw new IllegalArgumentException("Заполните имя и фамилию!");
+        }
+    }
+
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    private void validateBirthday(LocalDate birthday) {
+        LocalDate now = LocalDate.now();
+        if (birthday.isAfter(now)) {
+            String message = "Дата рождения указана неверно: сотрудник еще не родился";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        }
+        int age = Period.between(birthday, now).getYears();
+        if (age < 18) {
+            String message = "Возраст сотрудника должен быть не менее 18 лет для трудоустройства";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        } else if (age > 100) {
+            String message = "Возраст сотрудника не должен превышать 100 лет";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        }
     }
 
     private void updateLoginIfChanged(String newLogin, User user) {

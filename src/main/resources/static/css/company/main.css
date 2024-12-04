@@ -113,6 +113,11 @@ form {
 
 .h-company-info{
     width: 80%;
+    margin-bottom: 20px;
+}
+
+.titleInfoCreate{
+    text-align: center;
 }
 
 .company-info-buttons{
@@ -181,6 +186,13 @@ input[type="email"]:focus {
     box-shadow: 0 4px 1.8px 2px rgba(0, 0, 0, 0.25);
     padding: 13px 10px;
     background-color: var(--background-color);
+    font-size: 23px;
+    text-align: center;
+}
+
+.top-title{
+    font-size: 23px;
+    text-align: center;
 }
 
 .search li.choice-company:nth-child(even) {
@@ -276,6 +288,8 @@ input[type="email"]:focus {
     right: 20px;
 }
 
+/* Модальное окно регистрации компании */
+
 @media (max-width: 1260px) {
     .form-group.row .col-md-8 {
         display: block;
@@ -288,11 +302,20 @@ input[type="email"]:focus {
     }
 }
 
+@media (max-width: 1730px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 7% 2% 0 24%;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+}
+
 @media (max-width: 1630px) {
     .custom-modal-width {
         max-width: 90%;
-        margin: 7% 2% 0 18%;
-        max-height: 88vh;
+        margin: 7% 2% 0 24%;
+        max-height: 84vh;
         overflow-y: auto;
     }
 }
@@ -378,44 +401,25 @@ input[type="email"]:focus {
     }
 }
 
-@media (min-width: 1620px) {
-    .companies-sidebar-main {
-        width: 15%;
-    }
+/* Главная станица */
 
+@media (max-width: 1730px) {
+    .companies-sidebar-main {
+        width: 22%;
+    }
     .companies-info-main {
-        width: 85%;
+        width: 78%;
     }
 }
 
-@media (min-width: 1372px) {
-    .companies-sidebar-main {
-        width: 17%;
-    }
+/* Таблица компании */
 
-    .companies-info-main {
-        width: 83%;
-    }
+.company-not-required-info {
+    text-align: center;
 }
 
-@media (min-width: 1150px) {
-    .companies-sidebar-main {
-        width: 23%;
-    }
-
-    .companies-info-main {
-        width: 77%;
-    }
-}
-
-@media (max-width: 1150px) {
-    .companies-sidebar-main {
-        width: 100%;
-    }
-    .companies-info-main {
-        width: 100%;
-        margin-top: 20px;
-    }
+.company-required-info {
+    text-align: center;
 }
 
 @media (min-width: 892px) {

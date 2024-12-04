@@ -170,14 +170,19 @@ function showResponseMessage(message, isSuccess = true) {
     }, 3000);
 }
 
-function togglePasswordVisibility(passwordFieldId) {
+function togglePasswordVisibility(passwordFieldId, button) {
     const passwordField = document.getElementById(passwordFieldId);
+    const icon = button.querySelector('i');
     const password = passwordField.getAttribute('data-password');
 
     if (passwordField.innerText === '•'.repeat(password.length)) {
         passwordField.innerText = password;
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
     } else {
         passwordField.innerText = '•'.repeat(password.length);
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
     }
 }
 

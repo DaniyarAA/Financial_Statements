@@ -287,9 +287,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('password')" title="Увидеть"
-                                                class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('password', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputpassword"
@@ -362,9 +361,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('kabinetSalykPassword')"
-                                                title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('kabinetSalykPassword', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalykPassword"
@@ -602,9 +600,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('emailPassword')" title="Увидеть"
-                                                class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('emailPassword', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemailPassword"
@@ -673,9 +670,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('esfPassword')" title="Увидеть"
-                                                class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('esfPassword', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesfPassword"
@@ -722,9 +718,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('kkmPassword')" title="Увидеть"
-                                                class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('kkmPassword', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkmPassword"
@@ -773,9 +768,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('fresh1cPassword')"
-                                                title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('fresh1cPassword', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1cPassword"
@@ -824,9 +818,8 @@
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
                                         </button>
-                                        <button onclick="togglePasswordVisibility('ettnPassword')" title="Увидеть"
-                                                class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom" style="color: black;"></i>
+                                        <button onclick="togglePasswordVisibility('ettnPassword', this)" title="Увидеть" class="btn btn-link p-0">
+                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettnPassword"

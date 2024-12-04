@@ -123,19 +123,6 @@
             color: #333;
         }
 
-        input[type="radio"] {
-            margin-right: 10px;
-            width: 16px;
-            height: 16px;
-            accent-color: #4CAF50;
-            cursor: pointer;
-        }
-
-        input[type="radio"]:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-        }
-
         .action-button {
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
@@ -192,11 +179,6 @@
             color: black !important;
         }
 
-        .details-row {
-            background-color: #f9f9f9;
-            border-top: 1px solid #ddd;
-        }
-
         .details-row ul {
             margin: 0;
             padding: 0.5rem;
@@ -242,6 +224,103 @@
         .styled-table tbody tr:hover {
             background-color: #e2f1e2;
         }
+
+        .accordion {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-item {
+            border: none;
+            margin: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-button {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .accordion-button:hover {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+
+        .btn-resume {
+            border:  none;
+            color: black;
+            font-size: 23px;
+        }
+
+        .btn-resume:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .company-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .company-details li {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-left: 4px solid #198754;
+            background-color: #fff;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .company-details li i {
+            margin-right: 10px;
+            color: #198754;
+        }
+
+        .accordion-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: 5px;
+            max-width: 1000px;
+        }
+
+        .company-details li b {
+            color: #555;
+        }
+
+        .no-data {
+            font-size: 18px;
+            color: #888;
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 15px;
+        }
+
+        .dataTables_wrapper {
+            margin-top: 20px;
+        }
+        .dataTables_length label, .dataTables_filter label {
+            font-weight: bold;
+        }
+
     </style>
 
 
@@ -253,7 +332,7 @@
 
     <div id="users" class="tab-content active">
         <h2>Удаленные пользователи</h2>
-        <table class="styled-table">
+        <table class="styled-table" id="users-table">
             <thead>
             <tr>
                 <th>№</th>
@@ -262,7 +341,7 @@
                 <th>Логин</th>
                 <th>Адерс эл.почты</th>
                 <th>День рождение</th>
-                <th>дата регистрации</th>
+                <th>Дата регистрации</th>
                 <th>Действие</th>
             </tr>
             </thead>
@@ -284,7 +363,7 @@
                 </#list>
             <#else>
                 <tr>
-                    <td colspan="5" class="no-data mt-2 mx-auto">Нет удаленных пользователей</td>
+                    <td colspan="7" class="no-data mt-2 mx-auto">Нет удаленных пользователей</td>
                 </tr>
             </#if>
             </tbody>
@@ -310,10 +389,12 @@
             <thead>
             <tr>
                 <th>№</th>
+                <th>Компания</th>
+                <th>ИНН компании</th>
                 <th>Тип документа</th>
                 <th>Дата начала</th>
                 <th>Дата окончания</th>
-                <th>Цена</th>
+                <th>Сумма</th>
                 <th>Описание</th>
                 <#--                <th>Файл</th>TODO добавить файл в миграции и потом на страницу-->
                 <th>Действие</th>
@@ -324,6 +405,8 @@
                 <#list finishedTasks as task>
                     <tr>
                         <td>${task_index + 1}</td>
+                        <td>${task.company.name}</td>
+                        <td>${task.company.inn}</td>
                         <td>${task.documentTypeName}</td>
                         <td>${task.startDate}</td>
                         <td>${task.endDate}</td>
@@ -337,7 +420,7 @@
                 </#list>
             <#else>
                 <tr>
-                    <td colspan="5" class="no-data mt-2 mx-auto">Нет завершенных задач</td>
+                    <td colspan="9" class="no-data mt-2 mx-auto">Нет завершенных задач</td>
                 </tr>
             </#if>
             </tbody>
@@ -358,93 +441,111 @@
     </div>
 
     <div id="companies" class="tab-content">
-        <h2>Удаленные компании</h2>
-        <table class="styled-table">
-            <thead>
-            <tr>
-                <th>№</th>
-                <th>Имя</th>
-                <th>Подробнее</th>
-                <th>Возобновить</th>
-            </tr>
-            </thead>
-            <tbody>
-            <#if deletedCompanies?has_content>
+        <h2 class="text-center">Удаленные компании</h2>
+        <#if deletedCompanies?has_content>
+            <div class="accordion shadow-sm rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>
-                    <tr>
-                        <td>${company_index + 1}</td>
-                        <td>${company.name}</td>
-                        <td>
-                            <button class="action-button" onclick="toggleDetails(${company.id})">Подробнее</button>
-                        </td>
-                        <td>
-                            <button class="action-button" onclick="resumeCompany(${company.id})">Восстановить</button>
-                        </td>
-                    </tr>
-                    <tr id="details-${company.id}" class="details-row" style="display: none">
-                        <td colspan="3">
-                            <ul>
-                                <li><b>ИНН:</b> ${company.companyInn}</li>
-                                <li><b>ИНН директора:</b> ${company.directorInn}</li>
-                                <li><b>Логин:</b> ${company.login}</li>
-                                <li><b>Пароль:</b> ${company.password}</li>
-                                <li><b>ЭЦП:</b> ${company.ecp}</li>
-                                <li><b>Salyk.kg логин:</b> ${company.kabinetSalyk}</li>
-                                <li><b>Salyk.kg пароль: </b> ${company.kabinetSalykPassword}</li>
-                                <li><b>Режим налогообложения:</b> ${company.taxMode}</li>
-                                <li><b>ОПФ:</b> ${company.opf}</li>
-                                <li><b>Район ГНС:</b> ${company.districtGns}</li>
-                                <li><b>Номер социального фонда:</b> ${company.socfundNumber}</li>
-                                <li><b>Регистрационный номер МЮ:</b> ${company.registrationNumberMj}</li>
-                                <li><b>ОКПО:</b> ${company.okpo}</li>
-                                <li><b>ФИО руководителя:</b> ${company.director}</li>
-                                <li><b>КЭД:</b> ${company.ked}</li>
-                                <#if company.email ? has_content>
-                                    <li><b>Почта:</b> ${company.email}</li>
-                                </#if>
-
-                                <#if company.emailPassword ? has_content>
-                                    <li><b>Телефон:</b> ${company.emailPassword}</li>
-                                </#if>
-                                <#if company.phone ? has_content>
-                                    <li><b>Телефон:</b> ${company.phone}</li>
-                                </#if>
-                                <#if company.esf ? has_content>
-                                    <li><b>ЭСФ логин:</b> ${company.esf}</li>
-                                </#if>
-                                <#if company.esfPassword ? has_content>
-                                    <li><b>ЭСФ пароль:</b> ${company.esfPassword}</li>
-                                </#if>
-                                <#if company.kkm ? has_content>
-                                    <li><b>ККМ логин:</b> ${company.kkm}</li>
-                                </#if>
-                                <#if company.kkmPassword ? has_content>
-                                    <li><b>ККМ пароль:</b> ${company.kkmPassword}</li>
-                                </#if>
-                                <#if company.fresh1c ? has_content>
-                                    <li><b>1С Фреш логин:</b> ${company.fresh1c}</li>
-                                </#if>
-                                <#if company.fresh1cPassword ? has_content>
-                                    <li><b>1С Фреш пароль:</b> ${company.fresh1cPassword}</li>
-                                </#if>
-                                <#if company.ettn ? has_content>
-                                    <li><b>ЭТТН логин:</b> ${company.ettn}</li>
-                                </#if>
-                                <#if company.ettnPassword ? has_content>
-                                    <li><b>ЭТТН пароль:</b> ${company.ettnPassword}</li>
-                                </#if>
-
-                            </ul>
-                        </td>
-                    </tr>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header d-flex align-items-center justify-content-between"
+                            id="heading-${company_index}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-${company_index}" aria-expanded="false"
+                                    aria-controls="collapse-${company_index}">
+                                <span># ${company_index + 1} - ${company.name}</span>
+                            </button>
+                            <button class="btn btn-outline-success btn-sm ms-2 btn-resume"
+                                    onclick="resumeCompany(${company.id})"
+                                    title="Восстановить компанию ${company.name}">
+                                <i class="bi bi-reply-all"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse-${company_index}" class="accordion-collapse collapse"
+                             aria-labelledby="heading-${company_index}" data-bs-parent="#accordionCompanies">
+                            <div class="accordion-body bg-light">
+                                <div class="row row-cols-1 row-cols-md-2">
+                                    <div class="col">
+                                        <ul class="company-details">
+                                            <li><i class="bi bi-info-circle"></i> <b>ИНН:</b> ${company.companyInn}</li>
+                                            <li><i class="bi bi-person-circle"></i> <b>ИНН
+                                                    директора:</b> ${company.directorInn}
+                                            </li>
+                                            <li><i class="bi bi-shield-lock"></i> <b>Логин:</b> ${company.login}</li>
+                                            <li><i class="bi bi-key"></i> <b>Пароль:</b> ${company.password}</li>
+                                            <li><i class="bi bi-person-badge"></i> <b>ЭЦП:</b> ${company.ecp}</li>
+                                            <li><i class="bi bi-laptop"></i> <b>Salyk.kg
+                                                    логин:</b> ${company.kabinetSalyk}</li>
+                                            <li><i class="bi bi-key"></i> <b>Salyk.kg
+                                                    пароль:</b> ${company.kabinetSalykPassword}</li>
+                                            <li><i class="bi bi-bar-chart-line"></i> <b>Режим
+                                                    налогообложения:</b> ${company.taxMode}</li>
+                                            <li><i class="bi bi-building"></i> <b>ОПФ:</b> ${company.opf}</li>
+                                            <li><i class="bi bi-map"></i> <b>Район ГНС:</b> ${company.districtGns}</li>
+                                            <li><i class="bi bi-hospital"></i> <b>Номер социального
+                                                    фонда:</b> ${company.socfundNumber}</li>
+                                            <li><i class="bi bi-file-earmark"></i> <b>Регистрационный номер
+                                                    МЮ:</b> ${company.registrationNumberMj}</li>
+                                            <li><i class="bi bi-cash-stack"></i> <b>ОКПО:</b> ${company.okpo}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col">
+                                        <ul class="company-details">
+                                            <li><i class="bi bi-person"></i> <b>ФИО
+                                                    руководителя:</b> ${company.director}</li>
+                                            <li><i class="bi bi-code-slash"></i> <b>КЭД:</b> ${company.ked}</li>
+                                            <#if company.email?has_content>
+                                                <li><i class="bi bi-envelope"></i> <b>Почта:</b> ${company.email}</li>
+                                            </#if>
+                                            <#if company.emailPassword?has_content>
+                                                <li><i class="bi bi-key"></i> <b>Пароль
+                                                        почты:</b> ${company.emailPassword}</li>
+                                            </#if>
+                                            <#if company.phone?has_content>
+                                                <li><i class="bi bi-telephone"></i> <b>Телефон:</b> ${company.phone}
+                                                </li>
+                                            </#if>
+                                            <#if company.esf?has_content>
+                                                <li><i class="bi bi-server"></i> <b>ЭСФ логин:</b> ${company.esf}</li>
+                                            </#if>
+                                            <#if company.esfPassword?has_content>
+                                                <li><i class="bi bi-key"></i> <b>ЭСФ пароль:</b> ${company.esfPassword}
+                                                </li>
+                                            </#if>
+                                            <#if company.kkm?has_content>
+                                                <li><i class="bi bi-credit-card"></i> <b>ККМ логин:</b> ${company.kkm}
+                                                </li>
+                                            </#if>
+                                            <#if company.kkmPassword?has_content>
+                                                <li><i class="bi bi-key"></i> <b>ККМ пароль:</b> ${company.kkmPassword}
+                                                </li>
+                                            </#if>
+                                            <#if company.fresh1c?has_content>
+                                                <li><i class="bi bi-archive"></i> <b>1С Фреш
+                                                        логин:</b> ${company.fresh1c}</li>
+                                            </#if>
+                                            <#if company.fresh1cPassword?has_content>
+                                                <li><i class="bi bi-key"></i> <b>1С Фреш
+                                                        пароль:</b> ${company.fresh1cPassword}
+                                                </li>
+                                            </#if>
+                                            <#if company.ettn?has_content>
+                                                <li><i class="bi bi-barcode"></i> <b>ЭТТН логин:</b> ${company.ettn}
+                                                </li>
+                                            </#if>
+                                            <#if company.ettnPassword?has_content>
+                                                <li><i class="bi bi-key"></i> <b>ЭТТН
+                                                        пароль:</b> ${company.ettnPassword}</li>
+                                            </#if>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </#list>
-            <#else>
-                <tr>
-                    <td colspan="3" class="no-data">Нет удаленных компаний</td>
-                </tr>
-            </#if>
-            </tbody>
-        </table>
+            </div>
+        <#else>
+            <span class="text-center text-muted">Нет удаленных компаний</span>
+        </#if>
     </div>
 </@layout.layout>
 
@@ -496,16 +597,17 @@
         closeModal();
     }
 
-    function showNotification(message, isSuccess = true) {
-        const notification = document.createElement('div');
-        notification.className = 'custom-notification' + isSuccess ? 'success' : 'error';
-        notification.innerText = message;
+    function showNotification(message, success) {
+        const alert = document.createElement('div');
+        alert.className = 'alert ' + success ? 'alert-success' : 'alert-danger' + ' fade show position-fixed top-0 end-0 m-3';
+        alert.role = 'alert';
+        alert.textContent = message;
 
-        document.body.appendChild(notification);
+        document.body.appendChild(alert);
 
         setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => notification.remove(), 500);
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
         }, 3000);
     }
 

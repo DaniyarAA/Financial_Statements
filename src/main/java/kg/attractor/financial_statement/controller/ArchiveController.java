@@ -22,6 +22,7 @@ public class ArchiveController {
     private final CompanyService companyService;
     private final RoleService roleService;
     private final TaskStatusService taskStatusService;
+    private final DocumentTypeService documentTypeService;
 
     @GetMapping("/all")
     public String getFullArchive(Model model) {
@@ -38,6 +39,7 @@ public class ArchiveController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByLogin(authentication.getName());
         model.addAttribute("currentUser", user);
+        model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
         model.addAttribute("userFinishedTasks", taskService.getFinishedTasksForUser());
         model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(user.getId()));
         return "archive/forUser";

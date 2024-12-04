@@ -1,5 +1,9 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
     <style>
         header {
             background-color: #4caf50;
@@ -89,6 +93,7 @@
         h2 {
             color: black !important;
         }
+
         .accordion-header {
             display: flex;
             align-items: center;
@@ -133,7 +138,7 @@
         }
 
         .btn-resume {
-            border:  none;
+            border: none;
             color: black;
             font-size: 23px;
         }
@@ -213,6 +218,18 @@
                     font-size: 0.9rem;
                 }
             }
+
+            @media (max-width: 768px) {
+                table {
+                    font-size: 0.9rem;
+                }
+
+                .tabs {
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+            }
+
         }
     </style>
 
@@ -224,7 +241,15 @@
 
     <div id="tasks" class="tab-content">
         <h2>Завершенные задачи</h2>
-        <table>
+
+        <select id="filterDocumentType" class="form-control my-3">
+            <option value="">Все типы документов</option>
+            <#list documentTypes as type>
+                <option value="${type.name}">${type.name}</option>
+            </#list>
+        </select>
+
+        <table id="tasksTable">
             <thead>
             <tr>
                 <th>№</th>
@@ -262,6 +287,7 @@
 
     <div id="companies" class="tab-content active">
         <h2 class="text-center">Удаленные компании</h2>
+        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
         <#if deletedCompaniesByUser?has_content>
             <div class="accordion shadow-sm rounded" id="accordionCompanies">
                 <#list deletedCompaniesByUser as company>
@@ -370,6 +396,7 @@
 </@layout.layout>
 
 <script>
+
     const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
@@ -427,5 +454,54 @@
             setTimeout(() => notification.remove(), 500);
         }, 3000);
     }
+
+    $(document).ready(function () {
+        const table = $('#tasksTable').DataTable({
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 15, 100],
+            "order": [[4, "asc"]],
+            "searching": true,
+            "columnDefs": [
+                { "orderable": true, "targets": [4, 5] },
+                { "orderable": false, "targets": "_all" },
+                { "searchable": true, "targets": [1, 3] },
+                { "searchable": false, "targets": "_all" }
+            ]
+        });
+
+        $('#filterDocumentType').on('change', function () {
+            const value = $(this).val();
+            table.column(3).search(value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '', true, false).draw();
+        });
+    });
+
+
+    document.getElementById('searchCompanies').addEventListener('input', function () {
+        const searchValue = this.value.toLowerCase();
+        const accordionItems = document.querySelectorAll('.accordion-item');
+
+        accordionItems.forEach(item => {
+            const companyName = item.querySelector('.accordion-button span').textContent.toLowerCase();
+            if (companyName.includes(searchValue)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+                const noResultsMessage = document.getElementById('noResultsMessage');
+                if (!hasResults) {
+                    if (!noResultsMessage) {
+                        const message = document.createElement('div');
+                        message.id = 'noResultsMessage';
+                        message.textContent = 'Нет результатов.';
+                        message.className = 'text-center text-muted my-3';
+                        document.querySelector('.accordion').appendChild(message);
+                    }
+                } else {
+                    if (noResultsMessage) {
+                        noResultsMessage.remove();
+                    }
+                }
+            }
+        });
+    });
 
 </script>

@@ -1,5 +1,9 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <style>
         header {
             background-color: #4caf50;
@@ -702,4 +706,73 @@
             })
             .catch(error => showNotification('Ошибка: ' + error.message, false));
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        $('#users .styled-table').DataTable({
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 15, 100],
+            searching: true,
+            columnDefs: [
+                { targets: [0, 7], orderable: false }
+            ],
+            language: {
+                search: "Поиск:",
+                lengthMenu: "Показать _MENU_ записей",
+                info: "Показано _START_ до _END_ из _TOTAL_ записей",
+                paginate: {
+                    first: "Первая",
+                    last: "Последняя",
+                    next: "Следующая",
+                    previous: "Предыдущая"
+                },
+                zeroRecords: "Совпадений не найдено",
+            },
+            responsive: true
+        });
+
+        $('#tasks .styled-table').DataTable({
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 15, 100],
+            searching: true,
+            columnDefs: [
+                { targets: [0, 8], orderable: false }
+            ],
+            language: {
+                search: "Поиск:",
+                lengthMenu: "Показать _MENU_ записей",
+                info: "Показано _START_ до _END_ из _TOTAL_ записей",
+                paginate: {
+                    first: "Первая",
+                    last: "Последняя",
+                    next: "Следующая",
+                    previous: "Предыдущая"
+                },
+                zeroRecords: "Совпадений не найдено",
+            },
+            responsive: true
+        });
+
+        $('#accordionCompanies').DataTable({
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 15, 100],
+            searching: true,
+            language: {
+                search: "Поиск:",
+                lengthMenu: "Показать _MENU_ записей",
+                info: "Показано _START_ до _END_ из _TOTAL_ записей",
+                paginate: {
+                    first: "Первая",
+                    last: "Последняя",
+                    next: "Следующая",
+                    previous: "Предыдущая"
+                },
+                zeroRecords: "Совпадений не найдено",
+            },
+            responsive: true
+        });
+    });
+
 </script>

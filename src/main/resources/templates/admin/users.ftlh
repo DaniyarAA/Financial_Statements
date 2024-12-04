@@ -26,7 +26,7 @@
             <div class="user-list-container">
                 <table class="user-table">
                     <#list users.content as user>
-                        <tr class="user-row">
+                        <tr class="user-row <#if !user.enabled>deleted-row-user-style</#if>">
                             <td class="user-info">
                                     <span id="list-${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                     <span class="user-table-detail">Reg.: ${user.registerDate}</span>
@@ -69,7 +69,7 @@
             <div id="tileView" class="view-container tileView hidden">
                 <div class="user-tile-container">
                     <#list users.content as user>
-                        <div class="user-tile">
+                        <div class="user-tile <#if !user.enabled>deleted-tile-user-style</#if>" >
                             <div class="user-tile-info">
                                 <span id="tile-${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                 <span class="user-detail">Reg.: ${user.registerDate}</span>

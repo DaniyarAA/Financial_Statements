@@ -408,6 +408,24 @@ input[type="email"]:focus {
     }
 }
 
+@media (max-width: 615px) {
+    .company-info-buttons{
+        width: 10%;
+    }
+
+    .h-company-info{
+        width: 90%;
+    }
+
+    .delete-icon::before{
+        font-size: 24px;
+    }
+
+    .bi-reply-all::before{
+        font-size: 24px;
+    }
+}
+
 @media (max-width: 580px) {
     .titleInfoCreate{
         font-size: 20px;

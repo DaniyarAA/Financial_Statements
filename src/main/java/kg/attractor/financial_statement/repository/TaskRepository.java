@@ -23,6 +23,14 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             @Param("month") int month
     );
 
+    List<Task> findByUserCompanyIdInOrderByEndDateAsc(List<Long> userCompanyIds);
+
+    List<Task> findByUserCompanyIdInOrderByEndDateDesc(List<Long> userCompanyIds);
+
+    List<Task> findByUserCompanyIdInOrderByIdAsc(List<Long> userCompanyIds);
+
+    List<Task> findByUserCompanyIdInOrderByIdDesc(List<Long> userCompanyIds);
+
     List<Task> findAllByTaskStatus(TaskStatus taskStatus);
 
     List<Task> findAllByUserCompany_UserAndTaskStatus(User user, TaskStatus taskStatus);

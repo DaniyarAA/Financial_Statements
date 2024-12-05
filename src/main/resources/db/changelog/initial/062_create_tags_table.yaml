@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 062
+      author: Adil
+      changes:
+        - createTable:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tag
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_id_tasks
+                    references: users(id)

@@ -220,6 +220,18 @@ thead td {
     background-color: #45a049;
 }
 
+
+/*иконки для сортировок*/
+.calendar-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.calendar-link svg {
+    color: black;
+}
+/*иконки для сортировок*/
+
 .login-container {
     background-color: white;
     padding: 20px 100px;
@@ -406,7 +418,6 @@ thead td {
     padding: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background: white linear-gradient(90deg, #FFFFFF 96.38%, #6DF800 96.63%, #6DF800 98.5%);
-
 }
 
 .user-info {
@@ -497,6 +508,13 @@ thead td {
     background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
 }
 
+.deleted-row-user-style {
+    background:  white linear-gradient(90deg, #FFFFFF 96.38%, #f44343 96.63%, #f44343 98.5%);
+}
+.deleted-tile-user-style {
+    background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+}
+
 .user-name-surname{
     margin-left: 10px;
     font-family: Inter, sans-serif;
@@ -511,14 +529,14 @@ thead td {
 
 .user-tile-info {
     display: grid;
-    grid-template-columns: 310px 120px 90px 110px 0;
+    grid-template-columns: 310px 200px 120px 180px 0;
     align-items: center;
     text-align: start;
 }
 
 .buttons-container {
     display: flex;
-    column-gap: 20px;
+    column-gap: 25px;
     align-items: center;
 }
 
@@ -606,6 +624,15 @@ thead td {
     font-size: 1.5rem;
     cursor: pointer;
 }
+
+.resume-user-icon{
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 35px;
+    cursor: pointer;
+}
+
 .edit-user-btn{
     padding: 0 85px;
     border-radius: 20px;
@@ -989,15 +1016,322 @@ h2 {
     padding: 4px 4px;
 }
 
+/*стили для приоритетов*/
 .task-priority-bar {
     position: absolute;
     right: 0;
     top: 0;
-    width: 20px;
+    width: 40px;
     height: 100%;
-    background-color: #EBE30E;
+    background-color: #bdbdbd;
     border-radius: 0 2px 2px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
 }
+
+.task-priority-bar:hover {
+    background-color: #969696;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.priority-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.priority-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    color: #000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+    transform: translate(380%, 90%);
+    position: relative;
+}
+
+.priority-close-button {
+    color: #999;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.priority-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.priority-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.priority-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.priority-item:hover {
+    background-color: #f0f0f0;
+}
+
+.priority-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #555;
+    border-radius: 4px;
+    margin-right: 10px;
+    text-transform: uppercase;
+}
+
+.priority-name {
+    font-size: 14px;
+    flex: 1;
+}
+
+.priority-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 4px;
+    margin-right: 10px;
+    text-transform: uppercase;
+}
+
+.priority-badge.low {
+    background-color: #5b5b5b;
+}
+
+.priority-badge.urgent {
+    background-color: #ff4d4d;
+}
+
+.priority-badge.critical {
+    background-color: #ff80ff;
+}
+
+.priority-badge.serious {
+    background-color: #ffcc00;
+}
+
+.priority-badge.normal {
+    background-color: #90ee90;
+}
+
+.priority-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    opacity: 0;
+    font-size: 14px; /
+    z-index: 1000;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease-in-out;
+    width: auto;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.priority-notification.success {
+    background-color: #4CAF50;
+}
+
+.priority-notification.error {
+    background-color: #f44336;
+}
+
+.priority-notification.show {
+    display: block;
+    opacity: 1;
+}
+
+.task-priority-arrows {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 5px;
+    padding: 0;
+    width: auto;
+}
+
+.task-priority-arrows svg {
+    display: block;
+    margin-bottom: -5px;
+    margin-right: 40px;
+}
+
+.no-priority-message {
+    margin-left: 59px;
+}
+/*стили для приоритетов*/
+
+/*стили для тегов*/
+.tag-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.tag-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative;
+    transform: translate(130%, -50%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.tag-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#tag-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.tag-close-button {
+    color: #999;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.tag-save-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.tag-save-button:hover {
+    background-color: #45a049;
+}
+
+.tag-modal.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.tag-select-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.tag-select-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    transform: translate(130%, -50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip {
+    position: absolute;
+    bottom: 75%;
+    left: 88%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 10;
+    word-wrap: break-word;
+    max-width: 160px;
+}
+
+.task-tag:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+/*стили для тегов*/
 
 .calendar {
     display: flex;
@@ -1149,7 +1483,7 @@ h2 {
     }
 
     .user-tile-info {
-        grid-template-columns: 255px 130px 100px 235px 0;
+        grid-template-columns: 300px 135px 100px 100px 0;
     }
 
     /* ВИД СПИСКА*/
@@ -1184,6 +1518,12 @@ h2 {
     .users-list-title {
         font-size: 18px;
         margin-left: 550px;
+    }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
     }
 }
 
@@ -1256,6 +1596,12 @@ h2 {
         font-size: 18px;
         margin-left: 550px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+    }
 }
 
 
@@ -1302,6 +1648,10 @@ h2 {
     .users-list-title {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 95.58%, #f44343 95.63%, #f44343 98.5%);
+    }
+
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
@@ -1361,6 +1711,9 @@ h2 {
     .edit-button {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 94.38%, #f44343 94.53%, #f44343 98.5%);
+    }
 }
 
 
@@ -1419,6 +1772,9 @@ h2 {
     .notes-form{
         margin-left: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
 
 }
 
@@ -1472,8 +1828,25 @@ h2 {
         margin-right: 0;
     }
 
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
+
 }
 
 .login-text{
     text-align: center;
+}
+
+.user-modal-close-button{
+    position: absolute;
+    top: 10px;
+    cursor: pointer;
+    left: 10px;
+}
+
+.email-display{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
+import kg.attractor.financial_statement.enums.ReportFrequency;
 import lombok.*;
 
 import java.util.List;
@@ -49,6 +50,9 @@ public class Company {
     private String ettnPassword;
 
     private boolean isDeleted;
+
+    @Enumerated(EnumType.STRING)
+    private ReportFrequency reportFrequency;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<UserCompany> usersCompany;

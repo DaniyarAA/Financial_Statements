@@ -2,6 +2,10 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.*;
+import kg.attractor.financial_statement.entity.Task;
+import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.enums.ReportFrequency;
+import kg.attractor.financial_statement.enums.TaskPriority;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.service.*;
@@ -26,7 +30,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.function.Function;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.function.Function;
@@ -112,6 +115,33 @@ public class TaskServiceImpl implements TaskService {
         return convertToDtoList(tasks);
     }
 
+    @Override
+    public List<TaskDto> getAllTasksForUserSorted(User user, String sortBy, String sort) {
+        List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
+
+        List<Task> tasks;
+
+        if ("id".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUserCompanyIdInOrderByIdAsc(userCompanyIds);
+            } else {
+                tasks = taskRepository.findByUserCompanyIdInOrderByIdDesc(userCompanyIds);
+            }
+        }
+
+        else if ("endDate".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUserCompanyIdInOrderByEndDateAsc(userCompanyIds);
+            } else {
+                tasks = taskRepository.findByUserCompanyIdInOrderByEndDateDesc(userCompanyIds);
+            }
+        } else {
+            tasks = taskRepository.findByUserCompanyIdInOrderByEndDateAsc(userCompanyIds);
+        }
+
+        return convertToDtoList(tasks);
+    }
+
     private List<Task> getAllTasksForUser(User user) {
         List<Long> userCompanyIds = userCompanyService.findUserCompanyIdsForUser(user);
 
@@ -157,29 +187,38 @@ public class TaskServiceImpl implements TaskService {
             List<Company> companies = companyService.findAll();
 
             for (Company company : companies) {
+                ReportFrequency frequency = company.getReportFrequency();
 
                 List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
 
                 for (UserCompany userCompany : userCompanies) {
-                    generateAutomaticTasks(userCompany, currentDate);
+                    generateAutomaticTasks(userCompany, currentDate, frequency);
                 }
             }
         }
     }
 
     @Override
-    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate) {
+    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency) {
         int currentYear = currentDate.getYear();
-
         List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
         TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
-        userCompany.setIsAutomatic(true);
+        DocumentType enReport = documentTypeService.getDocumentTypeById(2L);
+        DocumentType nspReport = documentTypeService.getDocumentTypeById(14L);
 
         for (int i = 0; i < 12; i++) {
             YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);
 
             if (nextMonth.getYear() == currentYear) {
                 for (DocumentType documentType : automaticDocumentTypes) {
+                    if (documentType.getId().equals(enReport.getId())) {
+                        continue;
+                    }
+
+                    if (documentType.getId().equals(nspReport.getId()) && frequency == ReportFrequency.QUARTERLY) {
+                        continue;
+                    }
+
                     Task task = new Task();
                     LocalDate startDate = nextMonth.atDay(1);
                     LocalDate endDate = nextMonth.atEndOfMonth();
@@ -190,6 +229,56 @@ public class TaskServiceImpl implements TaskService {
                     task.setTaskStatus(defaultStatus);
                     taskRepository.save(task);
                 }
+            }
+        }
+
+        int currentQuarter = (currentDate.getMonthValue() - 1) / 3 + 1;
+
+        if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
+            for (int quarter = 1; quarter <= 4; quarter++) {
+                YearMonth quarterStartMonth = YearMonth.of(currentYear, (quarter - 1) * 3 + 1);
+                LocalDate startDate = quarterStartMonth.atDay(1);
+                LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
+
+                Task enTask = new Task();
+                enTask.setUserCompany(userCompany);
+                enTask.setStartDate(startDate);
+                enTask.setEndDate(endDate);
+                enTask.setDocumentType(enReport);
+                enTask.setTaskStatus(defaultStatus);
+                taskRepository.save(enTask);
+
+                if (frequency == ReportFrequency.QUARTERLY) {
+                    Task nspTask = new Task();
+                    nspTask.setUserCompany(userCompany);
+                    nspTask.setStartDate(startDate);
+                    nspTask.setEndDate(endDate);
+                    nspTask.setDocumentType(nspReport);
+                    nspTask.setTaskStatus(defaultStatus);
+                    taskRepository.save(nspTask);
+                }
+            }
+        } else {
+            YearMonth quarterStartMonth = YearMonth.of(currentYear, (currentQuarter - 1) * 3 + 1);
+            LocalDate startDate = quarterStartMonth.atDay(1);
+            LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
+
+            Task enTask = new Task();
+            enTask.setUserCompany(userCompany);
+            enTask.setStartDate(startDate);
+            enTask.setEndDate(endDate);
+            enTask.setDocumentType(enReport);
+            enTask.setTaskStatus(defaultStatus);
+            taskRepository.save(enTask);
+
+            if (frequency == ReportFrequency.QUARTERLY) {
+                Task nspTask = new Task();
+                nspTask.setUserCompany(userCompany);
+                nspTask.setStartDate(startDate);
+                nspTask.setEndDate(endDate);
+                nspTask.setDocumentType(nspReport);
+                nspTask.setTaskStatus(defaultStatus);
+                taskRepository.save(nspTask);
             }
         }
     }
@@ -357,6 +446,9 @@ public class TaskServiceImpl implements TaskService {
                 .amount(task.getAmount())
                 .description(task.getDescription())
                 .isCompleted(taskStatusService.getIsCompleted(task.getTaskStatus()))
+                .priorityId(task.getPriorityId())
+                .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
+                .tag(task.getTag() != null ? task.getTag().getTag() : null)
                 .build();
     }
 
@@ -464,6 +556,24 @@ public class TaskServiceImpl implements TaskService {
         response.put("companyDtos", companyDtos);
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
         return response;
+    }
+
+    @Override
+    public void updateTaskPriority(Long taskId, Long priorityId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        task.setPriorityId(priorityId);
+        taskRepository.save(task);
+    }
+
+    @Override
+    public void updateTaskTag(Long taskId, Tag tag) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+
+        task.setTag(tag);
+        taskRepository.save(task);
     }
 
     @Override

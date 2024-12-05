@@ -50,6 +50,13 @@ public class Task {
     @Column(name = "time_spent")
     private LocalDateTime timeSpent;
 
+    @Column(name = "priority_id")
+    private Long priorityId;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_tag_id_tasks"))
+    private Tag tag;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
     private List<Report> reports;
 }

@@ -72,4 +72,6 @@ public class CompanyDto {
     private String ettn;
     private String ettnPassword;
     private boolean isDeleted;
+
+    private String reportFrequency;
 }

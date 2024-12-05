@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 060
+      author: Adil
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: tasks
+            constraintName: fk_priority_id_tasks
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: priority_id
+            constraintName: fk_priority_id_priorities
+            referencedTableName: priorities
+            referencedColumnNames: id

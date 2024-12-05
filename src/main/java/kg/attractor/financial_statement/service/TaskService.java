@@ -1,11 +1,10 @@
 package kg.attractor.financial_statement.service;
 
-import kg.attractor.financial_statement.dto.TaskCreateDto;
-import kg.attractor.financial_statement.dto.TaskDto;
-import kg.attractor.financial_statement.dto.TaskEditDto;
-import kg.attractor.financial_statement.dto.TaskForTaskListEditDto;
+import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Tag;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
+import kg.attractor.financial_statement.enums.ReportFrequency;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,6 +33,8 @@ public interface TaskService {
 
     List<TaskDto> getAllTaskDtosForUser(User user);
 
+    List<TaskDto> getAllTasksForUserSorted(User user, String sortDirection, String sortBy);
+
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
 
     TaskDto getTaskDtoById(Long taskId);
@@ -47,7 +48,11 @@ public interface TaskService {
     @Scheduled(cron = "0 0 0 1 1 *")
     void tasksGenerator();
 
-    void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate);
+    void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency);
+
+    void updateTaskPriority(Long taskId, Long priorityId);
+
+    void updateTaskTag(Long taskId, Tag tag);
 
     List<String> getAllYearMonths(String login);
 

@@ -475,8 +475,11 @@ function deleteUser() {
                     showNotification("Пользователь успешно удалён.", "green");
                     userStatus.innerText = "Неактивен";
                     displayRole.innerText = "Отсутвует";
-                    userStatusOnList.innerText = "Disabled";
-                    userStatusOnTile.innerText = "Disabled";
+                    if(userStatusOnList){
+                        userStatusOnList.innerText = "Disabled";
+                    } else {
+                        userStatusOnTile.innerText = "Disabled";
+                    }
                     confirmModal.hide();
                 } else {
                     return response.json().then(errorData => {

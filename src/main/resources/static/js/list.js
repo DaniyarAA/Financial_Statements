@@ -1,20 +1,27 @@
 function showTaskDetails(button) {
     console.log(taskStatusDtos);
-
-    const container = document.querySelector('.container');
-    container.classList.add('with-details');
-
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 
     const taskId = button.getAttribute("data-task-id");
     const documentType = button.getAttribute("data-document-type");
     const startDate = button.getAttribute("data-start-date");
+    const endDate = button.getAttribute("data-end-date");
     const companyName = button.getAttribute("data-company-name");
     const companyInn = button.getAttribute("data-company-inn");
     const description = button.getAttribute("data-description");
     const amount = button.getAttribute("data-amount");
     const status = button.getAttribute("data-status");
     const isCompleted = status === "Сдан";
+
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
+    const formattedAmount = formatAmount(amount);
+
+    const taskDetails = document.getElementById('task-details');
+    if (taskDetails) {
+        taskDetails.style.width = '30%';
+        taskDetails.border = '1px solid #dee2e6'
+    }
 
     let statusOptions = '';
     taskStatusDtos.forEach((statusDto) => {
@@ -49,51 +56,64 @@ function showTaskDetails(button) {
             <div class="labels" style="font-size: 14px; font-style: italic; font-weight: 100; display: inline">
                 <p>Компания:</p>
                 <p>ИНН:</p>
-                <p>Период:</p>
-                <p>Сумма:</p>
-                <p>Статус:</p>
+                <p style="margin-top: 8px">Период:</p>
+                <p style="margin-top: 15px">Сумма:</p>
+                <p style="margin-top: 15px">Статус:</p>
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
                 <p>${companyName}</p>
                 <p>${companyInn}</p>
-                <p>${startDate}</p>
+                <div id="date-display" style="display: block;">
+                    <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                </div>
+                <div id="date-input" style="display: none; height: 36px; align-items: center;">
+                    <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
+                    <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
+                    <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
+                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                    </button>
+                </div>
+                
+
                 <div id="amount-display" style="display: block;">
-                    <p>${amount} сом<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                    <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+
                 </div>
                 <div id="amount-input" style="display: none;">
-    <input type="text" id="amount" name="amount" value="${amount}" style="
-        width: 70px;
-        height: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        margin: 0;
-    ">
-    <button type="button" onclick="cancelEditAmount()" style="
-        background: none;
-        color: #007bff;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        text-decoration: underline;
-        font-size: 14px;
-    ">Cancel</button>
-</div>
+                    <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
+                        width: 100px;
+                        height: 33px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        font-size: 14px;
+                        margin: 0;
+                    ">
+                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
+                </div>
                 <div id="status-display" style="display: block">
                     <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
-                <div id="status-input" style="display: none;">
-                    <select class="form-select" id="taskStatus" name="statusId">
-                        ${statusOptions}
-                    </select>
-                <button type="button" class="btn btn-link" onclick="cancelEditStatus()">Cancel</button>
+                <div id="status-input" style="display: none; align-items: center;">
+                    <div style="display: flex; flex-direction: row">
+                    <div>
+                        <select class="form-select" id="taskStatus" name="statusId" style="
+                        width: 200px; height: 38px;
+                        ">
+                            ${statusOptions}
+                        </select>
+                    </div>
+      
+                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
+                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                    </button>
+                    </div>
                 </div>
             </div>
         </div>
 
   <label for="description" style="margin-top: 55px; font-size: 14px; font-style: italic; font-weight: 100">Описание</label>
-<textarea id="description" name="description" style="width: 324px;
+        <textarea id="description" name="description" style="width: 324px;
     height: 112px;
     background-color: #d9d9d9;
     color: #333;
@@ -105,26 +125,87 @@ function showTaskDetails(button) {
     font-size: 16px;
     resize: none;
     overflow-y: auto;">${description}</textarea>
-    <div style="display: flex; justify-content: center; margin-top: 50px">
+        <div style="display: flex; justify-content: center; margin-top: 50px">
 
-        <button type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center;             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
+        <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
     </div>
 
     </form>
 </div>
     `;
+
+    var dateFormat = "dd.mm.yy";
+    var from = $("#from").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 1,
+        dateFormat: dateFormat
+    }).on("change", function () {
+        to.datepicker("option", "minDate", getDate(this));
+    });
+
+    var to = $("#to").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 1,
+        dateFormat: dateFormat
+    }).on("change", function () {
+        from.datepicker("option", "maxDate", getDate(this));
+    });
 }
 
+function formatDate(dateString) {
+    const [year, month, day] = dateString.split("-");
+    return `${day}.${month}.${year}`;
+}
+
+function formatAmount(amount) {
+    if (!amount || amount === "Не задано") {
+        return "Не задано";
+    }
+    return parseFloat(amount.replace(/,/g, '')).toFixed(2);
+}
 
 function editAmount() {
     document.getElementById('amount-display').style.display = 'none';
     document.getElementById('amount-input').style.display = 'block';
+
+    const amountInput = document.getElementById('amount');
+    const form = document.getElementById('task-edit-form');
+
+    amountInput.addEventListener('input', validateAmount);
+
+    function validateAmount() {
+        const errorMessage = document.getElementById('amount-error');
+        const value = amountInput.value.trim();
+
+        if (!value || isNaN(value) || Number(value) <= 0) {
+            if (!errorMessage) {
+                const error = document.createElement('p');
+                error.id = 'amount-error';
+                error.textContent = 'Введите положительное число.';
+                error.style.color = 'red';
+                error.style.fontSize = '14px';
+                error.style.marginTop = '5px';
+                amountInput.parentNode.appendChild(error);
+            }
+            form.querySelector('button[type="submit"]').disabled = true;
+        } else {
+            if (errorMessage) errorMessage.remove();
+            form.querySelector('button[type="submit"]').disabled = false;
+        }
+    }
 }
 
 function cancelEditAmount() {
     document.getElementById('amount-display').style.display = 'block';
     document.getElementById('amount-input').style.display = 'none';
+
+    const errorMessage = document.getElementById('amount-error');
+    if (errorMessage) errorMessage.remove();
+    const form = document.getElementById('task-edit-form');
+    form.querySelector('button[type="submit"]').disabled = false;
 }
 
 function editStatus() {
@@ -135,6 +216,16 @@ function editStatus() {
 function cancelEditStatus() {
     document.getElementById('status-display').style.display = 'block';
     document.getElementById('status-input').style.display = 'none';
+}
+
+function editDate() {
+    document.getElementById('date-display').style.display = 'none';
+    document.getElementById('date-input').style.display = 'block';
+}
+
+function cancelEditDate() {
+    document.getElementById('date-display').style.display = 'block';
+    document.getElementById('date-input').style.display = 'none';
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -178,11 +269,16 @@ function setupNavigationButtons() {
             prevButtonImage.style.width = "35px";
             prevButtonImage.style.height = "35px";
 
-            prevButtonImage.addEventListener("click", () => {
-                if (!prevButtonImage.classList.contains("disabled")) {
-                    navigateToYearMonth(-1, currentYearMonth);
-                }
-            });
+            const previousYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, -1);
+            if (!previousYearMonth) {
+                prevButtonImage.style.filter = "grayscale(100%)";
+                prevButtonImage.style.cursor = "not-allowed";
+                prevButtonImage.classList.add("disabled");
+            } else {
+                prevButtonImage.addEventListener("click", () => {
+                    window.location.href = updateURLParameter("yearMonth", previousYearMonth);
+                });
+            }
 
             firstColumn.style.position = "relative";
             firstColumn.appendChild(prevButtonImage);
@@ -201,26 +297,31 @@ function setupNavigationButtons() {
             nextButtonImage.style.width = "35px";
             nextButtonImage.style.height = "35px";
 
-            nextButtonImage.addEventListener("click", () => {
-                if (!nextButtonImage.classList.contains("disabled")) {
-                    navigateToYearMonth(1, currentYearMonth);
-                }
-            });
+            const nextYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, 1);
+            if (!nextYearMonth) {
+                nextButtonImage.style.filter = "grayscale(100%)";
+                nextButtonImage.style.cursor = "not-allowed";
+                nextButtonImage.classList.add("disabled");
+            } else {
+                nextButtonImage.addEventListener("click", () => {
+                    window.location.href = updateURLParameter("yearMonth", nextYearMonth);
+                });
+            }
 
             lastColumn.style.position = "relative";
             lastColumn.appendChild(nextButtonImage);
         }
     }
 
-    function navigateToYearMonth(delta, current) {
-        const newYearMonth = computeNewYearMonth(current, delta);
-        window.location.href = updateURLParameter("yearMonth", newYearMonth);
-    }
+    function getAdjacentYearMonth(current, yearMonths, delta) {
+        const currentIndex = yearMonths.indexOf(current);
+        const newIndex = currentIndex + delta;
 
-    function computeNewYearMonth(current, delta) {
-        const [month, year] = current.split(".").map(Number);
-        const date = new Date(year, month - 1 + delta);
-        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+        if (newIndex >= 0 && newIndex < yearMonths.length) {
+            return yearMonths[newIndex];
+        }
+
+        return null;
     }
 
     function updateURLParameter(key, value) {
@@ -234,5 +335,172 @@ function setupNavigationButtons() {
         return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
     }
 }
+
 document.addEventListener("DOMContentLoaded", setupNavigationButtons);
 
+
+function getDate(element) {
+    var date;
+    try {
+        date = $.datepicker.parseDate(dateFormat, element.value);
+    } catch (error) {
+        date = null;
+    }
+    return date;
+}
+
+function setupCompanyToggleButton() {
+    const companyHeader = document.querySelector(".company-column-th .company-header");
+
+    if (!companyHeader) return;
+
+    if (!companyHeader.querySelector(".btn-nav-img-toggle")) {
+        const toggleButtonImage = document.createElement("img");
+        toggleButtonImage.src = "/images/company-arrow.png";
+        toggleButtonImage.alt = "Toggle Company Table";
+        toggleButtonImage.classList.add("btn-nav-img", "btn-nav-img-toggle");
+        toggleButtonImage.style.position = "absolute";
+        toggleButtonImage.style.right = "5px";
+        toggleButtonImage.style.top = "50%";
+        toggleButtonImage.style.transform = "translateY(-50%)";
+        toggleButtonImage.style.cursor = "pointer";
+        toggleButtonImage.style.width = "24px";
+        toggleButtonImage.style.height = "24px";
+
+        toggleButtonImage.addEventListener("click", () => {
+            toggleCompanyTable();
+        });
+
+        companyHeader.style.position = "relative";
+        companyHeader.appendChild(toggleButtonImage);
+    }
+}
+
+function toggleCompanyTable() {
+    const companyTable = document.getElementById("company-table");
+    const isHidden = companyTable.style.display === "none";
+    if (isHidden) {
+        companyTable.style.width = '244px';
+        companyTable.style.marginRight = '5px';
+        companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
+    } else {
+        companyTable.style.width = '0';
+        companyTable.style.marginRight = '0';
+        companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupCompanyToggleButton();
+});
+
+
+function addCollapseButtonToTaskDetails() {
+    const taskDetailsHeader = document.querySelector('.task-details-header');
+
+    if (!taskDetailsHeader.querySelector('.btn-collapse-task-details')) {
+        const collapseButton = document.createElement('button');
+        collapseButton.type = 'button';
+        collapseButton.className = 'btn-collapse-task-details';
+        collapseButton.style.cssText = `
+            background: none;
+            border: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        `;
+
+        collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
+
+        collapseButton.addEventListener('click', () => {
+            const taskDetails = document.getElementById('task-details');
+            if (taskDetails) {
+                taskDetails.style.width = '0';
+                taskDetails.overflow = 'hidden';
+                taskDetails.padding = '0';
+                taskDetails.transition = 'width 0.3s ease, padding 0.3s ease';
+            }
+        });
+
+        taskDetailsHeader.appendChild(collapseButton);
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    addCollapseButtonToTaskDetails();
+});
+
+function addCreateTaskButton() {
+    const addTaskButton = document.createElement('button');
+    addTaskButton.className = 'btn-create-task';
+    addTaskButton.style.cssText = `
+        background: none;
+            border: none;
+            position: absolute;
+            top: 2px;
+            right: 34px;
+            cursor: pointer;
+    `;
+
+    addTaskButton.innerHTML = `<img src="/images/add.png" alt="Collapse" style="width: 40px; height: 40px;">`;
+
+    addTaskButton.addEventListener('click', () => {
+        toggleCreateTaskForm();
+    });
+
+    document.body.appendChild(addTaskButton);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    addCreateTaskButton();
+});
+
+
+function toggleCreateTaskForm() {
+    const createTaskForm = document.getElementById('create-task-form');
+    const taskContent = document.getElementById('task-content');
+
+    if (createTaskForm.style.display === 'none') {
+        taskContent.style.display = 'none';
+        createTaskForm.style.display = 'block';
+        renderCreateTaskForm();
+    } else {
+        createTaskForm.style.display = 'none';
+        taskContent.style.display = 'block';
+    }
+}
+
+function renderCreateTaskForm() {
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+
+    document.getElementById('create-task-form').innerHTML = `
+        <form id="create-task" action="/tasks/create" method="post">
+            <input type="hidden" name="_csrf" value="${csrfToken}">
+            <div>
+                <label for="documentType">Тип документа:</label>
+                <input type="text" id="documentType" name="documentType" required />
+            </div>
+            <div>
+                <label for="companyName">Компания:</label>
+                <input type="text" id="companyName" name="companyName" required />
+            </div>
+            <div>
+                <label for="startDate">Дата начала:</label>
+                <input type="date" id="startDate" name="startDate" required />
+            </div>
+            <div>
+                <label for="endDate">Дата окончания:</label>
+                <input type="date" id="endDate" name="endDate" required />
+            </div>
+            <div>
+                <label for="amount">Сумма:</label>
+                <input type="number" id="amount" name="amount" min="0" required />
+            </div>
+            <div>
+                <label for="description">Описание:</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <button type="submit">Создать задачу</button>
+        </form>
+    `;
+}

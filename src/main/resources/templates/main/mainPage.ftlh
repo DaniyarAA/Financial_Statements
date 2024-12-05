@@ -20,11 +20,20 @@
                     </div>
                     <div class="left col">
                         <div class="archive">
-                            <h3><a href="/archive/user" class="btn type-btn">АРХИВ</a></h3>
-                            <ul>
-                                <li>&bull;</li>
-                                <li>&bull;</li>
-                            </ul>
+                            <#assign hasAccess = false />
+                            <#list userDto.role.authorities as auth>
+                                <#if auth.authority == "VIEW_ARCHIVE">
+                                    <#assign hasAccess = true />
+                                    <#break>
+                                </#if>
+                            </#list>
+                            <a href="${hasAccess?then('/archive/all', '/archive')}" class="btn type-btn">
+                                <h3>АРХИВ</h3>
+                                <ul>
+                                    <li>&bull;</li>
+                                    <li>&bull;</li>
+                                </ul>
+                            </a>
                         </div>
                     </div>
                     <div class="left col">

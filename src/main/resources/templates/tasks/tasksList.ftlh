@@ -2,14 +2,23 @@
 <meta name="_csrf_header" content="${_csrf.headerName}">
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
+    <#if errorMsg??>
+        <div class="alert alert-danger">
+            <p>На вас нет зарегестрированных компаний!</p>
+        </div>
+    </#if>
     <div class="container p-3">
         <div class="main-content">
-            <div class="table-container company-table">
+            <div class="table-container company-table" id="company-table" style="display: block">
                 <div class="table-wrapper">
                     <table class="table-main">
                         <thead>
                         <tr class="company-column-tr">
-                            <th class="company-column-th">Компании</th>
+                            <th class="company-column-th">
+                                <div class="company-header">
+                                    <span>Компании</span>
+                                </div>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -22,10 +31,10 @@
                     </table>
                 </div>
 
-                <div class="pagination-container
-        <#if currentPage == 0 && currentPage == totalPages - 1>
-            single-button
-        </#if>">
+                <div class="pagination-container">
+                    <#if currentPage == 0 && currentPage == totalPages - 1>
+
+                    </#if>
                     <#if currentPage != 0>
                         <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">
                             <div class="button-container">
@@ -50,7 +59,7 @@
                         <thead>
                         <tr class="year-month-column">
                             <#list monthsMap?keys as yearMonth>
-                                <th class="year-month-th">
+                                <th class="year-month-th <#if yearMonth_index == 0>first-th<#elseif yearMonth_index == 1>second-th</#if>">
                                     <div class="year-month-header">
                                         <span class="year-month-label">${monthsMap[yearMonth]}</span>
                                     </div>
@@ -76,7 +85,11 @@
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
                                                             data-description="${task.description}"
-                                                            data-amount="${task.amount}"
+                                                            <#if task.amount??>
+                                                                data-amount="${task.amount}"
+                                                            <#else>
+                                                                data-amount="Не задано"
+                                                            </#if>
                                                             data-status="${task.statusId}">
                                                         ${task.documentTypeName}
                                                         <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>"></div>
@@ -112,7 +125,11 @@
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
+    <script>
+        const availableYearMonths = ${availableYearMonthsJson?no_esc};
+    </script>
     <script src="/js/list.js"></script>
+
 
     <style>
         .container {
@@ -128,10 +145,12 @@
             position: relative;
         }
         .company-table {
-            width: 250px;
-
+            width: 244px;
+            overflow: hidden;
             margin-right: 5px;
             background-color: #d9d9d9;
+
+            transition: width 0.3s ease, padding 0.3s ease;
         }
 
         .company-column-tr{
@@ -139,28 +158,40 @@
             height: 61px;
         }
         .tasks-table {
-            width: 75%;
+            width: 100%;
             background-color: #d9d9d9;
+            flex: 1;
             margin-right: 10px;
             margin-top: 26px;
-        }
+            box-sizing: border-box;
 
+        }
         .year-month-column {
             background-color: #ffffff;
             height: 35px;
+
         }
 
         .year-month-th {
             padding: 5px;
+
+        }
+
+        .year-month-th.first-th {
+            background-color: #d9d9d9;
+        }
+
+        .year-month-th.second-th {
+            background-color: #ededed;
+            border-right: 2px solid #c8c8c8;
         }
 
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 650px;
-            min-height: 650px;
-            max-height: 650px;
-
+            height: 550px;
+            min-height: 550px;
+            max-height: 550px;
         }
 
         .table-main {
@@ -221,6 +252,12 @@
             box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);
         }
+
+        .task-button:hover {
+            background-color: #e0e0e0;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
         .button-alert {
             position: absolute;
 
@@ -242,7 +279,7 @@
         }
 
         .container.with-details .task-details {
-            width: 40%;
+            width: 30%;
             border: 1px solid #dee2e6;
         }
 
@@ -251,31 +288,33 @@
             color: #6c757d;
         }
 
-        .pagination-container {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        .pagination-container{
             display: flex;
-            justify-content: center;
+            justify-content: end;
             align-items: center;
-            padding: 1rem;
             flex-direction: column;
-        }
+            width: 244px;
+            height: 150px;
 
-        .pagination-container a {
-            margin: 0 0.5rem;
+            transition: all 0.3s ease;
         }
-
 
         .button-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 244px;
+            width: 237px;
             height: 70px;
             background-color: #f9f9f9;
             border-radius: 8px;
             border: 1px solid #ddd;
+            margin-bottom: 4px;
+            box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3);
+        }
+        .button-container:hover {
+            background-color: #e0e0e0;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
         .status-indicator {
@@ -294,6 +333,7 @@
             height: 100%;
         }
         .task-details-header {
+            position: relative;
             height: 61px;
             background-color: #ffffff;
             display: flex;
@@ -428,6 +468,64 @@
             font-weight: bold;
             color: #333;
         }
+
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .alert p {
+            margin: 0;
+        }
+
+        .collapse-button {
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .collapse-button:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        .btn-collapse-task-details {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-collapse-task-details:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        .btn-save-task:hover {
+            opacity: 0.8;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-nav-img-toggle:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+
+
 
     </style>
 </@layout.layout>

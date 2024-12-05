@@ -286,13 +286,63 @@ thead td {
     border: 1px solid rgba(195, 195, 195, 1);
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25);
 }
+@media (max-width: 768px) {
+    .login-container {
+        max-width: 90%;
+        padding: 15px;
+    }
 
-.bi-star-fill{
-    top: 41px;
-    right: -40px;
+    .fs-3 {
+        font-size: 1.5rem;
+    }
+
+    .login-button {
+        font-size: 1.2rem;
+        padding: 10px;
+    }
+
+    .bi-star-fill{
+        display: none;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .fs-3 {
+        font-size: 1.2rem;
+    }
+
+    .profile-info-avatar-img,
+    .login-info-avatar-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .login-input {
+        padding: 8px;
+    }
+
+    .login-button {
+        font-size: 1rem;
+        padding: 8px;
+    }
+
+    .bi-star-fill{
+        display: none;
+    }
+}
+
+
+.bi-star-fill {
     border: 3px solid black;
     border-radius: 50%;
     padding: 0 5px 1px 5px;
+    position: absolute;
+    top: 70%;
+    left: 104%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    pointer-events: none;
 }
 
 
@@ -368,7 +418,6 @@ thead td {
     padding: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background: white linear-gradient(90deg, #FFFFFF 96.38%, #6DF800 96.63%, #6DF800 98.5%);
-
 }
 
 .user-info {
@@ -459,6 +508,13 @@ thead td {
     background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
 }
 
+.deleted-row-user-style {
+    background:  white linear-gradient(90deg, #FFFFFF 96.38%, #f44343 96.63%, #f44343 98.5%);
+}
+.deleted-tile-user-style {
+    background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+}
+
 .user-name-surname{
     margin-left: 10px;
     font-family: Inter, sans-serif;
@@ -473,13 +529,14 @@ thead td {
 
 .user-tile-info {
     display: grid;
-    grid-template-columns: 310px 120px 90px 110px 0;
+    grid-template-columns: 310px 200px 120px 180px 0;
     align-items: center;
+    text-align: start;
 }
 
 .buttons-container {
     display: flex;
-    column-gap: 20px;
+    column-gap: 25px;
     align-items: center;
 }
 
@@ -505,7 +562,7 @@ thead td {
 }
 
 .user-fade{
-    padding: 100px;
+    padding: 0;
 }
 
 .user-modal-header {
@@ -533,7 +590,7 @@ thead td {
 
 .user-label {
     color: #6c757d;
-    min-width: 150px;
+    min-width: 40%;
     text-align: right;
     margin-right: 10px;
     font-size: 14px;
@@ -567,6 +624,15 @@ thead td {
     font-size: 1.5rem;
     cursor: pointer;
 }
+
+.resume-user-icon{
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 35px;
+    cursor: pointer;
+}
+
 .edit-user-btn{
     padding: 0 85px;
     border-radius: 20px;
@@ -768,7 +834,7 @@ h2 {
     max-height: 200px;
     overflow-y: auto;
     display: block;
-    width: 300px;
+    width: 130%;
     border-radius: 0.25rem;
     background-color: #fff;
     z-index: 1050;
@@ -1344,11 +1410,86 @@ h2 {
     text-align: center;
 }
 
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-@media (max-width: 1024px) {
+.change-login-password-footer{
+    border: 0;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.bg-color-for-change-login-password{
+    background-color: #6c757d29;
+}
+
+.input-group .btn {
+    border: none;
+}
+
+.change-login-password-btn {
+    background-color: #6c757d45;
+    color: black;
+    font-size: 25px;
+    width: 300px;
+    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 14px;
+    border: none;
+}
+
+.change-login-password-btn:hover {
+    background-color: #6c757d29;
+    border-color: #6c757d29;
+}
+
+.text-danger {
+    font-size: 0.85rem;
+}
+
+#changeLoginPasswordForm input {
+    border-radius: 5px;
+}
+
+
+@media (min-width: 1360px) and (max-width: 1708px) {
+
+    /* ВИД ПЛИТОК*/
+    .user-tile {
+        padding: 6px 0;
+        background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
+    }
+
+    .user-tile:nth-child(odd) {
+        margin-left: 25px;
+    }
+
+    .user-tile:nth-child(even) {
+        margin-right: 25px;
+    }
+
+    .user-detail {
+        margin-right: 5px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 16px;
+    }
+
+    .buttons-container {
+        column-gap: 17px;
+    }
+
+    .user-tile-info {
+        grid-template-columns: 300px 135px 100px 100px 0;
+    }
+
+    /* ВИД СПИСКА*/
     .user-info {
         display: grid;
-        grid-template-columns: 300px 150px 150px 100px 0;
+        grid-template-columns: 400px 280px 200px 200px 0;
         align-items: center;
     }
     .user-row{
@@ -1359,15 +1500,145 @@ h2 {
     }
 
     .user-name-surname {
+        font-size: 23px;
+    }
+
+    .user-table-detail {
+        font-size: 16px;
+    }
+
+    .user-action-buttons {
+        column-gap: 40px;
+    }
+
+    .edit-button {
+        font-size: 26px;
+    }
+
+    .users-list-title {
+        font-size: 18px;
+        margin-left: 550px;
+    }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+    }
+}
+
+
+
+@media (min-width: 1025px) and (max-width: 1360px) {
+
+    /* ВИД ПЛИТОК*/
+    .user-tile {
+        padding: 6px 0;
+        background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
+    }
+
+    .user-tile:nth-child(odd) {
+        margin-left: 25px;
+    }
+
+    .user-tile:nth-child(even) {
+        margin-right: 25px;
+    }
+
+    .user-detail {
+        margin-right: 5px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 16px;
+    }
+
+    .buttons-container {
+        column-gap: 17px;
+    }
+
+    .user-tile-info {
+        grid-template-columns: 245px 115px 70px 84px 0;
+    }
+
+
+
+
+    /* ВИД СПИСКА*/
+    .user-info {
+        display: grid;
+        grid-template-columns: 400px 280px 200px 200px 0;
+        align-items: center;
+    }
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 96.18%, #6DF800 96.23%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 370px;
+    }
+
+    .user-name-surname {
+        font-size: 23px;
+    }
+
+    .user-table-detail {
+        font-size: 16px;
+    }
+
+    .user-action-buttons {
+        column-gap: 20px;
+    }
+
+    .edit-button {
+        font-size: 26px;
+    }
+
+    .users-list-title {
+        font-size: 18px;
+        margin-left: 550px;
+    }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+    }
+}
+
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+
+    /* ВИД СПИСКА*/
+    .user-info {
+        display: grid;
+        grid-template-columns: 250px 150px 150px 100px 0;
+        align-items: center;
+    }
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 95.58%, #6DF800 95.63%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 370px;
+    }
+
+    .user-name-surname {
         font-size: 18px;
     }
 
     .user-table-detail {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .user-action-buttons {
-        column-gap: 10px;
+        column-gap: 15px;
     }
 
     .edit-button {
@@ -1377,12 +1648,25 @@ h2 {
     .users-list-title {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 95.58%, #f44343 95.63%, #f44343 98.5%);
+    }
+
 }
 
-@media (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 768px) {
+    /* ВИД ПЛИТОК*/
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+    /* ВИД СПИСКА*/
     .user-info {
         display: grid;
-        grid-template-columns: 200px 120px 100px 120px 0;
+        grid-template-columns: 195px 103px 55px 60px 0;
         align-items: center;
     }
     .users-list-title{
@@ -1398,12 +1682,12 @@ h2 {
     }
 
     .user-name-surname {
-        font-size: 16px;
+        font-size: 17px;
         margin: 5px 0;
     }
 
     .user-table-detail {
-        font-size: 10px;
+        font-size: 12px;
         margin: 2px 0;
     }
 
@@ -1420,15 +1704,33 @@ h2 {
         font-size: 20px;
     }
     .user-action-buttons{
-        column-gap: 20px;
+        column-gap: 15px;
+        margin-right: 2px;
+    }
+
+    .edit-button {
+        font-size: 18px;
+    }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 94.38%, #f44343 94.53%, #f44343 98.5%);
     }
 }
 
 
 @media (max-width: 480px) {
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+
+
+    /* ВИД СПИСКА*/
     .user-info {
         display: grid;
-        grid-template-columns: 170px 60px 50px 60px 0;
+        grid-template-columns: 95px 75px 40px 50px 0;
         align-items: center;
     }
 
@@ -1440,11 +1742,70 @@ h2 {
     }
 
     .user-name-surname {
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .user-table-detail {
-        font-size: 7px;
+        font-size: 9px;
+    }
+
+    .edit-button {
+        font-size: 11px;
+    }
+
+    .users-header {
+        padding: 5px;
+    }
+
+    .users-list-title {
+        font-size: 16px;
+    }
+
+    .icon i {
+        font-size: 18px;
+    }
+    .user-action-buttons{
+        column-gap: 15px;
+        margin-right: 2px;
+    }
+
+    .notes-form{
+        margin-left: 18px;
+    }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
+
+}
+
+@media (max-width: 360px) {
+    .listView{
+        display: block;
+    }
+    .tileView{
+        display: none;
+    }
+
+
+    .user-info {
+        display: grid;
+        grid-template-columns: 120px 50px 35px 40px 0;
+        align-items: center;
+    }
+
+    .user-row{
+        background: white linear-gradient(90deg, #FFFFFF 92.58%, #6DF800 92.93%, #6DF800 98.5%);
+    }
+    .users-list-title{
+        margin-left: 0;
+    }
+
+    .user-name-surname {
+        font-size: 9px;
+    }
+
+    .user-table-detail {
+        font-size: 6px;
     }
 
     .edit-button {
@@ -1462,4 +1823,30 @@ h2 {
     .icon i {
         font-size: 18px;
     }
+    .user-action-buttons{
+        column-gap: 10px;
+        margin-right: 0;
+    }
+
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
+
+}
+
+.login-text{
+    text-align: center;
+}
+
+.user-modal-close-button{
+    position: absolute;
+    top: 10px;
+    cursor: pointer;
+    left: 10px;
+}
+
+.email-display{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

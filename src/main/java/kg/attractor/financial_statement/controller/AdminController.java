@@ -1,9 +1,9 @@
 package kg.attractor.financial_statement.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.error.WrongRoleNameException;
 import kg.attractor.financial_statement.service.AuthorityService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserService;
@@ -58,9 +58,9 @@ public class AdminController {
     }
 
     @GetMapping("users")
-    public String getAllUsers(Model model, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, Principal principal) {
-        var users = userService.getAllDtoUsers(pageable);
-        model.addAttribute("currentUser", userService.getUserByLogin(principal.getName()));
+    public String getAllUsers(Model model, @PageableDefault(size = 8) Pageable pageable, Principal principal) {
+        var users = userService.getAllDtoUsers(pageable, principal.getName());
+        model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
         model.addAttribute("users", users);
         return "admin/users";
     }
@@ -78,13 +78,32 @@ public class AdminController {
             userService.editUser(id, userDto);
             return ResponseEntity.ok("User updated successfully");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            String errorMessage = e.getMessage();
+            return switch (errorMessage) {
+                case "Удаленного пользователя нельзя редактировать!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "USER_DISABLED"));
+                case "Заполните дату рождения!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "BIRTHDAY_MISSING"));
+                case "Заполните имя и фамилию!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "NAME_SURNAME_MISSING"));
+                case "Дата рождения указана неверно: сотрудник еще не родился" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "INVALID_BIRTHDAY"));
+                case "Возраст сотрудника должен быть не менее 18 лет для трудоустройства" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "AGE_TOO_YOUNG"));
+                case "Возраст сотрудника не должен превышать 100 лет" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "AGE_TOO_OLD"));
+                case "Пользователь с такой почтой уже существует" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "EMAIL_ALREADY_EXISTS"));
+                case "Заполните почту!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "EMAIL_MISSING"));
+                case null, default ->
+                        ResponseEntity.badRequest().body(Map.of("message", "Неизвестная ошибка валидации", "errorCode", "UNKNOWN_VALIDATION_ERROR"));
+            };
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-
     }
 
     @DeleteMapping("/user/delete/{id}")
@@ -104,11 +123,12 @@ public class AdminController {
     }
 
     @GetMapping("roles")
-    public String getAllRoles(Model model) {
+    public String getAllRoles(Model model, Principal principal) {
         List<RoleDto> roles = roleService.getAll();
         model.addAttribute("roles", roles);
         model.addAttribute("authorities", authorityService.getAll());
         model.addAttribute("createRoleDto", new CreateRoleDto());
+        model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
         return "admin/roles";
     }
 
@@ -145,6 +165,8 @@ public class AdminController {
                 return ResponseEntity.badRequest().body(Map.of("error", "duplicate", "message", e.getMessage()));
             }
             return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+        } catch (WrongRoleNameException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла ошибка на сервере");
         }
@@ -152,9 +174,13 @@ public class AdminController {
 
     @DeleteMapping("roles/delete/{roleId}")
     @ResponseBody
-    public ResponseEntity<Void> deleteRole(@PathVariable Long roleId) {
-        roleService.deleteRole(roleId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteRole(@PathVariable Long roleId) {
+        try {
+            roleService.deleteRole(roleId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "validation", "message", e.getMessage()));
+        }
     }
 
     @GetMapping("/authorities")
@@ -165,12 +191,12 @@ public class AdminController {
 
     @PostMapping("users/change-login-password/{userId}")
     public ResponseEntity<?> changeUserLoginAndPassword(@PathVariable Long userId, @RequestBody Map<String, String> loginAndPassword) {
-        try{
+        try {
             String newLogin = loginAndPassword.get("newLogin");
             String newPassword = loginAndPassword.get("newPassword");
             userService.updateLoginAndPassword(userId, newLogin, newPassword);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }

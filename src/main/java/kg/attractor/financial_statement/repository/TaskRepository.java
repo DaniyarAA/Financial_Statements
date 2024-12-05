@@ -1,6 +1,8 @@
 package kg.attractor.financial_statement.repository;
 
 import kg.attractor.financial_statement.entity.Task;
+import kg.attractor.financial_statement.entity.TaskStatus;
+import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +30,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUserCompanyIdInOrderByIdAsc(List<Long> userCompanyIds);
 
     List<Task> findByUserCompanyIdInOrderByIdDesc(List<Long> userCompanyIds);
+
+    List<Task> findAllByTaskStatus(TaskStatus taskStatus);
+
+    List<Task> findAllByUserCompany_UserAndTaskStatus(User user, TaskStatus taskStatus);
 }

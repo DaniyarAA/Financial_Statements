@@ -7,13 +7,13 @@ import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.entity.UserCompany;
+import kg.attractor.financial_statement.repository.UserPageableRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -27,32 +27,38 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserPageableRepository userPageableRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private CompanyService companyService;
-    private UserCompanyService userCompanyService;
+    private final CompanyService companyService;
+    private final UserCompanyService userCompanyService;
 
     @Autowired
-    @Lazy
-    private void setUserCompanyService(UserCompanyService userCompanyService) {
-        this.userCompanyService = userCompanyService;
-    }
-
-    @Autowired
-    @Lazy
-    private void setCompanyService(CompanyService companyService) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            UserPageableRepository userPageableRepository,
+            PasswordEncoder passwordEncoder,
+            RoleService roleService,
+            @Lazy CompanyService companyService,
+            @Lazy UserCompanyService userCompanyService
+    ) {
+        this.userRepository = userRepository;
+        this.userPageableRepository = userPageableRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
         this.companyService = companyService;
+        this.userCompanyService = userCompanyService;
     }
 
     @Override
@@ -69,22 +75,18 @@ public class UserServiceImpl implements UserService {
                 .avatar("user.png")
                 .registerDate(LocalDate.now())
                 .credentialsUpdated(true)
+                .email(userDto.getEmail())
                 .build();
+        log.info("registering User: {} in process...", newUser);
         userRepository.save(newUser);
 
     }
 
-    private void validateBirthday(LocalDate birthday) {
-        if (birthday.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Человек еще не родился");
-        } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
-            throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
-        }
-    }
 
     @Override
     public UserDto getUserDtoById(Long id) {
         User user = getUserById(id);
+        log.info("get user by id {}", id);
         return convertToUserDto(user);
     }
 
@@ -117,30 +119,86 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(Long id, UserDto userDto) {
         User user = getUserById(id);
-        Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        validateBirthday(userDto.getBirthday());
-        user.setRole(role);
+        if(!user.isEnabled()){
+            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
+        }
+        validateUserDto(userDto);
+        updateEmailIfChanged(userDto.getEmail(), user);
+        if(!user.getRole().getRoleName().equals("SuperUser")){
+            Role role = roleService.getRoleById(userDto.getRoleDto().getId());
+            user.setRole(role);
+        }
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
-        if (!userDto.getName().isEmpty()) {
-            user.setName(userDto.getName());
-        }
-        if (!userDto.getSurname().isEmpty()) {
-            user.setSurname(userDto.getSurname());
-        }
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
+        log.info("edit user {}in process...", user.getLogin());
         userRepository.save(user);
+
+
+    }
+
+
+    private void validateUserDto(UserDto userDto) {
+        if (userDto.getBirthday() == null) {
+            throw new IllegalArgumentException("Заполните дату рождения!");
+        }
+        validateBirthday(userDto.getBirthday());
+
+        if (isNullOrEmpty(userDto.getName()) || isNullOrEmpty(userDto.getSurname())) {
+            throw new IllegalArgumentException("Заполните имя и фамилию!");
+        }
+    }
+
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    private void validateBirthday(LocalDate birthday) {
+        LocalDate now = LocalDate.now();
+        if (birthday.isAfter(now)) {
+            String message = "Дата рождения указана неверно: сотрудник еще не родился";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        }
+        int age = Period.between(birthday, now).getYears();
+        if (age < 18) {
+            String message = "Возраст сотрудника должен быть не менее 18 лет для трудоустройства";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        } else if (age > 100) {
+            String message = "Возраст сотрудника не должен превышать 100 лет";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        }
     }
 
     private void updateLoginIfChanged(String newLogin, User user) {
         if (!Objects.equals(newLogin, user.getLogin())) {
-            if (checkIfUserExists(newLogin)) {
+            if (checkIfUserExistsByLogin(newLogin)) {
+                log.info("Пользователь с таким логином уже существует");
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
+            log.info("changed login for user");
             user.setLogin(newLogin);
+        }
+    }
+
+    private void updateEmailIfChanged(String newEmail, User user) {
+        if(newEmail == null || newEmail.isEmpty()){
+            throw new IllegalArgumentException("Заполните почту!");
+        }
+        if (!Objects.equals(newEmail, user.getEmail())) {
+            if (checkIfUserExistsByEmail(newEmail)) {
+                log.info("Пользователь с такой почтой уже существует");
+                throw new IllegalArgumentException("Пользователь с такой почтой уже существует");
+            }
+            log.info("changed email for user");
+            user.setEmail(newEmail);
         }
     }
 
@@ -151,17 +209,21 @@ public class UserServiceImpl implements UserService {
         updateLoginIfChanged(newLogin, user);
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setCredentialsUpdated(true);
+        log.info("changed login and password for user - {} successfully", user.getLogin());
         userRepository.save(user);
     }
 
     private void validatePassword(String password) {
         if (password == null || password.isBlank()) {
+            log.info("password is null");
             throw new IllegalArgumentException("Заполните поля поролей");
         }
         if (password.length() < 8 || password.length() > 20) {
+            log.info("length of password is less than 8 or more than 20");
             throw new IllegalArgumentException("Пароль должен содержать минимум 8 символов и максимум 20 на латыни");
         }
         if (!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$")) {
+            log.info("The password have not any letter at least 1 uppercase letter, at least 1 lowercase letter in latin");
             throw new IllegalArgumentException("Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ");
         }
     }
@@ -169,44 +231,71 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateAvatar(Long userId, MultipartFile file) throws IOException {
         User user = getUserById(userId);
-        validateImageType(file);
-        String avatar = FileUtils.uploadFile(file);
-        user.setAvatar(avatar);
-        userRepository.save(user);
-        return avatar;
+        if(user.isEnabled()){
+            validateImageType(file);
+            String avatar = FileUtils.uploadFile(file);
+            user.setAvatar(avatar);
+            log.info("changing avatar for user - {} in process", user.getLogin());
+            userRepository.save(user);
+            return avatar;
+        } else {
+            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать");
+        }
+
     }
 
-    private boolean validateImageType(MultipartFile file) {
+    private void validateImageType(MultipartFile file) {
         String contentType = file.getContentType();
-        return contentType != null &&
-               (contentType.equals("image/jpeg")
-                || contentType.equals("image/jpg")
-                || contentType.equals("image/webp")
-                || contentType.equals("image/png"));
+        if (contentType == null ||
+                !(contentType.equals("image/jpeg") ||
+                        contentType.equals("image/jpg") ||
+                        contentType.equals("image/webp") ||
+                        contentType.equals("image/png"))) {
+            throw new IllegalArgumentException("Invalid image type: " + contentType);
+        }
     }
 
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
         if (user.getRole().getRoleName().equals("SuperUser")) {
+            log.info("Нельзя удалить администратора системы");
             throw new IllegalArgumentException("Нельзя удалить администратора системы");
         }
+        log.info("deleting user - {} in process...", user.getLogin());
+        user.setRole(null);
         user.setEnabled(false);
         userRepository.save(user);
     }
 
     @Override
-    public Page<UserDto> getAllDtoUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
-        var list = users.get()
+    public Page<UserDto> getAllDtoUsers(Pageable pageable, String login) {
+        User currentUser = getUserByLogin(login);
+        boolean isCurrentUserSuperUser = currentUser.getRole().getRoleName().equals("SuperUser");
+        Page<User> users;
+        if (isCurrentUserSuperUser) {
+            users = userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable);
+        } else {
+            users = userPageableRepository.findAllByRole_RoleNameNotOrRoleIsNullOrderByEnabledDescIdAsc("SuperUser", pageable);
+        }
+        var list = users.stream()
                 .map(this::convertToUserDto)
                 .toList();
+        int startIndex = pageable.getPageNumber() * pageable.getPageSize();
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setDisplayIndex(startIndex + i + 1);
+        }
         return new PageImpl<>(list, pageable, users.getTotalElements());
     }
 
     @Override
-    public boolean checkIfUserExists(String login) {
+    public boolean checkIfUserExistsByLogin(String login) {
         return userRepository.findByLogin(login).isPresent();
+    }
+
+    @Override
+    public boolean checkIfUserExistsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     private List<CompanyDto> getCompaniesByUserId(Long userId) {
@@ -219,30 +308,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserDtoByCookie(HttpServletRequest request) {
-        try {
-            Cookie[] cookies = request.getCookies();
-            UserDto userDto = new UserDto();
-            if (cookies != null) {
-                userDto = Arrays.stream(cookies)
-                        .filter(cookie -> "username".equals(cookie.getName()))
-                        .map(Cookie::getValue)
-                        .findFirst()
-                        .map(username -> {
-                            try {
-                                return getUserDtoByLogin(username);
-                            } catch (UsernameNotFoundException e) {
-                                System.out.println("User not found: " + username);
-                                return null;
-                            }
-                        })
-                        .orElse(null);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Optional<String> usernameOpt = Arrays.stream(cookies)
+                    .filter(cookie -> "username".equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst();
+
+            if (usernameOpt.isPresent()) {
+                String username = usernameOpt.get();
+                try {
+                    return getUserDtoByLogin(username);
+                } catch (UsernameNotFoundException e) {
+                    log.info("Пользователь с логином '{}' не найден", username);
+                }
             }
-            return userDto;
-        } catch (Exception e) {
-            System.err.println("Exception occurred in getUserDtoByCookie: " + e.getMessage());
-            return null;
         }
+        return null;
     }
+
 
     @Override
     public List<UserDto> getAllUsers() {
@@ -252,7 +336,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserForTaskDto getUserForTaskDto(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found for id: " + id));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found for id: " + id));
         return convertToUserForTaskDto(user);
     }
 
@@ -281,6 +365,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto convertToUserDto(User user) {
+        RoleDto roleDto = (user.getRole() != null) ? roleService.convertToDto(user.getRole()) : null;
         return UserDto
                 .builder()
                 .id(user.getId())
@@ -293,7 +378,8 @@ public class UserServiceImpl implements UserService {
                 .notes(user.getNotes())
                 .registerDate(user.getRegisterDate())
                 .avatar(user.getAvatar())
-                .roleDto(roleService.convertToDto(user.getRole()))
+                .roleDto(roleDto)
+                .email(user.getEmail())
                 .companies(getCompaniesByUserId(user.getId()))
                 .build();
     }
@@ -304,6 +390,20 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .surname(user.getSurname())
                 .build();
+    }
+
+    @Override
+    public List<UserDto> getDeletedUsers() {
+        return convertToDtoList(userRepository.findAllByEnabledIsFalse());
+    }
+
+    @Override
+    public void resumeUser(Long id, Long roleId) {
+        User user = getUserById(id);
+        log.info("resume user - {} in process...", user.getLogin());
+        user.setRole(roleService.getRoleById(roleId));
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
 }

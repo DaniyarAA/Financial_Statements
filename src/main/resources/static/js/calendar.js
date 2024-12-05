@@ -2,11 +2,11 @@ var Cal = function(divId) {
     this.divId = divId;
 
     this.DaysOfWeek = [
-        'Пн', 'Вт', 'Ср', 'Чтв', 'Птн', 'Суб', 'Вск'
+        'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'
     ];
 
     this.Months = [
-        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+        'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
     var d = new Date();
@@ -53,9 +53,9 @@ Cal.prototype.showMonth = async function(y, m) {
     var html = '<table class="calendar-table">';
 
     html += '<thead><tr>';
-    html += '<td class="td-calendar"><button id="btnPrev"></button></td>';
-    html += '<td class="td-calendar" colspan="5">' + this.Months[m] + ' ' + y + '</td>';
-    html += '<td class="td-calendar"><button id="btnNext"></button></td>';
+    html += '<td class="td-calendar calendar-left"><button id="btnPrev"></button></td>';
+    html += '<td class="td-calendar calendar-month-date" colspan="5">' + this.Months[m] + ' ' + y + '</td>';
+    html += '<td class="td-calendar calendar-right"><button id="btnNext"></button></td>';
     html += '</tr></thead>';
 
     html += '<tr class="days">';
@@ -110,7 +110,7 @@ Cal.prototype.showMonth = async function(y, m) {
         } else if (i === lastDateOfMonth) {
             var k = 1;
             for (dow; dow < 6; dow++) {
-                html += '<td class="not-current">' + k + '</td>';
+                html += '<td class="not-current td-calendar">' + k + '</td>';
                 k++;
             }
         }

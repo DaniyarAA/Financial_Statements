@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -43,8 +44,8 @@ public class MainController {
     }
 
     @PostMapping("/calendar")
-    public ResponseEntity<Map<LocalDate, Long>> getTaskCounts(@RequestBody Map<String, Integer> yearMonth) {
-        return taskService.countOfTaskForDay(yearMonth);
+    public ResponseEntity<Map<LocalDate, Long>> getTaskCounts(@RequestBody Map<String, Integer> yearMonth, Principal principal) {
+        return taskService.countOfTaskForDay(yearMonth,principal);
     }
 
 }

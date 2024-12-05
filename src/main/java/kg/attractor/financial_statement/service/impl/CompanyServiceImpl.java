@@ -209,7 +209,7 @@ public class CompanyServiceImpl implements CompanyService {
             case "ettnPassword":
                 company.setEttnPassword(newValue);
                 break;
-            case "name":
+            case "companyName":
                 if (!existsByCompanyName(newValue)) {
                     company.setName(newValue);
                 } else {

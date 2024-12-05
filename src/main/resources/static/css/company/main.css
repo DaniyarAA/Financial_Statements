@@ -110,6 +110,10 @@ form {
     font-size: 30px;
 }
 
+.scroll-company{
+   overflow-y:scroll;
+    max-height: 665px;
+}
 
 .h-company-info{
     width: 80%;
@@ -413,6 +417,61 @@ input[type="email"]:focus {
     }
     .companies-info-main {
         width: 78%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .plus-btn{
+        font-size: 28px;
+    }
+    .search li.choice-company{
+        font-size: 16px;
+    }
+    .companies-sidebar-main {
+        width: 25%;
+    }
+    .companies-info-main {
+        width: 75%;
+    }
+    .titleInfoCreate{
+        font-size: 28px;
+    }
+    .scroll-company{
+        overflow-y:scroll;
+        max-height: 505px;
+    }
+}
+
+@media (max-width: 991px) {
+    .companies-sidebar-main {
+        width: 100%;
+    }
+    .companies-info-main {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .scroll-company{
+        overflow-y:scroll;
+        max-height: 265px;
+    }
+}
+
+@media (max-width: 580px) {
+    .titleInfoCreate{
+        font-size: 20px;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 462px) {
+    .edit-input{
+        width: 140px;
+    }
+}
+
+@media (max-width: 380px) {
+    .edit-input{
+        width: 100px;
     }
 }
 

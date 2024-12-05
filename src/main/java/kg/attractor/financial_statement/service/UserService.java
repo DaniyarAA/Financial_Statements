@@ -1,8 +1,6 @@
 package kg.attractor.financial_statement.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import kg.attractor.financial_statement.dto.EditUserDto;
 import kg.attractor.financial_statement.dto.UserDetailsDto;
 import kg.attractor.financial_statement.dto.UserDto;
 import kg.attractor.financial_statement.dto.UserForTaskDto;
@@ -36,7 +34,9 @@ public interface UserService {
 
     Page<UserDto> getAllDtoUsers(Pageable pageable, String login);
 
-    boolean checkIfUserExists(String login);
+    boolean checkIfUserExistsByLogin(String login);
+
+    boolean checkIfUserExistsByEmail(String email);
 
     UserDto getUserDtoByCookie(HttpServletRequest request);
 

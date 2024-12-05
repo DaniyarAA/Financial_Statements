@@ -38,7 +38,7 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
 
-                                        <div data-mdb-input-init class="form-outline datepicker w-100">
+                                        <div data-mdb-input-init class="form-outline w-100">
                                             <label for="login" class="form-label text">Логин:</label>
                                             <@spring.formInput "userDto.login" 'id="login" class="form-control form-control-lg login-input"' />
                                         </div>
@@ -69,11 +69,9 @@
                                                     id="roleId" name="${spring.status.expression}">
                                                 <option value="">Выберите роль для сотрудника</option>
                                                 <#list roles as role>
-                                                    <#if role?index != 0>
-                                                        <option value="${role.id}" ${(spring.stringStatusValue == role.id?string)?string("selected", "")}>
-                                                            ${role.roleName}
-                                                        </option>
-                                                    </#if>
+                                                    <option value="${role.id}" ${(spring.stringStatusValue == role.id?string)?string("selected", "")}>
+                                                        ${role.roleName}
+                                                    </option>
                                                 </#list>
                                             </select>
 
@@ -89,14 +87,30 @@
 
                                     <div class="col-md-6 mb-4 pb-2">
 
+                                        <div data-mdb-input-init class="form-outline w-100">
+                                            <label for="email" class="form-label text">Электронная почта:</label>
+                                            <@spring.formInput "userDto.email" 'id="email" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+
                                         <div data-mdb-input-init class="form-outline">
                                             <label for="birthday" class="form-label">Дата рождения:</label>
-                                            <input type="date" class="form-control form-control-lg login-input" id="birthday" name="birthday" required>
+                                            <input type="date" class="form-control form-control-lg login-input"
+                                                   id="birthday" name="birthday" required>
                                         </div>
                                         <#if error??>
                                             <b class="text-danger text-center mb-3">${error}</b>
                                         </#if>
+
                                     </div>
+
+
                                 </div>
 
 
@@ -107,7 +121,8 @@
 
                     </div>
                     <div class="text-center">
-                        <button type="submit" form="register-form" class="login-button fs-3">Создать пользователя</button>
+                        <button type="submit" form="register-form" class="login-button fs-3">Создать пользователя
+                        </button>
                     </div>
 
 

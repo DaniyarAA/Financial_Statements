@@ -406,7 +406,6 @@ thead td {
     padding: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background: white linear-gradient(90deg, #FFFFFF 96.38%, #6DF800 96.63%, #6DF800 98.5%);
-
 }
 
 .user-info {
@@ -497,6 +496,13 @@ thead td {
     background: white linear-gradient(90deg, #FFFFFF 93.38%, #6DF800 93.63%, #6DF800 98.5%);
 }
 
+.deleted-row-user-style {
+    background:  white linear-gradient(90deg, #FFFFFF 96.38%, #f44343 96.63%, #f44343 98.5%);
+}
+.deleted-tile-user-style {
+    background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+}
+
 .user-name-surname{
     margin-left: 10px;
     font-family: Inter, sans-serif;
@@ -511,14 +517,14 @@ thead td {
 
 .user-tile-info {
     display: grid;
-    grid-template-columns: 310px 120px 90px 110px 0;
+    grid-template-columns: 310px 200px 120px 180px 0;
     align-items: center;
     text-align: start;
 }
 
 .buttons-container {
     display: flex;
-    column-gap: 20px;
+    column-gap: 25px;
     align-items: center;
 }
 
@@ -606,6 +612,15 @@ thead td {
     font-size: 1.5rem;
     cursor: pointer;
 }
+
+.resume-user-icon{
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 35px;
+    cursor: pointer;
+}
+
 .edit-user-btn{
     padding: 0 85px;
     border-radius: 20px;
@@ -1149,7 +1164,7 @@ h2 {
     }
 
     .user-tile-info {
-        grid-template-columns: 255px 130px 100px 235px 0;
+        grid-template-columns: 300px 135px 100px 100px 0;
     }
 
     /* ВИД СПИСКА*/
@@ -1184,6 +1199,12 @@ h2 {
     .users-list-title {
         font-size: 18px;
         margin-left: 550px;
+    }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
     }
 }
 
@@ -1256,6 +1277,12 @@ h2 {
         font-size: 18px;
         margin-left: 550px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+    }
 }
 
 
@@ -1302,6 +1329,10 @@ h2 {
     .users-list-title {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 95.58%, #f44343 95.63%, #f44343 98.5%);
+    }
+
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
@@ -1361,6 +1392,9 @@ h2 {
     .edit-button {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 94.38%, #f44343 94.53%, #f44343 98.5%);
+    }
 }
 
 
@@ -1419,6 +1453,9 @@ h2 {
     .notes-form{
         margin-left: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
 
 }
 
@@ -1472,8 +1509,25 @@ h2 {
         margin-right: 0;
     }
 
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
+
 }
 
 .login-text{
     text-align: center;
+}
+
+.user-modal-close-button{
+    position: absolute;
+    top: 10px;
+    cursor: pointer;
+    left: 10px;
+}
+
+.email-display{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

@@ -67,28 +67,52 @@ document.addEventListener("DOMContentLoaded", function () {
                 const user = data.user;
                 const companies = data.companies;
                 const roles = data.roles;
-                if(!user.enabled){
-                    document.getElementById('edit-company-icon').style.display = 'none';
-                    document.getElementById('edit-name-icon').style.display = 'none';
-                    document.getElementById('edit-birthday-icon').style.display = 'none';
-                    document.getElementById('change-avatar-icon').style.display = 'none';
-                    document.getElementById('edit-role-icon').style.display = 'none';
-                    document.getElementById('delete-user-icon').style.display = 'none';
-                    document.getElementById('companyDropdown').disabled = true;
-                    document.getElementById('notesInput').disabled = true;
-                    document.getElementById('edit-user-info-button').disabled = true;
-                }
+                const deleteUserIcon = document.getElementById("delete-user-icon");
+                const editRoleIcon = document.getElementById("edit-role-icon");
+
                 if(user.roleDto && user.roleDto.roleName === "SuperUser"){
-                    document.getElementById("delete-user-icon").style.display = 'none';
-                    document.getElementById("edit-role-icon").style.display = 'none';
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'none';
+                    if (editRoleIcon) editRoleIcon.style.display = 'none';
                 } else {
-                    document.getElementById("delete-user-icon").style.display = 'block';
-                    document.getElementById("edit-role-icon").style.display = 'block';
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'block';
+                    if (editRoleIcon) editRoleIcon.style.display = 'block';
+                }
+
+                if (!user.enabled) {
+                    const iconsToHide = [
+                        'edit-company-icon',
+                        'edit-name-icon',
+                        'edit-birthday-icon',
+                        'change-avatar-icon',
+                        'delete-user-icon',
+                        'edit-role-icon',
+                        'edit-email-icon',
+                    ];
+
+                    iconsToHide.forEach(iconId => {
+                        const element = document.getElementById(iconId);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
+
+
+                    const companyDropdown = document.getElementById('companyDropdown');
+                    const notesInput = document.getElementById('notesInput');
+                    const editUserInfoButton = document.getElementById('edit-user-info-button');
+
+                    if (companyDropdown) companyDropdown.disabled = true;
+                    if (notesInput) notesInput.disabled = true;
+                    if (editUserInfoButton) editUserInfoButton.disabled = true;
                 }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
                 document.getElementById("surnameNameInput").value = user.surname;
+                document.getElementById("user-email").innerText = user.email;
+                document.getElementById("user-email").title = user.email;
+
+                document.getElementById("emailInput").value = user.email;
                 const birthday = user.birthday;
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
@@ -339,10 +363,13 @@ function saveUserData(userId) {
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
     const surname = document.getElementById("surnameNameInput").value;
-    const fullnameDispay = document.getElementById(userId + "-name-surname");
-    const currentNameSurname = fullnameDispay.innerText;
+    const email = document.getElementById("emailInput").value;
+    const fullnameDispayInList = document.getElementById("list-" + userId + "-name-surname");
+    const fullnameDispayInTile = document.getElementById("tile-" + userId + "-name-surname");
+    const currentNameSurname = fullnameDispayInList? fullnameDispayInList.innerText : fullnameDispayInTile.innerText;
     const parts = currentNameSurname.split('.');
-    const userRoleDisplay = document.getElementById(userId + "-role")
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -363,7 +390,8 @@ function saveUserData(userId) {
         companies: companies,
         name: username,
         birthday: birthday,
-        surname: surname
+        surname: surname,
+        email: email
 
     };
 
@@ -377,20 +405,51 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `${parts[0]}.${username} ${surname}`;
-                userRoleDisplay.innerText = selectedRoleDto.roleName;
-                const modalInstance = bootstrap.Modal.getInstance(modalElement).hide();
+                if(fullnameDispayInList){
+                    fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}`;
+                    userRoleDisplayInList.innerText = selectedRoleDto.roleName;
+                } else {
+                    fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}`;
+                    userRoleDisplayInTile.innerText = selectedRoleDto.roleName;
+                }
+                bootstrap.Modal.getInstance(modalElement).hide();
                 showNotification("Информация успешно обновлена!", "green");
 
 
             } else {
                 return response.json().then(errorData => {
-                    document.getElementById("birthdayError").innerText = errorData.message;
+                    handleValidationErrors(errorData);
                     showNotification("Ошибка при обновлении информации", "red");
                 });
             }
         })
         .catch(error => console.error("Error saving user data:", error));
+}
+
+function handleValidationErrors(errorData) {
+    document.getElementById("birthdayError").innerText = "";
+    document.getElementById("nameError").innerText = "";
+    document.getElementById("emailError").innerText = "";
+
+    switch (errorData.errorCode) {
+        case "BIRTHDAY_MISSING":
+            document.getElementById("birthdayError").innerText = errorData.message;
+            break;
+        case "INVALID_BIRTHDAY":
+        case "AGE_TOO_YOUNG":
+        case "AGE_TOO_OLD":
+            document.getElementById("birthdayError").innerText = errorData.message;
+            break;
+        case "NAME_SURNAME_MISSING":
+            document.getElementById("nameError").innerText = errorData.message;
+            break;
+        case "EMAIL_ALREADY_EXISTS":
+        case "EMAIL_MISSING":
+            document.getElementById("emailError").innerText = errorData.message;
+            break;
+        default:
+            showNotification("Ошибка: " + errorData.message, "red");
+    }
 }
 
 function deleteUser() {
@@ -571,7 +630,8 @@ document.addEventListener('mousedown', (event) => {
     if (
         userNameInput.style.display === 'inline-block' &&
         !userNameInput.contains(event.target) &&
-        !surnameNameInput.contains(event.target)
+        !surnameNameInput.contains(event.target) &&
+        event.target.classList.contains('bi-pencil')
     ) {
         userModalLabel.innerText = userNameInput.value;
         surnameModalLabel.innerText = surnameNameInput.value;
@@ -582,6 +642,38 @@ document.addEventListener('mousedown', (event) => {
     }
 });
 
+function toggleEmailEdit() {
+    const email = document.getElementById('user-email');
+    const emailInput = document.getElementById('emailInput');
+
+    const isEditing = emailInput.style.display === 'inline-block';
+
+    if (!isEditing) {
+        emailInput.style.display = 'inline-block';
+        email.style.display = 'none';
+        emailInput.value = email.innerText;
+    } else {
+        email.innerText = emailInput.value;
+        email.style.display = 'block';
+        emailInput.style.display = 'none';
+    }
+}
+
+document.addEventListener('mousedown', (event) => {
+    const email = document.getElementById('user-email');
+    const emailInput = document.getElementById('emailInput');
+
+    if (
+        emailInput.style.display === 'inline-block' &&
+        !emailInput.contains(event.target) &&
+        !event.target.classList.contains('bi-pencil')
+    ) {
+        email.innerText = emailInput.value;
+        email.style.display = 'block';
+        emailInput.style.display = 'none';
+    }
+});
+
 function toggleBirthdayEdit() {
     const birthdayDisplay = document.getElementById("user-birthday");
     const birthdayInput = document.getElementById("birthday-input");
@@ -589,12 +681,17 @@ function toggleBirthdayEdit() {
     if (birthdayInput.style.display === 'none') {
         const displayDate = birthdayDisplay.innerText;
         const dateParts = displayDate.split('.');
-        birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]){
+            birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        }
         birthdayInput.style.display = 'inline-block';
         birthdayDisplay.style.display = 'none';
     } else {
         const dateParts = birthdayInput.value.split('-');
-        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]
+        && dateParts[0] !== "0000" && dateParts[1] !== '00' && dateParts[2] !== '00'){
+            birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        }
         birthdayDisplay.style.display = 'inline';
         birthdayInput.style.display = 'none';
     }
@@ -610,7 +707,11 @@ document.addEventListener('mousedown', (event) => {
         !event.target.classList.contains('bi-pencil')
     ) {
         const dateParts = birthdayInput.value.split('-');
-        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]
+            && dateParts[0] !== "0000" && dateParts[1] !== '00' && dateParts[2] !== '00'){
+            birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        }
         birthdayDisplay.style.display = 'inline';
         birthdayInput.style.display = 'none';
     }

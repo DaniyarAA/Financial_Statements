@@ -14,7 +14,6 @@ import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -28,32 +27,38 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserPageableRepository userPageableRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private CompanyService companyService;
-    private UserCompanyService userCompanyService;
+    private final CompanyService companyService;
+    private final UserCompanyService userCompanyService;
 
     @Autowired
-    @Lazy
-    private void setUserCompanyService(UserCompanyService userCompanyService) {
-        this.userCompanyService = userCompanyService;
-    }
-
-    @Autowired
-    @Lazy
-    private void setCompanyService(CompanyService companyService) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            UserPageableRepository userPageableRepository,
+            PasswordEncoder passwordEncoder,
+            RoleService roleService,
+            @Lazy CompanyService companyService,
+            @Lazy UserCompanyService userCompanyService
+    ) {
+        this.userRepository = userRepository;
+        this.userPageableRepository = userPageableRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
         this.companyService = companyService;
+        this.userCompanyService = userCompanyService;
     }
 
     @Override
@@ -77,15 +82,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private void validateBirthday(LocalDate birthday) {
-        if (birthday.isAfter(LocalDate.now())) {
-            log.info("Человек еще не родился");
-            throw new IllegalArgumentException("Человек еще не родился");
-        } else if (birthday.isAfter(LocalDate.now().minusYears(18))) {
-            log.info("Человеку должно быть больше 18 лет");
-            throw new IllegalArgumentException("Человеку должно быть больше 18 лет");
-        }
-    }
 
     @Override
     public UserDto getUserDtoById(Long id) {
@@ -124,44 +120,85 @@ public class UserServiceImpl implements UserService {
     public void editUser(Long id, UserDto userDto) {
         User user = getUserById(id);
         if(!user.isEnabled()){
-            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать");
+            throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
         }
-
-        Role role = roleService.getRoleById(userDto.getRoleDto().getId());
-        validateBirthday(userDto.getBirthday());
+        validateUserDto(userDto);
+        updateEmailIfChanged(userDto.getEmail(), user);
         if(!user.getRole().getRoleName().equals("SuperUser")){
+            Role role = roleService.getRoleById(userDto.getRoleDto().getId());
             user.setRole(role);
         }
         user.setBirthday(userDto.getBirthday());
         user.setNotes(userDto.getNotes());
-        if (!userDto.getName().isEmpty()) {
-            user.setName(userDto.getName());
-        }
-        if (!userDto.getSurname().isEmpty()) {
-            user.setSurname(userDto.getSurname());
-        }
-
-        if (!userDto.getEmail().isEmpty()) {
-            user.setEmail(userDto.getEmail());
-        }
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
         List<Company> newCompanies = userDto.getCompanies().stream()
                 .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
                 .toList();
         userCompanyService.updateUserCompanies(user, newCompanies);
-        log.info("edit user {}in process...", userDto.getLogin());
+        log.info("edit user {}in process...", user.getLogin());
         userRepository.save(user);
 
 
     }
 
+
+    private void validateUserDto(UserDto userDto) {
+        if (userDto.getBirthday() == null) {
+            throw new IllegalArgumentException("Заполните дату рождения!");
+        }
+        validateBirthday(userDto.getBirthday());
+
+        if (isNullOrEmpty(userDto.getName()) || isNullOrEmpty(userDto.getSurname())) {
+            throw new IllegalArgumentException("Заполните имя и фамилию!");
+        }
+    }
+
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    private void validateBirthday(LocalDate birthday) {
+        LocalDate now = LocalDate.now();
+        if (birthday.isAfter(now)) {
+            String message = "Дата рождения указана неверно: сотрудник еще не родился";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        }
+        int age = Period.between(birthday, now).getYears();
+        if (age < 18) {
+            String message = "Возраст сотрудника должен быть не менее 18 лет для трудоустройства";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        } else if (age > 100) {
+            String message = "Возраст сотрудника не должен превышать 100 лет";
+            log.info(message);
+            throw new IllegalArgumentException(message);
+        }
+    }
+
     private void updateLoginIfChanged(String newLogin, User user) {
         if (!Objects.equals(newLogin, user.getLogin())) {
-            if (checkIfUserExists(newLogin)) {
+            if (checkIfUserExistsByLogin(newLogin)) {
                 log.info("Пользователь с таким логином уже существует");
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
             log.info("changed login for user");
             user.setLogin(newLogin);
+        }
+    }
+
+    private void updateEmailIfChanged(String newEmail, User user) {
+        if(newEmail == null || newEmail.isEmpty()){
+            throw new IllegalArgumentException("Заполните почту!");
+        }
+        if (!Objects.equals(newEmail, user.getEmail())) {
+            if (checkIfUserExistsByEmail(newEmail)) {
+                log.info("Пользователь с такой почтой уже существует");
+                throw new IllegalArgumentException("Пользователь с такой почтой уже существует");
+            }
+            log.info("changed email for user");
+            user.setEmail(newEmail);
         }
     }
 
@@ -234,13 +271,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllDtoUsers(Pageable pageable, String login) {
         User currentUser = getUserByLogin(login);
-        Page<User> users = userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable);
         boolean isCurrentUserSuperUser = currentUser.getRole().getRoleName().equals("SuperUser");
-        var list = users.get()
-                .filter(user -> isCurrentUserSuperUser || user.getRole() == null || !"SuperUser".equals(user.getRole().getRoleName()))
+        Page<User> users;
+        if (isCurrentUserSuperUser) {
+            users = userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable);
+        } else {
+            users = userPageableRepository.findAllByRole_RoleNameNotOrRoleIsNullOrderByEnabledDescIdAsc("SuperUser", pageable);
+        }
+        var list = users.stream()
                 .map(this::convertToUserDto)
                 .toList();
-
         int startIndex = pageable.getPageNumber() * pageable.getPageSize();
         for (int i = 0; i < list.size(); i++) {
             list.get(i).setDisplayIndex(startIndex + i + 1);
@@ -249,8 +289,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkIfUserExists(String login) {
+    public boolean checkIfUserExistsByLogin(String login) {
         return userRepository.findByLogin(login).isPresent();
+    }
+
+    @Override
+    public boolean checkIfUserExistsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     private List<CompanyDto> getCompaniesByUserId(Long userId) {
@@ -263,29 +308,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserDtoByCookie(HttpServletRequest request) {
-        try {
-            Cookie[] cookies = request.getCookies();
-            UserDto userDto = new UserDto();
-            if (cookies != null) {
-                userDto = Arrays.stream(cookies)
-                        .filter(cookie -> "username".equals(cookie.getName()))
-                        .map(Cookie::getValue)
-                        .findFirst()
-                        .map(username -> {
-                            try {
-                                return getUserDtoByLogin(username);
-                            } catch (UsernameNotFoundException e) {
-                                return null;
-                            }
-                        })
-                        .orElse(null);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Optional<String> usernameOpt = Arrays.stream(cookies)
+                    .filter(cookie -> "username".equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst();
+
+            if (usernameOpt.isPresent()) {
+                String username = usernameOpt.get();
+                try {
+                    return getUserDtoByLogin(username);
+                } catch (UsernameNotFoundException e) {
+                    log.info("Пользователь с логином '{}' не найден", username);
+                }
             }
-            return userDto;
-        } catch (Exception e) {
-            log.info("Exception occurred in getUserDtoByCookie: {}", e.getMessage());
-            return null;
         }
+        return null;
     }
+
 
     @Override
     public List<UserDto> getAllUsers() {

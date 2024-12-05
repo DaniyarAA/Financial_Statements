@@ -78,7 +78,27 @@ public class AdminController {
             userService.editUser(id, userDto);
             return ResponseEntity.ok("User updated successfully");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            String errorMessage = e.getMessage();
+            return switch (errorMessage) {
+                case "Удаленного пользователя нельзя редактировать!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "USER_DISABLED"));
+                case "Заполните дату рождения!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "BIRTHDAY_MISSING"));
+                case "Заполните имя и фамилию!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "NAME_SURNAME_MISSING"));
+                case "Дата рождения указана неверно: сотрудник еще не родился" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "INVALID_BIRTHDAY"));
+                case "Возраст сотрудника должен быть не менее 18 лет для трудоустройства" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "AGE_TOO_YOUNG"));
+                case "Возраст сотрудника не должен превышать 100 лет" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "AGE_TOO_OLD"));
+                case "Пользователь с такой почтой уже существует" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "EMAIL_ALREADY_EXISTS"));
+                case "Заполните почту!" ->
+                        ResponseEntity.badRequest().body(Map.of("message", errorMessage, "errorCode", "EMAIL_MISSING"));
+                case null, default ->
+                        ResponseEntity.badRequest().body(Map.of("message", "Неизвестная ошибка валидации", "errorCode", "UNKNOWN_VALIDATION_ERROR"));
+            };
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", e.getMessage());

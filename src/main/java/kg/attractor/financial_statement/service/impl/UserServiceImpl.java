@@ -31,6 +31,7 @@ import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -188,6 +189,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void updateEmailIfChanged(String newEmail, User user) {
+        if(newEmail == null || newEmail.isEmpty()){
+            throw new IllegalArgumentException("Заполните почту!");
+        }
         if (!Objects.equals(newEmail, user.getEmail())) {
             if (checkIfUserExistsByEmail(newEmail)) {
                 log.info("Пользователь с такой почтой уже существует");
@@ -304,29 +308,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserDtoByCookie(HttpServletRequest request) {
-        try {
-            Cookie[] cookies = request.getCookies();
-            UserDto userDto = new UserDto();
-            if (cookies != null) {
-                userDto = Arrays.stream(cookies)
-                        .filter(cookie -> "username".equals(cookie.getName()))
-                        .map(Cookie::getValue)
-                        .findFirst()
-                        .map(username -> {
-                            try {
-                                return getUserDtoByLogin(username);
-                            } catch (UsernameNotFoundException e) {
-                                return null;
-                            }
-                        })
-                        .orElse(null);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Optional<String> usernameOpt = Arrays.stream(cookies)
+                    .filter(cookie -> "username".equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst();
+
+            if (usernameOpt.isPresent()) {
+                String username = usernameOpt.get();
+                try {
+                    return getUserDtoByLogin(username);
+                } catch (UsernameNotFoundException e) {
+                    log.info("Пользователь с логином '{}' не найден", username);
+                }
             }
-            return userDto;
-        } catch (Exception e) {
-            log.info("Exception occurred in getUserDtoByCookie: {}", e.getMessage());
-            return null;
         }
+        return null;
     }
+
 
     @Override
     public List<UserDto> getAllUsers() {

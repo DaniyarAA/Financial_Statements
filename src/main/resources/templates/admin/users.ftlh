@@ -163,6 +163,7 @@
                         <i class="bi bi-pencil ms-2" id="edit-name-icon" onclick="toggleNameEdit()"></i>
                     </#if>
                 </div>
+                <span id="nameError" class="text-danger text-center"></span>
 
                 <div class="modal-body text-center">
                     <div class="avatar-container">
@@ -199,12 +200,13 @@
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Почта:</span>
-                        <span class="user-value" id="user-email" style="overflow: hidden; text-overflow: ellipsis;"></span>
-                        <input type="text" class="form-control fs-5" id="emailInput" style="display: none; padding: 0;">
+                        <span class="user-value email-display" id="user-email"></span>
+                        <input type="text" class="form-control fs-5" id="emailInput" style="display: none; padding: 0; font-size: 14px">
                         <#if hasEditUserAuthority>
                             <i class="bi bi-pencil ms-2" id="edit-email-icon" onclick="toggleEmailEdit()"></i>
                         </#if>
                     </div>
+                    <span id="emailError" class="text-danger"></span>
 
 
                     <div class="user-info-row mb-2">

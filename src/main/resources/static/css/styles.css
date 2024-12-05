@@ -1200,6 +1200,12 @@ h2 {
         font-size: 18px;
         margin-left: 550px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+    }
 }
 
 
@@ -1271,6 +1277,12 @@ h2 {
         font-size: 18px;
         margin-left: 550px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 96.18%, #f44343 96.23%, #f44343 98.5%);
+    }
+    .deleted-tile-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 93.38%, #f44343 93.63%, #f44343 98.5%);
+    }
 }
 
 
@@ -1317,6 +1329,10 @@ h2 {
     .users-list-title {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 95.58%, #f44343 95.63%, #f44343 98.5%);
+    }
+
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
@@ -1376,6 +1392,9 @@ h2 {
     .edit-button {
         font-size: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 94.38%, #f44343 94.53%, #f44343 98.5%);
+    }
 }
 
 
@@ -1434,6 +1453,9 @@ h2 {
     .notes-form{
         margin-left: 18px;
     }
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
 
 }
 
@@ -1487,6 +1509,10 @@ h2 {
         margin-right: 0;
     }
 
+    .deleted-row-user-style {
+        background:  white linear-gradient(90deg, #FFFFFF 92.58%, #f44343 92.93%, #f44343 98.5%);
+    }
+
 }
 
 .login-text{
@@ -1498,4 +1524,10 @@ h2 {
     top: 10px;
     cursor: pointer;
     left: 10px;
+}
+
+.email-display{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

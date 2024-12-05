@@ -420,12 +420,38 @@ function saveUserData(userId) {
 
             } else {
                 return response.json().then(errorData => {
-                    document.getElementById("birthdayError").innerText = errorData.message;
+                    handleValidationErrors(errorData);
                     showNotification("Ошибка при обновлении информации", "red");
                 });
             }
         })
         .catch(error => console.error("Error saving user data:", error));
+}
+
+function handleValidationErrors(errorData) {
+    document.getElementById("birthdayError").innerText = "";
+    document.getElementById("nameError").innerText = "";
+    document.getElementById("emailError").innerText = "";
+
+    switch (errorData.errorCode) {
+        case "BIRTHDAY_MISSING":
+            document.getElementById("birthdayError").innerText = errorData.message;
+            break;
+        case "INVALID_BIRTHDAY":
+        case "AGE_TOO_YOUNG":
+        case "AGE_TOO_OLD":
+            document.getElementById("birthdayError").innerText = errorData.message;
+            break;
+        case "NAME_SURNAME_MISSING":
+            document.getElementById("nameError").innerText = errorData.message;
+            break;
+        case "EMAIL_ALREADY_EXISTS":
+        case "EMAIL_MISSING":
+            document.getElementById("emailError").innerText = errorData.message;
+            break;
+        default:
+            showNotification("Ошибка: " + errorData.message, "red");
+    }
 }
 
 function deleteUser() {

@@ -118,7 +118,7 @@ public class UserServiceImplTest {
         userDto.setBirthday(LocalDate.now().minusYears(17));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(userDto));
-        assertEquals("Человеку должно быть больше 18 лет", exception.getMessage());
+        assertEquals("Возраст сотрудника должен быть не менее 18 лет для трудоустройства", exception.getMessage());
     }
 
 
@@ -128,7 +128,7 @@ public class UserServiceImplTest {
         userDto.setBirthday(LocalDate.now().plusDays(1));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(userDto));
-        assertEquals("Человек еще не родился", exception.getMessage());
+        assertEquals("Дата рождения указана неверно: сотрудник еще не родился", exception.getMessage());
     }
 
 
@@ -286,39 +286,84 @@ public class UserServiceImplTest {
     @Test
     void testGetAllDtoUsers_FiltrationRegularUser() {
         Pageable pageable = PageRequest.of(0, 10);
-        String login = "regular_user";
+        String login = "just_user";
 
         Role userRole = new Role();
-        userRole.setRoleName("Buhgalter");
+        userRole.setRoleName("Test_role");
         User currentUser = new User();
         currentUser.setRole(userRole);
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(currentUser));
 
+
         Role superUserRole = new Role();
         superUserRole.setRoleName("SuperUser");
 
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setName("User1");
-        user1.setRole(userRole);
+        User regularUser = new User();
+        regularUser.setId(1L);
+        regularUser.setName("just User");
+        regularUser.setRole(userRole);
 
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setName("SuperUser");
-        user2.setRole(superUserRole);
+        User superUser = new User();
+        superUser.setId(2L);
+        superUser.setName("SuperUser");
+        superUser.setRole(superUserRole);
 
-        List<User> userList = List.of(user1, user2);
+        List<User> userList = List.of(regularUser);
         Page<User> usersPage = new PageImpl<>(userList, pageable, userList.size());
-        when(userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable)).thenReturn(usersPage);
+        when(userPageableRepository.findAllByRole_RoleNameNotOrRoleIsNullOrderByEnabledDescIdAsc("SuperUser", pageable))
+                .thenReturn(usersPage);
 
-        doReturn(UserDto.builder().id(1L).name("User1").build()).when(userService).convertToUserDto(user1);
+        UserDto userDto = UserDto.builder().id(1L).name("just User").build();
+        doReturn(userDto).when(userService).convertToUserDto(regularUser);
 
         Page<UserDto> result = userService.getAllDtoUsers(pageable, login);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        assertEquals("User1", result.getContent().get(0).getName());
+        assertEquals("just User", result.getContent().get(0).getName());
     }
+
+    @Test
+    void testGetAllDtoUsers_SuperUserSeesAllUsers() {
+        Pageable pageable = PageRequest.of(0, 10);
+        String login = "super_user";
+
+        Role superUserRole = new Role();
+        superUserRole.setRoleName("SuperUser");
+        User currentUser = new User();
+        currentUser.setRole(superUserRole);
+        when(userRepository.findByLogin(login)).thenReturn(Optional.of(currentUser));
+
+        Role regularRole = new Role();
+        regularRole.setRoleName("TestRole");
+
+        User regularUser = new User();
+        regularUser.setId(1L);
+        regularUser.setName("just User");
+        regularUser.setRole(regularRole);
+
+        User superUser = new User();
+        superUser.setId(2L);
+        superUser.setName("SuperUser");
+        superUser.setRole(superUserRole);
+
+        List<User> userList = List.of(regularUser, superUser);
+        Page<User> usersPage = new PageImpl<>(userList, pageable, userList.size());
+        when(userPageableRepository.findAllByOrderByEnabledDescIdAsc(pageable)).thenReturn(usersPage);
+
+        UserDto regularUserDto = UserDto.builder().id(1L).name("just User").build();
+        UserDto superUserDto = UserDto.builder().id(2L).name("SuperUser").build();
+        doReturn(regularUserDto).when(userService).convertToUserDto(regularUser);
+        doReturn(superUserDto).when(userService).convertToUserDto(superUser);
+
+        Page<UserDto> result = userService.getAllDtoUsers(pageable, login);
+
+        assertNotNull(result);
+        assertEquals(2, result.getTotalElements());
+        assertEquals("just User", result.getContent().get(0).getName());
+        assertEquals("SuperUser", result.getContent().get(1).getName());
+    }
+
 
 
     @Test
@@ -369,7 +414,7 @@ public class UserServiceImplTest {
         userDto.setName("Updated");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.editUser(1L, userDto));
-        assertEquals("Удаленного пользователя нельзя редактировать", exception.getMessage());
+        assertEquals("Удаленного пользователя нельзя редактировать!", exception.getMessage());
     }
 
 
@@ -535,7 +580,7 @@ public class UserServiceImplTest {
     void testCheckIfUserExists_UserExists() {
         when(userRepository.findByLogin("dmitry_popov")).thenReturn(Optional.of(existingUser));
 
-        boolean result = userService.checkIfUserExists("dmitry_popov");
+        boolean result = userService.checkIfUserExistsByLogin("dmitry_popov");
 
         assertTrue(result);
         verify(userRepository).findByLogin("dmitry_popov");
@@ -545,7 +590,7 @@ public class UserServiceImplTest {
     void testCheckIfUserExists_UserNotFound() {
         when(userRepository.findByLogin("test_user")).thenReturn(Optional.empty());
 
-        boolean result = userService.checkIfUserExists("test_user");
+        boolean result = userService.checkIfUserExistsByLogin("test_user");
 
         assertFalse(result);
         verify(userRepository).findByLogin("test_user");
@@ -584,6 +629,282 @@ public class UserServiceImplTest {
         UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.getUserForTaskDto(1L));
         assertEquals("User not found for id: 1", exception.getMessage());
     }
+
+
+    @Test
+    void testCheckIfUserExistsByEmail_UserExists() {
+        when(userRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(existingUser));
+
+        boolean result = userService.checkIfUserExistsByEmail("test@gmail.com");
+
+        assertTrue(result);
+        verify(userRepository).findByEmail("test@gmail.com");
+    }
+
+    @Test
+    void testCheckIfUserExistsByEmail_UserNotFound() {
+        when(userRepository.findByEmail("test@gmail.com")).thenReturn(Optional.empty());
+
+        boolean result = userService.checkIfUserExistsByEmail("test@gmail.com");
+
+        assertFalse(result);
+        verify(userRepository).findByEmail("test@gmail.com");
+    }
+
+    @Test
+    void testIsAdmin_UserHasDeleteCompanyAuthority_ReturnsTrue() {
+        String username = "adminUser";
+        AuthorityDto authorityDto = AuthorityDto.builder().authority("DELETE_COMPANY").build();
+        RoleDto roleDto = RoleDto.builder()
+                .authorities(List.of(authorityDto))
+                .build();
+        UserDto userDto = UserDto.builder()
+                .roleDto(roleDto)
+                .build();
+
+        doReturn(userDto).when(userService).getUserDtoByLogin(username);
+
+        boolean result = userService.isAdmin(username);
+
+        assertTrue(result);
+        verify(userService).getUserDtoByLogin(username);
+    }
+
+    @Test
+    void testIsAdmin_UserDoesNotHaveDeleteCompanyAuthority_ReturnsFalse() {
+        String username = "User";
+        AuthorityDto authorityDto = AuthorityDto.builder().authority("OTHER_AUTHORITY").build();;
+        RoleDto roleDto = RoleDto.builder()
+                .authorities(List.of(authorityDto))
+                .build();
+        UserDto userDto = UserDto.builder()
+                .roleDto(roleDto)
+                .build();
+
+        doReturn(userDto).when(userService).getUserDtoByLogin(username);
+
+        boolean result = userService.isAdmin(username);
+
+        assertFalse(result);
+        verify(userService).getUserDtoByLogin(username);
+    }
+
+    @Test
+    void testIsAdmin_UserHasNoAuthorities_ReturnsFalse() {
+        String username = "userWithoutAuthorities";
+        RoleDto roleDto = RoleDto.builder()
+                .authorities(new ArrayList<>())
+                .build();
+        UserDto userDto = UserDto.builder()
+                .roleDto(roleDto)
+                .build();
+
+        doReturn(userDto).when(userService).getUserDtoByLogin(username);
+
+        boolean result = userService.isAdmin(username);
+
+        assertFalse(result);
+        verify(userService).getUserDtoByLogin(username);
+    }
+
+    @Test
+    void testIsAdmin_UserDtoIsNull_ReturnsFalse() {
+        String username = "nonexistentUser";
+
+        doReturn(null).when(userService).getUserDtoByLogin(username);
+
+        boolean result = userService.isAdmin(username);
+
+        assertFalse(result);
+        verify(userService).getUserDtoByLogin(username);
+    }
+
+    @Test
+    void testIsAdmin_RoleDtoIsNull_ReturnsFalse() {
+        String username = "userWithNullRoleDto";
+        UserDto userDto = UserDto.builder()
+                .roleDto(null)
+                .build();
+
+        doReturn(userDto).when(userService).getUserDtoByLogin(username);
+
+        boolean result = userService.isAdmin(username);
+
+        assertFalse(result);
+        verify(userService).getUserDtoByLogin(username);
+    }
+
+    @Test
+    void testIsAdmin_BlankUsername_ReturnsFalse() {
+        String username = "";
+
+        boolean result = userService.isAdmin(username);
+
+        assertFalse(result);
+        verify(userService, never()).getUserDtoByLogin(anyString());
+    }
+
+    @Test
+    void testResumeUser_Success() {
+        Long userId = 1L;
+        Long roleId = 2L;
+        Role role = new Role();
+        role.setId(roleId);
+        role.setRoleName("NewRole");
+
+        doReturn(existingUser).when(userService).getUserById(userId);
+        when(roleService.getRoleById(roleId)).thenReturn(role);
+
+        userService.resumeUser(userId, roleId);
+
+        assertEquals(role, existingUser.getRole());
+        assertTrue(existingUser.isEnabled());
+        verify(userRepository).save(existingUser);
+    }
+
+    @Test
+    void testResumeUser_UserNotFound() {
+        Long userId = 1L;
+        Long roleId = 2L;
+
+        doThrow(new UsernameNotFoundException("User not found")).when(userService).getUserById(userId);
+
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.resumeUser(userId, roleId));
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void testResumeUser_RoleNotFound() {
+        Long userId = 1L;
+        Long roleId = 2L;
+
+        doReturn(existingUser).when(userService).getUserById(userId);
+        when(roleService.getRoleById(roleId)).thenThrow(new IllegalArgumentException("Role not found"));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.resumeUser(userId, roleId));
+        assertEquals("Role not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetDeletedUsers_ReturnsDeletedUsers() {
+        User deletedUser1 = new User();
+        deletedUser1.setId(1L);
+        deletedUser1.setEnabled(false);
+
+        User deletedUser2 = new User();
+        deletedUser2.setId(2L);
+        deletedUser2.setEnabled(false);
+
+        List<User> deletedUsers = List.of(deletedUser1, deletedUser2);
+
+        when(userRepository.findAllByEnabledIsFalse()).thenReturn(deletedUsers);
+
+        UserDto userDto1 = UserDto.builder().id(1L).build();
+        UserDto userDto2 = UserDto.builder().id(2L).build();
+
+        doReturn(userDto1).when(userService).convertToUserDto(deletedUser1);
+        doReturn(userDto2).when(userService).convertToUserDto(deletedUser2);
+
+        List<UserDto> result = userService.getDeletedUsers();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(userDto1, result.get(0));
+        assertEquals(userDto2, result.get(1));
+        verify(userRepository).findAllByEnabledIsFalse();
+    }
+
+    @Test
+    void testGetAllUsers_ReturnsAllUsers() {
+        User user1 = new User();
+        user1.setId(1L);
+
+        User user2 = new User();
+        user2.setId(2L);
+
+        List<User> users = List.of(user1, user2);
+
+        when(userRepository.findAll()).thenReturn(users);
+
+        UserDto userDto1 = UserDto.builder().id(1L).build();
+        UserDto userDto2 = UserDto.builder().id(2L).build();
+
+        doReturn(userDto1).when(userService).convertToUserDto(user1);
+        doReturn(userDto2).when(userService).convertToUserDto(user2);
+
+        List<UserDto> result = userService.getAllUsers();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(userDto1, result.get(0));
+        assertEquals(userDto2, result.get(1));
+        verify(userRepository).findAll();
+    }
+
+    @Test
+    void testGetUserDtoByCookie_UserFound() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        Cookie[] cookies = {new Cookie("username", "test_user")};
+        when(request.getCookies()).thenReturn(cookies);
+
+        User user = new User();
+        user.setLogin("test_user");
+
+        UserDto userDto = UserDto.builder().login("test_user").build();
+
+        doReturn(userDto).when(userService).getUserDtoByLogin("test_user");
+
+        UserDto result = userService.getUserDtoByCookie(request);
+
+        assertNotNull(result);
+        assertEquals("test_user", result.getLogin());
+        verify(userService).getUserDtoByLogin("test_user");
+    }
+
+    @Test
+    void testGetUserDtoByCookie_NoCookies() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getCookies()).thenReturn(null);
+
+        UserDto result = userService.getUserDtoByCookie(request);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testGetUserByLogin_UserExists() {
+        String login = "existing_user";
+
+        when(userRepository.findByLogin(login)).thenReturn(Optional.of(existingUser));
+
+        User result = userService.getUserByLogin(login);
+
+        assertNotNull(result);
+        assertEquals(existingUser, result);
+        verify(userRepository).findByLogin(login);
+    }
+
+    @Test
+    void testGetUserByLogin_UserNotFound() {
+        String login = "noname";
+
+        when(userRepository.findByLogin(login)).thenReturn(Optional.empty());
+
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.getUserByLogin(login));
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository).findByLogin(login);
+    }
+
+    @Test
+    void testIsAdmin_NullUsername_ReturnsFalse() {
+        String username = "";
+
+        boolean result = userService.isAdmin(username);
+
+        assertFalse(result);
+        verify(userService, never()).getUserDtoByLogin(anyString());
+    }
+
 
 
 }

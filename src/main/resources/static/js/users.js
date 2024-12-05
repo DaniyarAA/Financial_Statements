@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         'edit-name-icon',
                         'edit-birthday-icon',
                         'change-avatar-icon',
+                        'delete-user-icon',
                         'edit-role-icon',
                         'edit-email-icon',
                     ];
@@ -94,9 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             element.style.display = 'none';
                         }
                     });
-
-                    deleteUserIcon.className = "bi bi-arrow-repeat resume-user-icon";
-                    deleteUserIcon.title = "Восстановить пользователя";
 
 
                     const companyDropdown = document.getElementById('companyDropdown');

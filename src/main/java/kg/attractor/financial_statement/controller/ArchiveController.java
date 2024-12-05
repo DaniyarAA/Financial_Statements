@@ -26,6 +26,7 @@ public class ArchiveController {
 
     @GetMapping("/all")
     public String getFullArchive(Model model) {
+        model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
         model.addAttribute("deletedUsers", userService.getDeletedUsers());
         model.addAttribute("finishedTasks", taskService.getAllFinishedTasks());
         model.addAttribute("deletedCompanies", companyService.getAllDeletedCompanies());

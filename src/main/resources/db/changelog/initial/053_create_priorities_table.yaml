@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 053
+      author: Adil
+      changes:
+        - createTable:
+            tableName: priorities
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(55)
+                  constraints:
+                    nullable: false

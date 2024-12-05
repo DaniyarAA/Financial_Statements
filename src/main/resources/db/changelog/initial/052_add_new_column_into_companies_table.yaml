@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 052
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: companies
+            columns:
+              - column:
+                  name: report_frequency
+                  type: varchar(55)
+                  constraints:
+                    nullable: true

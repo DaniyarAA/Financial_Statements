@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UniqueLoginValidator.class)
 public @interface UniqueLogin {
-    String message() default "Пользователь с таким логином уже существует.";
+    String message() default "Пользователь с таким логином уже существует";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -28,12 +28,17 @@ public class User {
     private String notes;
     private boolean credentialsUpdated;
 
+    private String email;
+
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "role_id")
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserCompany> userCompanies;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags;
 
     public boolean isCredentialsNonExpired() {
         return this.credentialsUpdated;

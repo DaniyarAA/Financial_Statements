@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 058
+      author: Kamilla
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true

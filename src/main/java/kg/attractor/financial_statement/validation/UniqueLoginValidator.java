@@ -14,8 +14,8 @@ public class UniqueLoginValidator implements ConstraintValidator<UniqueLogin, St
     private final UserService userService;
 
     @Override
-    public boolean isValid(String email, ConstraintValidatorContext context) {
-        userService.checkIfUserExists(email);
-        return email != null && !userService.checkIfUserExists(email);
+    public boolean isValid(String login, ConstraintValidatorContext context) {
+        userService.checkIfUserExistsByLogin(login);
+        return login != null && !userService.checkIfUserExistsByLogin(login);
     }
 }

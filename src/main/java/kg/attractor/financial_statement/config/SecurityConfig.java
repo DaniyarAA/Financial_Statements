@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,7 +40,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/roles/edit/").hasAuthority("EDIT_ROLE")
                         .requestMatchers("/admin/users").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/register").hasAuthority("CREATE_USER")
-                        .requestMatchers("/admin/user/edit/**").hasAuthority("EDIT_USER")
+                        .requestMatchers(HttpMethod.POST,"/admin/users/edit/**").hasAuthority("EDIT_USER")
+                        .requestMatchers(HttpMethod.GET,"/admin/users/edit/**").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/user/delete/**").hasAuthority("DELETE_USER")
                         .requestMatchers("/admin/users/change-password/**").hasAuthority("EDIT_USER")
                         .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
@@ -51,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/tasks/create").hasAuthority("CREATE_TASK")
                         .requestMatchers("/tasks/edit/").hasAuthority("EDIT_TASK")
                         .requestMatchers("/tasks/delete/").hasAuthority("DELETE_TASK")
+                        .requestMatchers("/archive/all").hasAuthority("VIEW_ARCHIVE")
                         .requestMatchers("/").authenticated()
 
                         .anyRequest().permitAll());

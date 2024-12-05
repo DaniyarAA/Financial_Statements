@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -26,5 +25,7 @@ public class TaskDto {
     private String description;
     private boolean isDeleted;
     private Boolean isCompleted;
-
+    private String priorityColor;
+    private Long priorityId;
+    private String tag;
 }

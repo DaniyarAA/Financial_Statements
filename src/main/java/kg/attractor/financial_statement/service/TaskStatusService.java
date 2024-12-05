@@ -11,4 +11,6 @@ public interface TaskStatusService {
     TaskStatus getTaskStatusById(Long statusId);
 
     Boolean getIsCompleted(TaskStatus taskStatus);
+
+    TaskStatus getStatusDone();
 }

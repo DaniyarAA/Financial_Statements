@@ -1,16 +1,6 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-window.onload = function () {
-    const viewMode = localStorage.getItem('viewMode');
-    if (viewMode === 'tile') {
-        switchToTileView();
-    } else {
-        switchToListView();
-    }
-};
-
-
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
     document.getElementById('listView').classList.add('hidden');
@@ -37,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
     const editUserBtn = document.getElementById("edit-user-info-button");
     let currentUserId = null;
+    console.log(document.querySelectorAll("#userModal").length);
+
 
 
     const companySearchInput = document.getElementById("companySearch");
@@ -59,20 +51,68 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.relatedTarget;
         const avatarInput = document.getElementById("avatarInput");
         const deleteUserIcon = document.getElementById("delete-user-icon");
-        deleteUserIcon.setAttribute("data-user-id", currentUserId);
-        avatarInput.setAttribute("data-user-id", currentUserId);
         currentUserId = button.getAttribute("data-user-id");
+        if (deleteUserIcon){
+            deleteUserIcon.setAttribute("data-user-id", currentUserId);
+        }
+        if(avatarInput){
+            avatarInput.setAttribute("data-user-id", currentUserId);
+        }
 
+        console.log("Fetching user data for:", currentUserId);
         fetch(`/admin/users/edit/` + currentUserId)
             .then(response => response.json())
             .then(data => {
+                console.log("Data fetched for user:", data.user);
                 const user = data.user;
                 const companies = data.companies;
                 const roles = data.roles;
+                const deleteUserIcon = document.getElementById("delete-user-icon");
+                const editRoleIcon = document.getElementById("edit-role-icon");
+
+                if(user.roleDto && user.roleDto.roleName === "SuperUser"){
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'none';
+                    if (editRoleIcon) editRoleIcon.style.display = 'none';
+                } else {
+                    if (deleteUserIcon) deleteUserIcon.style.display = 'block';
+                    if (editRoleIcon) editRoleIcon.style.display = 'block';
+                }
+
+                if (!user.enabled) {
+                    const iconsToHide = [
+                        'edit-company-icon',
+                        'edit-name-icon',
+                        'edit-birthday-icon',
+                        'change-avatar-icon',
+                        'delete-user-icon',
+                        'edit-role-icon',
+                        'edit-email-icon',
+                    ];
+
+                    iconsToHide.forEach(iconId => {
+                        const element = document.getElementById(iconId);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
+
+
+                    const companyDropdown = document.getElementById('companyDropdown');
+                    const notesInput = document.getElementById('notesInput');
+                    const editUserInfoButton = document.getElementById('edit-user-info-button');
+
+                    if (companyDropdown) companyDropdown.disabled = true;
+                    if (notesInput) notesInput.disabled = true;
+                    if (editUserInfoButton) editUserInfoButton.disabled = true;
+                }
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
                 document.getElementById("surnameNameInput").value = user.surname;
+                document.getElementById("user-email").innerText = user.email;
+                document.getElementById("user-email").title = user.email;
+
+                document.getElementById("emailInput").value = user.email;
                 const birthday = user.birthday;
                 const [year, month, day] = birthday.split('-');
                 document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
@@ -89,17 +129,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const roleDisplay = document.getElementById("roleDisplay");
                 const roleSelect = document.getElementById("roleSelect");
-                roleDisplay.innerText = user.roleDto.roleName;
-                roleSelect.innerHTML = "";
-                roles.forEach(role => {
-                    const option = document.createElement("option");
-                    option.value = role.id;
-                    option.textContent = role.roleName;
-                    if (role.id === user.roleDto.id) {
-                        option.selected = true;
-                    }
-                    roleSelect.append(option);
-                });
+                if(user.roleDto){
+                    roleDisplay.innerText = user.roleDto.roleName;
+                } else {
+                    roleDisplay.innerText = "Отсутствует";
+                }
+
+
+                if(user.roleDto){
+                    roleSelect.innerHTML = "";
+                    roles.forEach(role => {
+                        const option = document.createElement("option");
+                        option.value = role.id;
+                        option.textContent = role.roleName;
+                        if (role.id === user.roleDto.id) {
+                            option.selected = true;
+                        }
+                        roleSelect.append(option);
+                    });
+                }
 
                 const initialCompanies = document.getElementById("initialCompanies");
                 const maxLength = 19;
@@ -181,7 +229,7 @@ function uploadAvatar() {
                 avatarImg.src = `/api/files/download/${resultFileName}`;
                 showNotification("Аватарка успешно обновлена!", "green");
             } else {
-                showNotification("Ошибка при обновлении аватарки.", "red");
+                showNotification(data.message, "red");
             }
         } catch (error) {
             console.error("Ошибка:", error);
@@ -257,6 +305,37 @@ document.addEventListener("DOMContentLoaded", function () {
             passwordErrorMessage.textContent = 'Произошла ошибка при отправке запроса';
         }
     }
+    const toggleNewPassword = document.getElementById("toggleNewPassword");
+    const newPasswordInput = document.getElementById("newPassword");
+    const newPasswordEyeIcon = document.getElementById("newPasswordEyeIcon");
+
+    const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const confirmPasswordEyeIcon = document.getElementById("confirmPasswordEyeIcon");
+
+    toggleNewPassword.addEventListener("click", function () {
+        if (newPasswordInput.type === "password") {
+            newPasswordInput.type = "text";
+            newPasswordEyeIcon.classList.remove("bi-eye-slash");
+            newPasswordEyeIcon.classList.add("bi-eye");
+        } else {
+            newPasswordInput.type = "password";
+            newPasswordEyeIcon.classList.remove("bi-eye");
+            newPasswordEyeIcon.classList.add("bi-eye-slash");
+        }
+    });
+
+    toggleConfirmPassword.addEventListener("click", function () {
+        if (confirmPasswordInput.type === "password") {
+            confirmPasswordInput.type = "text";
+            confirmPasswordEyeIcon.classList.remove("bi-eye-slash");
+            confirmPasswordEyeIcon.classList.add("bi-eye");
+        } else {
+            confirmPasswordInput.type = "password";
+            confirmPasswordEyeIcon.classList.remove("bi-eye");
+            confirmPasswordEyeIcon.classList.add("bi-eye-slash");
+        }
+    });
 
     window.saveLoginAndPassword = saveLoginAndPassword;
 });
@@ -279,12 +358,18 @@ function displaySuccessAlert(message) {
 }
 
 function saveUserData(userId) {
+    const modalElement = document.getElementById('userModal');
     const roleSelect = document.getElementById("roleSelect");
     const username = document.getElementById("userNameInput").value;
     const birthday = document.getElementById("birthday-input").value;
     const surname = document.getElementById("surnameNameInput").value;
-    const fullnameDispay = document.getElementById(userId + "-name-surname");
-    const userRoleDisplay = document.getElementById(userId + "-role")
+    const email = document.getElementById("emailInput").value;
+    const fullnameDispayInList = document.getElementById("list-" + userId + "-name-surname");
+    const fullnameDispayInTile = document.getElementById("tile-" + userId + "-name-surname");
+    const currentNameSurname = fullnameDispayInList? fullnameDispayInList.innerText : fullnameDispayInTile.innerText;
+    const parts = currentNameSurname.split('.');
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const selectedRoleDto = {
         id: roleSelect.value,
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
@@ -305,7 +390,8 @@ function saveUserData(userId) {
         companies: companies,
         name: username,
         birthday: birthday,
-        surname: surname
+        surname: surname,
+        email: email
 
     };
 
@@ -319,22 +405,20 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispay.innerText = `#${userId}. ${username} ${surname}`;
-                userRoleDisplay.innerText = selectedRoleDto.roleName;
-                const modalElement = document.getElementById('userModal');
-                const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                if (modalInstance) {
-                    modalInstance.hide();
-                    modalElement.addEventListener('hidden.bs.modal', () => {
-                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-                    }, { once: true });
+                if(fullnameDispayInList){
+                    fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}`;
+                    userRoleDisplayInList.innerText = selectedRoleDto.roleName;
+                } else {
+                    fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}`;
+                    userRoleDisplayInTile.innerText = selectedRoleDto.roleName;
                 }
+                bootstrap.Modal.getInstance(modalElement).hide();
                 showNotification("Информация успешно обновлена!", "green");
 
 
             } else {
                 return response.json().then(errorData => {
-                    document.getElementById("birthdayError").innerText = errorData.message;
+                    handleValidationErrors(errorData);
                     showNotification("Ошибка при обновлении информации", "red");
                 });
             }
@@ -342,11 +426,41 @@ function saveUserData(userId) {
         .catch(error => console.error("Error saving user data:", error));
 }
 
+function handleValidationErrors(errorData) {
+    document.getElementById("birthdayError").innerText = "";
+    document.getElementById("nameError").innerText = "";
+    document.getElementById("emailError").innerText = "";
+
+    switch (errorData.errorCode) {
+        case "BIRTHDAY_MISSING":
+            document.getElementById("birthdayError").innerText = errorData.message;
+            break;
+        case "INVALID_BIRTHDAY":
+        case "AGE_TOO_YOUNG":
+        case "AGE_TOO_OLD":
+            document.getElementById("birthdayError").innerText = errorData.message;
+            break;
+        case "NAME_SURNAME_MISSING":
+            document.getElementById("nameError").innerText = errorData.message;
+            break;
+        case "EMAIL_ALREADY_EXISTS":
+        case "EMAIL_MISSING":
+            document.getElementById("emailError").innerText = errorData.message;
+            break;
+        default:
+            showNotification("Ошибка: " + errorData.message, "red");
+    }
+}
+
 function deleteUser() {
     const deleteUserIcon = document.getElementById("delete-user-icon");
+    const displayRole = document.getElementById("roleDisplay");
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const userStatusOnList = document.getElementById(`${userId}-list-status`);
+    const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
+
     confirmModal.show();
     document.getElementById('confirmYes').onclick = function() {
         fetch('/admin/user/delete/' + userId, {
@@ -358,9 +472,15 @@ function deleteUser() {
         })
             .then(response => {
                 if (response.ok) {
-                    confirmModal.hide();
                     showNotification("Пользователь успешно удалён.", "green");
-                    userStatus.innerText = "Неактивен"
+                    userStatus.innerText = "Неактивен";
+                    displayRole.innerText = "Отсутвует";
+                    if(userStatusOnList){
+                        userStatusOnList.innerText = "Disabled";
+                    } else {
+                        userStatusOnTile.innerText = "Disabled";
+                    }
+                    confirmModal.hide();
                 } else {
                     return response.json().then(errorData => {
                         confirmModal.hide();
@@ -394,11 +514,9 @@ function showNotification(message, color) {
 function toggleCompanyEdit() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-    const editIcon = document.getElementById('edit-company-icon');
     if (companyDropdown.style.display === 'none') {
         initialCompanies.style.display = 'none';
         companyDropdown.style.display = 'inline-block';
-        editIcon.style.display = 'none';
         attachCheckboxListeners();
     } else {
         closeDropdown();
@@ -438,11 +556,9 @@ function updateInitialCompanies() {
 function closeDropdown() {
     const initialCompanies = document.getElementById('initialCompanies');
     const companyDropdown = document.getElementById('companyDropdown');
-    const editIcon = document.getElementById('edit-company-icon');
 
     initialCompanies.style.display = 'inline';
     companyDropdown.style.display = 'none';
-    editIcon.style.display = 'inline';
 
     document.removeEventListener('click', closeDropdown);
 }
@@ -517,7 +633,8 @@ document.addEventListener('mousedown', (event) => {
     if (
         userNameInput.style.display === 'inline-block' &&
         !userNameInput.contains(event.target) &&
-        !surnameNameInput.contains(event.target)
+        !surnameNameInput.contains(event.target) &&
+        event.target.classList.contains('bi-pencil')
     ) {
         userModalLabel.innerText = userNameInput.value;
         surnameModalLabel.innerText = surnameNameInput.value;
@@ -528,6 +645,38 @@ document.addEventListener('mousedown', (event) => {
     }
 });
 
+function toggleEmailEdit() {
+    const email = document.getElementById('user-email');
+    const emailInput = document.getElementById('emailInput');
+
+    const isEditing = emailInput.style.display === 'inline-block';
+
+    if (!isEditing) {
+        emailInput.style.display = 'inline-block';
+        email.style.display = 'none';
+        emailInput.value = email.innerText;
+    } else {
+        email.innerText = emailInput.value;
+        email.style.display = 'block';
+        emailInput.style.display = 'none';
+    }
+}
+
+document.addEventListener('mousedown', (event) => {
+    const email = document.getElementById('user-email');
+    const emailInput = document.getElementById('emailInput');
+
+    if (
+        emailInput.style.display === 'inline-block' &&
+        !emailInput.contains(event.target) &&
+        !event.target.classList.contains('bi-pencil')
+    ) {
+        email.innerText = emailInput.value;
+        email.style.display = 'block';
+        emailInput.style.display = 'none';
+    }
+});
+
 function toggleBirthdayEdit() {
     const birthdayDisplay = document.getElementById("user-birthday");
     const birthdayInput = document.getElementById("birthday-input");
@@ -535,12 +684,17 @@ function toggleBirthdayEdit() {
     if (birthdayInput.style.display === 'none') {
         const displayDate = birthdayDisplay.innerText;
         const dateParts = displayDate.split('.');
-        birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]){
+            birthdayInput.value = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]}`;
+        }
         birthdayInput.style.display = 'inline-block';
         birthdayDisplay.style.display = 'none';
     } else {
         const dateParts = birthdayInput.value.split('-');
-        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]
+        && dateParts[0] !== "0000" && dateParts[1] !== '00' && dateParts[2] !== '00'){
+            birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        }
         birthdayDisplay.style.display = 'inline';
         birthdayInput.style.display = 'none';
     }
@@ -556,7 +710,11 @@ document.addEventListener('mousedown', (event) => {
         !event.target.classList.contains('bi-pencil')
     ) {
         const dateParts = birthdayInput.value.split('-');
-        birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+
+        if(dateParts.length === 3 && dateParts[0] && dateParts[1] && dateParts[2]
+            && dateParts[0] !== "0000" && dateParts[1] !== '00' && dateParts[2] !== '00'){
+            birthdayDisplay.innerText = `${dateParts[1]}.${dateParts[2]}.${dateParts[0]}`;
+        }
         birthdayDisplay.style.display = 'inline';
         birthdayInput.style.display = 'none';
     }

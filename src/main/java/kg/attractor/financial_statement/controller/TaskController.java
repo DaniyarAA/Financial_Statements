@@ -9,6 +9,7 @@ import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class TaskController {
     private final UserService userService;
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
+    private final TagService tagService;
 
     @GetMapping("test")
     public String getTasks(Model model) {
@@ -150,24 +152,30 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        List<CompanyForTaskDto> companyDtos = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
+        if (companyDtos == null || companyDtos.isEmpty()) {
+            model.addAttribute("errorMsg", "У вас нет компаний");
+        }
+        List<String> availableYearMonths = taskService.getAllYearMonths(authentication.getName());
+        System.out.println("availableYearMonths: " + availableYearMonths);
         System.out.println("taskListData: " + taskListData);
 
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         ObjectMapper objectMapper = new ObjectMapper();
         String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
-        System.out.println("Json: " + taskStatusDtosJson);
+
+        String availableYearMonthsJson = objectMapper.writeValueAsString(availableYearMonths);
 
         model.addAllAttributes(taskListData);
+
+        model.addAttribute("availableYearMonthsJson", availableYearMonthsJson);
         model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
 
-        return "tasks/tasksList";
-    }
+        System.out.println("Json task statuses: " + taskStatusDtosJson);
+        System.out.println("Json year month: " + availableYearMonths);
 
-    @PostMapping("/edit")
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> updateTaskByField(@RequestBody Map<String, String> data) {
-        return taskService.editTaskByField(data);
+        return "tasks/tasksList";
     }
 
     @PostMapping("/edit/{id}")
@@ -188,5 +196,63 @@ public class TaskController {
         taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
         return "redirect:/tasks/list";
 
+    }
+
+    @PostMapping("/{taskId}/priority")
+    public ResponseEntity<String> updateTaskPriority(@PathVariable Long taskId, @RequestParam Long priorityId) {
+        System.out.println("Task ID: " + taskId + ", Priority ID: " + priorityId);
+        taskService.updateTaskPriority(taskId, priorityId);
+        return ResponseEntity.ok("Priority updated successfully");
+    }
+
+    @PostMapping("/tag")
+    public ResponseEntity<Void> createTag(@RequestBody TagDto tagDto, Authentication authentication) {
+        String login = authentication.getName();
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        tagDto.setUserId(user.getId());
+        tagService.createTag(tagDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/tags/user")
+    @ResponseBody
+    public List<TagDto> getUserTags(Authentication authentication) {
+        String login = authentication.getName();
+        User userDto = userService.getUserByLogin(login);
+
+        if (userDto == null) {
+            throw new NoSuchElementException("User not found");
+        }
+
+        return tagService.getTagsByUserId(userDto.getId());
+    }
+
+    @GetMapping("/{taskId}/tag")
+    public ResponseEntity<TagDto> getTaskTag(@PathVariable Long taskId) {
+        TagDto tag = tagService.getTagForTask(taskId);
+        if (tag == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tag);
+    }
+
+    @PostMapping("/tag/update")
+    public ResponseEntity<Void> updateTag(@RequestBody TagUpdateDto tagUpdateDto, Authentication authentication) {
+        String login = authentication.getName();
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        tagService.updateTagForTask(tagUpdateDto.getTaskId(), tagUpdateDto.getTagId());
+
+        return ResponseEntity.ok().build();
     }
 }

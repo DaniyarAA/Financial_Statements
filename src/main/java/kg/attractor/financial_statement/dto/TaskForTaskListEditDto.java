@@ -13,4 +13,6 @@ public class TaskForTaskListEditDto {
     private Long statusId;
     private String amount;
     private String description;
+    private String from;
+    private String to;
 }

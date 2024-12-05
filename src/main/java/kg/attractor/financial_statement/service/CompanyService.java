@@ -54,4 +54,10 @@ public interface CompanyService {
     void addCompany(CompanyDto companyDto , String login);
 
     List<Company> findAll();
+
+    List<CompanyDto> getDeletedCompaniesByUser(Long userId);
+
+    List<CompanyDto> getAllDeletedCompanies();
+
+    void resumeCompany(Long companyId);
 }

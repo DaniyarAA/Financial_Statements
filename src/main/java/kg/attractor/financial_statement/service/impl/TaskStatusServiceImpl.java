@@ -45,4 +45,9 @@ public class TaskStatusServiceImpl implements TaskStatusService {
                 .name(taskStatus.getName())
                 .build();
     }
+
+    @Override
+    public TaskStatus getStatusDone() {
+        return taskStatusRepository.findByName("Сдан");
+    }
 }

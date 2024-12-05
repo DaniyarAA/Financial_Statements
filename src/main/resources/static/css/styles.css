@@ -1241,6 +1241,30 @@ h2 {
     transform: translate(130%, -50%);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
+.tooltip {
+    position: absolute;
+    bottom: 75%;
+    left: 88%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 10;
+    word-wrap: break-word;
+    max-width: 160px;
+}
+
+.task-tag:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
 /*стили для тегов*/
 
 .calendar {

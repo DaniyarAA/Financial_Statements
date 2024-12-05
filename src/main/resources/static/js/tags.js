@@ -4,25 +4,34 @@ document.addEventListener("DOMContentLoaded", function () {
     taskTags.forEach(tagTextElement => {
         const shortText = tagTextElement.querySelector('.tag-text-short');
         const fullText = tagTextElement.querySelector('.tag-text-full');
+        const tooltip = tagTextElement.querySelector('.tooltip');
+
+        const tagText = shortText.textContent;
+
+        if (tagText.length > 3) {
+            shortText.textContent = tagText.substring(0, 3);
+            fullText.textContent = tagText;
+        } else {
+            shortText.textContent = tagText;
+            fullText.style.display = 'none';
+        }
 
         tagTextElement.addEventListener('mouseenter', function() {
-            fullText.style.display = 'inline';
-            shortText.style.display = 'none';
+            tooltip.style.display = 'block';
         });
 
         tagTextElement.addEventListener('mouseleave', function() {
-            fullText.style.display = 'none';
-            shortText.style.display = 'inline';
+            tooltip.style.display = 'none';
         });
     });
 
-    window.toggleTagSelect = function () {
-        const modal = document.getElementById('tag-modal');
+    window.toggleTagSelect = function (taskId) {
+        const modal = document.getElementById(`tag-modal-${taskId}`);
         modal.style.display = "flex";
-        loadUserTags();
+        loadUserTags(taskId);
     };
 
-    window.loadUserTags = function () {
+    window.loadUserTags = function (taskId) {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
         fetch('/tasks/tags/user', {
@@ -34,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(tags => {
-                const select = document.getElementById('user-tags-select');
+                const select = document.getElementById(`user-tags-select-${taskId}`);
                 select.innerHTML = '<option value="" disabled selected>Выберите тег</option>';
                 tags.forEach(tag => {
                     const option = document.createElement('option');
@@ -48,16 +57,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     };
 
-    window.applySelectedTag = function (tagId) {
-        const select = document.getElementById('user-tags-select');
-        const selectedTag = document.querySelector(`#user-tags-select option[value="${tagId}"]`);
+    window.applySelectedTag = function (taskId, tagId) {
+        const selectedTag = document.querySelector(`#user-tags-select-${taskId} option[value="${tagId}"]`);
 
         if (selectedTag) {
-            const tagTextElement = document.getElementById('tag-text');
-            tagTextElement.textContent = selectedTag.textContent;
+            const tagText = selectedTag.textContent;
+
+            updateTagTextAndTooltip(taskId, tagText);
 
             const csrfToken = document.querySelector('input[name="_csrf"]').value;
-            const taskId = document.getElementById('task-id').value;
 
             fetch('/tasks/tag/update', {
                 method: 'POST',
@@ -73,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => {
                     if (response.ok) {
                         showSuccessNotification('Тег успешно обновлён');
-                        closeTagModal('select');
+                        closeTagModal('select', taskId);
                     } else {
                         showErrorNotification('Ошибка при обновлении тега');
                     }
@@ -84,33 +92,32 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    window.openTagModal = function () {
-        const tagSelectModal = document.getElementById('tag-modal');
+    window.openTagModal = function (taskId) {
+        const tagSelectModal = document.getElementById(`tag-modal-${taskId}`);
         tagSelectModal.style.display = "none";
 
-        const modal = document.getElementById('tag-modal-create');
+        const modal = document.getElementById(`tag-modal-create-${taskId}`);
         modal.style.display = "flex";
 
-        document.getElementById('tag-input').value = '';
+        document.getElementById(`tag-input-${taskId}`).value = '';
     };
 
-    window.closeTagModal = function (modalType) {
+    window.closeTagModal = function (modalType, taskId) {
         if (modalType === 'create') {
-            const modal = document.getElementById('tag-modal-create');
+            const modal = document.getElementById(`tag-modal-create-${taskId}`);
             modal.style.display = "none";
         } else {
-            const modal = document.getElementById('tag-modal');
+            const modal = document.getElementById(`tag-modal-${taskId}`);
             modal.style.display = "none";
         }
     };
 
-    window.saveTag = function () {
-        const tagInput = document.getElementById('tag-input').value;
+    window.saveTag = function (taskId) {
+        const tagInput = document.getElementById(`tag-input-${taskId}`).value;
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
-        const taskId = document.getElementById('task-id').value;
 
         if (tagInput.trim() === '') {
-            showErrorNotification('Введите текст для тега!');
+            showErrorNotification('Тег не может быть пустым');
             return;
         }
 
@@ -127,9 +134,11 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => {
                 if (response.ok) {
-                    document.getElementById('tag-text').innerText = tagInput;
-                    closeTagModal('create');
-                    showSuccessNotification('Тег успешно сохранен');
+                    showSuccessNotification('Тег успешно создан');
+
+                    updateTagTextAndTooltip(taskId, tagInput);
+
+                    closeTagModal('create', taskId);
                 } else {
                     showErrorNotification('Ошибка при сохранении тега');
                 }
@@ -150,6 +159,34 @@ document.addEventListener("DOMContentLoaded", function () {
             closeTagModal('create');
         }
     });
+
+    function updateTagTextAndTooltip(taskId, tagText) {
+        const tagTextElement = document.getElementById(`tag-text-${taskId}`);
+        if (!tagTextElement) {
+            console.error(`Элемент с ID tag-text-${taskId} не найден.`);
+            return;
+        }
+
+        const shortText = tagTextElement.querySelector('.tag-text-short');
+        const fullText = tagTextElement.querySelector('.tag-text-full');
+        const tooltip = document.getElementById(`tooltip-${taskId}`);
+
+        if (tagText.length > 3) {
+            if (shortText) shortText.textContent = `${tagText.substring(0, 3)}...`;
+            if (fullText) {
+                fullText.textContent = tagText;
+                fullText.style.display = 'none';
+            }
+        } else {
+            if (shortText) shortText.textContent = tagText;
+            if (fullText) fullText.style.display = 'none';
+        }
+
+        if (tooltip) {
+            tooltip.textContent = tagText;
+            tooltip.style.display = 'none';
+        }
+    }
 
     function showSuccessNotification(message) {
         const notification = document.createElement("div");
@@ -195,11 +232,11 @@ document.addEventListener("DOMContentLoaded", function () {
             closeTagModal(modalType);
         });
     });
-});
 
-document.addEventListener("DOMContentLoaded", function () {
-    const taskId = document.getElementById('task-id').value;
-    loadTaskTag(taskId);
+    taskTags.forEach(tagTextElement => {
+        const taskId = tagTextElement.dataset.taskId;
+        loadTaskTag(taskId);
+    });
 
     function loadTaskTag(taskId) {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
@@ -211,14 +248,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 "X-CSRF-TOKEN": csrfToken
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.log(`Тег для задачи ${taskId} не найден.`);
+                        return null;
+                    }
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(tag => {
-                if (tag) {
-                    const tagTextElement = document.getElementById('tag-text');
-                    tagTextElement.textContent = tag.tag;
+                if (tag && tag.tag) {
+                    const tagTextElement = document.getElementById(`tag-text-${taskId}`);
+                    const shortText = tagTextElement.querySelector('.tag-text-short');
+                    const fullText = tagTextElement.querySelector('.tag-text-full');
+                    const tooltip = tagTextElement.querySelector('.tooltip');
+
+                    const tagText = tag.tag;
+
+                    if (tagText.length > 3) {
+                        shortText.textContent = tagText.substring(0, 3) + '...';
+                        fullText.textContent = tagText;
+                    } else {
+                        shortText.textContent = tagText;
+                        fullText.style.display = 'none';
+                    }
+
+                    if (tooltip) {
+                        tooltip.textContent = tagText;
+                    }
+                } else {
+                    console.log(`Для задачи ${taskId} тег отсутствует.`);
                 }
             })
-            .catch(() => {
+            .catch(error => {
+                console.error(error);
                 showErrorNotification('Ошибка при загрузке тега');
             });
     }

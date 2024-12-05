@@ -59,7 +59,7 @@ public class TagServiceImpl implements TagService {
     public TagDto getTagForTask(Long taskId) {
         return tagRepository.findByTasks_Id(taskId)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new NoSuchElementException("Tag not found for task with ID " + taskId));
+                .orElse(null);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TagServiceImpl implements TagService {
     private TagDto convertToDto(Tag tag) {
         return TagDto.builder()
                 .id(tag.getId())
-                .tag(tag.getTag())
+                .tag(tag.getTag() !=null ? tag.getTag() : null)
                 .userId(tag.getUser() != null ? tag.getUser().getId() : null)
                 .build();
     }

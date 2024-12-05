@@ -30,7 +30,7 @@
                             <td class="user-info">
                                     <span id="list-${user.id}-name-surname" class="user-name-surname">#${user.displayIndex}.${user.name} ${user.surname}</span>
                                     <span class="user-table-detail">Reg.: ${user.registerDate}</span>
-                                    <span class="user-table-detail" id="list-${user.id}-list-status"><#if user.enabled==true>
+                                    <span class="user-table-detail" id="${user.id}-list-status"><#if user.enabled==true>
                                 Active
                                 <#else>
                                             Disabled

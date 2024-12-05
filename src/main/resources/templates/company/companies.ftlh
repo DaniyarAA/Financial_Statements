@@ -73,7 +73,7 @@
                 </form>
 
                 <p class="list-group-item list-group-item-action titleList top-title">Название</p>
-                <div id="total" style="overflow-y: scroll; max-height: 665px;">
+                <div class="scroll-company" id="total">
                     <ul class="search">
                         <#list list as item>
                             <li class="choice-company list-group-item list-group-item-action <#if companyId == item.id>active</#if>">

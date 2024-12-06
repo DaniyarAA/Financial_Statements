@@ -377,7 +377,7 @@ function setupCompanyToggleButton() {
 }
 
 function toggleCompanyTable() {
-    const companyTable = document.getElementById("company-table");
+    const companyTable = document.getElementById("company-scroll-container");
     const isHidden = companyTable.style.display === "none";
     if (isHidden) {
         companyTable.style.width = '244px';

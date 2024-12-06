@@ -125,10 +125,11 @@
         .table-container {
             position: relative;
             overflow-y: auto;
+            overflow-x: auto;
         }
         .company-table {
             width: 244px;
-            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-y: auto;
             margin-right: 5px;
             background-color: #d9d9d9;
             transition: width 0.3s ease, padding 0.3s ease;
@@ -165,11 +166,11 @@
 
         .year-month-column {
             position: sticky;
-            top: 0; /* Sticks to the top of the container */
-            z-index: 10; /* Ensures it stays above other content */
-            background-color: #ffffff; /* Background color to prevent overlap artifacts */
-            border-bottom: 2px solid #dee2e6; /* Visual separator */
-            padding: 5px; /* Padding for better appearance */
+            top: 0;
+            z-index: 10;
+            background-color: #ffffff;
+            border-bottom: 2px solid #dee2e6;
+            padding: 5px;
         }
 
         .year-month-th.first-th {

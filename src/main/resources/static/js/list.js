@@ -496,3 +496,19 @@ function toggleCreateTaskForm() {
     createTaskForm.style.width = '30%';
     createTaskForm.style.transition = 'width 0.3s ease, padding 0.3s ease';
 }
+
+function showSecondPage() {
+    const formPage1 = document.getElementById('formPage1');
+    const formPage2 = document.getElementById('formPage2');
+
+    formPage1.style.display = 'none';
+    formPage2.style.display = 'block';
+}
+
+function showFirstPage() {
+    const formPage1 = document.getElementById('formPage1');
+    const formPage2 = document.getElementById('formPage2');
+
+    formPage2.style.display = 'none';
+    formPage1.style.display = 'block';
+}

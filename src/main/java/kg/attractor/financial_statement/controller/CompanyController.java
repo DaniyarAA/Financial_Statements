@@ -31,46 +31,14 @@ public class CompanyController {
         return companyService.createCompany(companyDto, principal.getName(), bindingResult);
     }
 
-    @PostMapping("/add")
-    public String create(@Valid CompanyDto companyDto, BindingResult bindingResult, Model model ,Principal principal) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("company", companyDto);
-            model.addAttribute("errors", bindingResult);
-            return "company/add";
-        }
-        companyService.addCompany(companyDto, principal.getName());
-        return "redirect:/company/all?sort=actual";
-    }
-
-    @GetMapping("/add")
-    public String add(Model model) {
-        model.addAttribute("company", new CompanyDto());
-        return "company/add";
-    }
-
-
     @GetMapping("/all")
-    public String getAll(
-            @RequestParam(required = false, defaultValue = "0") Long companyId,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size,
-            @RequestParam(value = "sort", defaultValue = "actual") String sort,
-            @RequestParam(value = "search", required = false, defaultValue = "") String search,
-            Model model, Principal principal) {
+    public String getAll(@RequestParam(required = false, defaultValue = "0") Long companyId,
+                         @RequestParam(value = "sort", defaultValue = "actual") String sort,
+                         @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal,
+                         Model model, Principal principal) {
 
-        List<CompanyDto> allCompanies ;
-
-        if (search != null && !search.isEmpty()) {
-            allCompanies = companyService.findByName(search);
-        } else {
-            allCompanies = companyService.getAllCompaniesBySort(sort);
-        }
-
-        int totalCompanies = allCompanies.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-
-        model.addAttribute("list", allCompanies.subList(start, end));
+        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort);
+        model.addAttribute("list", allCompanies);
 
         if (companyId != 0) {
             model.addAttribute("company", companyService.findById(companyId));
@@ -88,14 +56,11 @@ public class CompanyController {
             isAdmin = userService.isAdmin(principal.getName());
         }
         model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
         model.addAttribute("sort", sort);
-        model.addAttribute("search", search);
+        model.addAttribute("openModal", openModal);
 
         return "company/companies";
     }
-
 
     @PostMapping("/edit")
     @ResponseBody

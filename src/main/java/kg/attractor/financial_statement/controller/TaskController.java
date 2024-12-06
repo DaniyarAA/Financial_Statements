@@ -152,13 +152,12 @@ public class TaskController {
         User user = userService.getUserByLogin(userLogin);
 
         Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
-        List<CompanyForTaskDto> companyDtos = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
-        if (companyDtos == null || companyDtos.isEmpty()) {
+        List<CompanyForTaskDto> companiesList = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
+        if (companiesList == null || companiesList.isEmpty()) {
             model.addAttribute("errorMsg", "У вас нет компаний");
         }
         List<String> availableYearMonths = taskService.getAllYearMonths(authentication.getName());
-        System.out.println("availableYearMonths: " + availableYearMonths);
-        System.out.println("taskListData: " + taskListData);
+
 
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -166,11 +165,24 @@ public class TaskController {
 
         String availableYearMonthsJson = objectMapper.writeValueAsString(availableYearMonths);
 
+        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
+        List<UserDto> userDtos = userService.getAllUsers();
+        List<CompanyDto> companyDtos = companyService.getAllCompanies();
+
         model.addAllAttributes(taskListData);
 
         model.addAttribute("availableYearMonthsJson", availableYearMonthsJson);
         model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
+
+        model.addAttribute("userDtos", userDtos);
+        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("taskStatusDtos", taskStatusDtos);
+        model.addAttribute("documentTypeDtos", documentTypeDtos);
+        model.addAttribute("taskCreateDto", new TaskCreateDto());
+
+        System.out.println("availableYearMonths: " + availableYearMonths);
+        System.out.println("taskListData: " + taskListData);
 
         System.out.println("Json task statuses: " + taskStatusDtosJson);
         System.out.println("Json year month: " + availableYearMonths);

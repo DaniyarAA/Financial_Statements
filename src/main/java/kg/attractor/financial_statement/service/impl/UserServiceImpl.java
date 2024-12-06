@@ -258,14 +258,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
-        if (user.getRole().getRoleName().equals("SuperUser")) {
-            log.info("Нельзя удалить администратора системы");
-            throw new IllegalArgumentException("Нельзя удалить администратора системы");
+        if(user.isEnabled()){
+            if (user.getRole().getRoleName().equals("SuperUser")) {
+                log.info("Нельзя удалить администратора системы");
+                throw new IllegalArgumentException("Нельзя удалить администратора системы");
+            }
+            log.info("deleting user - {} in process...", user.getLogin());
+            user.setRole(null);
+            user.setEnabled(false);
+            userCompanyService.updateUserCompaniesOnUserDeletion(id);
+            userRepository.save(user);
         }
-        log.info("deleting user - {} in process...", user.getLogin());
-        user.setRole(null);
-        user.setEnabled(false);
-        userRepository.save(user);
     }
 
     @Override

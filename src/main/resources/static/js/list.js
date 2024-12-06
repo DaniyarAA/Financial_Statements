@@ -501,14 +501,32 @@ function showSecondPage() {
     const formPage1 = document.getElementById('formPage1');
     const formPage2 = document.getElementById('formPage2');
 
-    formPage1.style.display = 'none';
-    formPage2.style.display = 'block';
+    formPage1.classList.add('slide-out-left');
+    formPage1.addEventListener('animationend', () => {
+        formPage1.style.display = 'none';
+        formPage1.classList.remove('slide-out-left'); // Remove the animation class
+
+        formPage2.style.display = 'block';
+        formPage2.classList.add('slide-in-right');
+        formPage2.addEventListener('animationend', () => {
+            formPage2.classList.remove('slide-in-right'); // Remove the animation class
+        }, { once: true });
+    }, { once: true });
 }
 
 function showFirstPage() {
     const formPage1 = document.getElementById('formPage1');
     const formPage2 = document.getElementById('formPage2');
 
-    formPage2.style.display = 'none';
-    formPage1.style.display = 'block';
+    formPage2.classList.add('slide-out-right');
+    formPage2.addEventListener('animationend', () => {
+        formPage2.style.display = 'none';
+        formPage2.classList.remove('slide-out-right'); // Remove the animation class
+
+        formPage1.style.display = 'block';
+        formPage1.classList.add('slide-in-left');
+        formPage1.addEventListener('animationend', () => {
+            formPage1.classList.remove('slide-in-left'); // Remove the animation class
+        }, { once: true });
+    }, { once: true });
 }

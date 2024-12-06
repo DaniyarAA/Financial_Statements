@@ -530,6 +530,8 @@
             border-radius: 4px;
             position: relative;
             overflow: hidden;
+
+            height: 700px;
         }
 
         .task-create-indicator {
@@ -567,6 +569,71 @@
 
         .task-create-text {
             font-size: 14px; font-style: italic; font-weight: 100
+        }
+
+        .form-page {
+            width: 100%;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        @keyframes slide-in-right {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-out-left {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slide-in-left {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-out-right {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .slide-in-right {
+            animation: slide-in-right 0.3s forwards;
+        }
+
+        .slide-out-left {
+            animation: slide-out-left 0.3s forwards;
+        }
+
+        .slide-in-left {
+            animation: slide-in-left 0.3s forwards;
+        }
+
+        .slide-out-right {
+            animation: slide-out-right 0.3s forwards;
         }
 
         .pagination-container{

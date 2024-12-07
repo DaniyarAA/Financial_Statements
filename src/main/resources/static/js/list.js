@@ -33,7 +33,7 @@ function showTaskDetails(button) {
 
     document.getElementById('task-details').style.display = 'block';
     document.getElementById('task-content').innerHTML = `
-<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden;">
+<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 610px">
     <div class="status-indicator-task-details" style="
             position: absolute;
             top: 0;

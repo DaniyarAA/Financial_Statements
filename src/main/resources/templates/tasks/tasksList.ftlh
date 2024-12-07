@@ -194,7 +194,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="task-create-div">
+                                    <div class="task-create-div" style="margin-top: 50px">
                                         <label for="description" class="task-create-text">Описание</label>
                                         <textarea id="description" name="description" class="task-create-description"></textarea>
                                     </div>
@@ -256,6 +256,17 @@
                                                     <option value="3">3-я декада</option>
                                                 </select>
                                             </div>
+
+                                            <div id="quarterSelection" style="display: none;">
+                                                <label for="quarter" class="task-create-text">Квартал</label>
+                                                <select class="form-select" id="quarter" name="quarter">
+                                                    <option value="">Выберите квартал</option>
+                                                    <option value="1">1 квартал</option>
+                                                    <option value="2">2 квартал</option>
+                                                    <option value="3">3 квартал</option>
+                                                    <option value="4">4 квартал</option>
+                                                </select>
+                                            </div>
                                             <div id="monthSelection" style="display: none">
                                                 <label for="month" class="task-create-text">Месяц</label>
                                                 <select class="form-select" id="month" name="month">
@@ -274,17 +285,6 @@
                                                     <option value="12">Декабрь</option>
                                                 </select>
                                             </div>
-                                        </div>
-
-                                        <div class="task-create-div" id="quarterSelection" style="display: none;">
-                                            <label for="quarter" class="form-label">Квартал</label>
-                                            <select class="form-select" id="quarter" name="quarter">
-                                                <option value="">Выберите квартал</option>
-                                                <option value="1">1 квартал</option>
-                                                <option value="2">2 квартал</option>
-                                                <option value="3">3 квартал</option>
-                                                <option value="4">4 квартал</option>
-                                            </select>
                                         </div>
 
                                         <div class="task-create-div">

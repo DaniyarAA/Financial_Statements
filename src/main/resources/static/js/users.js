@@ -58,6 +58,28 @@ document.addEventListener("DOMContentLoaded", function () {
         if(avatarInput){
             avatarInput.setAttribute("data-user-id", currentUserId);
         }
+        const iconsToReset = [
+            'edit-company-icon',
+            'edit-name-icon',
+            'edit-birthday-icon',
+            'change-avatar-icon',
+            'delete-user-icon',
+            'edit-role-icon',
+            'edit-email-icon',
+        ];
+        const companyDropdown = document.getElementById('companyDropdown');
+        const notesInput = document.getElementById('notesInput');
+        const editUserInfoButton = document.getElementById('edit-user-info-button');
+        iconsToReset.forEach(iconId => {
+            const element = document.getElementById(iconId);
+            if (element) {
+                element.style.display = 'block';
+            }
+        });
+        if (companyDropdown) companyDropdown.disabled = false;
+        if (notesInput) notesInput.disabled = false;
+        if (editUserInfoButton) editUserInfoButton.disabled = false;
+
 
         console.log("Fetching user data for:", currentUserId);
         fetch(`/admin/users/edit/` + currentUserId)
@@ -405,13 +427,11 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                if(fullnameDispayInList){
-                    fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}`;
-                    userRoleDisplayInList.innerText = selectedRoleDto.roleName;
-                } else {
-                    fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}`;
-                    userRoleDisplayInTile.innerText = selectedRoleDto.roleName;
-                }
+                fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}`;
+                fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}`;
+                userRoleDisplayInList.innerText = selectedRoleDto.roleName;
+                userRoleDisplayInTile.innerText = selectedRoleDto.roleName;
+
                 bootstrap.Modal.getInstance(modalElement).hide();
                 showNotification("Информация успешно обновлена!", "green");
 
@@ -460,6 +480,20 @@ function deleteUser() {
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
     const userStatusOnList = document.getElementById(`${userId}-list-status`);
     const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
+    const companyDropdown = document.getElementById('companyDropdown');
+    const notesInput = document.getElementById('notesInput');
+    const editUserInfoButton = document.getElementById('edit-user-info-button');
+    const userViewOnTile = document.getElementById(`${userId}-tile`);
+    const userViewOnList = document.getElementById(`${userId}-row`);
+    const iconsToHide = [
+        'edit-company-icon',
+        'edit-name-icon',
+        'edit-birthday-icon',
+        'change-avatar-icon',
+        'delete-user-icon',
+        'edit-role-icon',
+        'edit-email-icon',
+    ];
 
     confirmModal.show();
     document.getElementById('confirmYes').onclick = function() {
@@ -472,11 +506,25 @@ function deleteUser() {
         })
             .then(response => {
                 if (response.ok) {
-                    showNotification("Пользователь успешно удалён.", "green");
+                    iconsToHide.forEach(iconId => {
+                        const element = document.getElementById(iconId);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
+
+                    if (companyDropdown) companyDropdown.disabled = true;
+                    if (notesInput) notesInput.disabled = true;
+                    if (editUserInfoButton) editUserInfoButton.disabled = true;
                     userStatus.innerText = "Неактивен";
                     displayRole.innerText = "Отсутвует";
+                    userViewOnList.classList.add("deleted-row-user-style");
+                    userViewOnTile.classList.add("deleted-tile-user-style");
+
                     userStatusOnList.innerText = "Disabled";
                     userStatusOnTile.innerText = "Disabled";
+
+                    showNotification("Пользователь успешно удалён.", "green");
                     confirmModal.hide();
                 } else {
                     return response.json().then(errorData => {

@@ -24,6 +24,8 @@ public interface UserCompanyService {
 
     void updateUserCompanies(User user, List<Company> newCompanies);
 
+    void updateUserCompaniesOnUserDeletion(Long userId);
+
     List<UserCompany> findByUser(User user);
 
     List<UserCompany> findByUserIdAndCompanyIdIn(Long userId, List<Long> collect);

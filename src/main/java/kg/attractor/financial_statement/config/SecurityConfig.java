@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/tasks/create").hasAuthority("CREATE_TASK")
                         .requestMatchers("/tasks/edit/").hasAuthority("EDIT_TASK")
                         .requestMatchers("/tasks/delete/").hasAuthority("DELETE_TASK")
+                        .requestMatchers("/archive/all").hasAuthority("VIEW_ARCHIVE")
                         .requestMatchers("/").authenticated()
 
                         .anyRequest().permitAll());

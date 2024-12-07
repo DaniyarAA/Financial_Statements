@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
@@ -64,11 +65,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth) {
+    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth , Principal principal) {
+        if (principal == null || principal.getName().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        User user = userService.getUserByLogin(principal.getName());
+        List<UserCompany> userCompany = userCompanyService.findByUser(user);
         int year = yearMonth.get("year");
         int month = yearMonth.get("month");
         YearMonth ym = YearMonth.of(year, month);
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAll();
+        List<Task> tasks = sortTasksByUserCompanies(allTasks, userCompany);
 
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
                 .map(Task::getEndDate)
@@ -76,6 +83,13 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return ResponseEntity.ok().body(calendarTaskCount);
+    }
+
+    private List<Task> sortTasksByUserCompanies(List<Task> tasks, List<UserCompany> userCompanies) {
+        Set<UserCompany> userCompanySet = new HashSet<>(userCompanies);
+        return tasks.stream()
+                .filter(task -> userCompanySet.contains(task.getUserCompany()))
+                .collect(Collectors.toList());
     }
 
     @Override

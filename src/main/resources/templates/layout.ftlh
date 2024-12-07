@@ -10,7 +10,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <meta name="_csrf_header" content="${_csrf.headerName}">
         <meta name="_csrf_token" content="${_csrf.token}">
-        <title>Document</title>
+        <title>Financial Statement</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
         <link rel="stylesheet" href="/css/layout.css">

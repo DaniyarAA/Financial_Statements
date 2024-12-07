@@ -1,6 +1,5 @@
 package kg.attractor.financial_statement.service.impl;
 
-import jakarta.transaction.Transactional;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.dto.TaskCreateDto;
 import kg.attractor.financial_statement.entity.Company;
@@ -80,22 +79,41 @@ public class UserCompanyServiceImpl implements UserCompanyService {
     }
 
     @Override
-    @Transactional
     public void updateUserCompanies(User user, List<Company> newCompanies){
         List<UserCompany> existingUserCompanies = findByUser(user);
-        List<Company> existingCompanies = existingUserCompanies.stream()
-                .map(UserCompany::getCompany)
-                .toList();
         for (Company company : newCompanies) {
-            if (!existingCompanies.contains(company)) {
-                UserCompany userCompany = userCompanyRepository.findByCompany(company).orElse(new UserCompany());
-                userCompany.setUser(user);
-                userCompany.setCompany(company);
-                userCompanyRepository.save(userCompany);
+            Optional<UserCompany> existingUserCompany = userCompanyRepository.findByCompanyAndUser(company, user);
+
+            if (existingUserCompany.isPresent()) {
+                continue;
+            }
+            List<UserCompany> userCompaniesWithNullUser = userCompanyRepository.findByCompanyAndUserIsNull(company);
+
+            if (!userCompaniesWithNullUser.isEmpty()) {
+                for (UserCompany userCompany : userCompaniesWithNullUser) {
+                    userCompany.setUser(user);
+                    userCompanyRepository.save(userCompany);
+                }
+            } else {
+                UserCompany newUserCompany = new UserCompany();
+                newUserCompany.setCompany(company);
+                newUserCompany.setUser(user);
+                userCompanyRepository.save(newUserCompany);
             }
         }
         for (UserCompany userCompany : existingUserCompanies) {
             if (!newCompanies.contains(userCompany.getCompany())) {
+                userCompany.setUser(null);
+                userCompanyRepository.save(userCompany);
+            }
+        }
+    }
+
+    @Override
+    public void updateUserCompaniesOnUserDeletion(Long userId){
+        List<UserCompany> userCompanies = userCompanyRepository.findAllByUserId(userId);
+        if(!userCompanies.isEmpty()){
+            for (UserCompany userCompany : userCompanies) {
                 userCompany.setUser(null);
                 userCompanyRepository.save(userCompany);
             }

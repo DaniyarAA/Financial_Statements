@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.PriorityDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.PriorityService;
 import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.UserService;
@@ -29,6 +30,7 @@ public class MainController {
     private final UserService userService;
     private final TaskService taskService;
     private final PriorityService priorityService;
+    private final CompanyService companyService;
 
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
@@ -49,6 +51,7 @@ public class MainController {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         model.addAttribute("csrfToken", csrfToken);
 
+        model.addAttribute("companies", companyService.getAllCompanies());
         model.addAttribute("userDto", userDto);
         model.addAttribute("dateUtils", new DateUtils());
         model.addAttribute("sort", sort);

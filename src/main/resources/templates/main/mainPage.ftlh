@@ -8,8 +8,13 @@
                     <div class="left col">
                         <div class="sidebar">
                             <a href="/report/create" class="button lock btn type-btn">СФОРМИРОВАТЬ ОТЧЕТ</a>
-                            <a href="/tasks/create/everyMonth" class="button btn type-btn">ЕЖЕМЕСЯЧНЫЙ</a>
+                            <button type="button" class="button btn type-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
+                                ЕЖЕМЕСЯЧНЫЙ
+                            </button>
                             <a href="/tasks/create/everyQuarter" class="button btn type-btn">ЕЖЕКВАРТАЛЬНЫЙ</a>
+                            <button type="button" class="button btn type-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
+                                ГОДОВОЙ
+                            </button>
                         </div>
                     </div>
                     <div class="left col">
@@ -183,6 +188,70 @@
                     <#else>
                         <span class="ms-3">Список задач пуст</span>
                     </#if>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="monthlyReportModal" tabindex="-1" aria-labelledby="monthlyReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="monthlyReportModalLabel">Сформировать ежемесячный отчёт</h5>
+                    <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/reports/monthly" method="post">
+                        <!-- CSRF -->
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label>Выберите компании:</label><br>
+                            <#list companies as company>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="companyIds" value="${company.id}">
+                                    <label class="form-check-label">${company.name}</label>
+                                </div>
+                            </#list>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="yearSelect">Год:</label>
+                            <select class="form-control" id="yearSelect" name="year">
+                                <#assign currentYear = .now?string("yyyy")?number>
+                                <#list (currentYear - 2)..(currentYear + 2) as y>
+                                    <option value="${y}" <#if y == currentYear>selected</#if>>${y}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="monthSelect">Месяц:</label>
+                            <select class="form-control" id="monthSelect" name="month">
+                                <option value="1">Январь</option>
+                                <option value="2">Февраль</option>
+                                <option value="3">Март</option>
+                                <option value="4">Апрель</option>
+                                <option value="5">Май</option>
+                                <option value="6">Июнь</option>
+                                <option value="7">Июль</option>
+                                <option value="8">Август</option>
+                                <option value="9">Сентябрь</option>
+                                <option value="10">Октябрь</option>
+                                <option value="11">Ноябрь</option>
+                                <option value="12">Декабрь</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сформировать</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

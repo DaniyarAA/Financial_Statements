@@ -504,12 +504,12 @@ function showSecondPage() {
     formPage1.classList.add('slide-out-left');
     formPage1.addEventListener('animationend', () => {
         formPage1.style.display = 'none';
-        formPage1.classList.remove('slide-out-left'); // Remove the animation class
+        formPage1.classList.remove('slide-out-left');
 
         formPage2.style.display = 'block';
         formPage2.classList.add('slide-in-right');
         formPage2.addEventListener('animationend', () => {
-            formPage2.classList.remove('slide-in-right'); // Remove the animation class
+            formPage2.classList.remove('slide-in-right');
         }, { once: true });
     }, { once: true });
 }
@@ -521,12 +521,12 @@ function showFirstPage() {
     formPage2.classList.add('slide-out-right');
     formPage2.addEventListener('animationend', () => {
         formPage2.style.display = 'none';
-        formPage2.classList.remove('slide-out-right'); // Remove the animation class
+        formPage2.classList.remove('slide-out-right');
 
         formPage1.style.display = 'block';
         formPage1.classList.add('slide-in-left');
         formPage1.addEventListener('animationend', () => {
-            formPage1.classList.remove('slide-in-left'); // Remove the animation class
+            formPage1.classList.remove('slide-in-left');
         }, { once: true });
     }, { once: true });
 }

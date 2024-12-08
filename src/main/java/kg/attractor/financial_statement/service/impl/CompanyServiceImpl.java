@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
+import kg.attractor.financial_statement.encryption.Base64Encryption;
 import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.enums.ReportFrequency;
 import kg.attractor.financial_statement.repository.CompanyRepository;
@@ -193,7 +194,7 @@ public class CompanyServiceImpl implements CompanyService {
                 }
                 break;
             case "emailPassword":
-                company.setEmailPassword(newValue);
+                company.setEmailPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "phone":
                 if (newValue.length() < 30) {
@@ -206,25 +207,25 @@ public class CompanyServiceImpl implements CompanyService {
                 company.setEsf(newValue);
                 break;
             case "esfPassword":
-                company.setEsfPassword(newValue);
+                company.setEsfPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "kkm":
                 company.setKkm(newValue);
                 break;
             case "kkmPassword":
-                company.setKkmPassword(newValue);
+                company.setKkmPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "fresh1c":
                 company.setFresh1c(newValue);
                 break;
             case "fresh1cPassword":
-                company.setFresh1cPassword(newValue);
+                company.setFresh1cPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "ettn":
                 company.setEttn(newValue);
                 break;
             case "ettnPassword":
-                company.setEttnPassword(newValue);
+                company.setEttnPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "companyName":
                 if (!existsByCompanyName(newValue)) {
@@ -263,7 +264,7 @@ public class CompanyServiceImpl implements CompanyService {
                 }
                 break;
             case "password":
-                company.setPassword(newValue);
+                company.setPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "ecp":
                 company.setEcp(newValue);
@@ -276,7 +277,7 @@ public class CompanyServiceImpl implements CompanyService {
                 }
                 break;
             case "kabinetSalykPassword":
-                company.setKabinetSalykPassword(newValue);
+                company.setKabinetSalykPassword(Base64Encryption.encrypt(newValue));
                 break;
             case "taxMode":
                 if (newValue.length() < 75) {
@@ -344,10 +345,10 @@ public class CompanyServiceImpl implements CompanyService {
                 .companyInn(company.getInn())
                 .directorInn(company.getDirectorInn())
                 .login(company.getLogin())
-                .password(company.getPassword())
+                .password(Base64Encryption.decrypt(company.getPassword()))
                 .ecp(company.getEcp())
                 .kabinetSalyk(company.getKabinetSalyk())
-                .kabinetSalykPassword(company.getKabinetSalykPassword())
+                .kabinetSalykPassword(Base64Encryption.decrypt(company.getKabinetSalykPassword()))
                 .taxMode(company.getTaxMode())
                 .opf(company.getOpf())
                 .districtGns(company.getDistrictGns())
@@ -357,16 +358,16 @@ public class CompanyServiceImpl implements CompanyService {
                 .director(company.getDirector())
                 .ked(company.getKed())
                 .email(company.getEmail())
-                .emailPassword(company.getEmailPassword())
+                .emailPassword(Base64Encryption.decrypt(company.getEmailPassword()))
                 .phone(company.getPhone())
                 .esf(company.getEsf())
-                .esfPassword(company.getEsfPassword())
+                .esfPassword(Base64Encryption.decrypt(company.getEsfPassword()))
                 .kkm(company.getKkm())
-                .kkmPassword(company.getKkmPassword())
+                .kkmPassword(Base64Encryption.decrypt(company.getKkmPassword()))
                 .fresh1c(company.getFresh1c())
-                .fresh1cPassword(company.getFresh1cPassword())
+                .fresh1cPassword(Base64Encryption.decrypt(company.getFresh1cPassword()))
                 .ettn(company.getEttn())
-                .ettnPassword(company.getEttnPassword())
+                .ettnPassword(Base64Encryption.decrypt(company.getEttnPassword()))
                 .isDeleted(company.isDeleted())
                 .build();
     }
@@ -391,10 +392,10 @@ public class CompanyServiceImpl implements CompanyService {
                 .inn(companyDto.getCompanyInn())
                 .directorInn(companyDto.getDirectorInn())
                 .login(companyDto.getLogin())
-                .password(companyDto.getPassword())
+                .password(Base64Encryption.encrypt(companyDto.getPassword()))
                 .ecp(companyDto.getEcp())
                 .kabinetSalyk(companyDto.getKabinetSalyk())
-                .kabinetSalykPassword(companyDto.getKabinetSalykPassword())
+                .kabinetSalykPassword(Base64Encryption.encrypt(companyDto.getKabinetSalykPassword()))
                 .taxMode(companyDto.getTaxMode())
                 .opf(companyDto.getOpf())
                 .districtGns(companyDto.getDistrictGns())
@@ -404,16 +405,16 @@ public class CompanyServiceImpl implements CompanyService {
                 .director(companyDto.getDirector())
                 .ked(companyDto.getKed())
                 .email(companyDto.getEmail())
-                .emailPassword(companyDto.getEmailPassword())
+                .emailPassword(Base64Encryption.encrypt(companyDto.getEmailPassword()))
                 .phone(companyDto.getPhone())
                 .esf(companyDto.getEsf())
-                .esfPassword(companyDto.getEsfPassword())
+                .esfPassword(Base64Encryption.encrypt(companyDto.getEsfPassword()))
                 .kkm(companyDto.getKkm())
-                .kkmPassword(companyDto.getKkmPassword())
+                .kkmPassword(Base64Encryption.encrypt(companyDto.getKkmPassword()))
                 .fresh1c(companyDto.getFresh1c())
-                .fresh1cPassword(companyDto.getFresh1cPassword())
+                .fresh1cPassword(Base64Encryption.encrypt(companyDto.getFresh1cPassword()))
                 .ettn(companyDto.getEttn())
-                .ettnPassword(companyDto.getEttnPassword())
+                .ettnPassword(Base64Encryption.encrypt(companyDto.getEttnPassword()))
                 .build();
     }
 

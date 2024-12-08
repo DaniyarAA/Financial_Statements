@@ -1132,6 +1132,15 @@
                                                                    class="form-control">
                                                         </div>
                                                     </div>
+
+                                                    <div class="form-group row">
+                                                        <label for="reportFrequency">Выберите частоту отчета НСП:</label>
+                                                        <select name="reportFrequency" id="reportFrequency" class="form-control" required>
+                                                            <option value="" disabled selected>Выбор частоты</option>
+                                                            <option value="MONTHLY">Ежемесячно</option>
+                                                            <option value="QUARTERLY">Ежеквартально</option>
+                                                        </select>
+                                                    </div>
                                                 </fieldset>
                                             </div>
                                         </div>

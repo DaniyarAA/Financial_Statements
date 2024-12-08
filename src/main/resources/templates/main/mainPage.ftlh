@@ -11,8 +11,10 @@
                             <button type="button" class="button btn type-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
                                 ЕЖЕМЕСЯЧНЫЙ
                             </button>
-                            <a href="/tasks/create/everyQuarter" class="button btn type-btn">ЕЖЕКВАРТАЛЬНЫЙ</a>
-                            <button type="button" class="button btn type-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
+                            <button type="button" class="button btn type-btn" data-bs-toggle="modal" data-bs-target="#quarterlyReportModal">
+                                ЕЖЕКВАРТАЛЬНЫЙ
+                            </button>
+                            <button type="button" class="button btn type-btn" data-bs-toggle="modal" data-bs-target="#yearlyReportModal">
                                 ГОДОВОЙ
                             </button>
                         </div>
@@ -211,20 +213,32 @@
                         </#if>
                         <div class="form-group">
                             <label>Выберите компании:</label><br>
-                            <#list companies as company>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="companyIds" value="${company.id}">
-                                    <label class="form-check-label">${company.name}</label>
+                            <div>
+
+                                <input type="text" id="companySearchMonthly" placeholder="Поиск компаний..." class="form-control mb-2">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" id="selectAllMonthly" class="form-check-input">
+                                    <label class="form-check-label" for="selectAllMonthly">Выбрать все</label>
                                 </div>
-                            </#list>
+
+
+                                <div id="companyCheckboxesMonthly" class="dropdown-menu p-3" style="border: 1px solid #ccc;">
+                                    <#list companies as company>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="companyIds" id="company_${company.id}" value="${company.id}">
+                                            <label class="form-check-label" for="company_${company.id}">${company.name}</label>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 220px">
                             <label for="yearSelect">Год:</label>
                             <select class="form-control" id="yearSelect" name="year">
                                 <#assign currentYear = .now?string("yyyy")?number>
                                 <#list (currentYear - 2)..(currentYear + 2) as y>
-                                    <option value="${y}" <#if y == currentYear>selected</#if>>${y}</option>
+                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
                                 </#list>
                             </select>
                         </div>
@@ -247,15 +261,167 @@
                             </select>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <button type="submit" class="btn btn-primary">Сформировать</button>
+                        <div class="modal-footer" style="display: flex; justify-content: center;">
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3"><i class="bi bi-check2 fs-1"></i></button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="quarterlyReportModal" tabindex="-1" aria-labelledby="quarterlyReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quarterlyReportModalLabel">Сформировать ежеквартальный отчёт</h5>
+                    <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/reports/quarterly" method="post">
+                        <!-- CSRF -->
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label>Выберите компании:</label><br>
+                            <div>
+
+                                <input type="text" id="companySearchQuarterly" placeholder="Поиск компаний..." class="form-control mb-2">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" id="selectAllQuarterly" class="form-check-input">
+                                    <label class="form-check-label" for="selectAllQuarterly">Выбрать все</label>
+                                </div>
+
+
+                                <div id="companyCheckboxesQuarterly" class="dropdown-menu p-3" style="border: 1px solid #ccc;">
+                                    <#list companies as company>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="companyIds" id="company_${company.id}" value="${company.id}">
+                                            <label class="form-check-label" for="company_${company.id}">${company.name}</label>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 220px">
+                            <label for="yearSelectQuarterly">Год:</label>
+                            <select class="form-control" id="yearSelectQuarterly" name="year">
+                                <#assign currentYear = .now?string("yyyy")?number>
+                                <#list (currentYear - 2)..(currentYear + 2) as y>
+                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quarterSelect">Квартал:</label>
+                            <select class="form-control" id="quarterSelect" name="quarter">
+                                <option value="1">1 квартал</option>
+                                <option value="2">2 квартал</option>
+                                <option value="3">3 квартал</option>
+                                <option value="4">4 квартал</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer" style="display: flex; justify-content: center;">
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3"><i class="bi bi-check2 fs-1"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="yearlyReportModal" tabindex="-1" aria-labelledby="yearlyReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yearlyReportModalLabel">Сформировать годовой отчёт</h5>
+                    <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/reports/yearly" method="post">
+                        <!-- CSRF -->
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label>Выберите компании:</label><br>
+                            <div>
+
+                                <input type="text" id="companySearchYearly" placeholder="Поиск компаний..." class="form-control mb-2">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" id="selectAllYearly" class="form-check-input">
+                                    <label class="form-check-label" for="selectAllYearly">Выбрать все</label>
+                                </div>
+
+
+                                <div id="companyCheckboxesYearly" class="dropdown-menu p-3" style="border: 1px solid #ccc;">
+                                    <#list companies as company>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="companyIds" id="company_${company.id}" value="${company.id}">
+                                            <label class="form-check-label" for="company_${company.id}">${company.name}</label>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 220px">
+                            <label for="yearSelectYearly">Год:</label>
+                            <select class="form-control" id="yearSelectYearly" name="year">
+                                <#assign currentYear = .now?string("yyyy")?number>
+                                <#list (currentYear - 2)..(currentYear + 2) as y>
+                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer" style="display: flex; justify-content: center;">
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3"><i class="bi bi-check2 fs-1"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function setupModal(modalId, searchInputId, selectAllId, checkboxesId) {
+                const searchInput = document.getElementById(searchInputId);
+                const companyCheckboxes = document.getElementById(checkboxesId);
+                const selectAllCheckbox = document.getElementById(selectAllId);
+
+                searchInput.addEventListener("input", function () {
+                    const searchTerm = searchInput.value.toLowerCase();
+
+                    Array.from(companyCheckboxes.children).forEach(div => {
+                        const label = div.querySelector("label");
+                        if (label.textContent.toLowerCase().includes(searchTerm)) {
+                            div.style.display = "block";
+                        } else {
+                            div.style.display = "none";
+                        }
+                    });
+                });
+
+                selectAllCheckbox.addEventListener("change", function () {
+                    const isChecked = selectAllCheckbox.checked;
+                    Array.from(companyCheckboxes.querySelectorAll("input[type='checkbox']")).forEach(checkbox => {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            }
+            setupModal("monthlyReportModal", "companySearchMonthly", "selectAllMonthly", "companyCheckboxesMonthly");
+            setupModal("quarterlyReportModal", "companySearchQuarterly", "selectAllQuarterly", "companyCheckboxesQuarterly");
+            setupModal("yearlyReportModal", "companySearchYearly", "selectAllYearly", "companyCheckboxesYearly");
+
+        });
+
+    </script>
 </@main.layout>
 <script src="/js/tags.js"></script>
 <script src="/js/priority.js"></script>

@@ -29,4 +29,27 @@ public class ReportController {
 
         return new ResponseEntity<>(reportData, headers, HttpStatus.OK);
     }
+
+    @PostMapping("quarterly")
+    public ResponseEntity<byte[]> generateQuarterlyReport(@RequestParam List<Long> companyIds,
+                                                          @RequestParam String year,
+                                                          @RequestParam int quarter){
+        int parsedYear = Integer.parseInt(year.replaceAll(",", ""));
+        byte[] reportData = reportService.generateQuarterlyReportCSV(companyIds, parsedYear, quarter);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentDisposition(ContentDisposition.attachment().filename("quarterly_report.csv").build());
+        return new ResponseEntity<>(reportData, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("yearly")
+    public ResponseEntity<byte[]> generateYearlyReport(@RequestParam List<Long> companyIds,
+                                                       @RequestParam String year){
+        int parsedYear = Integer.parseInt(year.replaceAll(",", ""));
+        byte[] reportData = reportService.generateYearlyReportCSV(companyIds, parsedYear);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentDisposition(ContentDisposition.attachment().filename("yearly_report.csv").build());
+        return new ResponseEntity<>(reportData, headers, HttpStatus.OK);
+    }
 }

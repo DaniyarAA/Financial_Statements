@@ -32,8 +32,6 @@ import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.function.Function;
 import java.time.format.TextStyle;
-import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -418,6 +416,11 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + taskId));
         User user = userService.getUserByLogin(userLogin);
         return task.getUserCompany().getUser() == user;
+    }
+
+    @Override
+    public List<Task> findByCompanyAndDate(Long companyId, LocalDate startDate, LocalDate endDate){
+        return taskRepository.findByUserCompany_Company_IdAndEndDateBetween(companyId, startDate, endDate);
     }
 
 

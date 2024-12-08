@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.controller;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,12 @@ import java.util.Map;
 public class CompanyController {
     private final CompanyService companyService;
     private final UserService userService;
+    private final TaskService taskService;
 
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<Map<String, String>> create(
-            @Valid CompanyDto companyDto,
+             @Valid CompanyDto companyDto,
             BindingResult bindingResult,
             Principal principal) {
         return companyService.createCompany(companyDto, principal.getName(), bindingResult);
@@ -77,7 +79,7 @@ public class CompanyController {
     @PostMapping("/return")
     public String returnById(@RequestParam Long companyId) {
         companyService.returnCompany(companyId);
+        taskService.tasksGenerator();
         return "redirect:/company/all?sort=actual";
     }
-
 }

@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const shortText = tagTextElement.querySelector('.tag-text-short');
         const fullText = tagTextElement.querySelector('.tag-text-full');
-        const tooltip = document.getElementById(`tooltip-${taskId}`);
+        let tooltip = document.getElementById(`tooltip-${taskId}`);
 
         if (tagText.length > 3) {
             if (shortText) shortText.textContent = `${tagText.substring(0, 3)}...`;
@@ -184,8 +184,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (tooltip) {
             tooltip.textContent = tagText;
-            tooltip.style.display = 'none';
+        } else {
+            tooltip = document.createElement('div');
+            tooltip.id = `tooltip-${taskId}`;
+            tooltip.className = 'tooltip';
+            tooltip.textContent = tagText;
+            tagTextElement.parentNode.appendChild(tooltip);
         }
+
+        tagTextElement.setAttribute('data-tooltip', tagText);
+
+        const showTooltip = () => {
+            tooltip.style.visibility = 'visible';
+            tooltip.style.opacity = '1';
+        };
+
+        const hideTooltip = () => {
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.opacity = '0';
+        };
+
+        tagTextElement.addEventListener('mouseover', showTooltip);
+        tagTextElement.addEventListener('mouseout', (e) => {
+            if (!tooltip.contains(e.relatedTarget)) {
+                hideTooltip();
+            }
+        });
+
+        tooltip.addEventListener('mouseover', showTooltip);
+        tooltip.addEventListener('mouseout', (e) => {
+            if (!tagTextElement.contains(e.relatedTarget)) {
+                hideTooltip();
+            }
+        });
     }
 
     function showSuccessNotification(message) {

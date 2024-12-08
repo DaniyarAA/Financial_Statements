@@ -75,7 +75,9 @@ public class TaskServiceImpl implements TaskService {
         int month = yearMonth.get("month");
         YearMonth ym = YearMonth.of(year, month);
         List<Task> allTasks = taskRepository.findAll();
-        List<Task> tasks = sortTasksByUserCompanies(allTasks, userCompany);
+        List<Task> tasks = allTasks.stream()
+                .filter(task -> userCompany.contains(task.getUserCompany()))
+                .toList();
 
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
                 .map(Task::getEndDate)
@@ -83,13 +85,6 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return ResponseEntity.ok().body(calendarTaskCount);
-    }
-
-    private List<Task> sortTasksByUserCompanies(List<Task> tasks, List<UserCompany> userCompanies) {
-        Set<UserCompany> userCompanySet = new HashSet<>(userCompanies);
-        return tasks.stream()
-                .filter(task -> userCompanySet.contains(task.getUserCompany()))
-                .collect(Collectors.toList());
     }
 
     @Override

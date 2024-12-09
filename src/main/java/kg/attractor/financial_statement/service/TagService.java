@@ -11,6 +11,8 @@ public interface TagService {
 
     void createTag(TagDto tagDto);
 
+    long countByUserId(Long userId);
+
     List<TagDto> getTagsByUserId(Long userId);
 
     TagDto getTagForTask(Long taskId);

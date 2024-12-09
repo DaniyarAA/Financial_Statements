@@ -255,4 +255,17 @@ public class TaskController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/tags/count")
+    public ResponseEntity<Long> getTagCount(Authentication authentication) {
+        String login = authentication.getName();
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        long tagCount = tagService.countByUserId(user.getId());
+        return ResponseEntity.ok(tagCount);
+    }
 }

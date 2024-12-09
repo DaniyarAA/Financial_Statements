@@ -48,6 +48,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public long countByUserId(Long userId) {
+        return tagRepository.countByUserId(userId);
+    }
+
+    @Override
     public List<TagDto> getTagsByUserId(Long userId) {
         return tagRepository.findByUserId(userId)
                 .stream()

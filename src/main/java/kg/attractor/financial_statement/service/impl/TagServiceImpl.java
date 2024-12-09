@@ -53,6 +53,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public boolean isTagUnique(Long userId, String tagName) {
+        return tagRepository.findByUserIdAndTag(userId, tagName) == null;
+    }
+
+    @Override
     public List<TagDto> getTagsByUserId(Long userId) {
         return tagRepository.findByUserId(userId)
                 .stream()

@@ -13,6 +13,8 @@ public interface TagService {
 
     long countByUserId(Long userId);
 
+    boolean isTagUnique(Long userId, String tagName);
+
     List<TagDto> getTagsByUserId(Long userId);
 
     TagDto getTagForTask(Long taskId);

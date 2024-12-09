@@ -134,28 +134,44 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                fetch('/tasks/tag', {
-                    method: 'POST',
+                fetch(`/tasks/tags/unique?tag=${tagInput}`, {
+                    method: 'GET',
                     headers: {
-                        "Content-Type": "application/json",
                         "X-CSRF-TOKEN": csrfToken
-                    },
-                    body: JSON.stringify({
-                        tag: tagInput,
-                        taskId: taskId
-                    })
+                    }
                 })
                     .then(response => {
-                        if (response.ok) {
-                            showSuccessNotification('Тег успешно создан');
-                            updateTagTextAndTooltip(taskId, tagInput);
-                            closeTagModal('create', taskId);
-                        } else {
-                            showErrorNotification('Ошибка при сохранении тега');
+                        if (!response.ok) {
+                            showErrorNotification('Тег с таким названием уже есть');
+                            return;
                         }
+
+                        fetch('/tasks/tag', {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": csrfToken
+                            },
+                            body: JSON.stringify({
+                                tag: tagInput,
+                                taskId: taskId
+                            })
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    showSuccessNotification('Тег успешно создан');
+                                    updateTagTextAndTooltip(taskId, tagInput);
+                                    closeTagModal('create', taskId);
+                                } else {
+                                    showErrorNotification('Ошибка при сохранении тега');
+                                }
+                            })
+                            .catch(() => {
+                                showErrorNotification('Ошибка соединения с сервером');
+                            });
                     })
                     .catch(() => {
-                        showErrorNotification('Ошибка соединения с сервером');
+                        showErrorNotification('Ошибка при проверке уникальности тега');
                     });
             })
             .catch(() => {

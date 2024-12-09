@@ -268,4 +268,17 @@ public class TaskController {
         long tagCount = tagService.countByUserId(user.getId());
         return ResponseEntity.ok(tagCount);
     }
+
+    @GetMapping("/tags/unique")
+    public ResponseEntity<Void> checkTagUnique(@RequestParam String tag, Authentication authentication) {
+        String login = authentication.getName();
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        boolean isUnique = tagService.isTagUnique(user.getId(), tag);
+        return isUnique ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 }

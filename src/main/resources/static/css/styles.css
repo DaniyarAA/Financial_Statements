@@ -1486,12 +1486,27 @@ h2 {
 
 .change-login-password-btn {
     font-size: 25px;
-    width: 180px;
+    width: 160px;
     border-radius: 14px;
     border: none;
     color: black;
     background: #96FF9D;
     box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.create-role-button{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.check-icon-role{
+    font-size: 25px;
 }
 
 .btn-close-role{

@@ -88,6 +88,7 @@
                             <span id="roleNameError" class="text-danger"></span>
                         </div>
                         <h5>Права доступа</h5>
+                        <div class="authorities-for-role-scroll">
                         <#list authorities as authority>
                             <div class="form-check">
                                 <input type="checkbox" id="create_auth_${authority.id}" name="authorityIds"
@@ -96,6 +97,7 @@
                                        class="form-check-label">${authority.authorityName}</label>
                             </div>
                         </#list>
+                        </div>
                         <span id="authorityError" class="text-danger"></span>
                     </form>
                 </div>

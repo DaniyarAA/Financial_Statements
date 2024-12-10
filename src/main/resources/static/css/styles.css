@@ -1499,6 +1499,11 @@ h2 {
     right: 20px;
 }
 
+.authorities-for-role-scroll{
+    overflow-y:scroll;
+    max-height: 250px;
+}
+
 .text-danger {
     font-size: 0.85rem;
 }

@@ -4,17 +4,17 @@
         <div class="users-header mt-3">
             <p class="users-list-title">Пользователи</p>
             <div class="view-icons">
-                <span class="icon" onclick="switchToTileView()"><i class="bi bi-grid"></i></span>
-                <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul"></i></span>
+                <span class="icon" onclick="switchToTileView()" title="Плитка"><i class="bi bi-grid"></i></span>
+                <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul" title="Список"></i></span>
 
                 <#list currentUser.roleDto.authorities as auth>
                     <#if auth.authority=="VIEW_ROLES">
-                        <span class="icon" onclick="window.location.href='/admin/roles'">
+                        <span class="icon" onclick="window.location.href='/admin/roles'" title="Настройка ролей">
                                 <i class="bi bi-person-fill-gear"></i>
                         </span>
                     </#if>
                     <#if auth.authority=="CREATE_USER">
-                        <span class="icon" onclick="window.location.href='/admin/register'">
+                        <span class="icon" onclick="window.location.href='/admin/register'" title="Создать пользователя">
                                 <i class="bi bi-plus-circle"></i>
                             </span>
                     </#if>

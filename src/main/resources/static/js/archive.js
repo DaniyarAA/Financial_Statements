@@ -1,15 +1,6 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-function toggleDetails(companyId) {
-    const detailsRow = document.getElementById('details-' + companyId);
-    if (detailsRow.style.display === "none") {
-        detailsRow.style.display = "table-row";
-    } else {
-        detailsRow.style.display = "none";
-    }
-}
-
 let selectedUserId;
 let selectTaskId;
 
@@ -65,19 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showTab(activeTab);
     }
 });
-
-function showTab(tabId) {
-    const tabs = document.querySelectorAll('.tab-content');
-    const buttons = document.querySelectorAll('.tab-button');
-
-    tabs.forEach(tab => tab.classList.remove('active'));
-    buttons.forEach(button => button.classList.remove('active'));
-
-    document.getElementById(tabId).classList.add('active');
-    document.querySelector('.tab-button[onclick="showTab(' + tabId + ')"]').classList.add('active');
-
-    localStorage.setItem('activeTab', tabId);
-}
 
 function resumeCompany(companyId) {
     fetch('/archive/resume/company/' + companyId, {
@@ -161,41 +139,55 @@ document.addEventListener('DOMContentLoaded', () => {
             { targets: [0, 7], orderable: false }
         ],
         language: {
-            search: "Поиск:",
+            search: "",
             lengthMenu: "Показать _MENU_ записей",
-            info: "Показано _START_ до _END_ из _TOTAL_ записей",
+            info: " _START_ - _END_ из _TOTAL_ ",
             paginate: {
                 first: "Первая",
                 last: "Последняя",
-                next: "Следующая",
-                previous: "Предыдущая"
+                next: "&raquo;",
+                previous: "&laquo;"
             },
             zeroRecords: "Совпадений не найдено",
         },
+        initComplete: function () {
+            const searchInput = $('div.dataTables_filter input');
+            searchInput.attr('placeholder', '  Введите текст для поиска...');
+        },
+        dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
+            "<'row'<'col-12'tr>>" +
+            "<'row'<'col-12'p>>",
         responsive: true
     });
 
-    $(document).ready(function () {
-        const table = $('#tasksTable').DataTable({
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 15, 100],
-            "order": [[4, "asc"]],
-            "searching": true,
-            "columnDefs": [
-                { "orderable": true, "targets": [1, 4, 5, 6] },
-                { "orderable": false, "targets": "_all" },
-                { "searchable": true, "targets": [1, 3] },
-                { "searchable": false, "targets": "_all" }
-            ]
-        });
-
-        $('#filterDocumentType').on('change', function () {
-            const value = $(this).val();
-            table.column(3).search(value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '', true, false).draw();
-        });
+    $('#tasksTable').DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 15, 100],
+        order: [[4, "asc"]],
+        searching: true,
+        columnDefs: [
+            { orderable: true, targets: [1, 4, 5, 6] },
+            { orderable: false, targets: "_all" },
+            { searchable: true, targets: [1, 3] },
+            { searchable: false, targets: "_all" }
+        ]
     });
 
+    $('#filterDocumentType').on('change', function () {
+        const value = $(this).val();
+        $('#tasksTable').DataTable().column(3).search(
+            value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '',
+            true, false
+        ).draw();
+    });
 });
+
+function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
 
 document.getElementById('searchCompanies').addEventListener('input', function () {
     const searchValue = this.value.toLowerCase();

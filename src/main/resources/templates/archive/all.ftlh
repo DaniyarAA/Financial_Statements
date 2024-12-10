@@ -6,14 +6,13 @@
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/css/archive/archive.css">
 
-    <div class="tabs mt-5 mx-auto">
+    <div class="tabs my-5 mx-auto">
         <button class="tab-button active" onclick="showTab('users')">Удаленные пользователи</button>
         <button class="tab-button" onclick="showTab('tasks')">Завершенные задачи</button>
         <button class="tab-button" onclick="showTab('companies')">Удаленные компании</button>
     </div>
 
     <div id="users" class="tab-content active">
-        <h2>Удаленные пользователи</h2>
         <table class="styled-table" id="users-table">
             <thead>
             <tr>
@@ -21,7 +20,7 @@
                 <th>Имя</th>
                 <th>Фамилия</th>
                 <th>Логин</th>
-                <th>Адерс эл.почты</th>
+                <th>Адрес эл. почты</th>
                 <th>День рождения</th>
                 <th>Дата регистрации</th>
                 <th>Действие</th>
@@ -45,7 +44,7 @@
                 </#list>
             <#else>
                 <tr>
-                    <td colspan="7" class="no-data mt-2 mx-auto">Нет удаленных пользователей</td>
+                    <td colspan="8" class="no-data mt-2 mx-auto">Нет удаленных пользователей</td>
                 </tr>
             </#if>
             </tbody>
@@ -66,15 +65,13 @@
     </div>
 
     <div id="tasks" class="tab-content">
-        <h2>Завершенные задачи</h2>
         <select id="filterDocumentType" class="form-control my-3">
             <option value="">Все типы документов</option>
             <#list documentTypes as type>
                 <option value="${type.name}">${type.name}</option>
             </#list>
         </select>
-
-        <table id="tasksTable">
+        <table id="tasksTable" class="styled-table">
             <thead>
             <tr>
                 <th>№</th>
@@ -130,7 +127,6 @@
     </div>
 
     <div id="companies" class="tab-content">
-        <h2 class="text-center">Удаленные компании</h2>
         <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
         <#if deletedCompanies?has_content>
             <div class="accordion shadow-sm rounded" id="accordionCompanies">

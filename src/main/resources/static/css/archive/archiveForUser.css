@@ -113,6 +113,10 @@ h2 {
     overflow: hidden;
 }
 
+.no-data{
+    display: revert !important;
+}
+
 .accordion-item {
     border: none;
     margin: 10px;

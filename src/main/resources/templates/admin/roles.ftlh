@@ -42,10 +42,12 @@
     </div>
 
     <div id="editRoleModal" class="modal role-modal" tabindex="-1">
-        <div class="modal-dialog role-modal-dialog">
+        <div class="modal-dialog role-modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header role-modal-header">
                     <h5 class="modal-title role-modal-title">Редактирование роли</h5>
+                    <button type="button" class="btn-close btn-close-role" id="closeModalButtonCreateRole" aria-label="Close"
+                            onclick="closeModal('editRoleModal')"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editRoleForm">
@@ -59,13 +61,15 @@
                         </div>
 
                         <h5>Права доступа</h5>
-                        <div id="editAuthoritiesContainer"></div>
+                        <div class="authorities-for-role-scroll">
+                        <div id="editAuthoritiesContainer">
+                        </div>
+                        </div>
                         <span id="authorityError" class="text-danger"></span>
                     </form>
                 </div>
-                <div class="modal-footer role-modal-footer">
-                    <button type="button" class="btn btn-secondary role-btn role-btn-secondary" onclick="closeModal('editRoleModal')">Закрыть</button>
-                    <button type="button" class="btn btn-primary role-btn role-btn-primary" onclick="saveRole()">Сохранить</button>
+                <div class="modal-footer role-modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-success role-btn create-role-button role-btn-secondary" onclick="saveRole()"><i class="bi bi-check2 check-icon-role"></i></button>
                 </div>
             </div>
         </div>

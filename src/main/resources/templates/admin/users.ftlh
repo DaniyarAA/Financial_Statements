@@ -278,7 +278,7 @@
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">
-                <div class="modal-header bg-color-for-change-login-password text-black">
+                <div class="modal-header text-black">
                     <h5 class="modal-title" id="changeLoginPasswordModalLabel">Изменение логина и пароля</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

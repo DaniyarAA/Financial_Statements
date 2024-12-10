@@ -52,4 +52,18 @@ public class ReportController {
         headers.setContentDisposition(ContentDisposition.attachment().filename("yearly_report.csv").build());
         return new ResponseEntity<>(reportData, headers, HttpStatus.OK);
     }
+
+    @PostMapping("monthly/pdf")
+    public ResponseEntity<byte[]> generateMonthlyReportPDF(@RequestParam List<Long> companyIds,
+                                                           @RequestParam String year,
+                                                           @RequestParam int month){
+        int parsedYear = Integer.parseInt(year.replaceAll(",", ""));
+        byte[] pdfData = reportService.generateMonthlyReportCSV(companyIds, parsedYear, month);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("monthly_report.pdf").build());
+
+        return new ResponseEntity<>(pdfData, headers, HttpStatus.OK);
+    }
 }
+

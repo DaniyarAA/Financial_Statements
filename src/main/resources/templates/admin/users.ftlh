@@ -276,7 +276,7 @@
 
     <div class="modal fade" id="changeLoginPasswordModal" tabindex="-1" aria-labelledby="changeLoginPasswordModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">
                 <div class="modal-header bg-color-for-change-login-password text-black">
                     <h5 class="modal-title" id="changeLoginPasswordModalLabel">Изменение логина и пароля</h5>
@@ -314,7 +314,7 @@
                     </form>
                 </div>
                 <div class="d-flex justify-content-center align-items-center modal-footer change-login-password-footer">
-                    <button type="button" class="btn btn-primary change-login-password-btn"
+                    <button type="button" class="btn btn-success change-login-password-btn"
                             onclick="saveLoginAndPassword()">
                         <i class="bi bi-check2 check-icon"></i>
                     </button>

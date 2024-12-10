@@ -1495,18 +1495,13 @@ h2 {
 }
 
 .change-login-password-btn {
-    background-color: #6c757d45;
-    color: black;
     font-size: 25px;
     width: 300px;
-    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
     border-radius: 14px;
     border: none;
-}
-
-.change-login-password-btn:hover {
-    background-color: #6c757d29;
-    border-color: #6c757d29;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .text-danger {

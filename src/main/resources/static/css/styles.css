@@ -782,23 +782,7 @@ h2 {
 }
 
 .role-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
-
-.role-modal-dialog {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 500px;
 }
 
 .role-modal-header, .role-modal-footer {
@@ -808,7 +792,7 @@ h2 {
 }
 
 .role-modal-title {
-    color: #4CAF50;
+    color: #1E1E1E;
 }
 
 .role-btn {

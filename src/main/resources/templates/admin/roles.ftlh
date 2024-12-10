@@ -72,7 +72,7 @@
     </div>
 
     <div id="createRoleModal" class="modal role-modal" tabindex="-1">
-        <div class="modal-dialog role-modal-dialog">
+        <div class="modal-dialog role-modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header role-modal-header">
                     <h5 class="modal-title role-modal-title">Создание новой роли</h5>

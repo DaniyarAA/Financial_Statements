@@ -76,6 +76,8 @@
             <div class="modal-content">
                 <div class="modal-header role-modal-header">
                     <h5 class="modal-title role-modal-title">Создание новой роли</h5>
+                    <button type="button" class="btn-close btn-close-role" id="closeModalButtonCreateRole" aria-label="Close"
+                            onclick="closeModal('createRoleModal')"></button>
                 </div>
                 <div class="modal-body">
                     <form id="createRoleForm">
@@ -98,8 +100,6 @@
                     </form>
                 </div>
                 <div class="modal-footer role-modal-footer">
-                    <button type="button" class="btn btn-secondary role-btn role-btn-secondary" onclick="closeModal('createRoleModal')">Закрыть
-                    </button>
                     <button type="button" class="btn btn-success role-btn role-btn-secondary" onclick="createRole()">Создать</button>
                 </div>
             </div>

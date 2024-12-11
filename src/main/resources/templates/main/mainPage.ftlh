@@ -46,11 +46,7 @@
                                     </#if>
                                 </#list>
                                 <a href="${hasAccess?then('/archive/all', '/archive')}" class="btn type-btn">
-                                    <h3>АРХИВ</h3>
-                                    <ul>
-                                        <li>&bull;</li>
-                                        <li>&bull;</li>
-                                    </ul>
+                                    <img src="/images/archive.png" class="archive-image selectDisable" alt="archive">
                                 </a>
                             </div>
                         </div>
@@ -101,10 +97,6 @@
         .main-content {
             height: 250px;
             width: 250px;
-
-            /*background: linear-gradient(to bottom, #ffffff, #BFBFBF);*/
-            /*box-shadow: 2px 0 5px #BFBFBF, -2px 0 5px #BFBFBF, 0 5px 5px #BFBFBF;*/
-            /*border: 1px solid #BFBFBF;*/
 
             box-shadow: 2px 0 5px #BFBFBF, -2px 0 5px #BFBFBF, 0 5px 5px #BFBFBF;
             border: 1px solid #BFBFBF;
@@ -180,10 +172,6 @@
             font-size: 24px;
         }
 
-        .report-header-text {
-
-        }
-
         .archives {
             height: 250px;
             width: 250px;
@@ -208,6 +196,17 @@
 
         .archive-content {
             background-color: #d9d9d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .selectDisable {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -o-user-select: none;
+            user-select: none;
         }
 
         .company-calendar {
@@ -266,7 +265,7 @@
         }
 
         .calendar-content {
-            background-color: #d9d9d9;
+            background-color: #FFFFFF;
             height: 197px;
         }
 
@@ -275,7 +274,7 @@
             width: 100%;
             height: 197px;
             border-collapse: collapse;
-            font-size: 10px;
+            font-size: 10px; 
         }
 
         .td-calendar {

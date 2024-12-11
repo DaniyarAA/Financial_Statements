@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.controller;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,56 +22,25 @@ import java.util.Map;
 public class CompanyController {
     private final CompanyService companyService;
     private final UserService userService;
+    private final TaskService taskService;
 
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<Map<String, String>> create(
-            @Valid CompanyDto companyDto,
+             @Valid CompanyDto companyDto,
             BindingResult bindingResult,
             Principal principal) {
         return companyService.createCompany(companyDto, principal.getName(), bindingResult);
     }
 
-    @PostMapping("/add")
-    public String create(@Valid CompanyDto companyDto, BindingResult bindingResult, Model model ,Principal principal) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("company", companyDto);
-            model.addAttribute("errors", bindingResult);
-            return "company/add";
-        }
-        companyService.addCompany(companyDto, principal.getName());
-        return "redirect:/company/all?sort=actual";
-    }
-
-    @GetMapping("/add")
-    public String add(Model model) {
-        model.addAttribute("company", new CompanyDto());
-        return "company/add";
-    }
-
-
     @GetMapping("/all")
-    public String getAll(
-            @RequestParam(required = false, defaultValue = "0") Long companyId,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size,
-            @RequestParam(value = "sort", defaultValue = "actual") String sort,
-            @RequestParam(value = "search", required = false, defaultValue = "") String search,
-            Model model, Principal principal) {
+    public String getAll(@RequestParam(required = false, defaultValue = "0") Long companyId,
+                         @RequestParam(value = "sort", defaultValue = "actual") String sort,
+                         @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal,
+                         Model model, Principal principal) {
 
-        List<CompanyDto> allCompanies ;
-
-        if (search != null && !search.isEmpty()) {
-            allCompanies = companyService.findByName(search);
-        } else {
-            allCompanies = companyService.getAllCompaniesBySort(sort);
-        }
-
-        int totalCompanies = allCompanies.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-
-        model.addAttribute("list", allCompanies.subList(start, end));
+        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort);
+        model.addAttribute("list", allCompanies);
 
         if (companyId != 0) {
             model.addAttribute("company", companyService.findById(companyId));
@@ -88,14 +58,11 @@ public class CompanyController {
             isAdmin = userService.isAdmin(principal.getName());
         }
         model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalCompanies / size));
         model.addAttribute("sort", sort);
-        model.addAttribute("search", search);
+        model.addAttribute("openModal", openModal);
 
         return "company/companies";
     }
-
 
     @PostMapping("/edit")
     @ResponseBody
@@ -112,7 +79,7 @@ public class CompanyController {
     @PostMapping("/return")
     public String returnById(@RequestParam Long companyId) {
         companyService.returnCompany(companyId);
+        taskService.tasksGenerator();
         return "redirect:/company/all?sort=actual";
     }
-
 }

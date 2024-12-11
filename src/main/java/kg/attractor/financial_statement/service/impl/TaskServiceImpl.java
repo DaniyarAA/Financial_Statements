@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
@@ -31,8 +32,6 @@ import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.function.Function;
 import java.time.format.TextStyle;
-import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,11 +63,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth) {
+    public ResponseEntity<Map<LocalDate, Long>> countOfTaskForDay(Map<String, Integer> yearMonth , Principal principal) {
+        if (principal == null || principal.getName().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        User user = userService.getUserByLogin(principal.getName());
+        List<UserCompany> userCompany = userCompanyService.findByUser(user);
         int year = yearMonth.get("year");
         int month = yearMonth.get("month");
         YearMonth ym = YearMonth.of(year, month);
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAll();
+        List<Task> tasks = sortTasksByUserCompanies(allTasks, userCompany);
 
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
                 .map(Task::getEndDate)
@@ -76,6 +81,13 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return ResponseEntity.ok().body(calendarTaskCount);
+    }
+
+    private List<Task> sortTasksByUserCompanies(List<Task> tasks, List<UserCompany> userCompanies) {
+        Set<UserCompany> userCompanySet = new HashSet<>(userCompanies);
+        return tasks.stream()
+                .filter(task -> userCompanySet.contains(task.getUserCompany()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -187,6 +199,11 @@ public class TaskServiceImpl implements TaskService {
             List<Company> companies = companyService.findAll();
 
             for (Company company : companies) {
+
+                if (company.isDeleted()) {
+                    continue;
+                }
+
                 ReportFrequency frequency = company.getReportFrequency();
 
                 List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
@@ -206,7 +223,7 @@ public class TaskServiceImpl implements TaskService {
         DocumentType enReport = documentTypeService.getDocumentTypeById(2L);
         DocumentType nspReport = documentTypeService.getDocumentTypeById(14L);
 
-        for (int i = 0; i < 12; i++) {
+         for (int i = 0; i < 12; i++) {
             YearMonth nextMonth = YearMonth.of(currentYear, currentDate.getMonthValue()).plusMonths(i);
 
             if (nextMonth.getYear() == currentYear) {
@@ -219,15 +236,19 @@ public class TaskServiceImpl implements TaskService {
                         continue;
                     }
 
-                    Task task = new Task();
                     LocalDate startDate = nextMonth.atDay(1);
                     LocalDate endDate = nextMonth.atEndOfMonth();
-                    task.setUserCompany(userCompany);
-                    task.setStartDate(startDate);
-                    task.setEndDate(endDate);
-                    task.setDocumentType(documentType);
-                    task.setTaskStatus(defaultStatus);
-                    taskRepository.save(task);
+
+                     if (!taskRepository.existsByUserCompanyAndStartDateAndEndDateAndDocumentType(
+                            userCompany, startDate, endDate, documentType)) {
+                        Task task = new Task();
+                        task.setUserCompany(userCompany);
+                        task.setStartDate(startDate);
+                        task.setEndDate(endDate);
+                        task.setDocumentType(documentType);
+                        task.setTaskStatus(defaultStatus);
+                        taskRepository.save(task);
+                    }
                 }
             }
         }
@@ -235,20 +256,23 @@ public class TaskServiceImpl implements TaskService {
         int currentQuarter = (currentDate.getMonthValue() - 1) / 3 + 1;
 
         if (currentDate.getMonthValue() == 1 && currentDate.getDayOfMonth() == 1) {
-            for (int quarter = 1; quarter <= 4; quarter++) {
+             for (int quarter = 1; quarter <= 4; quarter++) {
                 YearMonth quarterStartMonth = YearMonth.of(currentYear, (quarter - 1) * 3 + 1);
                 LocalDate startDate = quarterStartMonth.atDay(1);
                 LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
 
-                Task enTask = new Task();
-                enTask.setUserCompany(userCompany);
-                enTask.setStartDate(startDate);
-                enTask.setEndDate(endDate);
-                enTask.setDocumentType(enReport);
-                enTask.setTaskStatus(defaultStatus);
-                taskRepository.save(enTask);
+                if (!taskRepository.existsByUserCompanyAndStartDateAndEndDateAndDocumentType(userCompany, startDate, endDate, enReport)) {
+                    Task enTask = new Task();
+                    enTask.setUserCompany(userCompany);
+                    enTask.setStartDate(startDate);
+                    enTask.setEndDate(endDate);
+                    enTask.setDocumentType(enReport);
+                    enTask.setTaskStatus(defaultStatus);
+                    taskRepository.save(enTask);
+                }
 
-                if (frequency == ReportFrequency.QUARTERLY) {
+                if (frequency == ReportFrequency.QUARTERLY &&
+                        !taskRepository.existsByUserCompanyAndStartDateAndEndDateAndDocumentType(userCompany, startDate, endDate, nspReport)) {
                     Task nspTask = new Task();
                     nspTask.setUserCompany(userCompany);
                     nspTask.setStartDate(startDate);
@@ -259,19 +283,22 @@ public class TaskServiceImpl implements TaskService {
                 }
             }
         } else {
-            YearMonth quarterStartMonth = YearMonth.of(currentYear, (currentQuarter - 1) * 3 + 1);
+             YearMonth quarterStartMonth = YearMonth.of(currentYear, (currentQuarter - 1) * 3 + 1);
             LocalDate startDate = quarterStartMonth.atDay(1);
             LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
 
-            Task enTask = new Task();
-            enTask.setUserCompany(userCompany);
-            enTask.setStartDate(startDate);
-            enTask.setEndDate(endDate);
-            enTask.setDocumentType(enReport);
-            enTask.setTaskStatus(defaultStatus);
-            taskRepository.save(enTask);
+            if (!taskRepository.existsByUserCompanyAndStartDateAndEndDateAndDocumentType(userCompany, startDate, endDate, enReport)) {
+                Task enTask = new Task();
+                enTask.setUserCompany(userCompany);
+                enTask.setStartDate(startDate);
+                enTask.setEndDate(endDate);
+                enTask.setDocumentType(enReport);
+                enTask.setTaskStatus(defaultStatus);
+                taskRepository.save(enTask);
+            }
 
-            if (frequency == ReportFrequency.QUARTERLY) {
+            if (frequency == ReportFrequency.QUARTERLY &&
+                    !taskRepository.existsByUserCompanyAndStartDateAndEndDateAndDocumentType(userCompany, startDate, endDate, nspReport)) {
                 Task nspTask = new Task();
                 nspTask.setUserCompany(userCompany);
                 nspTask.setStartDate(startDate);

@@ -4,17 +4,17 @@
         <div class="users-header mt-3">
             <p class="users-list-title">Пользователи</p>
             <div class="view-icons">
-                <span class="icon" onclick="switchToTileView()"><i class="bi bi-grid"></i></span>
-                <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul"></i></span>
+                <span class="icon" onclick="switchToTileView()" title="Плитка"><i class="bi bi-grid"></i></span>
+                <span class="icon" onclick="switchToListView()"><i class="bi bi-list-ul" title="Список"></i></span>
 
                 <#list currentUser.roleDto.authorities as auth>
                     <#if auth.authority=="VIEW_ROLES">
-                        <span class="icon" onclick="window.location.href='/admin/roles'">
+                        <span class="icon" onclick="window.location.href='/admin/roles'" title="Настройка ролей">
                                 <i class="bi bi-person-fill-gear"></i>
                         </span>
                     </#if>
                     <#if auth.authority=="CREATE_USER">
-                        <span class="icon" onclick="window.location.href='/admin/register'">
+                        <span class="icon" onclick="window.location.href='/admin/register'" title="Создать пользователя">
                                 <i class="bi bi-plus-circle"></i>
                             </span>
                     </#if>
@@ -266,9 +266,9 @@
 
     <div class="modal fade" id="changeLoginPasswordModal" tabindex="-1" aria-labelledby="changeLoginPasswordModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">
-                <div class="modal-header bg-color-for-change-login-password text-black">
+                <div class="modal-header text-black">
                     <h5 class="modal-title" id="changeLoginPasswordModalLabel">Изменение логина и пароля</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -304,7 +304,7 @@
                     </form>
                 </div>
                 <div class="d-flex justify-content-center align-items-center modal-footer change-login-password-footer">
-                    <button type="button" class="btn btn-primary change-login-password-btn"
+                    <button type="button" class="btn btn-success change-login-password-btn"
                             onclick="saveLoginAndPassword()">
                         <i class="bi bi-check2 check-icon"></i>
                     </button>

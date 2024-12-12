@@ -94,7 +94,8 @@
                         <td>${task.startDate}</td>
                         <td>${task.endDate}</td>
                         <td>${task.amount}</td>
-                        <td>Здесь должен быть прикрепленный файл</td><#--  TODO добавить файл в миграции и потом на страницу -->
+                        <td>Здесь должен быть прикрепленный файл
+                        </td><#--  TODO добавить файл в миграции и потом на страницу -->
                         <td>
                             <button class="action-button" onclick="openStatusModal(${task.id})">Восстановить</button>
                         </td>

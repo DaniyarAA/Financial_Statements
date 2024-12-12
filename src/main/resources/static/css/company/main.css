@@ -198,9 +198,35 @@ input[type="email"]:focus {
     text-align: center;
 }
 
+input[type="text"]{
+    border: none;
+}
+
+.custom-search:hover {
+    background-color:#f8f9fa;
+}
+
+.custom-search .search-input:hover {
+    background-color: #f8f9fa;
+}
+
 .top-title{
     font-size: 23px;
     text-align: center;
+}
+
+.search-input {
+    font-size: 23px;
+    text-align: center;
+    caret-color: black;
+}
+
+.search-input:focus {
+    text-align: left;
+}
+
+.search-input::placeholder {
+    color: black;
 }
 
 .search li.choice-company:nth-child(even) {

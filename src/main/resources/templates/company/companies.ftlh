@@ -21,7 +21,6 @@
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-lg-0">
                 <li class="nav-item">
@@ -34,6 +33,23 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item me-5">
+                    <button type="button" class="btn btn-light plus-btn-over" id="sortButton" data-bs-toggle="collapse" data-bs-target="#sortSelect">
+                        <i class="bi bi-filter plus-btn"></i>
+                    </button>
+                </li>
+                <li class="nav-item collapse mt-3 me-5" id="sortSelect">
+                    <#assign sort = sort! "actual">
+                    <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get"
+                          action="/company/all?companyId=0&page=0&sort=${sort}">
+                        <div class="form-group">
+                            <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
+                                <option value="actual" <#if sort == "actual">selected</#if>>Актуальные Компании</option>
+                                <option value="archive" <#if sort == "archive">selected</#if>>Удаленные Компании</option>
+                            </select>
+                        </div>
+                    </form>
+                </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-light plus-btn-over" id="createCompanyButton"
                             data-bs-toggle="modal" data-bs-target="#createCompanyModal">
@@ -42,7 +58,6 @@
                 </li>
             </ul>
         </div>
-
     </div>
 </nav>
 
@@ -54,25 +69,11 @@
     <div class="row">
         <div class="companies-sidebar-main">
             <div class="list-group">
-                <div>
-                    <label for="search" class="w-100">
-                        <input type="text" class="w-100" id="search" placeholder="Поиск...">
-                    </label>
-                </div>
 
-                <#assign sort = sort! "actual">
-                <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get"
-                      action="/company/all?companyId=0&page=0&sort=${sort}">
-                    <div class="form-group">
-                        <label for="sort">Выберите список:</label>
-                        <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
-                            <option value="actual" <#if sort == "actual">selected</#if>>Актуальные Компании</option>
-                            <option value="archive" <#if sort == "archive">selected</#if>>Удаленные Компании</option>
-                        </select>
-                    </div>
-                </form>
+                <label for="search" class="w-100 list-group-item titleList top-title custom-search">
+                    <input type="text" class="w-100 search-input" id="search" placeholder="Название">
+                </label>
 
-                <p class="list-group-item list-group-item-action titleList top-title">Название</p>
                 <div class="scroll-company" id="total">
                     <ul class="search">
                         <#list list as item>

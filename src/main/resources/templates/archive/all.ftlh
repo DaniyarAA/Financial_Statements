@@ -1,9 +1,9 @@
 <#import '../layout.ftlh' as layout>
 <@layout.layout ; spring>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/css/archive/archive.css">
 
     <div class="tabs my-5 mx-auto">
@@ -17,8 +17,7 @@
             <thead>
             <tr>
                 <th>№</th>
-                <th>Имя</th>
-                <th>Фамилия</th>
+                <th>ФИО</th>
                 <th>Логин</th>
                 <th>Адрес эл. почты</th>
                 <th>День рождения</th>
@@ -31,8 +30,7 @@
                 <#list deletedUsers as user>
                     <tr>
                         <td>${user_index + 1}</td>
-                        <td>${user.name}</td>
-                        <td>${user.surname}</td>
+                        <td>${user.name} ${user.surname}</td>
                         <td>${user.login}</td>
                         <td>${user.email}</td>
                         <td>${user.birthday}</td>
@@ -44,7 +42,7 @@
                 </#list>
             <#else>
                 <tr>
-                    <td colspan="8" class="no-data mt-2 mx-auto">Нет удаленных пользователей</td>
+                    <td colspan="7" class="no-data mt-2 mx-auto">Нет удаленных пользователей</td>
                 </tr>
             </#if>
             </tbody>
@@ -81,9 +79,8 @@
                 <th>Дата начала</th>
                 <th>Дата окончания</th>
                 <th>Сумма</th>
-                <th>Описание</th>
-                <#--                <th>Файл</th>TODO добавить файл в миграции и потом на страницу-->
-                <th>Действие</th>
+                <th>Файл</th>
+                <th>Изменить статус</th>
             </tr>
             </thead>
             <tbody>
@@ -97,8 +94,7 @@
                         <td>${task.startDate}</td>
                         <td>${task.endDate}</td>
                         <td>${task.amount}</td>
-                        <td>${task.description}</td>
-                        <#--                        <td>${task.report}</td> TODO добавить файл в миграции и потом на страницу -->
+                        <td>Здесь должен быть прикрепленный файл</td><#--  TODO добавить файл в миграции и потом на страницу -->
                         <td>
                             <button class="action-button" onclick="openStatusModal(${task.id})">Восстановить</button>
                         </td>

@@ -130,13 +130,61 @@ function updateTaskStatus(taskId, statusId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    $('#tasksTable').DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 15, 100],
+        order: [[4, "asc"]],
+        searching: true,
+        columnDefs: [
+            {orderable: true, targets: [1, 4, 5, 6]},
+            {orderable: false, targets: "_all"},
+            {searchable: true, targets: [1, 3]},
+            {searchable: false, targets: "_all"}
+        ],
+        language: {
+            search: "",
+            lengthMenu: "Показать _MENU_ записей",
+            info: " _START_ - _END_ из _TOTAL_ ",
+            paginate: {
+                first: "Первая",
+                last: "Последняя",
+                next: "&raquo;",
+                previous: "&laquo;"
+            },
+            zeroRecords: "Совпадений не найдено",
+        }, initComplete: function () {
+            const searchInput = $('div.dataTables_filter input');
+            searchInput.attr('placeholder', '  Введите наименование компании...');
+        },
+        infoCallback: function (settings, start, end, max, total, pre) {
+            if (total === 0) {
+                return "Нет записей для отображения.";
+            }
+            return `Показано ${start} - ${end} из ${total}`;
+        },
+        dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
+            "<'row'<'col-12'tr>>" +
+            "<'row'<'col-12'p>>",
+        responsive: true
+    });
+
+    $('#filterDocumentType').on('change', function () {
+        const value = $(this).val();
+        $('#tasksTable').DataTable().column(3).search(
+            value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '',
+            true, false
+        ).draw();
+    });
+
+
     $('#users .styled-table').DataTable({
         paging: true,
         pageLength: 10,
         lengthMenu: [5, 10, 15, 100],
         searching: true,
         columnDefs: [
-            { targets: [0, 7], orderable: false }
+            {targets: [0, 6], orderable: false}
         ],
         language: {
             search: "",
@@ -151,34 +199,19 @@ document.addEventListener('DOMContentLoaded', () => {
             zeroRecords: "Совпадений не найдено",
         },
         initComplete: function () {
-            const searchInput = $('div.dataTables_filter input');
-            searchInput.attr('placeholder', '  Введите текст для поиска...');
+            const searchInputForUser = $('div.dataTables_filter.users input');
+            searchInputForUser.attr('placeholder', '  Введите текст для поиска...');
+        },
+        infoCallback: function (settings, start, end, max, total, pre) {
+            if (total === 0) {
+                return "Нет записей для отображения.";
+            }
+            return `Показано ${start} - ${end} из ${total}`;
         },
         dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
             "<'row'<'col-12'tr>>" +
             "<'row'<'col-12'p>>",
         responsive: true
-    });
-
-    $('#tasksTable').DataTable({
-        pageLength: 5,
-        lengthMenu: [5, 10, 15, 100],
-        order: [[4, "asc"]],
-        searching: true,
-        columnDefs: [
-            { orderable: true, targets: [1, 4, 5, 6] },
-            { orderable: false, targets: "_all" },
-            { searchable: true, targets: [1, 3] },
-            { searchable: false, targets: "_all" }
-        ]
-    });
-
-    $('#filterDocumentType').on('change', function () {
-        const value = $(this).val();
-        $('#tasksTable').DataTable().column(3).search(
-            value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '',
-            true, false
-        ).draw();
     });
 });
 
@@ -192,27 +225,30 @@ function showTab(tabId) {
 document.getElementById('searchCompanies').addEventListener('input', function () {
     const searchValue = this.value.toLowerCase();
     const accordionItems = document.querySelectorAll('.accordion-item');
+    let hasResults = false;
 
     accordionItems.forEach(item => {
         const companyName = item.querySelector('.accordion-button span').textContent.toLowerCase();
         if (companyName.includes(searchValue)) {
             item.style.display = '';
+            hasResults = true;
         } else {
             item.style.display = 'none';
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (!hasResults) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.id = 'noResultsMessage';
-                    message.textContent = 'Нет результатов.';
-                    message.className = 'text-center text-muted my-3';
-                    document.querySelector('.accordion').appendChild(message);
-                }
-            } else {
-                if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-            }
         }
     });
+
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    if (!hasResults) {
+        if (!noResultsMessage) {
+            const message = document.createElement('div');
+            message.id = 'noResultsMessage';
+            message.textContent = 'Нет результатов.';
+            message.className = 'text-center text-muted my-3';
+            document.querySelector('.accordion').appendChild(message);
+        }
+    } else {
+        if (noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
 });

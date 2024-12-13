@@ -100,6 +100,15 @@ form {
 
 .btn-custom-delete {
     padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+}
+
+.btn-custom-delete i {
+    position: static;
+    font-size: 1.25rem;
 }
 
 .delete-icon::before{

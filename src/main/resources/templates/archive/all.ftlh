@@ -72,7 +72,6 @@
         <table id="tasksTable" class="styled-table">
             <thead>
             <tr>
-                <th>№</th>
                 <th>Компания</th>
                 <th>ИНН компании</th>
                 <th>Тип документа</th>
@@ -86,24 +85,32 @@
             <tbody>
             <#if finishedTasks?has_content>
                 <#list finishedTasks as task>
-                    <tr>
-                        <td>${task_index + 1}</td>
+                    <tr data-task-id="${task.id}">
                         <td>${task.company.name}</td>
                         <td>${task.company.inn}</td>
                         <td>${task.documentTypeName}</td>
                         <td>${task.startDate}</td>
                         <td>${task.endDate}</td>
                         <td>${task.amount}</td>
-                        <td>Здесь должен быть прикрепленный файл
-                        </td><#--  TODO добавить файл в миграции и потом на страницу -->
+                        <td>Здесь должен быть прикрепленный файл</td>
                         <td>
-                            <button class="action-button" onclick="openStatusModal(${task.id})">Восстановить</button>
+                            <select class="status-dropdown"
+                                    data-original-status="${task.statusId}"
+                                    onchange="openStatusModal(${task.id}, '${task.company.name}', this)">
+                                <#list statuses as status>
+                                    <option value="${status.id}"
+                                            <#if status.name == task.statusId>selected</#if>
+                                            <#if status.name == 'Сдан'>disabled</#if>>
+                                        ${status.name}
+                                    </option>
+                                </#list>
+                            </select>
                         </td>
                     </tr>
                 </#list>
             <#else>
                 <tr>
-                    <td colspan="9" class="no-data mt-2 mx-auto">Нет завершенных задач</td>
+                    <td colspan="8" class="no-data mt-2 mx-auto">Нет завершенных задач</td>
                 </tr>
             </#if>
             </tbody>
@@ -111,20 +118,25 @@
     </div>
 
     <div id="statusModal" class="modal">
-        <div class="modal-content  mx-auto mt-5">
-            <span class="close" onclick="closeStatusModal()">&times;</span>
-            <h2>Выберите статус</h2>
-            <select id="statusSelect">
-                <#list statuses as status>
-                    <option value="${status.id}">${status.name}</option>
-                </#list>
-            </select>
-            <button class="action-button" onclick="confirmStatus()">Подтвердить</button>
+        <div class="modal-content mx-auto mt-5">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Подтвердите действие:</h5>
+                <span class="close" onclick="closeStatusModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="confirmMessage">
+                <p>Вы уверены, что хотите изменить статус для задачи "<span id="taskName"></span>"?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="confirmStatus()">ДА</button>
+            </div>
         </div>
     </div>
 
     <div id="companies" class="tab-content">
-        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
+        <div class="flex">
+            <input type="text" id="searchCompanies" placeholder="  Поиск по имени компании..."
+                   class="form-control my-3">
+        </div>
         <#if deletedCompanies?has_content>
             <div class="accordion shadow-sm rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>
@@ -148,11 +160,13 @@
                                 <div class="row row-cols-1 row-cols-md-2">
                                     <div class="col">
                                         <ul class="company-details">
-                                            <li><i class="bi bi-info-circle"></i> <b>ИНН:</b> ${company.companyInn}</li>
+                                            <li><i class="bi bi-info-circle"></i> <b>ИНН:</b> ${company.companyInn}
+                                            </li>
                                             <li><i class="bi bi-person-circle"></i> <b>ИНН
                                                     директора:</b> ${company.directorInn}
                                             </li>
-                                            <li><i class="bi bi-shield-lock"></i> <b>Логин:</b> ${company.login}</li>
+                                            <li><i class="bi bi-shield-lock"></i> <b>Логин:</b> ${company.login}
+                                            </li>
                                             <li><i class="bi bi-key"></i> <b>Пароль:</b> ${company.password}</li>
                                             <li><i class="bi bi-person-badge"></i> <b>ЭЦП:</b> ${company.ecp}</li>
                                             <li><i class="bi bi-laptop"></i> <b>Salyk.kg
@@ -162,7 +176,8 @@
                                             <li><i class="bi bi-bar-chart-line"></i> <b>Режим
                                                     налогообложения:</b> ${company.taxMode}</li>
                                             <li><i class="bi bi-building"></i> <b>ОПФ:</b> ${company.opf}</li>
-                                            <li><i class="bi bi-map"></i> <b>Район ГНС:</b> ${company.districtGns}</li>
+                                            <li><i class="bi bi-map"></i> <b>Район ГНС:</b> ${company.districtGns}
+                                            </li>
                                             <li><i class="bi bi-hospital"></i> <b>Номер социального
                                                     фонда:</b> ${company.socfundNumber}</li>
                                             <li><i class="bi bi-file-earmark"></i> <b>Регистрационный номер
@@ -176,7 +191,8 @@
                                                     руководителя:</b> ${company.director}</li>
                                             <li><i class="bi bi-code-slash"></i> <b>КЭД:</b> ${company.ked}</li>
                                             <#if company.email?has_content>
-                                                <li><i class="bi bi-envelope"></i> <b>Почта:</b> ${company.email}</li>
+                                                <li><i class="bi bi-envelope"></i> <b>Почта:</b> ${company.email}
+                                                </li>
                                             </#if>
                                             <#if company.emailPassword?has_content>
                                                 <li><i class="bi bi-key"></i> <b>Пароль
@@ -187,18 +203,22 @@
                                                 </li>
                                             </#if>
                                             <#if company.esf?has_content>
-                                                <li><i class="bi bi-server"></i> <b>ЭСФ логин:</b> ${company.esf}</li>
+                                                <li><i class="bi bi-server"></i> <b>ЭСФ логин:</b> ${company.esf}
+                                                </li>
                                             </#if>
                                             <#if company.esfPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>ЭСФ пароль:</b> ${company.esfPassword}
+                                                <li><i class="bi bi-key"></i> <b>ЭСФ
+                                                        пароль:</b> ${company.esfPassword}
                                                 </li>
                                             </#if>
                                             <#if company.kkm?has_content>
-                                                <li><i class="bi bi-credit-card"></i> <b>ККМ логин:</b> ${company.kkm}
+                                                <li><i class="bi bi-credit-card"></i> <b>ККМ
+                                                        логин:</b> ${company.kkm}
                                                 </li>
                                             </#if>
                                             <#if company.kkmPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>ККМ пароль:</b> ${company.kkmPassword}
+                                                <li><i class="bi bi-key"></i> <b>ККМ
+                                                        пароль:</b> ${company.kkmPassword}
                                                 </li>
                                             </#if>
                                             <#if company.fresh1c?has_content>
@@ -226,6 +246,7 @@
                     </div>
                 </#list>
             </div>
+
         <#else>
             <span class="text-center text-muted">Нет удаленных компаний</span>
         </#if>

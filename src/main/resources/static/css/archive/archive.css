@@ -201,7 +201,7 @@ h2 {
 }
 
 .btn-resume {
-    border:  none;
+    border: none;
     color: black;
     font-size: 23px;
 }
@@ -342,6 +342,7 @@ h2 {
     color: #343a40;
     margin-bottom: 1.5rem;
 }
+
 .tabs {
     display: flex;
     justify-content: center;
@@ -445,57 +446,47 @@ h2 {
     background-color: #218838;
 }
 
-.btn-outline-success {
-    color: #28a745;
-    border-color: #28a745;
-    background-color: transparent;
-    transition: all 0.3s ease;
+
+modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    outline: 0;
 }
 
-.btn-outline-success:hover {
-    color: #ffffff;
-    background-color: #28a745;
-    border-color: #28a745;
-}
-
-.accordion-header {
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 12px;
-    border-radius: 4px;
-}
-
-.accordion-button {
-    background-color: transparent;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.accordion-body {
-    background-color: #f8f9fa;
-    padding: 15px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
+modal-header {
+    display: flex;
+    flex-shrink: 0;
     align-items: center;
-    z-index: 999;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: calc(.3rem - 1px);
+    border-top-right-radius: calc(.3rem - 1px);
 }
 
-.modal-content {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+}
+
+.modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-end;
+    padding: .75rem;
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: calc(.3rem - 1px);
+    border-bottom-left-radius: calc(.3rem - 1px);
 }
 
 .close {
@@ -542,6 +533,7 @@ h2 {
     color: #fff;
     font-weight: 600;
 }
+
 .styled-table thead th {
     padding: 14px 16px;
     text-transform: capitalize;
@@ -553,6 +545,7 @@ h2 {
     border-bottom: 1px solid #e9ecef;
     transition: background-color 0.2s ease;
 }
+
 .styled-table tbody tr:hover {
     background-color: #f8f9fa;
 }
@@ -570,7 +563,7 @@ h2 {
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-    background:white;
+    background: white;
     color: black !important;
     border-radius: 4px;
     margin: 0 2px;
@@ -652,6 +645,7 @@ h2 {
     .styled-table thead {
         display: none;
     }
+
     .styled-table tbody tr {
         display: flex;
         flex-direction: column;
@@ -659,20 +653,92 @@ h2 {
         border: 1px solid #dee2e6;
         border-radius: 8px;
     }
+
     .styled-table tbody td {
         display: flex;
         justify-content: space-between;
         padding: 12px;
         border-bottom: 1px solid #e9ecef;
     }
+
     .styled-table tbody td:last-child {
         border-bottom: none;
     }
 }
 
-table.dataTable>thead>tr>th, table.dataTable>thead>tr>td {
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     color: black;
+}
+
+.accordion {
+    background-color: #a4b0be;
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    color: rgba(0, 0, 0, 0);
+    font-family: Verdana, sans-serif;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 10px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.accordion-item {
+    background-color: #dfe4ea;
+
+}
+
+.collapsed{
+    background-color: #dfe4ea;
+}
+
+.accordion-header {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    font-weight: 300;
+    box-sizing: border-box;
+    z-index: 100;
+    font-family: Verdana, sans-serif;
+    font-size: 18px;
+    margin: 0 0 5px;
+    transition: color .35s;
+
+}
+
+.accordion-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #dfe4ea;
+}
+
+.company-details li {
+    list-style: none;
+    padding: 8px;
+    background: #f1f8e9;
+    border: 1px solid #c5e1a5;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    color: #1b5e20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.company-details li i {
+    color: #66bb6a;
+    font-size: 1.2rem;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-around;
+}
+
+.form-control {
+    width: 45%;
+    font-size: 16px;
+    border-radius: 50px;
+    padding: 5px;
 }

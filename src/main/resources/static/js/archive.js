@@ -3,14 +3,21 @@ const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttrib
 
 let selectedUserId;
 let selectTaskId;
+let newStatusId;
+let previousStatusName;
+let currentDropdown;
 
 function openModal(userId) {
     selectedUserId = userId;
     document.getElementById('roleModal').style.display = 'block';
 }
 
-function openStatusModal(taskId) {
+function openStatusModal(taskId, taskName, dropdown) {
     selectTaskId = taskId;
+    previousStatusName = dropdown.getAttribute('data-original-status');
+    currentDropdown = dropdown;
+    newStatusId = dropdown.value;
+    document.getElementById('taskName').textContent = taskName;
     document.getElementById('statusModal').style.display = 'block';
 }
 
@@ -20,10 +27,16 @@ function closeModal() {
 }
 
 function closeStatusModal() {
-    selectTaskId = null;
     document.getElementById('statusModal').style.display = 'none';
+    if (currentDropdown && previousStatusName) {
+        for (const option of currentDropdown.options) {
+            if (option.textContent.trim() === previousStatusName.trim()) {
+                currentDropdown.value = option.value;
+                break;
+            }
+        }
+    }
 }
-
 
 function confirmRole() {
     const roleId = document.getElementById('roleSelect').value;
@@ -98,13 +111,11 @@ function resumeUserWithRole(userId, roleId) {
 }
 
 function confirmStatus() {
-    const statusId = document.getElementById('statusSelect').value;
-    if (!statusId) {
-        alert('Выберите Статус.');
+    if (!newStatusId) {
+        alert('Выберите статус.');
         return;
     }
-
-    updateTaskStatus(selectTaskId, statusId);
+    updateTaskStatus(selectTaskId, newStatusId);
     closeStatusModal();
 }
 
@@ -115,13 +126,24 @@ function updateTaskStatus(taskId, statusId) {
             'Content-Type': 'application/json',
             [csrfHeader]: csrfToken
         },
-        body: JSON.stringify({statusId})
+        body: JSON.stringify({statusId: parseInt(statusId)})
     })
         .then(response => {
             if (response.ok) {
                 showNotification('Задача успешно изменила статус!', true);
-                localStorage.setItem('activeTab', 'tasks');
-                location.reload();
+
+                const rowToRemove = document.querySelector(`tr[data-task-id="${taskId}"]`);
+                if (rowToRemove) {
+                    rowToRemove.remove();
+                }
+
+                const tableBody = document.querySelector('#tasksTable tbody');
+                if (tableBody && tableBody.children.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="9" class="no-data mt-2 mx-auto">Нет завершенных задач</td>
+                        </tr>`;
+                }
             } else {
                 response.text().then(errorMessage => showNotification('Ошибка: ' + errorMessage, false));
             }
@@ -139,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         columnDefs: [
             {orderable: true, targets: [1, 4, 5, 6]},
             {orderable: false, targets: "_all"},
-            {searchable: true, targets: [1, 3]},
+            {searchable: true, targets: [0, 2]},
             {searchable: false, targets: "_all"}
         ],
         language: {
@@ -153,7 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 previous: "&laquo;"
             },
             zeroRecords: "Совпадений не найдено",
-        }, initComplete: function () {
+        },
+        initComplete: function () {
             const searchInput = $('div.dataTables_filter input');
             searchInput.attr('placeholder', '  Введите наименование компании...');
         },
@@ -171,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#filterDocumentType').on('change', function () {
         const value = $(this).val();
-        $('#tasksTable').DataTable().column(3).search(
+        $('#tasksTable').DataTable().column(2).search(
             value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '',
             true, false
         ).draw();

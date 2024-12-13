@@ -133,10 +133,7 @@
     </div>
 
     <div id="companies" class="tab-content">
-        <div class="flex">
-            <input type="text" id="searchCompanies" placeholder="  Поиск по имени компании..."
-                   class="form-control my-3">
-        </div>
+        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
         <#if deletedCompanies?has_content>
             <div class="accordion shadow-sm rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>

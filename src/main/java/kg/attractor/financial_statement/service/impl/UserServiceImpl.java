@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.*;
@@ -14,6 +15,7 @@ import kg.attractor.financial_statement.service.RoleService;
 import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.FileUtils;
+import kg.attractor.financial_statement.utils.Utilities;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -26,12 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final CompanyService companyService;
     private final UserCompanyService userCompanyService;
+    private final EmailService emailService;
 
     @Autowired
     public UserServiceImpl(
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
             PasswordEncoder passwordEncoder,
             RoleService roleService,
             @Lazy CompanyService companyService,
-            @Lazy UserCompanyService userCompanyService
+            @Lazy UserCompanyService userCompanyService, EmailService emailService
     ) {
         this.userRepository = userRepository;
         this.userPageableRepository = userPageableRepository;
@@ -59,6 +60,36 @@ public class UserServiceImpl implements UserService {
         this.roleService = roleService;
         this.companyService = companyService;
         this.userCompanyService = userCompanyService;
+        this.emailService = emailService;
+    }
+
+    @Override
+    public Boolean messageIsSuccessfullySent(Map<String, Object> answer){
+        return answer.get("message").toString().equalsIgnoreCase("Успешно");
+    }
+
+    @Override
+    public Map<String, Object> sendMessageToUser(HttpServletRequest request) {
+        Map<String, Object> model = new HashMap<>();
+        try {
+            makeMessageForUser(request);
+            model.put("message", "Успешно");
+        } catch (UsernameNotFoundException | UnsupportedEncodingException e) {
+            model.put("error", e.getMessage());
+        } catch (MessagingException e) {
+            model.put("error", "Ошибка при отправке сообщения на почту !");
+        }
+        return model;
+    }
+
+    private void makeMessageForUser(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        String email = request.getParameter("email");
+        String login = request.getParameter("login");
+        String adminText = request.getParameter("adminText");
+        String password = request.getParameter("password");
+        String userName = request.getParameter("userName");
+        String link = Utilities.getSiteUrl(request) + "/login";
+        emailService.sendMail(email,login,adminText,password, link,userName);
     }
 
     @Override

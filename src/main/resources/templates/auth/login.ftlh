@@ -16,14 +16,16 @@
                            value="${(_csrf.token)!'csrf-token'}"/>
                 </#if>
                 <span class="login-text"></span>
-                <div data-mdb-input-init class="form-outline mb-4 text-start">
+                <div data-mdb-input-init class="login-inputs form-outline mb-4 text-start">
                     <label for="form2Example1">Логин:</label>
-                    <input type="text" id="form2Example1" class="form-control login-input" name="username"/>
+                    <input type="text" id="form2Example1" class="login-inputs form-control login-input" name="username"/>
                 </div>
-                <div data-mdb-input-init class="form-outline mb-4 text-start position-relative">
-                    <label for="form2Example2">Пароль:</label>
-                    <input type="password" id="form2Example2" class="form-control login-input" name="password"/>
-                    <i class="bi bi-star-fill"></i>
+                <div data-mdb-input-init class="login-inputs form-outline mb-4 text-start position-relative">
+                    <label for="login-password">Пароль:</label>
+                    <input type="password" id="login-password" class="login-inputs form-control login-input" name="password"/>
+                    <button type="button" class="login-password-toggle-button" id="login-password-toggle-button" name="btn login-toggle-password-button">
+                        <span id="login-toggle-password-icon"><i class="bi login-toggle-button bi-star-fill"></i></span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -45,5 +47,21 @@
                 $(msg).removeClass('text-black-50');
             }
         }
+        const passwordInput = document.getElementById('login-password');
+        const toggleLoginPassword = document.getElementById('login-password-toggle-button');
+        const loginTogglePasswordIcon = document.getElementById('login-toggle-password-icon').firstElementChild;
+
+        toggleLoginPassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type');
+            if (type === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                loginTogglePasswordIcon.classList.remove('bi-star-fill');
+                loginTogglePasswordIcon.classList.add('bi-star');
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                loginTogglePasswordIcon.classList.remove('bi-star');
+                loginTogglePasswordIcon.classList.add('bi-star-fill');
+            }
+        });
     </script>
 </@layout.layout>

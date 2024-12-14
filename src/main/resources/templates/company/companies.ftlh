@@ -38,7 +38,7 @@
                         <i class="bi bi-filter plus-btn"></i>
                     </button>
                 </li>
-                <li class="nav-item collapse mt-3 me-5" id="sortSelect">
+                <li class="nav-item collapse mt-2 me-5" id="sortSelect">
                     <#assign sort = sort! "actual">
                     <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get"
                           action="/company/all?companyId=0&page=0&sort=${sort}">
@@ -202,7 +202,7 @@
                     </div>
 
                         <div class="row">
-                            <div class="company-not-required-info">
+                            <div class="company-required-info">
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line">
                                         <span>ИНН:</span>
@@ -564,7 +564,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="company-required-info">
+                            <div class="company-not-required-info">
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line">
                                         <span>Почта:</span> <strong id="email">${company.email!}</strong>

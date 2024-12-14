@@ -1,14 +1,19 @@
 package kg.attractor.financial_statement.service;
 
+
+import org.springframework.http.HttpHeaders;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public interface ReportService {
-    byte[] generateMonthlyReportCSV(List<Long> companyIds, int year, int month);
+    HttpHeaders createHeaders(String reportType, int year, Integer month, Integer quarter, String fileFormat);
 
-    byte[] generateQuarterlyReportCSV(List<Long> companyIds, int year, int quarter);
+    byte[] generateMonthlyReport(List<Long> companyIds, int year, int month,  String fileFormat);
 
-    byte[] generateYearlyReportCSV(List<Long> companyIds, int year);
+    byte[] generateQuarterlyReport(List<Long> companyIds, int year, int quarter,  String fileFormat);
+
+    byte[] generateYearlyReport(List<Long> companyIds, int year,  String fileFormat);
 
     byte[] generateReportCSV(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String title);
 }

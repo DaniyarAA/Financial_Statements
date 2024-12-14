@@ -205,7 +205,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/reports/monthly" method="post">
+                    <form action="/reports/monthly/csv" method="post" id="monthlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
@@ -262,7 +262,8 @@
                         </div>
 
                         <div class="modal-footer" style="display: flex; justify-content: center;">
-                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3"><i class="bi bi-check2 fs-1"></i></button>
+                            <button type="button" class="btn btn-secondary" id="downloadPdfButton">Скачать в формате PDF</button>
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3" id="downloadCsvButton"><i class="bi bi-check2 fs-1"></i></button>
                         </div>
                     </form>
                 </div>
@@ -278,7 +279,7 @@
                     <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/reports/quarterly" method="post">
+                    <form action="/reports/quarterly/csv" method="post">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
@@ -342,7 +343,7 @@
                     <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/reports/yearly" method="post">
+                    <form action="/reports/yearly/csv" method="post">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
@@ -390,6 +391,17 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById('monthlyReportForm');
+            const downloadCsvButton = document.getElementById('downloadCsvButton');
+            const downloadPdfButton = document.getElementById('downloadPdfButton');
+            downloadPdfButton.addEventListener('click', function () {
+                form.setAttribute('action', '/reports/monthly/pdf');
+                form.submit();
+            });
+            downloadCsvButton.addEventListener('click', function () {
+                form.setAttribute('action', '/reports/monthly/csv');
+            });
+
             function setupModal(modalId, searchInputId, selectAllId, checkboxesId) {
                 const searchInput = document.getElementById(searchInputId);
                 const companyCheckboxes = document.getElementById(checkboxesId);

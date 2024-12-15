@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
     const userModal = document.getElementById("userModal");
     const editUserBtn = document.getElementById("edit-user-info-button");
+    const archiveLink = document.getElementById("archive-link");
     let currentUserId = null;
     console.log(document.querySelectorAll("#userModal").length);
 
@@ -242,7 +243,17 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Error loading user data:", error));
     });
+
+    archiveLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (currentUserId) {
+            window.location.href = `/archive/${currentUserId}`;
+        } else {
+            console.error("ID пользователя не найден!");
+        }
+    });
 });
+
 
 
 function resumeUser(userId) {
@@ -934,4 +945,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     } catch (error) {
         console.error("Ошибка при проверке данных пользователя:", error);
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const userModal = document.getElementById('userModal');
+    userModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id'); // ID пользователя
+
+        // Найдите элементы в модалке, которые нужно обновить
+        const archiveLink = userModal.querySelector('.user-info-row a');
+
+        // Обновите ссылку на архив
+        if (archiveLink) {
+            archiveLink.href = `/archive/${userId}`;
+        }
+    });
 });

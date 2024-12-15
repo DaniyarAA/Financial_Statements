@@ -15,5 +15,4 @@ public interface ReportService {
 
     byte[] generateYearlyReport(List<Long> companyIds, int year,  String fileFormat);
 
-    byte[] generateReportCSV(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String title);
 }

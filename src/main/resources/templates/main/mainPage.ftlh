@@ -205,7 +205,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/reports/monthly/csv" method="post" id="monthlyReportForm">
+                    <form action="/api/reports/monthly/csv" method="post" id="monthlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
@@ -221,6 +221,8 @@
                                     <label class="form-check-label" for="selectAllMonthly">Выбрать все</label>
                                 </div>
 
+                                <div id="monthlyErrorContainer" class="text-danger" style="display: none; margin-bottom: 5px"></div>
+
 
                                 <div id="companyCheckboxesMonthly" class="dropdown-menu p-3" style="border: 1px solid #ccc;">
                                     <#list companies as company>
@@ -232,6 +234,8 @@
                                 </div>
                             </div>
                         </div>
+
+
 
                         <div class="form-group" style="margin-top: 220px">
                             <label for="yearSelect">Год:</label>
@@ -261,9 +265,11 @@
                             </select>
                         </div>
 
+                        <button type="button" class="pdf-button" id="downloadMonthlyPdfButton">Скачать в формате PDF</button>
+
+
                         <div class="modal-footer" style="display: flex; justify-content: center;">
-                            <button type="button" class="btn btn-secondary" id="downloadPdfButton">Скачать в формате PDF</button>
-                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3" id="downloadCsvButton"><i class="bi bi-check2 fs-1"></i></button>
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3" id="downloadMonthlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
                         </div>
                     </form>
                 </div>
@@ -279,7 +285,7 @@
                     <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/reports/quarterly/csv" method="post">
+                    <form action="/api/reports/quarterly/csv" method="post" id="quarterlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
@@ -295,6 +301,8 @@
                                 </div>
 
 
+                                <div id="quarterlyErrorContainer" class="text-danger" style="display: none; margin-bottom: 5px"></div>
+
                                 <div id="companyCheckboxesQuarterly" class="dropdown-menu p-3" style="border: 1px solid #ccc;">
                                     <#list companies as company>
                                         <div class="form-check">
@@ -305,6 +313,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="form-group" style="margin-top: 220px">
                             <label for="yearSelectQuarterly">Год:</label>
@@ -326,8 +335,10 @@
                             </select>
                         </div>
 
+                        <button type="button" class="pdf-button" id="downloadQuarterlyPdfButton">Скачать в формате PDF</button>
+
                         <div class="modal-footer" style="display: flex; justify-content: center;">
-                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3"><i class="bi bi-check2 fs-1"></i></button>
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3" id="downloadQuarterlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
                         </div>
                     </form>
                 </div>
@@ -343,7 +354,7 @@
                     <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/reports/yearly/csv" method="post">
+                    <form action="/api/reports/yearly/csv" method="post" id="yearlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
@@ -358,6 +369,8 @@
                                     <label class="form-check-label" for="selectAllYearly">Выбрать все</label>
                                 </div>
 
+                                <div id="yearlyErrorContainer" class="text-danger" style="display: none; margin-bottom: 5px"></div>
+
 
                                 <div id="companyCheckboxesYearly" class="dropdown-menu p-3" style="border: 1px solid #ccc;">
                                     <#list companies as company>
@@ -370,6 +383,8 @@
                             </div>
                         </div>
 
+
+
                         <div class="form-group" style="margin-top: 220px">
                             <label for="yearSelectYearly">Год:</label>
                             <select class="form-control" id="yearSelectYearly" name="year">
@@ -380,8 +395,11 @@
                             </select>
                         </div>
 
+                        <button type="button" class="pdf-button" id="downloadYearlyPdfButton">Скачать в формате PDF</button>
+
+
                         <div class="modal-footer" style="display: flex; justify-content: center;">
-                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3"><i class="bi bi-check2 fs-1"></i></button>
+                            <button type="submit" class="btn btn-light edit-user-btn mt-1 mb-3" id="downloadYearlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
                         </div>
                     </form>
                 </div>
@@ -389,51 +407,9 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.getElementById('monthlyReportForm');
-            const downloadCsvButton = document.getElementById('downloadCsvButton');
-            const downloadPdfButton = document.getElementById('downloadPdfButton');
-            downloadPdfButton.addEventListener('click', function () {
-                form.setAttribute('action', '/reports/monthly/pdf');
-                form.submit();
-            });
-            downloadCsvButton.addEventListener('click', function () {
-                form.setAttribute('action', '/reports/monthly/csv');
-            });
 
-            function setupModal(modalId, searchInputId, selectAllId, checkboxesId) {
-                const searchInput = document.getElementById(searchInputId);
-                const companyCheckboxes = document.getElementById(checkboxesId);
-                const selectAllCheckbox = document.getElementById(selectAllId);
 
-                searchInput.addEventListener("input", function () {
-                    const searchTerm = searchInput.value.toLowerCase();
-
-                    Array.from(companyCheckboxes.children).forEach(div => {
-                        const label = div.querySelector("label");
-                        if (label.textContent.toLowerCase().includes(searchTerm)) {
-                            div.style.display = "block";
-                        } else {
-                            div.style.display = "none";
-                        }
-                    });
-                });
-
-                selectAllCheckbox.addEventListener("change", function () {
-                    const isChecked = selectAllCheckbox.checked;
-                    Array.from(companyCheckboxes.querySelectorAll("input[type='checkbox']")).forEach(checkbox => {
-                        checkbox.checked = isChecked;
-                    });
-                });
-            }
-            setupModal("monthlyReportModal", "companySearchMonthly", "selectAllMonthly", "companyCheckboxesMonthly");
-            setupModal("quarterlyReportModal", "companySearchQuarterly", "selectAllQuarterly", "companyCheckboxesQuarterly");
-            setupModal("yearlyReportModal", "companySearchYearly", "selectAllYearly", "companyCheckboxesYearly");
-
-        });
-
-    </script>
 </@main.layout>
+<script src="/js/reports.js"></script>
 <script src="/js/tags.js"></script>
 <script src="/js/priority.js"></script>

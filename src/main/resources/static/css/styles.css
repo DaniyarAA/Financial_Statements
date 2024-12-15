@@ -1910,3 +1910,11 @@ h2 {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+
+.pdf-button{
+    border: none;
+    background: none;
+    margin: 10px 0;
+    color: #007bff;
+}

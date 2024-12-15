@@ -31,8 +31,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -123,28 +125,30 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    @Override
-    public byte[] generateReportCSV(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String title) {
+
+    private byte[] generateReportCSV(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String title) {
         List<Company> companies = companyService.findAllById(companyIds);
+        List<Task> tasksValidate = new ArrayList<>();
 
         StringBuilder sb = new StringBuilder();
         sb.append("Компания;ИНН;Тип документа;Статус;Сумма;Описание;Дата сдачи\n");
 
         for (Company company : companies) {
             List<Task> tasks = taskService.findByCompanyAndDate(company.getId(), startDate, endDate);
+            tasksValidate.addAll(tasks);
 
             for (Task t : tasks) {
-                String companyName = company.getName() != null ? company.getName() : "";
-                String inn = company.getInn() != null ? company.getInn() : "";
+                String companyName = company.getName() != null ? "\"" + company.getName() + "\"" : "";
+                String inn = company.getInn() != null ? "\"" + company.getInn() + "\""  : "";
                 String docTypeName = t.getDocumentType() != null && t.getDocumentType().getName() != null
-                        ? t.getDocumentType().getName()
+                        ? "\"" + t.getDocumentType().getName() + "\""
                         : "";
                 String statusName = t.getTaskStatus() != null && t.getTaskStatus().getName() != null
-                        ? t.getTaskStatus().getName()
+                        ? "\"" + t.getTaskStatus().getName()  + "\""
                         : "";
-                String amount = t.getAmount() != null ? t.getAmount().toString() : "0";
+                String amount = t.getAmount() != null ? "\"" + t.getAmount() + "\"" : "0";
                 String description = t.getDescription() != null ? "\"" + t.getDescription() + "\"" : "";
-                String endDateStr = t.getEndDate() != null ?  t.getEndDate().toString() : "";
+                String endDateStr = t.getEndDate() != null ? "\"" + t.getEndDate() + "\"" : "";
 
                 sb.append(companyName).append(";")
                         .append(inn).append(";")
@@ -154,6 +158,10 @@ public class ReportServiceImpl implements ReportService {
                         .append(description).append(";")
                         .append(endDateStr).append("\n");
             }
+        }
+
+        if(tasksValidate.isEmpty()){
+            throw new IllegalArgumentException("Задачи для этих компаний за заданный период отсутствуют");
         }
 
         byte[] bom = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
@@ -169,6 +177,7 @@ public class ReportServiceImpl implements ReportService {
 
     private byte[] generateReportPDF(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String reportTitle){
         List<Company> companies = companyService.findAllById(companyIds);
+        List<Task> tasksValidate = new ArrayList<>();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -199,6 +208,7 @@ public class ReportServiceImpl implements ReportService {
 
         for (Company company : companies) {
             List<Task> tasks = taskService.findByCompanyAndDate(company.getId(), startDate, endDate);
+            tasksValidate.addAll(tasks);
             for (Task t : tasks) {
                 String companyName = company.getName() != null ? company.getName() : "";
                 String inn = company.getInn() != null ? company.getInn() : "";
@@ -220,6 +230,9 @@ public class ReportServiceImpl implements ReportService {
                 table.addCell(createCell(endDateStr));
 
             }
+        }
+        if(tasksValidate.isEmpty()){
+            throw new IllegalArgumentException("Задачи для этих компаний за заданный период отсутствуют");
         }
 
         document.add(table);

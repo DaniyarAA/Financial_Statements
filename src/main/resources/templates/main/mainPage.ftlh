@@ -239,7 +239,7 @@
 
     <style>
         .main-container {
-            max-width: 1300px;
+            max-width: 1350px;
         }
 
         .main {

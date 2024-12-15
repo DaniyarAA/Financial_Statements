@@ -467,6 +467,34 @@
             width: 15px;
         }
 
+        .task-priority-bar {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-details {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+
+        .task-priority-arrows {
+            display: flex;
+            align-items: center;
+            margin-left: 0;
+        }
+
+
+
     </style>
 
     <script src="/js/tags.js"></script>

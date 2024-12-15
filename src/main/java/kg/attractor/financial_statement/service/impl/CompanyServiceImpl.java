@@ -492,7 +492,9 @@ public class CompanyServiceImpl implements CompanyService {
 
         List<UserCompany> userCompanies = userCompanyService.findByUserIdAndCompanyIdIn(
                 userId,
-                companyRepository.findAll().stream().map(Company::getId).collect(Collectors.toList())
+                companyRepository.findAll().stream()
+                        .filter(company -> !company.isDeleted())
+                        .map(Company::getId).collect(Collectors.toList())
         );
 
         List<Long> userCompanyIds = userCompanies.stream()
@@ -500,6 +502,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .collect(Collectors.toList());
 
         List<Company> companies = companyRepository.findAllById(userCompanyIds);
+
 
         return convertToCompanyForTaskDtoList(companies);
     }

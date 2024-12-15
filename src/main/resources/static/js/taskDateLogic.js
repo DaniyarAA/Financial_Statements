@@ -169,4 +169,52 @@ document.addEventListener("DOMContentLoaded", function () {
     quarterSelect.addEventListener("change", updateDates);
     decadeSelect.addEventListener("change", updateDates);
     weekSelect.addEventListener("change", updateDates);
-})
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const monthSelect = document.getElementById("month");
+    const yearSelect = document.getElementById("year");
+    const quarterSelect = document.getElementById("quarter");
+    const decadeSelect = document.getElementById("decade");
+    const weekSelect = document.getElementById("week");
+    const reportTypeRadios = document.getElementsByName("reportType");
+    const createButton = document.querySelector(".button-save-create-task");
+
+    function validateFields() {
+        const reportType = document.querySelector('input[name="reportType"]:checked').value;
+
+        if (reportType === "weekly") {
+            return yearSelect.value && monthSelect.value && weekSelect.value;
+        } else if (reportType === "monthly") {
+            return yearSelect.value && monthSelect.value;
+        } else if (reportType === "quarterly") {
+            return yearSelect.value && quarterSelect.value;
+        } else if (reportType === "decadal") {
+            return yearSelect.value && monthSelect.value && decadeSelect.value;
+        } else if (reportType === "annual") {
+            return yearSelect.value;
+        }
+        return false;
+    }
+
+    function updateButtonState() {
+        if (validateFields()) {
+            createButton.disabled = false;
+            createButton.style.cursor = "pointer";
+            createButton.style.opacity = "1";
+        } else {
+            createButton.disabled = true;
+            createButton.style.cursor = "not-allowed";
+            createButton.style.opacity = "0.5";
+        }
+    }
+
+    reportTypeRadios.forEach(radio => radio.addEventListener("change", updateButtonState));
+    monthSelect.addEventListener("change", updateButtonState);
+    yearSelect.addEventListener("change", updateButtonState);
+    quarterSelect.addEventListener("change", updateButtonState);
+    decadeSelect.addEventListener("change", updateButtonState);
+    weekSelect.addEventListener("change", updateButtonState);
+
+    updateButtonState();
+});

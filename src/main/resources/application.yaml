@@ -29,6 +29,18 @@ spring:
     ansi:
       enabled: always
 
+  mail:
+    host: smtp.gmail.com
+    username: attracctorrespond@gmail.com
+    password: jyby cblq fnaz yguh
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 
 logging:
   level:

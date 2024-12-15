@@ -1492,6 +1492,21 @@ h2 {
     font-size: 25px;
 }
 
+.btn-send-user-message{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.check-icon-send{
+    font-size: 25px;
+}
+
 .btn-close-role{
     position: absolute;
     right: 20px;

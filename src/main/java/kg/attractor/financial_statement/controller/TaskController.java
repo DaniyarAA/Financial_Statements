@@ -209,6 +209,10 @@ public class TaskController {
         if (!taskService.checkIsAuthor(authentication.getName(), id)) {
             return "redirect:/login";
         }
+        if (!taskService.areValidDates(taskDto.getFrom(), taskDto.getTo())) {
+            return "redirect:/tasks/list";
+
+        }
         taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
         return "redirect:/tasks/list";
 

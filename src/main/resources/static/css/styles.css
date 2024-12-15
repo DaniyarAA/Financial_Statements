@@ -657,6 +657,16 @@ thead td {
     font-size: large;
 }
 
+.archive-link{
+    color: black;
+    text-decoration: none;
+}
+
+.user-info-row a:hover{
+    text-decoration: none;
+    color: black;
+}
+
 .users-layout{
     width: 100%;
     min-height: 90vh;

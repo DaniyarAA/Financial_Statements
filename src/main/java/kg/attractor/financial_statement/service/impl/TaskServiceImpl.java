@@ -602,19 +602,30 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getAllFinishedTasks() {
         return taskRepository.findAllByTaskStatus(taskStatusService.getStatusDone())
                 .stream()
-                .map(this::convertToDto)
+                .map(this::convertToDtoForGetFinishedTasks)
                 .toList();
     }
 
     @Override
-    public List<TaskDto> getFinishedTasksForUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByLogin(authentication.getName());
+    public List<TaskDto> getFinishedTasksForUser(Long userId) {
         TaskStatus taskStatus = taskStatusService.getStatusDone();
-        return taskRepository.findAllByUserCompany_UserAndTaskStatus(user, taskStatus)
+        return taskRepository.findAllByUserCompany_UserAndTaskStatus(userService.getUserById(userId), taskStatus)
                 .stream()
-                .map(this::convertToDto)
+                .map(this::convertToDtoForGetFinishedTasks)
                 .toList();
+    }
+
+    private TaskDto convertToDtoForGetFinishedTasks(Task task) {
+        return TaskDto.builder()
+                .id(task.getId())
+                .statusId(task.getTaskStatus().getName())
+                .startDate(task.getStartDate())
+                .endDate(task.getEndDate())
+                .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
+                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+                .amount(task.getAmount())
+                .description(task.getDescription())
+                .build();
     }
 
     @Override

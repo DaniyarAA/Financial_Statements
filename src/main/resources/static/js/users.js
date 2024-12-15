@@ -1,5 +1,7 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+let editUserHandler = null;
+
 
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
@@ -71,6 +73,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const companyDropdown = document.getElementById('companyDropdown');
         const notesInput = document.getElementById('notesInput');
         const editUserInfoButton = document.getElementById('edit-user-info-button');
+        const editUserBtnIcon = document.getElementById('edit-user-btn-icon');
+        const roleDisplay = document.getElementById("roleDisplay");
+        const roleSelect = document.getElementById("roleSelect");
         iconsToReset.forEach(iconId => {
             const element = document.getElementById(iconId);
             if (element) {
@@ -92,6 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const roles = data.roles;
                 const deleteUserIcon = document.getElementById("delete-user-icon");
                 const editRoleIcon = document.getElementById("edit-role-icon");
+                if (editUserHandler) {
+                    editUserBtn.removeEventListener("click", editUserHandler);
+                }
 
                 if(user.roleDto && user.roleDto.roleName === "SuperUser"){
                     if (deleteUserIcon) deleteUserIcon.style.display = 'none';
@@ -100,6 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (deleteUserIcon) deleteUserIcon.style.display = 'block';
                     if (editRoleIcon) editRoleIcon.style.display = 'block';
                 }
+                roleSelect.innerHTML = "";
 
                 if (!user.enabled) {
                     const iconsToHide = [
@@ -108,7 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         'edit-birthday-icon',
                         'change-avatar-icon',
                         'delete-user-icon',
-                        'edit-role-icon',
                         'edit-email-icon',
                     ];
 
@@ -119,15 +127,38 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
 
+                    const emptyOption = document.createElement("option");
+                    emptyOption.value = "";
+                    emptyOption.textContent = "Выберите роль";
+                    emptyOption.disabled = true;
+                    emptyOption.selected = true;
+                    roleSelect.append(emptyOption);
+
+                    editUserHandler = function () {
+                        if (currentUserId) {
+                            resumeUser(currentUserId);
+                        }
+                    };
+
 
                     const companyDropdown = document.getElementById('companyDropdown');
                     const notesInput = document.getElementById('notesInput');
-                    const editUserInfoButton = document.getElementById('edit-user-info-button');
 
                     if (companyDropdown) companyDropdown.disabled = true;
                     if (notesInput) notesInput.disabled = true;
-                    if (editUserInfoButton) editUserInfoButton.disabled = true;
+
+                    editUserBtnIcon.className = "bi bi-arrow-counterclockwise fs-1";
+                } else {
+                    editUserHandler = function () {
+                        if (currentUserId) {
+                            saveUserData(currentUserId);
+                        }
+                    };
+                    editUserBtnIcon.className = "bi bi-check2 fs-1";
+
                 }
+
+                editUserBtn.addEventListener("click", editUserHandler);
 
                 document.getElementById("userModalLabel").innerText = user.name;
                 document.getElementById("surnameModalLabel").innerText = user.surname;
@@ -150,8 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 }
 
-                const roleDisplay = document.getElementById("roleDisplay");
-                const roleSelect = document.getElementById("roleSelect");
                 if(user.roleDto){
                     roleDisplay.innerText = user.roleDto.roleName;
                 } else {
@@ -159,18 +188,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                if(user.roleDto){
-                    roleSelect.innerHTML = "";
-                    roles.forEach(role => {
-                        const option = document.createElement("option");
-                        option.value = role.id;
-                        option.textContent = role.roleName;
-                        if (role.id === user.roleDto.id) {
-                            option.selected = true;
-                        }
-                        roleSelect.append(option);
-                    });
-                }
+
+                roles.forEach(role => {
+                    const option = document.createElement("option");
+                    option.value = role.id;
+                    option.textContent = role.roleName;
+                    if (user.roleDto && role.id === user.roleDto.id) {
+                        option.selected = true;
+                    }
+                    roleSelect.append(option);
+                });
+
 
                 const initialCompanies = document.getElementById("initialCompanies");
                 const maxLength = 19;
@@ -215,15 +243,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Error loading user data:", error));
     });
-    editUserBtn.addEventListener("click", function () {
-        if (currentUserId) {
-            saveUserData(currentUserId);
-        }
-    });
-    userModal.addEventListener("show.bs.modal", function (event) {
-        const button = event.relatedTarget;
-        currentUserId = button.getAttribute("data-user-id");
-    });
 
     archiveLink.addEventListener("click", function (event) {
         event.preventDefault();
@@ -234,6 +253,104 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+
+function resumeUser(userId) {
+    const displayRole = document.getElementById("roleDisplay");
+    const userStatus = document.getElementById("user-status");
+    const userStatusOnList = document.getElementById(`${userId}-list-status`);
+    const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
+    const companyDropdown = document.getElementById('companyDropdown');
+    const notesInput = document.getElementById('notesInput');
+    const userViewOnTile = document.getElementById(`${userId}-tile`);
+    const userViewOnList = document.getElementById(`${userId}-row`);
+    const editUserInfoButton = document.getElementById('edit-user-info-button');
+    const editUserBtnIcon = document.getElementById("edit-user-btn-icon");
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
+    const iconsToHide = [
+        'edit-company-icon',
+        'edit-name-icon',
+        'edit-birthday-icon',
+        'change-avatar-icon',
+        'delete-user-icon',
+        'edit-role-icon',
+        'edit-email-icon',
+    ];
+    const roleSelect = document.getElementById("roleSelect");
+    const roleId = roleSelect.value;
+    const roleError = document.getElementById("roleError");
+    if (!roleId || roleId.trim() === "") {
+        roleError.innerText = "Выберите роль!";
+        return;
+    } else {
+        roleError.innerText = "";
+    }
+
+    const emptyOption = roleSelect.querySelector('option[value=""]');
+    if (emptyOption) {
+        roleSelect.removeChild(emptyOption);
+    }
+
+    fetch('/archive/resume/user/' + userId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify({roleId})
+    })
+        .then(response => {
+            if (response.ok) {
+
+                iconsToHide.forEach(iconId => {
+                    const element = document.getElementById(iconId);
+                    if (element) {
+                        element.style.display = 'block';
+                    }
+                });
+
+                if (companyDropdown) companyDropdown.disabled = false;
+                if (notesInput) notesInput.disabled = false;
+                userStatus.innerText = "Активен";
+                userRoleDisplayInTile.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+                userRoleDisplayInList.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+                displayRole.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+                userViewOnList.classList.remove("deleted-row-user-style");
+                userViewOnTile.classList.remove("deleted-tile-user-style");
+
+                userStatusOnList.innerText = "Active";
+                userStatusOnTile.innerText = "Active";
+                updateEditButtonToSave(editUserInfoButton, editUserBtnIcon, userId);
+
+                showNotification('Пользователь успешно восстановлен!', "green");
+            } else {
+                showNotification('Ошибка при восстановлении пользователя.', "red");
+            }
+        })
+        .catch(error => showNotification('Ошибка: ' + error.message, "red"));
+}
+
+function updateEditButtonToSave(editUserBtn, editUserBtnIcon, userId) {
+    if (editUserHandler) {
+        editUserBtn.removeEventListener("click", editUserHandler);
+    }
+
+    editUserBtnIcon.className = "bi bi-check2 fs-1";
+
+    const saveHandler = function () {
+        if (userId) {
+            saveUserData(userId);
+        }
+    };
+
+    editUserBtn.addEventListener("click", saveHandler);
+
+    editUserHandler = saveHandler;
+}
+
+
 
 function uploadAvatar() {
     const avatarInput = document.getElementById("avatarInput");
@@ -497,15 +614,18 @@ function deleteUser() {
     const companyDropdown = document.getElementById('companyDropdown');
     const notesInput = document.getElementById('notesInput');
     const editUserInfoButton = document.getElementById('edit-user-info-button');
+    const editUserBtnIcon = document.getElementById("edit-user-btn-icon");
     const userViewOnTile = document.getElementById(`${userId}-tile`);
     const userViewOnList = document.getElementById(`${userId}-row`);
+    const roleSelect = document.getElementById("roleSelect");
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const iconsToHide = [
         'edit-company-icon',
         'edit-name-icon',
         'edit-birthday-icon',
         'change-avatar-icon',
         'delete-user-icon',
-        'edit-role-icon',
         'edit-email-icon',
     ];
 
@@ -529,7 +649,8 @@ function deleteUser() {
 
                     if (companyDropdown) companyDropdown.disabled = true;
                     if (notesInput) notesInput.disabled = true;
-                    if (editUserInfoButton) editUserInfoButton.disabled = true;
+                    userRoleDisplayInList.innerText = "Отсутствует";
+                    userRoleDisplayInTile.innerText = "Отсутствует"
                     userStatus.innerText = "Неактивен";
                     displayRole.innerText = "Отсутвует";
                     userViewOnList.classList.add("deleted-row-user-style");
@@ -538,8 +659,18 @@ function deleteUser() {
                     userStatusOnList.innerText = "Disabled";
                     userStatusOnTile.innerText = "Disabled";
 
-                    showNotification("Пользователь успешно удалён.", "green");
+
+                    const emptyOption = document.createElement("option");
+                    emptyOption.value = "";
+                    emptyOption.textContent = "Выберите роль";
+                    emptyOption.disabled = true;
+                    emptyOption.selected = true;
+                    roleSelect.insertBefore(emptyOption, roleSelect.firstChild);
+
+                    updateEditButtonToRestore(editUserInfoButton, editUserBtnIcon, userId);
                     confirmModal.hide();
+                    showNotification("Пользователь успешно удалён.", "green");
+
                 } else {
                     return response.json().then(errorData => {
                         confirmModal.hide();
@@ -554,6 +685,27 @@ function deleteUser() {
             });
     }
 }
+
+
+function updateEditButtonToRestore(editUserBtn, editUserBtnIcon, userId) {
+    if (editUserHandler) {
+        editUserBtn.removeEventListener("click", editUserHandler);
+    }
+
+    editUserBtnIcon.className = "bi bi-arrow-counterclockwise fs-1";
+
+    const restoreHandler = function () {
+        if (userId) {
+            resumeUser(userId);
+        }
+    };
+
+    editUserBtn.addEventListener("click", restoreHandler);
+
+    editUserHandler = restoreHandler;
+}
+
+
 
 function showNotification(message, color) {
     const notification = document.getElementById("notification");
@@ -638,7 +790,8 @@ function toggleRoleEdit() {
         roleDisplay.style.display = 'none';
         roleSelect.style.display = 'inline-block';
     } else {
-        roleDisplay.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+        const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+        roleDisplay.innerText = selectedOption ? selectedOption.textContent : 'Отсутствует';
         roleDisplay.style.display = 'inline';
         roleSelect.style.display = 'none';
     }
@@ -653,7 +806,8 @@ document.addEventListener('mousedown', (event) => {
         !roleSelect.contains(event.target) &&
         !event.target.classList.contains('bi-pencil')
     ) {
-        roleDisplay.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+        const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+        roleDisplay.innerText = selectedOption ? selectedOption.textContent : 'Отсутствует';
         roleDisplay.style.display = 'inline';
         roleSelect.style.display = 'none';
     }

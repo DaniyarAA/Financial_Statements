@@ -118,6 +118,226 @@
 
                 </div>
             </div>
+
+            <div id="task-create" class="task-create">
+                <div class="task-create-header">
+                    <h5>Cоздать задачу</h5>
+                </div>
+
+                <div id="task-create-content">
+                    <div class="task-create-container">
+
+                        <div class="task-create-indicator"></div>
+                        <form action="/tasks/create" method="post">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                       value="${(_csrf.token)!'csrf-token'}"/>
+                            </#if>
+
+                            <div style="position: relative; z-index: 1;">
+                                <div class="task-create-document" style="">
+                                    <div>
+                                        <label for="category" class="task-create-text">Тип документа</label>
+                                        <select class="form-select" id="documentType" name="documentTypeId" required>
+                                            <#if documentTypeDtos??>
+                                                <#list documentTypeDtos as documentType>
+                                                    <option value="${documentType.id}">${documentType.name}</option>
+                                                </#list>
+                                            <#else>
+                                                <option disabled>Нет доступных типов документов</option>
+                                            </#if>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="create-task-info">
+                                <div id="formPage1" class="form-page">
+                                    <div class="task-create-div">
+                                        <label for="category" class="task-create-text">Назначить</label>
+                                        <select class="form-select" id="user" name="appointToUserId" required>
+                                            <#if userDtos??>
+                                                <#list userDtos as user>
+                                                    <option value="${user.id}">${user.login}</option>
+                                                </#list>
+                                            <#else>
+                                                <option disabled>Нет доступных пользователей</option>
+                                            </#if>
+                                        </select>
+                                    </div>
+
+                                    <div class="task-create-div">
+                                        <label for="category" class="task-create-text">Компания</label>
+                                        <select class="form-select" id="company" name="companyId" required>
+                                            <#if companyDtos??>
+                                                <#list companyDtos as company>
+                                                    <option value="${company.id}">${company.name}</option>
+                                                </#list>
+                                            <#else>
+                                                <option disabled>Нет доступных компаний</option>
+                                            </#if>
+                                        </select>
+                                    </div>
+
+                                    <div class="task-create-div">
+                                        <label for="category" class="task-create-text">Статус</label>
+                                        <select class="form-select" id="taskStatus" name="taskStatusId" required>
+                                            <#if taskStatusDtos??>
+                                                <#list taskStatusDtos as taskStatus>
+                                                    <option value="${taskStatus.id}">${taskStatus.name}</option>
+                                                </#list>
+                                            <#else>
+                                                <option disabled>Нет доступных статусов</option>
+                                            </#if>
+                                        </select>
+                                    </div>
+
+                                    <div class="task-create-div" style="margin-top: 50px">
+                                        <label for="description" class="task-create-text">Описание</label>
+                                        <textarea id="description" name="description" class="task-create-description"></textarea>
+                                    </div>
+
+                                    <button type="button" class="btn btn-secondary" id="nextPageCreateTask" onclick="showSecondPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                            <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                                        </svg></button>
+
+                                </div>
+
+                                <div id="formPage2" class="form-page" style="display: none;">
+
+                                    <div>
+                                        <p class="task-create-text" style="margin: 0; padding: 0">Выбор периода</p>
+                                        <div class="task-create-div">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="reportType" id="weekly" value="weekly">
+                                                <label class="form-check-label" for="weekly">Недельный</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="reportType" id="decadal" value="decadal">
+                                                <label class="form-check-label" for="decadal">Декадный</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="reportType" id="monthly" value="monthly" checked>
+                                                <label class="form-check-label" for="monthly">Ежемесячный</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="reportType" id="quarterly" value="quarterly">
+                                                <label class="form-check-label" for="quarterly">Ежеквартальный</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="reportType" id="annual" value="annual">
+                                                <label class="form-check-label" for="annual">Годовой</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="task-create-div task-create-week-decade-month-selection">
+                                            <div id="weekSelection" style="display: none;">
+                                                <label for="week" class="task-create-text">Неделя</label>
+                                                <select class="form-select" id="week">
+                                                    <option value="">Выберите неделю</option>
+                                                    <option value="1">1 неделя</option>
+                                                    <option value="2">2 неделя</option>
+                                                    <option value="3">3 неделя</option>
+                                                    <option value="4">4 неделя</option>
+                                                </select>
+                                            </div>
+                                            <div id="decadeSelection" style="display:none;">
+                                                <label for="decade" class="task-create-text">Декада</label>
+                                                <select class="form-select" id="decade" name="decade">
+                                                    <option value="">Выберите декаду</option>
+                                                    <option value="1">1-я декада</option>
+                                                    <option value="2">2-я декада</option>
+                                                    <option value="3">3-я декада</option>
+                                                </select>
+                                            </div>
+
+                                            <div id="quarterSelection" style="display: none;">
+                                                <label for="quarter" class="task-create-text">Квартал</label>
+                                                <select class="form-select" id="quarter" name="quarter">
+                                                    <option value="">Выберите квартал</option>
+                                                    <option value="1">1 квартал</option>
+                                                    <option value="2">2 квартал</option>
+                                                    <option value="3">3 квартал</option>
+                                                    <option value="4">4 квартал</option>
+                                                </select>
+                                            </div>
+                                            <div id="monthSelection" style="display: none">
+                                                <label for="month" class="task-create-text">Месяц</label>
+                                                <select class="form-select" id="month" name="month">
+                                                    <option value="">Выберите месяц</option>
+                                                    <option value="1">Январь</option>
+                                                    <option value="2">Февраль</option>
+                                                    <option value="3">Март</option>
+                                                    <option value="4">Апрель</option>
+                                                    <option value="5">Май</option>
+                                                    <option value="6">Июнь</option>
+                                                    <option value="7">Июль</option>
+                                                    <option value="8">Август</option>
+                                                    <option value="9">Сентябрь</option>
+                                                    <option value="10">Октябрь</option>
+                                                    <option value="11">Ноябрь</option>
+                                                    <option value="12">Декабрь</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="task-create-div">
+                                            <label for="year" class="task-create-text">Год</label>
+                                            <select class="form-select" id="year">
+                                                <option value="">Выберите год</option>
+                                                <option value="2023">2023</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                                <option value="2029">2029</option>
+                                                <option value="2030">2030</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="task-create-div">
+                                            <label for="startDate" class="task-create-text">Дата начала</label>
+                                            <input type="text" class="form-control" id="startDateDisplay" readonly>
+                                            <input type="hidden" id="startDate" name="startDate">
+                                        </div>
+
+                                        <div class="task-create-div">
+                                            <label for="endDate" class="task-create-text">Дата окончания</label>
+                                            <input type="text" class="form-control" id="endDateDisplay" readonly>
+                                            <input type="hidden" id="endDate" name="endDate">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; justify-content: center; margin-top: 50px">
+                                        <button
+                                                class="button-save-create-task"
+                                                style="cursor: not-allowed; opacity: 0.5;"
+                                                disabled>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-cloud-plus-fill" viewBox="0 0 16 16">
+                                                <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m.5 4v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+
+
+                                    <button type="button" class="btn btn-secondary" id="prevPageCreateTask" onclick="showFirstPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                            <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                                        </svg>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -129,7 +349,7 @@
         const availableYearMonths = ${availableYearMonthsJson?no_esc};
     </script>
     <script src="/js/list.js"></script>
-
+    <script src="/js/taskDateLogic.js"></script>
 
     <style>
         .container {
@@ -283,9 +503,202 @@
             border: 1px solid #dee2e6;
         }
 
+        .task-details-header {
+            position: relative;
+            height: 61px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            justify-content: center;
+        }
+
         .no-tasks {
             font-style: italic;
             color: #6c757d;
+        }
+
+        .task-create {
+            width: 0;
+            overflow: hidden;
+            padding: 0;
+            transition: width 0.3s ease, padding 0.3s ease;
+        }
+
+        .task-create-header {
+            position: relative;
+            height: 61px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            justify-content: center;
+        }
+
+        .task-create-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+
+            height: 610px;
+        }
+
+        .task-create-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: mediumpurple;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #task-create-content {
+            padding: 5px;
+            background-color: #d9d9d9;
+            width: 100%;
+            height: 100%;
+        }
+
+        .task-create-description {
+            width: 324px;
+            height: 112px;
+            background-color: #d9d9d9;
+            color: #333;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+            outline: none;
+            font-size: 16px;
+            resize: none;
+            overflow-y: auto;
+        }
+
+        .task-create-text {
+            font-size: 14px; font-style: italic; font-weight: 100
+        }
+
+        .task-create-document {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .task-create-div {
+            margin-bottom: 10px;
+        }
+
+        .task-create-week-decade-month-selection {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .form-page {
+            width: 100%;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+
+        #formPage1 {
+            height: 495px;
+        }
+
+        #formPage2 {
+            height: 495px;
+        }
+
+        #nextPageCreateTask {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        #prevPageCreateTask {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .button-save-create-task {
+            background-color: #ECE6F0;
+            height: 51px;
+            width: 219px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3), 0px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes slide-in-right {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-out-left {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slide-in-left {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-out-right {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .slide-in-right {
+            animation: slide-in-right 0.3s forwards;
+        }
+
+        .slide-out-left {
+            animation: slide-out-left 0.3s forwards;
+        }
+
+        .slide-in-left {
+            animation: slide-in-left 0.3s forwards;
+        }
+
+        .slide-out-right {
+            animation: slide-out-right 0.3s forwards;
         }
 
         .pagination-container{
@@ -332,18 +745,7 @@
             width: 100%;
             height: 100%;
         }
-        .task-details-header {
-            position: relative;
-            height: 61px;
-            background-color: #ffffff;
-            display: flex;
-            align-items: center;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            color: #333;
-            justify-content: center;
-        }
+
 
         #task-edit-form p {
             font-size: 16px;

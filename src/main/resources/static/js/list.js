@@ -33,7 +33,7 @@ function showTaskDetails(button) {
 
     document.getElementById('task-details').style.display = 'block';
     document.getElementById('task-content').innerHTML = `
-<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden;">
+<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 610px">
     <div class="status-indicator-task-details" style="
             position: absolute;
             top: 0;
@@ -430,6 +430,41 @@ document.addEventListener('DOMContentLoaded', () => {
     addCollapseButtonToTaskDetails();
 });
 
+function addCollapseButtonToCreateTask() {
+    const taskCreateHeader = document.querySelector('.task-create-header');
+
+    if (!taskCreateHeader.querySelector('.btn-collapse-task-create')) {
+        const collapseButton = document.createElement('button');
+        collapseButton.type = 'button';
+        collapseButton.className = 'btn-collapse-task-create';
+        collapseButton.style.cssText = `
+            background: none;
+            border: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        `;
+
+        collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
+
+        collapseButton.addEventListener('click', () => {
+            const taskCreate = document.getElementById('task-create');
+            if (taskCreate) {
+                taskCreate.style.width = '0';
+                taskCreate.overflow = 'hidden';
+                taskCreate.padding = '0';
+                taskCreate.transition = 'width 0.3s ease, padding 0.3s ease';
+            }
+        });
+
+        taskCreateHeader.appendChild(collapseButton);
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    addCollapseButtonToCreateTask();
+});
+
 function addCreateTaskButton() {
     const addTaskButton = document.createElement('button');
     addTaskButton.className = 'btn-create-task';
@@ -457,50 +492,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function toggleCreateTaskForm() {
-    const createTaskForm = document.getElementById('create-task-form');
-    const taskContent = document.getElementById('task-content');
-
-    if (createTaskForm.style.display === 'none') {
-        taskContent.style.display = 'none';
-        createTaskForm.style.display = 'block';
-        renderCreateTaskForm();
-    } else {
-        createTaskForm.style.display = 'none';
-        taskContent.style.display = 'block';
-    }
+    const createTaskForm = document.getElementById('task-create');
+    createTaskForm.style.width = '30%';
+    createTaskForm.style.transition = 'width 0.3s ease, padding 0.3s ease';
 }
 
-function renderCreateTaskForm() {
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+function showSecondPage() {
+    const formPage1 = document.getElementById('formPage1');
+    const formPage2 = document.getElementById('formPage2');
 
-    document.getElementById('create-task-form').innerHTML = `
-        <form id="create-task" action="/tasks/create" method="post">
-            <input type="hidden" name="_csrf" value="${csrfToken}">
-            <div>
-                <label for="documentType">Тип документа:</label>
-                <input type="text" id="documentType" name="documentType" required />
-            </div>
-            <div>
-                <label for="companyName">Компания:</label>
-                <input type="text" id="companyName" name="companyName" required />
-            </div>
-            <div>
-                <label for="startDate">Дата начала:</label>
-                <input type="date" id="startDate" name="startDate" required />
-            </div>
-            <div>
-                <label for="endDate">Дата окончания:</label>
-                <input type="date" id="endDate" name="endDate" required />
-            </div>
-            <div>
-                <label for="amount">Сумма:</label>
-                <input type="number" id="amount" name="amount" min="0" required />
-            </div>
-            <div>
-                <label for="description">Описание:</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-            <button type="submit">Создать задачу</button>
-        </form>
-    `;
+    formPage1.classList.add('slide-out-left');
+    formPage1.addEventListener('animationend', () => {
+        formPage1.style.display = 'none';
+        formPage1.classList.remove('slide-out-left');
+
+        formPage2.style.display = 'block';
+        formPage2.classList.add('slide-in-right');
+        formPage2.addEventListener('animationend', () => {
+            formPage2.classList.remove('slide-in-right');
+        }, { once: true });
+    }, { once: true });
+}
+
+function showFirstPage() {
+    const formPage1 = document.getElementById('formPage1');
+    const formPage2 = document.getElementById('formPage2');
+
+    formPage2.classList.add('slide-out-right');
+    formPage2.addEventListener('animationend', () => {
+        formPage2.style.display = 'none';
+        formPage2.classList.remove('slide-out-right');
+
+        formPage1.style.display = 'block';
+        formPage1.classList.add('slide-in-left');
+        formPage1.addEventListener('animationend', () => {
+            formPage1.classList.remove('slide-in-left');
+        }, { once: true });
+    }, { once: true });
 }

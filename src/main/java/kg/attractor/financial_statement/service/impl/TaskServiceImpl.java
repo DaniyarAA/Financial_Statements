@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -428,6 +429,11 @@ public class TaskServiceImpl implements TaskService {
         return task.getUserCompany().getUser() == user;
     }
 
+    @Override
+    public List<Task> findByCompanyAndDate(Long companyId, LocalDate startDate, LocalDate endDate){
+        return taskRepository.findByUserCompany_Company_IdAndEndDateBetween(companyId, startDate, endDate);
+    }
+
 
     private Task convertToEntity(TaskCreateDto taskCreateDto, String login) {
         Task task = new Task();
@@ -634,5 +640,28 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new NoSuchElementException("Task not found: " + taskId));
         task.setTaskStatus(taskStatusService.getTaskStatusById(newStatusId));
         taskRepository.save(task);
+    }
+
+    @Override
+    public boolean areValidDates(String from, String to) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        try {
+            LocalDate fromDate = LocalDate.parse(from, formatter);
+            LocalDate toDate = LocalDate.parse(to, formatter);
+
+            if (fromDate.getYear() < 2010 || fromDate.getYear() > 2050
+                    || toDate.getYear() < 2010 || toDate.getYear() > 2050) {
+                return false;
+            }
+
+            if (!fromDate.isBefore(toDate)) {
+                return false;
+            }
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+
+        return true;
     }
 }

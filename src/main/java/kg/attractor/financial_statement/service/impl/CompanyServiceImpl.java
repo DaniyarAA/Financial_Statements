@@ -165,6 +165,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<Company> findAllById(List<Long> companyIds){
+        return companyRepository.findAllById(companyIds);
+    }
+
+    @Override
     public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
         String companyIdStr = data.get("companyId");
         String fieldToEdit = data.get("field");
@@ -487,7 +492,9 @@ public class CompanyServiceImpl implements CompanyService {
 
         List<UserCompany> userCompanies = userCompanyService.findByUserIdAndCompanyIdIn(
                 userId,
-                companyRepository.findAll().stream().map(Company::getId).collect(Collectors.toList())
+                companyRepository.findAll().stream()
+                        .filter(company -> !company.isDeleted())
+                        .map(Company::getId).collect(Collectors.toList())
         );
 
         List<Long> userCompanyIds = userCompanies.stream()
@@ -495,6 +502,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .collect(Collectors.toList());
 
         List<Company> companies = companyRepository.findAllById(userCompanyIds);
+
 
         return convertToCompanyForTaskDtoList(companies);
     }

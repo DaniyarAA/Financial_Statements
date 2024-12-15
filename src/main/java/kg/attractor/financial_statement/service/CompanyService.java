@@ -23,6 +23,8 @@ public interface CompanyService {
 
     List<CompanyDto> getAllCompanies();
 
+    List<Company> findAllById(List<Long> companyIds);
+
     ResponseEntity<Map<String, String>> editByOne(Map<String, String> data);
 
     CompanyDto convertToDto(Company company);

@@ -256,6 +256,8 @@ function resumeUser(userId) {
     const userViewOnList = document.getElementById(`${userId}-row`);
     const editUserInfoButton = document.getElementById('edit-user-info-button');
     const editUserBtnIcon = document.getElementById("edit-user-btn-icon");
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const iconsToHide = [
         'edit-company-icon',
         'edit-name-icon',
@@ -301,6 +303,8 @@ function resumeUser(userId) {
                 if (companyDropdown) companyDropdown.disabled = false;
                 if (notesInput) notesInput.disabled = false;
                 userStatus.innerText = "Активен";
+                userRoleDisplayInTile.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
+                userRoleDisplayInList.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
                 displayRole.innerText = roleSelect.options[roleSelect.selectedIndex].textContent;
                 userViewOnList.classList.remove("deleted-row-user-style");
                 userViewOnTile.classList.remove("deleted-tile-user-style");
@@ -603,6 +607,8 @@ function deleteUser() {
     const userViewOnTile = document.getElementById(`${userId}-tile`);
     const userViewOnList = document.getElementById(`${userId}-row`);
     const roleSelect = document.getElementById("roleSelect");
+    const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
+    const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const iconsToHide = [
         'edit-company-icon',
         'edit-name-icon',
@@ -632,6 +638,8 @@ function deleteUser() {
 
                     if (companyDropdown) companyDropdown.disabled = true;
                     if (notesInput) notesInput.disabled = true;
+                    userRoleDisplayInList.innerText = "Отсутствует";
+                    userRoleDisplayInTile.innerText = "Отсутствует"
                     userStatus.innerText = "Неактивен";
                     displayRole.innerText = "Отсутвует";
                     userViewOnList.classList.add("deleted-row-user-style");

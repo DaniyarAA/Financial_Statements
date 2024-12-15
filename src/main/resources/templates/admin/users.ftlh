@@ -42,7 +42,7 @@
                                         <#if user.roleDto??>
                                             ${user.roleDto.roleName}
                                             <#else >
-                                            Удален
+                                            Отсутствует
                                         </#if>
                                     </span>
                                 </td>
@@ -86,7 +86,7 @@
                                    <#if user.roleDto??>
                                        ${user.roleDto.roleName}
                                    <#else >
-                                       Удален
+                                       Отсутствует
                                    </#if>
                                 </span>
                                     <div class="buttons-container">

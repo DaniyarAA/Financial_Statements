@@ -82,8 +82,98 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="tasks-content">
-                    Tasks
+                <div class="tasks">
+                    <div class="tasks-header">
+                        <p>ЗАДАЧИ</p>
+                    </div>
+
+                    <div class="tasks-content">
+                        <div class="tasks-scroll">
+                            <#if userTasks?has_content>
+                                <#list userTasks as task>
+                                    <div class="task-details">
+                                        <div class="task-id">
+                                            <p>#${task.id}</p>
+                                        </div>
+                                        <div class="task-company">
+                                            <p>${task.company.name}</p>
+                                        </div>
+                                        <div class="task-document-type">
+                                            <p>${task.documentTypeName}</p>
+                                        </div>
+                                        <div class="task-date">
+                                            ${dateUtils.formatDateTime(task.endDate, "dd.MM.yyyy")}
+                                        </div>
+                                        <div class="task-tag">
+                                            <div>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                     fill="currentColor"
+                                                     class="bi bi-tag" viewBox="0 0 16 16"
+                                                     onclick="toggleTagSelect(${task.id})">
+                                                    <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
+                                                    <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
+                                                </svg>
+                                            </div>
+
+                                            <div id="tag-modal-${task.id}" class="tag-select-modal" style="display: none;">
+                                                <div class="tag-select-modal-content">
+                                                <span class="tag-close-button"
+                                                      onclick="closeTagModal('select', ${task.id})">&times;</span>
+                                                    <h3>Выберите тег</h3>
+                                                    <select id="user-tags-select-${task.id}"
+                                                            onchange="applySelectedTag(${task.id}, this.value)">
+                                                        <option value="" disabled selected>Выберите тег</option>
+                                                    </select>
+                                                    <button onclick="openTagModal(${task.id})" class="tag-add-button">+
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="task-priority-arrows">
+                                            <#if task.priorityId?has_content>
+<#--                                                <#list 1..task.priorityId as i>-->
+<#--                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"-->
+<#--                                                         fill="currentColor"-->
+<#--                                                         class="bi bi-caret-up" viewBox="0 0 16 16">-->
+<#--                                                        <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>-->
+<#--                                                    </svg>-->
+<#--                                                </#list>-->
+
+                                                <img src="/images/${task.priorityId}-arrow.png" alt="priority">
+                                            <#else>
+<#--                                                <span class="no-priority-message"></span>-->
+                                            </#if>
+                                        </div>
+
+                                        <div class="task-priority-bar" data-task-id="${task.id}"
+                                             style="background-color: ${task.priorityColor};">
+
+                                        </div>
+
+
+
+                                        <div id="priorityModal" class="priority-modal" style="display: none;">
+                                            <div class="priority-modal-content">
+                                                <span class="priority-close-button">&times;</span>
+                                                <h2 class="priority-modal-title">Выберите приоритет для задачи</h2>
+                                                <ul class="priority-list">
+                                                    <#list priorities as priority>
+                                                        <li class="priority-item" data-priority-id="${priority.id}">
+                                                            <span class="priority-badge">${priority.name?substring(0, 1)}</span>
+                                                            <span class="priority-name">${priority.name}</span>
+                                                        </li>
+                                                    </#list>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </#list>
+                            <#else>
+                                <span class="ms-3">Список задач пуст</span>
+                            </#if>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,10 +199,6 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }
-
-        .tasks-content {
-            background-color: #007bff;
         }
 
         .report-button {
@@ -312,6 +398,73 @@
 
         .not-current {
             color: #ccc;
+        }
+
+        .tasks {
+            width: 650px;
+
+            box-shadow: 2px 0 5px #BFBFBF, -2px 0 5px #BFBFBF, 0 5px 5px #BFBFBF;
+            border: 1px solid #BFBFBF;
+        }
+
+        .tasks-header {
+            background-color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            text-align: center;
+            padding: 0;
+            height: 53px;
+        }
+        .tasks-header p {
+            margin: 0;
+            line-height: 1;
+        }
+
+        .tasks-content {
+            height: 500px;
+            overflow: hidden;
+        }
+        .tasks-scroll {
+            background-color: #d9d9d9;
+            max-height: 500px;
+            overflow-y: auto;
+
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-details {
+            background-color: #FFFFFF;
+            height: 70px;
+        }
+
+        .task-id {
+            width: 30px;
+        }
+
+        .task-company {
+            width: 150px;
+        }
+
+        .task-document-type {
+            width: 120px;
+
+        }
+
+        .task-tag {
+
+        }
+
+        .task-status {
+
+        }
+
+        .task-priority-arrows {
+            height: 45px;
+            width: 15px;
         }
 
     </style>

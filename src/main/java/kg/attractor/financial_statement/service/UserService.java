@@ -11,9 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 public interface UserService {
+    Boolean messageIsSuccessfullySent(Map<String, Object> answer);
+
+    Map<String, Object> sendMessageToUser(HttpServletRequest request);
+
     void registerUser(UserDto user);
 
     UserDto getUserDtoById(Long id);

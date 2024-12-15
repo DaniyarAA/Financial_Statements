@@ -348,8 +348,9 @@ thead td {
         padding: 10px;
     }
 
-    .bi-star-fill{
-        display: none;
+    .login-inputs{
+        margin-left: 10%;
+        width: 70%;
     }
 }
 
@@ -373,23 +374,24 @@ thead td {
         font-size: 1rem;
         padding: 8px;
     }
-
-    .bi-star-fill{
-        display: none;
-    }
 }
 
 
-.bi-star-fill {
+.login-toggle-button {
     border: 3px solid black;
     border-radius: 50%;
     padding: 0 5px 1px 5px;
-    position: absolute;
+    font-size: 1.2rem;
+}
+
+.login-password-toggle-button{
+    outline: none;
+    border: none;
+    background: none;
     top: 70%;
     left: 104%;
     transform: translateY(-50%);
-    font-size: 1.2rem;
-    pointer-events: none;
+    position: absolute;
 }
 
 
@@ -655,6 +657,16 @@ thead td {
     font-size: large;
 }
 
+.archive-link{
+    color: black;
+    text-decoration: none;
+}
+
+.user-info-row a:hover{
+    text-decoration: none;
+    color: black;
+}
+
 .users-layout{
     width: 100%;
     min-height: 90vh;
@@ -772,33 +784,18 @@ h2 {
 }
 
 .role-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
-
-.role-modal-dialog {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 500px;
 }
 
 .role-modal-header, .role-modal-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: none;
 }
 
 .role-modal-title {
-    color: #4CAF50;
+    color: #1E1E1E;
 }
 
 .role-btn {
@@ -1476,27 +1473,58 @@ h2 {
     border-bottom: none;
 }
 
-.bg-color-for-change-login-password{
-    background-color: #6c757d29;
-}
-
 .input-group .btn {
     border: none;
 }
 
 .change-login-password-btn {
-    background-color: #6c757d45;
-    color: black;
     font-size: 25px;
-    width: 300px;
-    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+    width: 160px;
     border-radius: 14px;
     border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.change-login-password-btn:hover {
-    background-color: #6c757d29;
-    border-color: #6c757d29;
+.create-role-button{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.check-icon-role{
+    font-size: 25px;
+}
+
+.btn-send-user-message{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.check-icon-send{
+    font-size: 25px;
+}
+
+.btn-close-role{
+    position: absolute;
+    right: 20px;
+}
+
+.authorities-for-role-scroll{
+    overflow-y:scroll;
+    max-height: 250px;
 }
 
 .text-danger {

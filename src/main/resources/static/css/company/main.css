@@ -522,8 +522,7 @@ label.custom-search input[type="text"] {
         padding: 0;
     }
 }
-
-.list-group-item {
+.company-info {
     padding: 5px 0;
     margin: 0;
     border: none;
@@ -534,7 +533,7 @@ label.custom-search input[type="text"] {
     flex-wrap: nowrap;
 }
 
-.list-group-item span {
+.company-info span {
     font-size: 14px;
     flex-shrink: 0;
     width: 50%;
@@ -543,14 +542,14 @@ label.custom-search input[type="text"] {
     padding: 0
 }
 
-.list-group-item strong {
+.company-info strong {
     font-size: 20px;
     text-align: left;
     white-space: nowrap;
     font-weight: normal;
 }
 
-.list-group-item button {
+.company-info button {
     margin-left: 9px;
     padding: 0;
 }

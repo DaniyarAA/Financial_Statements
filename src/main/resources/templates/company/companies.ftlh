@@ -204,7 +204,7 @@
                         <div class="row">
                             <div class="company-required-info">
                                 <ul class="list-group">
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ИНН:</span>
                                         <strong id="companyInn">${company.companyInn!}</strong>
                                         <button id="editBtncompanyInn"
@@ -228,7 +228,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ИНН руководителя:</span>
                                         <strong id="directorInn">${company.directorInn!}</strong>
                                         <button id="editBtndirectorInn"
@@ -252,7 +252,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Логин:</span>
                                         <strong id="login">${company.login!}</strong>
                                         <button id="editBtnlogin" onclick="editText('login', ${company.id})"
@@ -275,7 +275,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Пароль:</span>
                                         <strong id="password"
                                               data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></strong>
@@ -302,7 +302,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭЦП:</span>
                                         <strong id="ecp">${company.ecp!}</strong>
                                         <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
@@ -324,7 +324,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Salyk.kg логин:</span>
                                         <strong id="kabinetSalyk">${company.kabinetSalyk!}</strong>
                                         <button id="editBtnkabinetSalyk"
@@ -348,7 +348,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Salyk.kg пароль:</span>
                                         <strong id="kabinetSalykPassword"
                                               data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></strong>
@@ -377,7 +377,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Режим налогообложения:</span>
                                         <strong id="taxMode">${company.taxMode!}</strong>
                                         <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
@@ -400,7 +400,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ОПФ:</span>
                                         <strong id="opf">${company.opf!}</strong>
                                         <button id="editBtnopf" onclick="editText('opf', ${company.id})"
@@ -422,7 +422,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Район ГНС:</span>
                                         <strong id="districtGns">${company.districtGns!}</strong>
                                         <button id="editBtndistrictGns"
@@ -446,7 +446,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Номер социального фонда:</span>
                                         <strong id="socfundNumber">${company.socfundNumber!}</strong>
                                         <button id="editBtnsocfundNumber"
@@ -470,7 +470,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Регистрационный номер МЮ:</span>
                                         <strong id="registrationNumberMj">${company.registrationNumberMj!}</strong>
                                         <button id="editBtnregistrationNumberMj"
@@ -495,7 +495,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ОКПО:</span>
                                         <strong id="okpo">${company.okpo!}</strong>
                                         <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
@@ -517,7 +517,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ФИО руководителя:</span>
                                         <strong id="director">${company.director!}</strong>
                                         <button id="editBtndirector" onclick="editText('director', ${company.id})"
@@ -540,7 +540,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>КЭД:</span>
                                         <strong id="ked">${company.ked!}</strong>
                                         <button id="editBtnked" onclick="editText('ked', ${company.id})"
@@ -566,7 +566,7 @@
                             </div>
                             <div class="company-not-required-info">
                                 <ul class="list-group">
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Почта:</span> <strong id="email">${company.email!}</strong>
                                         <button id="editBtnemail" onclick="editText('email', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -588,7 +588,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Пароль от почты:</span> <strong id="emailPassword"
                                                                                 data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnemailPassword"
@@ -615,7 +615,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Телефон:</span> <strong id="phone">${company.phone!}</strong>
                                         <button id="editBtnphone" onclick="editText('phone', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -637,7 +637,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ логин:</span> <strong id="esf">${company.esf!}</strong>
                                         <button id="editBtnesf" onclick="editText('esf', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -658,7 +658,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ пароль:</span> <strong id="esfPassword"
                                                                            data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnesfPassword"
@@ -685,7 +685,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ККМ логин:</span> <strong id="kkm">${company.kkm!}</strong>
                                         <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -706,7 +706,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ККМ пароль:</span> <strong id="kkmPassword"
                                                                            data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnkkmPassword"
@@ -733,7 +733,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш логин:</span>
                                         <strong id="fresh1c">${company.fresh1c!}</strong>
                                         <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
@@ -756,7 +756,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш пароль:</span> <strong id="fresh1cPassword"
                                                                                data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnfresh1cPassword"
@@ -783,7 +783,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН логин:</span>
                                         <strong id="ettn">${company.ettn!}</strong>
                                         <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
@@ -805,7 +805,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН пароль:</span>
                                         <strong id="ettnPassword"
                                               data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></strong>
@@ -834,7 +834,7 @@
                                         </div>
                                     </li>
 
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <#if company.deleted>
                                             <span>Состояние:</span> <strong> Удаленная компания</strong>
                                         <#else>

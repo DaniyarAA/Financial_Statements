@@ -22,22 +22,19 @@
                 <th>Адрес эл. почты</th>
                 <th>День рождения</th>
                 <th>Дата регистрации</th>
-                <th>Действие</th>
             </tr>
             </thead>
             <tbody>
             <#if deletedUsers?has_content>
                 <#list deletedUsers as user>
                     <tr>
-                        <td>${user_index + 1}</td>
+                        <td class="return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
+                          </td>
                         <td>${user.name} ${user.surname}</td>
                         <td>${user.login}</td>
                         <td>${user.email}</td>
                         <td>${user.birthday}</td>
                         <td>${user.registerDate}</td>
-                        <td>
-                            <button class="action-button" onclick="openModal(${user.id})">Восстановить</button>
-                        </td>
                     </tr>
                 </#list>
             <#else>
@@ -63,7 +60,7 @@
     </div>
 
     <div id="tasks" class="tab-content">
-        <select id="filterDocumentType" class="form-control my-3">
+        <select id="filterDocumentType" class="form-control w-auto">
             <option value="">Все типы документов</option>
             <#list documentTypes as type>
                 <option value="${type.name}">${type.name}</option>

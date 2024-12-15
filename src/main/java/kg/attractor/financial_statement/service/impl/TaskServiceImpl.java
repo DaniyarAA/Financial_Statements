@@ -428,6 +428,11 @@ public class TaskServiceImpl implements TaskService {
         return task.getUserCompany().getUser() == user;
     }
 
+    @Override
+    public List<Task> findByCompanyAndDate(Long companyId, LocalDate startDate, LocalDate endDate){
+        return taskRepository.findByUserCompany_Company_IdAndEndDateBetween(companyId, startDate, endDate);
+    }
+
 
     private Task convertToEntity(TaskCreateDto taskCreateDto, String login) {
         Task task = new Task();

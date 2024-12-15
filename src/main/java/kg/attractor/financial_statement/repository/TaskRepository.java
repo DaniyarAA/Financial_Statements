@@ -34,6 +34,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllByUserCompany_UserAndTaskStatus(User user, TaskStatus taskStatus);
 
+    List<Task> findByUserCompany_Company_IdAndEndDateBetween(Long companyId, LocalDate start, LocalDate end);
+
     boolean existsByUserCompanyAndStartDateAndEndDateAndDocumentType(
             UserCompany userCompany, LocalDate startDate, LocalDate endDate, DocumentType documentType);
 }

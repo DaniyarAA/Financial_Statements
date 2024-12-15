@@ -42,8 +42,8 @@
                                 <span id="list-${user.id}-role" class="user-table-detail">
                                         <#if user.roleDto??>
                                             ${user.roleDto.roleName}
-                                        <#else >
-                                            Удален
+                                            <#else >
+                                            Отсутствует
                                         </#if>
                                     </span>
                             </td>
@@ -89,7 +89,7 @@
                                    <#if user.roleDto??>
                                        ${user.roleDto.roleName}
                                    <#else >
-                                       Удален
+                                       Отсутствует
                                    </#if>
                                 </span>
                             <div class="buttons-container">
@@ -202,6 +202,7 @@
                             </#if>
                         </span>
                     </div>
+                    <span id="roleError" class="text-danger"></span>
 
                     <div class="user-info-row mb-2">
                         <span class="user-label">Статус:</span>
@@ -266,7 +267,7 @@
                     <button class="btn btn-light edit-user-btn mt-1 mb-3" id="edit-user-info-button"
                             <#if !hasEditUserAuthority>disabled</#if>
                     >
-                        <i class="bi bi-check2 fs-1"></i>
+                        <i class="bi bi-check2 fs-1" id="edit-user-btn-icon"></i>
                     </button>
                 </div>
             </div>

@@ -36,13 +36,4 @@ public class GlobalControllerAdvice implements ErrorController {
         return "/errors/error";
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public String handleInsufficientFundsException (Model model, HttpServletRequest request, RuntimeException e) {
-        model.addAttribute("status", HttpStatus.PAYMENT_REQUIRED.value());
-        model.addAttribute("reason", HttpStatus.PAYMENT_REQUIRED.getReasonPhrase());
-        model.addAttribute("message", e.getMessage());
-        model.addAttribute("details", request);
-        return "/errors/error";
-    }
-
 }

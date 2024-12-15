@@ -539,6 +539,8 @@
             height: 60px;
             margin: 0;
             border: 0;
+            box-shadow: 0 5px 5px #a3a3a3;
+
         }
 
         .task-company-document {

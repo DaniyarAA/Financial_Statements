@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
@@ -48,13 +49,24 @@ public class AdminController {
         }
         try {
             userService.registerUser(userDto);
-            return "redirect:/admin/users";
+            model.addAttribute("userDto", userDto);
+            return "admin/message";
         } catch (IllegalArgumentException e) {
             model.addAttribute("roles", roleService.getAll());
             model.addAttribute("error", e.getMessage());
             return "admin/register";
         }
 
+    }
+
+    @PostMapping("/message")
+    public String messageToNewUserPost(HttpServletRequest request, Model model) {
+        Map<String, Object> answer = userService.sendMessageToUser(request);
+        if (userService.messageIsSuccessfullySent(answer)){
+            return "redirect:/admin/users";
+        }
+        model.addAttribute(answer);
+        return "admin/message";
     }
 
     @GetMapping("users")

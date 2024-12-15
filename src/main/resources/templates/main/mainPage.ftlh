@@ -465,7 +465,7 @@
         }
 
         .tasks {
-            width: 650px;
+            max-width: 650px;
             height: 517px;
 
             box-shadow: 2px 0 5px #BFBFBF, -2px 0 5px #BFBFBF, 0 5px 5px #BFBFBF;

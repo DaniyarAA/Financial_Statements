@@ -657,6 +657,16 @@ thead td {
     font-size: large;
 }
 
+.archive-link{
+    color: black;
+    text-decoration: none;
+}
+
+.user-info-row a:hover{
+    text-decoration: none;
+    color: black;
+}
+
 .users-layout{
     width: 100%;
     min-height: 90vh;
@@ -1489,6 +1499,21 @@ h2 {
 }
 
 .check-icon-role{
+    font-size: 25px;
+}
+
+.btn-send-user-message{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.check-icon-send{
     font-size: 25px;
 }
 

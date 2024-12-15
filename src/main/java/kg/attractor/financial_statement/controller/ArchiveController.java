@@ -41,8 +41,16 @@ public class ArchiveController {
         User user = userService.getUserByLogin(authentication.getName());
         model.addAttribute("currentUser", user);
         model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
-        model.addAttribute("userFinishedTasks", taskService.getFinishedTasksForUser());
+        model.addAttribute("userFinishedTasks", taskService.getFinishedTasksForUser(user.getId()));
         model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(user.getId()));
+        return "archive/forUser";
+    }
+
+    @GetMapping("/{userId}")
+    public String getUserArchiveForSuperUser(Model model, @PathVariable Long userId) {
+        model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
+        model.addAttribute("userFinishedTasks", taskService.getFinishedTasksForUser(userId));
+        model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(userId));
         return "archive/forUser";
     }
 

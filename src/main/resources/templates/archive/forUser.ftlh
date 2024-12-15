@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" href="/css/archive/archiveForUser.css">
+    <link rel="stylesheet" href="/css/archive/archive.css">
 
 
     <div class="tabs mt-5 mx-auto">
@@ -30,8 +30,8 @@
                 <th>Тип документа</th>
                 <th>Дата начала</th>
                 <th>Дата окончания</th>
-                <th>Цена</th>
-                <th>Описание</th>
+                <th>Сумма</th>
+                <th>Файл</th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +45,7 @@
                         <td>${task.startDate}</td>
                         <td>${task.endDate}</td>
                         <td>${task.amount}</td>
-                        <td>${task.description}</td>
+                        <td>Здесь должен быть файл</td>
                     </tr>
                 </#list>
             <#else>

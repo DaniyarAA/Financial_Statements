@@ -550,13 +550,6 @@
             align-items: center;
         }
 
-        .task-date {
-        }
-
-        .tag-container {
-
-        }
-
         .company-name-document-type {
             display: flex;
             flex-direction: column;
@@ -564,7 +557,7 @@
         }
         .task-name {
             display: inline-block;
-            max-width: 350px;
+            max-width: 300px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -573,7 +566,7 @@
 
         .task-document {
             display: inline-block;
-            max-width: 350px;
+            max-width: 300px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;

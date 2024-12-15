@@ -165,6 +165,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<Company> findAllById(List<Long> companyIds){
+        return companyRepository.findAllById(companyIds);
+    }
+
+    @Override
     public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
         String companyIdStr = data.get("companyId");
         String fieldToEdit = data.get("field");

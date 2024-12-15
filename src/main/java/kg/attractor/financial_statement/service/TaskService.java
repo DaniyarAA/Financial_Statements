@@ -59,7 +59,7 @@ public interface TaskService {
 
     List<TaskDto> getAllFinishedTasks();
 
-    List<TaskDto> getFinishedTasksForUser();
+    List<TaskDto> getFinishedTasksForUser(Long userId);
 
     void updateTaskStatus(Long taskId, Long newStatusId);
 

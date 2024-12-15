@@ -74,7 +74,9 @@ public class TaskServiceImpl implements TaskService {
         int month = yearMonth.get("month");
         YearMonth ym = YearMonth.of(year, month);
         List<Task> allTasks = taskRepository.findAll();
-        List<Task> tasks = sortTasksByUserCompanies(allTasks, userCompany);
+        List<Task> tasks = allTasks.stream()
+                .filter(task -> userCompany.contains(task.getUserCompany()))
+                .toList();
 
         Map<LocalDate, Long> calendarTaskCount = tasks.stream()
                 .map(Task::getEndDate)
@@ -82,13 +84,6 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return ResponseEntity.ok().body(calendarTaskCount);
-    }
-
-    private List<Task> sortTasksByUserCompanies(List<Task> tasks, List<UserCompany> userCompanies) {
-        Set<UserCompany> userCompanySet = new HashSet<>(userCompanies);
-        return tasks.stream()
-                .filter(task -> userCompanySet.contains(task.getUserCompany()))
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -608,19 +603,30 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getAllFinishedTasks() {
         return taskRepository.findAllByTaskStatus(taskStatusService.getStatusDone())
                 .stream()
-                .map(this::convertToDto)
+                .map(this::convertToDtoForGetFinishedTasks)
                 .toList();
     }
 
     @Override
-    public List<TaskDto> getFinishedTasksForUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByLogin(authentication.getName());
+    public List<TaskDto> getFinishedTasksForUser(Long userId) {
         TaskStatus taskStatus = taskStatusService.getStatusDone();
-        return taskRepository.findAllByUserCompany_UserAndTaskStatus(user, taskStatus)
+        return taskRepository.findAllByUserCompany_UserAndTaskStatus(userService.getUserById(userId), taskStatus)
                 .stream()
-                .map(this::convertToDto)
+                .map(this::convertToDtoForGetFinishedTasks)
                 .toList();
+    }
+
+    private TaskDto convertToDtoForGetFinishedTasks(Task task) {
+        return TaskDto.builder()
+                .id(task.getId())
+                .statusId(task.getTaskStatus().getName())
+                .startDate(task.getStartDate())
+                .endDate(task.getEndDate())
+                .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
+                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+                .amount(task.getAmount())
+                .description(task.getDescription())
+                .build();
     }
 
     @Override

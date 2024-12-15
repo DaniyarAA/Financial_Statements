@@ -348,8 +348,9 @@ thead td {
         padding: 10px;
     }
 
-    .bi-star-fill{
-        display: none;
+    .login-inputs{
+        margin-left: 10%;
+        width: 70%;
     }
 }
 
@@ -373,23 +374,24 @@ thead td {
         font-size: 1rem;
         padding: 8px;
     }
-
-    .bi-star-fill{
-        display: none;
-    }
 }
 
 
-.bi-star-fill {
+.login-toggle-button {
     border: 3px solid black;
     border-radius: 50%;
     padding: 0 5px 1px 5px;
-    position: absolute;
+    font-size: 1.2rem;
+}
+
+.login-password-toggle-button{
+    outline: none;
+    border: none;
+    background: none;
     top: 70%;
     left: 104%;
     transform: translateY(-50%);
-    font-size: 1.2rem;
-    pointer-events: none;
+    position: absolute;
 }
 
 
@@ -653,6 +655,16 @@ thead td {
 
 .user-value {
     font-size: large;
+}
+
+.archive-link{
+    color: black;
+    text-decoration: none;
+}
+
+.user-info-row a:hover{
+    text-decoration: none;
+    color: black;
 }
 
 .users-layout{
@@ -1487,6 +1499,21 @@ h2 {
 }
 
 .check-icon-role{
+    font-size: 25px;
+}
+
+.btn-send-user-message{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.check-icon-send{
     font-size: 25px;
 }
 

@@ -186,11 +186,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return `Показано ${start} - ${end} из ${total}`;
         },
-        dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
+        dom: "<'row align-items-center document-header'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
             "<'row'<'col-12'tr>>" +
             "<'row'<'col-12'p>>",
         responsive: true
     });
+    moveSortList();
 
     $('#filterDocumentType').on('change', function () {
         const value = $(this).val();
@@ -234,9 +235,16 @@ document.addEventListener('DOMContentLoaded', () => {
         dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
             "<'row'<'col-12'tr>>" +
             "<'row'<'col-12'p>>",
-        responsive: true
+        responsive: true,
     });
 });
+
+function moveSortList() {
+    const searchElement = document.getElementById('filterDocumentType');
+    const searchContainer = document.querySelector('.document-header');
+    const firstChild = searchContainer.lastChild;
+    searchContainer.insertBefore(searchElement, firstChild);
+}
 
 function showTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));

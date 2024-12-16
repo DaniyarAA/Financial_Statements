@@ -306,12 +306,14 @@ label.custom-search input[type="text"] {
     vertical-align: middle;
 }
 
-.custom-modal-width {
-    max-width: 100%;
-    margin: 5% 2% 0 18%;
-    max-height: 83vh;
-    overflow-y: auto;
+.modal-dialog.custom-modal-width {
+    max-width: 100% !important;
+    margin: 6.2% 4% 0 18.5% !important;
+    max-height: 83vh !important;
+    overflow-y: auto !important;
 }
+
+
 
 .modal-header-create {
     display: flex;

@@ -7,6 +7,11 @@
             <p>На вас нет зарегестрированных компаний!</p>
         </div>
     </#if>
+
+    <div id="responseMessage" style="display: none;">
+
+    </div>
+
     <div class="container p-3">
         <div class="main-content">
             <div class="table-container company-table" id="company-table" style="display: block">

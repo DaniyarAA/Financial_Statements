@@ -118,28 +118,26 @@ public class TaskController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateTaskInListPage(
+    @ResponseBody
+    public ResponseEntity<?> updateTaskInListPage(
             @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
             @PathVariable Long id,
-            BindingResult bindingResult,
-            Model model,
             Authentication authentication
     ) {
-        if (bindingResult.hasErrors() ) {
-            model.addAttribute("taskDto", taskDto);
-            return "tasks/tasksList";
-        }
         if (!taskService.checkIsAuthor(authentication.getName(), id)) {
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Вы не имеете прав редактировать эту задачу!"));
         }
+
         if (!taskService.areValidDates(taskDto.getFrom(), taskDto.getTo())) {
-            return "redirect:/tasks/list";
-
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Выбраны неправильные даты!"));
         }
-        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
-        return "redirect:/tasks/list";
 
+        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+        return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
     }
+
 
     @PostMapping("/{taskId}/priority")
     public ResponseEntity<String> updateTaskPriority(@PathVariable Long taskId, @RequestParam Long priorityId) {

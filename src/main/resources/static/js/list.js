@@ -537,3 +537,69 @@ document.addEventListener("DOMContentLoaded", function() {
         toggleCreateTaskForm()
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("task-details");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const editForm = document.getElementById("task-edit-form");
+        const formData = new FormData(editForm);
+        const actionUrl = editForm.getAttribute("action");
+
+        const existingAlert = document.getElementById("alertMessage");
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        fetch(actionUrl, {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                showAlert(data.success || "Task updated successfully!", "success");
+            })
+            .catch(error => {
+                showAlert(error.error || "An unexpected error occurred.", "error");
+            });
+    });
+
+    function showAlert(message, type) {
+        const alertDiv = document.createElement("div");
+        alertDiv.id = "alertMessage";
+        alertDiv.textContent = message;
+        alertDiv.style.position = "absolute";
+        alertDiv.style.top = "20px";
+        alertDiv.style.right = "20px";
+        alertDiv.style.padding = "15px 20px";
+        alertDiv.style.borderRadius = "8px";
+        alertDiv.style.color = "#fff";
+        alertDiv.style.fontSize = "14px";
+        alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+        alertDiv.style.zIndex = "1000";
+
+        if (type === "success") {
+            alertDiv.style.backgroundColor = "#28a745";
+        } else {
+            alertDiv.style.backgroundColor = "#dc3545";
+        }
+
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+            if (type === "success") {
+                window.location.reload();
+            }
+        }, 2000);
+    }
+
+});

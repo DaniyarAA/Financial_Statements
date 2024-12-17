@@ -350,6 +350,7 @@
     </script>
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 
     <style>
         .container {
@@ -930,4 +931,5 @@
 
 
     </style>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 </@layout.layout>

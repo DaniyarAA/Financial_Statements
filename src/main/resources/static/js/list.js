@@ -530,3 +530,10 @@ function showFirstPage() {
         }, { once: true });
     }, { once: true });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const openModal = document.getElementById('openModal').value;
+    if (openModal === 'true') {
+        toggleCreateTaskForm()
+    }
+});

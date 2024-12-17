@@ -932,7 +932,14 @@
             transform: scale(1.1);
         }
 
-
+        .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            margin: 0;
+            padding: 0;
+        }
 
 
     </style>

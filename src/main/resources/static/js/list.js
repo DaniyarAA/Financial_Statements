@@ -62,7 +62,7 @@ function showTaskDetails(button) {
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
-                <p>${companyName}</p>
+                <p class="truncate-text">${companyName}</p>
                 <p>${companyInn}</p>
                 <div id="date-display" style="display: block;">
                     <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>

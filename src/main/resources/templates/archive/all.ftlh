@@ -118,14 +118,13 @@
 
     <div id="statusModal" class="modal">
         <div class="modal-content mx-auto mt-5">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Подтвердите действие:</h5>
-                <span class="close" onclick="closeStatusModal()">&times;</span>
-            </div>
             <div class="modal-body" id="confirmMessage">
                 <p>Вы уверены, что хотите изменить статус для задачи "<span id="taskName"></span>"?</p>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        onclick="closeStatusModal()" >Отмена
+                </button>
                 <button class="btn btn-danger" onclick="confirmStatus()">ДА</button>
             </div>
         </div>

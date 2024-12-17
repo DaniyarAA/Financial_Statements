@@ -49,13 +49,15 @@
     <div id="roleModal" class="modal">
         <div class="modal-content  mx-auto mt-5">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Выберите роль</h2>
+            <label for="roleSelect"><h2>Выберите роль</h2></label>
             <select id="roleSelect">
                 <#list roles as role>
                     <option value="${role.id}">${role.roleName}</option>
                 </#list>
             </select>
-            <button class="action-button" onclick="confirmRole()">Подтвердить</button>
+            <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-success choose-role-btn" onclick="confirmRole()"><i class="bi bi-check2 check-icon-choose-role"></i></button>
+            </div>
         </div>
     </div>
 

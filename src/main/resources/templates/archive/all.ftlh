@@ -6,7 +6,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/css/archive/archive.css">
 
-    <div class="tabs my-5 mx-auto">
+    <div class="tabs mx-auto">
         <button class="tab-button active" onclick="showTab('users')">Удаленные пользователи</button>
         <button class="tab-button" onclick="showTab('tasks')">Завершенные задачи</button>
         <button class="tab-button" onclick="showTab('companies')">Удаленные компании</button>
@@ -130,7 +130,13 @@
     </div>
 
     <div id="companies" class="tab-content">
-        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
+
+        <div class="d-flex justify-content-center">
+
+        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control mb-3">
+
+        </div>
+
         <#if deletedCompanies?has_content>
             <div class="accordion shadow-sm rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>

@@ -62,7 +62,7 @@ function showTaskDetails(button) {
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
-                <p>${companyName}</p>
+                <p class="truncate-text">${companyName}</p>
                 <p>${companyInn}</p>
                 <div id="date-display" style="display: block;">
                     <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
@@ -113,7 +113,7 @@ function showTaskDetails(button) {
         </div>
 
   <label for="description" style="margin-top: 55px; font-size: 14px; font-style: italic; font-weight: 100">Описание</label>
-        <textarea id="description" name="description" style="width: 324px;
+        <textarea id="description" name="description" style="width: 360px;
     height: 112px;
     background-color: #d9d9d9;
     color: #333;
@@ -125,7 +125,7 @@ function showTaskDetails(button) {
     font-size: 16px;
     resize: none;
     overflow-y: auto;">${description}</textarea>
-        <div style="display: flex; justify-content: center; margin-top: 50px">
+        <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
 
         <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
@@ -354,39 +354,47 @@ function setupCompanyToggleButton() {
 
     if (!companyHeader) return;
 
-    if (!companyHeader.querySelector(".btn-nav-img-toggle")) {
+    if (!document.querySelector(".btn-nav-img-toggle")) {
         const toggleButtonImage = document.createElement("img");
         toggleButtonImage.src = "/images/company-arrow.png";
         toggleButtonImage.alt = "Toggle Company Table";
         toggleButtonImage.classList.add("btn-nav-img", "btn-nav-img-toggle");
-        toggleButtonImage.style.position = "absolute";
-        toggleButtonImage.style.right = "5px";
-        toggleButtonImage.style.top = "50%";
-        toggleButtonImage.style.transform = "translateY(-50%)";
+
+        toggleButtonImage.style.position = "fixed";
+        toggleButtonImage.style.top = "85px";
+        toggleButtonImage.style.left = "240px";
+        toggleButtonImage.style.transform = "rotate(0deg)";
+        toggleButtonImage.style.transition = "left 0.3s ease, transform 0.3s ease";
         toggleButtonImage.style.cursor = "pointer";
         toggleButtonImage.style.width = "24px";
         toggleButtonImage.style.height = "24px";
 
         toggleButtonImage.addEventListener("click", () => {
-            toggleCompanyTable();
+            toggleCompanyTable(toggleButtonImage);
         });
 
-        companyHeader.style.position = "relative";
-        companyHeader.appendChild(toggleButtonImage);
+        document.body.appendChild(toggleButtonImage);
     }
 }
 
-function toggleCompanyTable() {
+function toggleCompanyTable(toggleButtonImage) {
     const companyTable = document.getElementById("company-table");
-    const isHidden = companyTable.style.display === "none";
+    const isHidden = companyTable.style.width === "0px" || companyTable.style.display === "none";
+
     if (isHidden) {
-        companyTable.style.width = '244px';
-        companyTable.style.marginRight = '5px';
-        companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
+        companyTable.style.width = "244px";
+        companyTable.style.marginLeft = "0";
+        companyTable.style.transition = "width 0.3s ease, padding 0.3s ease";
+
+        toggleButtonImage.style.left = "240px";
+        toggleButtonImage.style.transform = "rotate(0deg)";
     } else {
-        companyTable.style.width = '0';
-        companyTable.style.marginRight = '0';
-        companyTable.style.transition = 'width 0.3s ease, padding 0.3s ease';
+        companyTable.style.width = "0";
+        companyTable.style.marginLeft = "0";
+        companyTable.style.transition = "width 0.3s ease, padding 0.3s ease";
+
+        toggleButtonImage.style.left = "20px";
+        toggleButtonImage.style.transform = "rotate(180deg)";
     }
 }
 
@@ -530,3 +538,76 @@ function showFirstPage() {
         }, { once: true });
     }, { once: true });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const openModal = document.getElementById('openModal').value;
+    if (openModal === 'true') {
+        toggleCreateTaskForm()
+    }
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("task-details");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const editForm = document.getElementById("task-edit-form");
+        const formData = new FormData(editForm);
+        const actionUrl = editForm.getAttribute("action");
+
+        const existingAlert = document.getElementById("alertMessage");
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        fetch(actionUrl, {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                showAlert(data.success || "Task updated successfully!", "success");
+            })
+            .catch(error => {
+                showAlert(error.error || "An unexpected error occurred.", "error");
+            });
+    });
+
+    function showAlert(message, type) {
+        const alertDiv = document.createElement("div");
+        alertDiv.id = "alertMessage";
+        alertDiv.textContent = message;
+        alertDiv.style.position = "absolute";
+        alertDiv.style.top = "20px";
+        alertDiv.style.right = "20px";
+        alertDiv.style.padding = "15px 20px";
+        alertDiv.style.borderRadius = "8px";
+        alertDiv.style.color = "#fff";
+        alertDiv.style.fontSize = "14px";
+        alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+        alertDiv.style.zIndex = "1000";
+
+        if (type === "success") {
+            alertDiv.style.backgroundColor = "#28a745";
+        } else {
+            alertDiv.style.backgroundColor = "#dc3545";
+        }
+
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+            if (type === "success") {
+                window.location.reload();
+            }
+        }, 2000);
+    }
+
+});

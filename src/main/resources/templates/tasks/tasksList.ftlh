@@ -7,6 +7,11 @@
             <p>На вас нет зарегестрированных компаний!</p>
         </div>
     </#if>
+
+    <div id="responseMessage" style="display: none;">
+
+    </div>
+
     <div class="container p-3">
         <div class="main-content">
             <div class="table-container company-table" id="company-table" style="display: block">
@@ -354,6 +359,7 @@
     </script>
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 
     <style>
         .container {
@@ -574,7 +580,7 @@
         }
 
         .task-create-description {
-            width: 324px;
+            width: 365px;
             height: 112px;
             background-color: #d9d9d9;
             color: #333;
@@ -930,8 +936,16 @@
             transform: scale(1.1);
         }
 
-
+        .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            margin: 0;
+            padding: 0;
+        }
 
 
     </style>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 </@layout.layout>

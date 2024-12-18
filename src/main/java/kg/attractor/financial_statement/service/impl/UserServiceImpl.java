@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(UserDto userDto) {
+    public Long registerUser(UserDto userDto) {
         validateBirthday(userDto.getBirthday());
         User newUser = User.builder()
                 .name(userDto.getName())
@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
                 .build();
         log.info("registering User: {} in process...", newUser);
         userRepository.save(newUser);
+        return newUser.getId();
 
     }
 

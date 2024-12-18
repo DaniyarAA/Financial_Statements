@@ -1,6 +1,9 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 let editUserHandler = null;
+const userModal = document.getElementById("userModal");
+const archiveLink = document.getElementById("archive-link");
+const editUserBtn = document.getElementById("edit-user-info-button");
 
 
 function switchToTileView() {
@@ -26,12 +29,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    const userModal = document.getElementById("userModal");
-    const editUserBtn = document.getElementById("edit-user-info-button");
-    const archiveLink = document.getElementById("archive-link");
     let currentUserId = null;
-    console.log(document.querySelectorAll("#userModal").length);
-
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    if(userId){
+        window.history.replaceState({}, '', window.location.pathname);
+        const button = document.getElementById("button-to-click");
+        button.setAttribute("data-user-id", userId);
+        button.setAttribute("data-bs-toggle", "modal");
+        button.setAttribute("data-bs-target", "#userModal");
+        button.click();
+    }
 
 
     const companySearchInput = document.getElementById("companySearch");
@@ -50,208 +58,208 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    userModal.addEventListener("show.bs.modal", function (event) {
-        const button = event.relatedTarget;
-        const avatarInput = document.getElementById("avatarInput");
-        const deleteUserIcon = document.getElementById("delete-user-icon");
-        currentUserId = button.getAttribute("data-user-id");
-        if (deleteUserIcon){
-            deleteUserIcon.setAttribute("data-user-id", currentUserId);
+});
+userModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+    const avatarInput = document.getElementById("avatarInput");
+    const deleteUserIcon = document.getElementById("delete-user-icon");
+    currentUserId = button.getAttribute("data-user-id");
+    if (deleteUserIcon){
+        deleteUserIcon.setAttribute("data-user-id", currentUserId);
+    }
+    if(avatarInput){
+        avatarInput.setAttribute("data-user-id", currentUserId);
+    }
+    const iconsToReset = [
+        'edit-company-icon',
+        'edit-name-icon',
+        'edit-birthday-icon',
+        'change-avatar-icon',
+        'delete-user-icon',
+        'edit-role-icon',
+        'edit-email-icon',
+    ];
+    const companyDropdown = document.getElementById('companyDropdown');
+    const notesInput = document.getElementById('notesInput');
+    const editUserInfoButton = document.getElementById('edit-user-info-button');
+    const editUserBtnIcon = document.getElementById('edit-user-btn-icon');
+    const roleDisplay = document.getElementById("roleDisplay");
+    const roleSelect = document.getElementById("roleSelect");
+    iconsToReset.forEach(iconId => {
+        const element = document.getElementById(iconId);
+        if (element) {
+            element.style.display = 'block';
         }
-        if(avatarInput){
-            avatarInput.setAttribute("data-user-id", currentUserId);
-        }
-        const iconsToReset = [
-            'edit-company-icon',
-            'edit-name-icon',
-            'edit-birthday-icon',
-            'change-avatar-icon',
-            'delete-user-icon',
-            'edit-role-icon',
-            'edit-email-icon',
-        ];
-        const companyDropdown = document.getElementById('companyDropdown');
-        const notesInput = document.getElementById('notesInput');
-        const editUserInfoButton = document.getElementById('edit-user-info-button');
-        const editUserBtnIcon = document.getElementById('edit-user-btn-icon');
-        const roleDisplay = document.getElementById("roleDisplay");
-        const roleSelect = document.getElementById("roleSelect");
-        iconsToReset.forEach(iconId => {
-            const element = document.getElementById(iconId);
-            if (element) {
-                element.style.display = 'block';
+    });
+    if (companyDropdown) companyDropdown.disabled = false;
+    if (notesInput) notesInput.disabled = false;
+    if (editUserInfoButton) editUserInfoButton.disabled = false;
+
+
+    console.log("Fetching user data for:", currentUserId);
+    fetch(`/admin/users/edit/` + currentUserId)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Data fetched for user:", data.user);
+            const user = data.user;
+            const companies = data.companies;
+            const roles = data.roles;
+            const deleteUserIcon = document.getElementById("delete-user-icon");
+            const editRoleIcon = document.getElementById("edit-role-icon");
+            if (editUserHandler) {
+                editUserBtn.removeEventListener("click", editUserHandler);
             }
-        });
-        if (companyDropdown) companyDropdown.disabled = false;
-        if (notesInput) notesInput.disabled = false;
-        if (editUserInfoButton) editUserInfoButton.disabled = false;
 
+            if(user.roleDto && user.roleDto.roleName === "SuperUser"){
+                if (deleteUserIcon) deleteUserIcon.style.display = 'none';
+                if (editRoleIcon) editRoleIcon.style.display = 'none';
+            } else {
+                if (deleteUserIcon) deleteUserIcon.style.display = 'block';
+                if (editRoleIcon) editRoleIcon.style.display = 'block';
+            }
+            roleSelect.innerHTML = "";
 
-        console.log("Fetching user data for:", currentUserId);
-        fetch(`/admin/users/edit/` + currentUserId)
-            .then(response => response.json())
-            .then(data => {
-                console.log("Data fetched for user:", data.user);
-                const user = data.user;
-                const companies = data.companies;
-                const roles = data.roles;
-                const deleteUserIcon = document.getElementById("delete-user-icon");
-                const editRoleIcon = document.getElementById("edit-role-icon");
-                if (editUserHandler) {
-                    editUserBtn.removeEventListener("click", editUserHandler);
-                }
+            if (!user.enabled) {
+                const iconsToHide = [
+                    'edit-company-icon',
+                    'edit-name-icon',
+                    'edit-birthday-icon',
+                    'change-avatar-icon',
+                    'delete-user-icon',
+                    'edit-email-icon',
+                ];
 
-                if(user.roleDto && user.roleDto.roleName === "SuperUser"){
-                    if (deleteUserIcon) deleteUserIcon.style.display = 'none';
-                    if (editRoleIcon) editRoleIcon.style.display = 'none';
-                } else {
-                    if (deleteUserIcon) deleteUserIcon.style.display = 'block';
-                    if (editRoleIcon) editRoleIcon.style.display = 'block';
-                }
-                roleSelect.innerHTML = "";
-
-                if (!user.enabled) {
-                    const iconsToHide = [
-                        'edit-company-icon',
-                        'edit-name-icon',
-                        'edit-birthday-icon',
-                        'change-avatar-icon',
-                        'delete-user-icon',
-                        'edit-email-icon',
-                    ];
-
-                    iconsToHide.forEach(iconId => {
-                        const element = document.getElementById(iconId);
-                        if (element) {
-                            element.style.display = 'none';
-                        }
-                    });
-
-                    const emptyOption = document.createElement("option");
-                    emptyOption.value = "";
-                    emptyOption.textContent = "Выберите роль";
-                    emptyOption.disabled = true;
-                    emptyOption.selected = true;
-                    roleSelect.append(emptyOption);
-
-                    editUserHandler = function () {
-                        if (currentUserId) {
-                            resumeUser(currentUserId);
-                        }
-                    };
-
-
-                    const companyDropdown = document.getElementById('companyDropdown');
-                    const notesInput = document.getElementById('notesInput');
-
-                    if (companyDropdown) companyDropdown.disabled = true;
-                    if (notesInput) notesInput.disabled = true;
-
-                    editUserBtnIcon.className = "bi bi-arrow-counterclockwise fs-1";
-                } else {
-                    editUserHandler = function () {
-                        if (currentUserId) {
-                            saveUserData(currentUserId);
-                        }
-                    };
-                    editUserBtnIcon.className = "bi bi-check2 fs-1";
-
-                }
-
-                editUserBtn.addEventListener("click", editUserHandler);
-
-                document.getElementById("userModalLabel").innerText = user.name;
-                document.getElementById("surnameModalLabel").innerText = user.surname;
-                document.getElementById("surnameNameInput").value = user.surname;
-                document.getElementById("user-email").innerText = user.email;
-                document.getElementById("user-email").title = user.email;
-
-                document.getElementById("emailInput").value = user.email;
-                const birthday = user.birthday;
-                const [year, month, day] = birthday.split('-');
-                document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
-                document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
-                document.getElementById("notesInput").value = user.notes;
-                document.getElementById("userNameInput").value = user.name;
-                document.getElementById("birthday-input").value = birthday;
-                if (user.avatar) {
-                    document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
-                } else {
-                    document.getElementById("avatar").src = `/api/files/download/user.png`;
-
-                }
-
-                if(user.roleDto){
-                    roleDisplay.innerText = user.roleDto.roleName;
-                } else {
-                    roleDisplay.innerText = "Отсутствует";
-                }
-
-
-
-                roles.forEach(role => {
-                    const option = document.createElement("option");
-                    option.value = role.id;
-                    option.textContent = role.roleName;
-                    if (user.roleDto && role.id === user.roleDto.id) {
-                        option.selected = true;
+                iconsToHide.forEach(iconId => {
+                    const element = document.getElementById(iconId);
+                    if (element) {
+                        element.style.display = 'none';
                     }
-                    roleSelect.append(option);
                 });
 
+                const emptyOption = document.createElement("option");
+                emptyOption.value = "";
+                emptyOption.textContent = "Выберите роль";
+                emptyOption.disabled = true;
+                emptyOption.selected = true;
+                roleSelect.append(emptyOption);
 
-                const initialCompanies = document.getElementById("initialCompanies");
-                const maxLength = 19;
-                let displayText = user.companies.slice(0, 2).map(company => company.name).join(", ");
-                if (displayText.length > maxLength) {
-                    displayText = displayText.slice(0, maxLength - 3) + '...';
-                } else if (user.companies.length === 0){
-                    displayText = "Отсутствуют";
+                editUserHandler = function () {
+                    if (currentUserId) {
+                        resumeUser(currentUserId);
+                    }
+                };
+
+
+                const companyDropdown = document.getElementById('companyDropdown');
+                const notesInput = document.getElementById('notesInput');
+
+                if (companyDropdown) companyDropdown.disabled = true;
+                if (notesInput) notesInput.disabled = true;
+
+                editUserBtnIcon.className = "bi bi-arrow-counterclockwise fs-1";
+            } else {
+                editUserHandler = function () {
+                    if (currentUserId) {
+                        saveUserData(currentUserId);
+                    }
+                };
+                editUserBtnIcon.className = "bi bi-check2 fs-1";
+
+            }
+
+            editUserBtn.addEventListener("click", editUserHandler);
+
+            document.getElementById("userModalLabel").innerText = user.name;
+            document.getElementById("surnameModalLabel").innerText = user.surname;
+            document.getElementById("surnameNameInput").value = user.surname;
+            document.getElementById("user-email").innerText = user.email;
+            document.getElementById("user-email").title = user.email;
+
+            document.getElementById("emailInput").value = user.email;
+            const birthday = user.birthday;
+            const [year, month, day] = birthday.split('-');
+            document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
+            document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
+            document.getElementById("notesInput").value = user.notes;
+            document.getElementById("userNameInput").value = user.name;
+            document.getElementById("birthday-input").value = birthday;
+            if (user.avatar) {
+                document.getElementById("avatar").src = `/api/files/download/${user.avatar}`;
+            } else {
+                document.getElementById("avatar").src = `/api/files/download/user.png`;
+
+            }
+
+            if(user.roleDto){
+                roleDisplay.innerText = user.roleDto.roleName;
+            } else {
+                roleDisplay.innerText = "Отсутствует";
+            }
+
+
+
+            roles.forEach(role => {
+                const option = document.createElement("option");
+                option.value = role.id;
+                option.textContent = role.roleName;
+                if (user.roleDto && role.id === user.roleDto.id) {
+                    option.selected = true;
                 }
-                initialCompanies.innerHTML = displayText;
+                roleSelect.append(option);
+            });
 
-                const companyCheckboxes = document.getElementById("companyCheckboxes");
-                companyCheckboxes.innerHTML = "";
-                const sortedCompanies = companies.sort((a, b) => {
-                    const aChecked = user.companies.some(userCompany => userCompany.id === a.id);
-                    const bChecked = user.companies.some(userCompany => userCompany.id === b.id);
-                    return bChecked - aChecked;
-                });
 
-                sortedCompanies.forEach((company, index) => {
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.value = company.id;
-                    checkbox.id = `company_${company.id}`;
-                    checkbox.checked = user.companies.some(userCompany => userCompany.id === company.id);
+            const initialCompanies = document.getElementById("initialCompanies");
+            const maxLength = 19;
+            let displayText = user.companies.slice(0, 2).map(company => company.name).join(", ");
+            if (displayText.length > maxLength) {
+                displayText = displayText.slice(0, maxLength - 3) + '...';
+            } else if (user.companies.length === 0){
+                displayText = "Отсутствуют";
+            }
+            initialCompanies.innerHTML = displayText;
 
-                    const label = document.createElement("label");
-                    label.setAttribute("for", `company_${company.id}`);
-                    label.textContent = `${index + 1}) ${company.name}`;
+            const companyCheckboxes = document.getElementById("companyCheckboxes");
+            companyCheckboxes.innerHTML = "";
+            const sortedCompanies = companies.sort((a, b) => {
+                const aChecked = user.companies.some(userCompany => userCompany.id === a.id);
+                const bChecked = user.companies.some(userCompany => userCompany.id === b.id);
+                return bChecked - aChecked;
+            });
 
-                    const div = document.createElement("div");
-                    div.style.display = "flex";
-                    div.style.justifyContent = "space-between";
-                    div.style.alignItems = "center";
+            sortedCompanies.forEach((company, index) => {
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = company.id;
+                checkbox.id = `company_${company.id}`;
+                checkbox.checked = user.companies.some(userCompany => userCompany.id === company.id);
 
-                    div.append(label);
-                    div.append(checkbox);
+                const label = document.createElement("label");
+                label.setAttribute("for", `company_${company.id}`);
+                label.textContent = `${index + 1}) ${company.name}`;
 
-                    companyCheckboxes.append(div);
-                });
+                const div = document.createElement("div");
+                div.style.display = "flex";
+                div.style.justifyContent = "space-between";
+                div.style.alignItems = "center";
 
-            })
-            .catch(error => console.error("Error loading user data:", error));
-    });
+                div.append(label);
+                div.append(checkbox);
 
-    archiveLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (currentUserId) {
-            window.location.href = `/archive/${currentUserId}`;
-        } else {
-            console.error("ID пользователя не найден!");
-        }
-    });
+                companyCheckboxes.append(div);
+            });
+
+        })
+        .catch(error => console.error("Error loading user data:", error));
+});
+
+archiveLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    if (currentUserId) {
+        window.location.href = `/archive/${currentUserId}`;
+    } else {
+        console.error("ID пользователя не найден!");
+    }
 });
 
 

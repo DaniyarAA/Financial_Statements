@@ -65,7 +65,7 @@
                     </form>
                 </div>
                 <div class="modal-footer role-modal-footer d-flex justify-content-center">
-                    <button type="button" class="btn btn-success role-btn create-role-button role-btn-secondary" onclick="saveRole()"><i class="bi bi-check2 check-icon-role"></i></button>
+                    <button type="button" class="btn btn-success role-btn create-role-button edit-role-button role-btn-secondary" onclick="saveRole()"><i class="bi bi-check2 check-icon-role"></i></button>
                 </div>
             </div>
         </div>

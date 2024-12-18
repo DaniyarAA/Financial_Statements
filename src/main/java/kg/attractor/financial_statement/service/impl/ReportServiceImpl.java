@@ -138,7 +138,7 @@ public class ReportServiceImpl implements ReportService {
             tasksValidate.addAll(tasks);
 
             for (Task t : tasks) {
-                String companyName = company.getName() != null ? "\"" + company.getName() + "\"" : "";
+                String companyName = company.getName() != null ? "\"" + company.getName().replace("\"", "\"\"") + "\"" : "\"\"";
                 String inn = company.getInn() != null ? "\"" + company.getInn() + "\""  : "";
                 String docTypeName = t.getDocumentType() != null && t.getDocumentType().getName() != null
                         ? "\"" + t.getDocumentType().getName() + "\""

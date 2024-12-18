@@ -19,7 +19,7 @@ public interface UserService {
 
     Map<String, Object> sendMessageToUser(HttpServletRequest request);
 
-    void registerUser(UserDto user);
+    Long registerUser(UserDto user);
 
     UserDto getUserDtoById(Long id);
 

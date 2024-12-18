@@ -84,7 +84,11 @@
                                                             data-end-date="${task.endDate}"
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
-                                                            data-description="${task.description}"
+                                                            <#if task.description??>
+                                                                data-description="${task.description}"
+                                                            <#else>
+                                                                data-description="Не задано"
+                                                            </#if>
                                                             <#if task.amount??>
                                                                 data-amount="${task.amount}"
                                                             <#else>

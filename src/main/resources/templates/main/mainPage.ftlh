@@ -11,26 +11,20 @@
                         <div class="reports col-6 main-content">
 
                             <div class="report-content">
-                                <a href="/report/create">
+                                <a href="#">
                                     <div class="report-header report-button">
                                         <p>СФОРМИРОВАТЬ ОТЧЕТ</p>
                                     </div>
                                 </a>
-                                <a href="/tasks/create/everyMonth">
-                                    <div class="report-monthly report-button">
-                                        <p>ЕЖЕМЕСЯЧНЫЙ</p>
-                                    </div>
-                                </a>
-                                <a href="/tasks/create/everyQuarter">
-                                    <div class="report-quarterly report-button">
-                                        <p>КВАРТАЛЬНЫЙ</p>
-                                    </div>
-                                </a>
-                                <a href="/tasks/create/everyYear">
-                                    <div class="report-yearly report-button">
-                                        <p>ГОДОВОЙ</p>
-                                    </div>
-                                </a>
+                                <button type="button" class="button btn type-btn reports-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
+                                    ЕЖЕМЕСЯЧНЫЙ
+                                </button>
+                                <button type="button" class="button btn type-btn reports-btn " data-bs-toggle="modal" data-bs-target="#quarterlyReportModal">
+                                    ЕЖЕКВАРТАЛЬНЫЙ
+                                </button>
+                                <button type="button" class="button btn type-btn reports-btn" data-bs-toggle="modal" data-bs-target="#yearlyReportModal">
+                                    ГОДОВОЙ
+                                </button>
                             </div>
                         </div>
                         <div class="archives col-6 main-content">
@@ -237,6 +231,218 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="monthlyReportModal" tabindex="-1" aria-labelledby="monthlyReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="monthlyReportModalLabel">Сформировать ежемесячный отчёт</h5>
+                    <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/api/reports/monthly/csv" method="post" id="monthlyReportForm">
+                        <!-- CSRF -->
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label>Выберите компании:</label><br>
+                            <div>
+
+                                <input type="text" id="companySearchMonthly" placeholder="Поиск компаний..." class="form-control mb-2">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" id="selectAllMonthly" class="form-check-input">
+                                    <label class="form-check-label" for="selectAllMonthly">Выбрать все</label>
+                                </div>
+
+                                <div id="monthlyErrorContainer" class="text-danger" style="display: none; margin-bottom: 5px"></div>
+
+
+                                <div id="companyCheckboxesMonthly" class="dropdown-menu p-3" style="border: 1px solid #ccc; width: 94%">
+                                    <#list companies as company>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="companyIds" id="company_${company.id}" value="${company.id}">
+                                            <label class="form-check-label" for="company_${company.id}">${company.name}</label>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group" style="margin-top: 220px">
+                            <label for="yearSelect">Год:</label>
+                            <select class="form-control" id="yearSelect" name="year">
+                                <#assign currentYear = .now?string("yyyy")?number>
+                                <#list (currentYear - 2)..(currentYear + 2) as y>
+                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="monthSelect">Месяц:</label>
+                            <select class="form-control" id="monthSelect" name="month">
+                                <option value="1">Январь</option>
+                                <option value="2">Февраль</option>
+                                <option value="3">Март</option>
+                                <option value="4">Апрель</option>
+                                <option value="5">Май</option>
+                                <option value="6">Июнь</option>
+                                <option value="7">Июль</option>
+                                <option value="8">Август</option>
+                                <option value="9">Сентябрь</option>
+                                <option value="10">Октябрь</option>
+                                <option value="11">Ноябрь</option>
+                                <option value="12">Декабрь</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="pdf-button" id="downloadMonthlyPdfButton">Скачать в формате PDF</button>
+
+
+                        <div class="modal-footer" style="display: flex; justify-content: center; border: none">
+                            <button type="submit" class="btn btn-light create-report-btn mt-1" id="downloadMonthlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="quarterlyReportModal" tabindex="-1" aria-labelledby="quarterlyReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quarterlyReportModalLabel">Сформировать ежеквартальный отчёт</h5>
+                    <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/api/reports/quarterly/csv" method="post" id="quarterlyReportForm">
+                        <!-- CSRF -->
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label>Выберите компании:</label><br>
+                            <div>
+
+                                <input type="text" id="companySearchQuarterly" placeholder="Поиск компаний..." class="form-control mb-2">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" id="selectAllQuarterly" class="form-check-input">
+                                    <label class="form-check-label" for="selectAllQuarterly">Выбрать все</label>
+                                </div>
+
+
+                                <div id="quarterlyErrorContainer" class="text-danger" style="display: none; margin-bottom: 5px"></div>
+
+                                <div id="companyCheckboxesQuarterly" class="dropdown-menu p-3" style="border: 1px solid #ccc; width: 94%">
+                                    <#list companies as company>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="companyIds" id="company_${company.id}" value="${company.id}">
+                                            <label class="form-check-label" for="company_${company.id}">${company.name}</label>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group" style="margin-top: 220px">
+                            <label for="yearSelectQuarterly">Год:</label>
+                            <select class="form-control" id="yearSelectQuarterly" name="year">
+                                <#assign currentYear = .now?string("yyyy")?number>
+                                <#list (currentYear - 2)..(currentYear + 2) as y>
+                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quarterSelect">Квартал:</label>
+                            <select class="form-control" id="quarterSelect" name="quarter">
+                                <option value="1">1 квартал</option>
+                                <option value="2">2 квартал</option>
+                                <option value="3">3 квартал</option>
+                                <option value="4">4 квартал</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="pdf-button" id="downloadQuarterlyPdfButton">Скачать в формате PDF</button>
+
+                        <div class="modal-footer" style="display: flex; justify-content: center; border: none">
+                            <button type="submit" class="btn btn-light create-report-btn mt-1" id="downloadQuarterlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="yearlyReportModal" tabindex="-1" aria-labelledby="yearlyReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yearlyReportModalLabel">Сформировать годовой отчёт</h5>
+                    <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/api/reports/yearly/csv" method="post" id="yearlyReportForm">
+                        <!-- CSRF -->
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label>Выберите компании:</label><br>
+                            <div>
+
+                                <input type="text" id="companySearchYearly" placeholder="Поиск компаний..." class="form-control mb-2">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" id="selectAllYearly" class="form-check-input">
+                                    <label class="form-check-label" for="selectAllYearly">Выбрать все</label>
+                                </div>
+
+                                <div id="yearlyErrorContainer" class="text-danger" style="display: none; margin-bottom: 5px"></div>
+
+
+                                <div id="companyCheckboxesYearly" class="dropdown-menu p-3" style="border: 1px solid #ccc; width: 94%">
+                                    <#list companies as company>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="companyIds" id="company_${company.id}" value="${company.id}">
+                                            <label class="form-check-label" for="company_${company.id}">${company.name}</label>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group" style="margin-top: 220px">
+                            <label for="yearSelectYearly">Год:</label>
+                            <select class="form-control" id="yearSelectYearly" name="year">
+                                <#assign currentYear = .now?string("yyyy")?number>
+                                <#list (currentYear - 2)..(currentYear + 2) as y>
+                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                        <button type="button" class="pdf-button" id="downloadYearlyPdfButton">Скачать в формате PDF</button>
+
+
+                        <div class="modal-footer" style="display: flex; justify-content: center; border: none">
+                            <button type="submit" class="btn btn-light create-report-btn mt-1" id="downloadYearlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .main-container {
             max-width: 1350px;
@@ -306,7 +512,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 5px;
             height: 270px;
         }
 
@@ -424,7 +630,7 @@
             width: 100%;
             height: 197px;
             border-collapse: collapse;
-            font-size: 10px; 
+            font-size: 10px;
         }
 
         .td-calendar {
@@ -589,4 +795,5 @@
 
     <script src="/js/tags.js"></script>
     <script src="/js/priority.js"></script>
+    <script src="/js/reports.js"></script>
 </@layout.layout>

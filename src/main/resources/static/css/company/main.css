@@ -155,6 +155,17 @@ form {
     color: #1E1E1E;
 }
 
+.edit-input[type="text"],
+.edit-input[type="password"],
+.edit-input[type="email"] {
+    border: 1px solid #ddd;
+    padding: 3px;
+    font-size: 15px;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+    width: calc(100% - 60px);
+}
+
 input[type="text"],
 input[type="password"],
 input[type="email"] {

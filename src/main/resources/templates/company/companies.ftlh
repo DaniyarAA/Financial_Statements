@@ -105,7 +105,7 @@
                                     <i class="bi bi-copy icon-custom"></i>
                                 </button>
                                 <div class="company-name-edit">
-                                    <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
+                                    <input type="text" id="editInputcompanyName" class="form-control edit-input d-none"
                                            value="${company.name!}">
                                     <button id="cancelBtncompanyName" class="btn btn-light d-none"
                                             onclick="cancelEdit('companyName')">&#10005;
@@ -218,7 +218,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputcompanyInn"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none"
                                                value="${company.companyInn!}">
                                         <button id="cancelBtncompanyInn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('companyInn')">&#10005;
@@ -242,7 +242,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdirectorInn"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none"
                                                value="${company.directorInn!}">
                                         <button id="cancelBtndirectorInn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('directorInn')">&#10005;
@@ -265,7 +265,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputlogin"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none"
                                                value="${company.login!}">
                                         <button id="cancelBtnlogin" class="btn btn-light d-none"
                                                 onclick="cancelEdit('login')">&#10005;
@@ -292,7 +292,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputpassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.password!}">
                                         <button id="cancelBtnpassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('password')">&#10005;
@@ -315,7 +315,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputecp"
-                                               class="form-control edit-input d-none fs-5" value="${company.ecp!}">
+                                               class="form-control edit-input d-none " value="${company.ecp!}">
                                         <button id="cancelBtnecp" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ecp')">&#10005;
                                         </button>
@@ -338,7 +338,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalyk"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.kabinetSalyk!}">
                                         <button id="cancelBtnkabinetSalyk" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kabinetSalyk')">&#10005;
@@ -366,7 +366,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalykPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.kabinetSalykPassword!}">
                                         <button id="cancelBtnkabinetSalykPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kabinetSalykPassword')">&#10005;
@@ -390,7 +390,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputtaxMode"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.taxMode!}">
                                         <button id="cancelBtntaxMode" class="btn btn-light d-none"
                                                 onclick="cancelEdit('taxMode')">&#10005;
@@ -413,7 +413,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputopf"
-                                               class="form-control edit-input d-none fs-5" value="${company.opf!}">
+                                               class="form-control edit-input d-none " value="${company.opf!}">
                                         <button id="cancelBtnopf" class="btn btn-light d-none"
                                                 onclick="cancelEdit('opf')">&#10005;
                                         </button>
@@ -436,7 +436,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdistrictGns"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.districtGns!}">
                                         <button id="cancelBtndistrictGns" class="btn btn-light d-none"
                                                 onclick="cancelEdit('districtGns')">&#10005;
@@ -460,7 +460,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputsocfundNumber"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.socfundNumber!}">
                                         <button id="cancelBtnsocfundNumber" class="btn btn-light d-none"
                                                 onclick="cancelEdit('socfundNumber')">&#10005;
@@ -484,7 +484,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputregistrationNumberMj"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.registrationNumberMj!}">
                                         <button id="cancelBtnregistrationNumberMj" class="btn btn-light d-none"
                                                 onclick="cancelEdit('registrationNumberMj')">&#10005;
@@ -508,7 +508,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputokpo"
-                                               class="form-control edit-input d-none fs-5" value="${company.okpo!}">
+                                               class="form-control edit-input d-none " value="${company.okpo!}">
                                         <button id="cancelBtnokpo" class="btn btn-light d-none"
                                                 onclick="cancelEdit('okpo')">&#10005;
                                         </button>
@@ -530,7 +530,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdirector"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.director!}">
                                         <button id="cancelBtndirector" class="btn btn-light d-none"
                                                 onclick="cancelEdit('director')">&#10005;
@@ -553,7 +553,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputked"
-                                               class="form-control edit-input d-none fs-5" value="${company.ked!}">
+                                               class="form-control edit-input d-none " value="${company.ked!}">
                                         <button id="cancelBtnked" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ked')">&#10005;
                                         </button>
@@ -578,7 +578,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemail"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.email!}">
                                         <button id="cancelBtnemail" class="btn btn-light d-none"
                                                 onclick="cancelEdit('email')">&#10005;
@@ -605,7 +605,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemailPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.emailPassword!}">
                                         <button id="cancelBtnemailPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('emailPassword')">&#10005;
@@ -627,7 +627,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputphone"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.phone!}">
                                         <button id="cancelBtnphone" class="btn btn-light d-none"
                                                 onclick="cancelEdit('phone')">&#10005;
@@ -649,7 +649,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesf"
-                                               class="form-control edit-input d-none fs-5" value="${company.esf!}">
+                                               class="form-control edit-input d-none " value="${company.esf!}">
                                         <button id="cancelBtnesf" class="btn btn-light d-none"
                                                 onclick="cancelEdit('esf')">&#10005;
                                         </button>
@@ -675,7 +675,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesfPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.esfPassword!}">
                                         <button id="cancelBtnesfPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('esfPassword')">&#10005;
@@ -697,7 +697,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkm"
-                                               class="form-control edit-input d-none fs-5" value="${company.kkm!}">
+                                               class="form-control edit-input d-none " value="${company.kkm!}">
                                         <button id="cancelBtnkkm" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kkm')">&#10005;
                                         </button>
@@ -723,7 +723,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkmPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.kkmPassword!}">
                                         <button id="cancelBtnkkmPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kkmPassword')">&#10005;
@@ -746,7 +746,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1c"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.fresh1c!}">
                                         <button id="cancelBtnfresh1c" class="btn btn-light d-none"
                                                 onclick="cancelEdit('fresh1c')">&#10005;
@@ -773,7 +773,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1cPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.fresh1cPassword!}">
                                         <button id="cancelBtnfresh1cPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('fresh1cPassword')">&#10005;
@@ -796,7 +796,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettn"
-                                               class="form-control edit-input d-none fs-5" value="${company.ettn!}">
+                                               class="form-control edit-input d-none " value="${company.ettn!}">
                                         <button id="cancelBtnettn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ettn')">&#10005;
                                         </button>
@@ -823,7 +823,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettnPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.ettnPassword!}">
                                         <button id="cancelBtnettnPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ettnPassword')">&#10005;

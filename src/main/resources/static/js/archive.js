@@ -54,6 +54,15 @@ function showNotification(message, success) {
     alert.className = 'alert ' + success ? 'alert-success' : 'alert-danger' + ' fade show position-fixed top-0 end-0 m-3';
     alert.role = 'alert';
     alert.textContent = message;
+    alert.style.position = 'fixed';
+    alert.style.top = '20px';
+    alert.style.right = '20px';
+    alert.style.padding = '15px';
+    alert.style.border = '1px solid';
+    alert.style.borderRadius = '5px';
+    alert.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)';
+    alert.style.zIndex = '9999';
+    alert.style.transition = 'opacity 0.5s';
 
     document.body.appendChild(alert);
 

@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lengthMenu: [5, 10, 15, 100],
         searching: true,
         columnDefs: [
-            {targets: [0, 6], orderable: false}
+            {targets: [0, 5], orderable: false}
         ],
         language: {
             search: "",

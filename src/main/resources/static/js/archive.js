@@ -54,6 +54,15 @@ function showNotification(message, success) {
     alert.className = 'alert ' + success ? 'alert-success' : 'alert-danger' + ' fade show position-fixed top-0 end-0 m-3';
     alert.role = 'alert';
     alert.textContent = message;
+    alert.style.position = 'fixed';
+    alert.style.top = '20px';
+    alert.style.right = '20px';
+    alert.style.padding = '15px';
+    alert.style.border = '1px solid';
+    alert.style.borderRadius = '5px';
+    alert.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)';
+    alert.style.zIndex = '9999';
+    alert.style.transition = 'opacity 0.5s';
 
     document.body.appendChild(alert);
 
@@ -71,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function resumeCompany(companyId) {
+    const companyItem = document.getElementById(companyId + "-item");
     fetch('/archive/resume/company/' + companyId, {
         method: "POST",
         headers: {
@@ -80,8 +90,8 @@ function resumeCompany(companyId) {
         .then(response => {
             if (response.ok) {
                 showNotification('Компания успешно восстановлена!', true);
+                companyItem.style.display = "none";
                 localStorage.setItem('activeTab', 'companies');
-                location.reload();
             } else {
                 showNotification('Ошибка при восстановлении компании.', false);
             }
@@ -90,6 +100,7 @@ function resumeCompany(companyId) {
 }
 
 function resumeUserWithRole(userId, roleId) {
+    const userTr = document.getElementById(userId + "-tr");
     fetch('/archive/resume/user/' + userId, {
         method: 'POST',
         headers: {
@@ -100,9 +111,9 @@ function resumeUserWithRole(userId, roleId) {
     })
         .then(response => {
             if (response.ok) {
+                userTr.style.display = "none";
                 showNotification('Пользователь успешно восстановлен!', true);
                 localStorage.setItem('activeTab', 'users');
-                location.reload();
             } else {
                 showNotification('Ошибка при восстановлении пользователя.', false);
             }
@@ -186,11 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return `Показано ${start} - ${end} из ${total}`;
         },
-        dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
+        dom: "<'row align-items-center document-header'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
             "<'row'<'col-12'tr>>" +
             "<'row'<'col-12'p>>",
         responsive: true
     });
+    moveSortList();
 
     $('#filterDocumentType').on('change', function () {
         const value = $(this).val();
@@ -234,9 +246,16 @@ document.addEventListener('DOMContentLoaded', () => {
         dom: "<'row align-items-center'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
             "<'row'<'col-12'tr>>" +
             "<'row'<'col-12'p>>",
-        responsive: true
+        responsive: true,
     });
 });
+
+function moveSortList() {
+    const searchElement = document.getElementById('filterDocumentType');
+    const searchContainer = document.querySelector('.document-header');
+    const firstChild = searchContainer.lastChild;
+    searchContainer.insertBefore(searchElement, firstChild);
+}
 
 function showTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));

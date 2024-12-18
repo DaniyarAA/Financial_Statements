@@ -232,7 +232,7 @@
                                                 </li>
                                             </#if>
                                             <#if company.ettn?has_content>
-                                                <li><i class="bi bi-barcode" style="color: #1E1E1E"></i> <b>ЭТТН логин:</b> ${company.ettn}
+                                                <li><i class="bi bi-truck" style="color: #1E1E1E"></i> <b>ЭТТН логин:</b> ${company.ettn}
                                                 </li>
                                             </#if>
                                             <#if company.ettnPassword?has_content>

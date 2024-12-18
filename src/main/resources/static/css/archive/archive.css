@@ -194,7 +194,7 @@ h2 {
 }
 
 .accordion {
-    border: 1px solid #dee2e6;
+    border: 1px solid #d9d9d9;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -202,29 +202,28 @@ h2 {
 .accordion-item {
     border: none;
     margin: 10px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .accordion-button {
-    background-color: #f8f9fa;
+    background-color: #d9d9d9;
     font-weight: bold;
-    color: #495057;
+    color: #1E1E1E;
 }
 
 .accordion-button:hover {
-    background-color: #e9ecef;
-    color: #212529;
+    background-color: #d9d9d9;
+    color: #1E1E1E;
 }
 
 .btn-resume {
     border: none;
-    color: black;
+    color: #1E1E1E;
     font-size: 23px;
 }
 
 .btn-resume:hover {
-    background-color: white;
-    color: black;
+    background-color: #d9d9d9;
+    color: #1E1E1E;
 }
 
 .company-details {
@@ -236,18 +235,17 @@ h2 {
 .company-details li {
     margin: 5px 0;
     padding: 5px 10px;
-    border-left: 4px solid #198754;
-    background-color: #fff;
+    background-color: white;
     border-radius: 5px;
     display: flex;
     align-items: center;
     font-size: 14px;
-    color: #495057;
+    color: #1E1E1E;
 }
 
 .company-details li i {
     margin-right: 10px;
-    color: #198754;
+    color: white;
 }
 
 .accordion-body {
@@ -256,7 +254,7 @@ h2 {
     justify-content: center;
     margin: 0 auto;
     padding: 15px;
-    background-color: #f9f9f9;
+    background-color: #d9d9d9;
     font-size: 14px;
     line-height: 1.5;
     border-radius: 5px;
@@ -688,7 +686,7 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
 }
 
 .accordion {
-    background-color: #a4b0be;
+    background-color:  #d9d9d9;
     width: calc(100% - 40px);
     margin: 0 auto;
     color: rgba(0, 0, 0, 0);
@@ -698,12 +696,11 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
 }
 
 .accordion-item {
-    background-color: #dfe4ea;
-
+    background-color: white;
 }
 
 .collapsed{
-    background-color: #dfe4ea;
+    background-color: white;
 }
 
 .accordion-header {
@@ -730,18 +727,17 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
 .company-details li {
     list-style: none;
     padding: 8px;
-    background: #f1f8e9;
-    border: 1px solid #c5e1a5;
+    background: white;
     border-radius: 6px;
     margin-bottom: 5px;
-    color: #1b5e20;
+    color: #1E1E1E;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .company-details li i {
-    color: #66bb6a;
+    color: white;
     font-size: 1.2rem;
 }
 

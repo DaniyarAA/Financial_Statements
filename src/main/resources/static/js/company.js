@@ -209,6 +209,17 @@ function clearSortFilter() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('#search');
+
+    searchInput.addEventListener('focus', function () {
+        this.placeholder = 'Введите название...';
+    });
+
+    searchInput.addEventListener('blur', function () {
+        if (!this.value.trim()) {
+            this.placeholder = 'Название';
+        }
+    });
     document.querySelector('#search').oninput = function () {
         let value = this.value.trim().toLowerCase();
         let totalCompany = document.querySelectorAll('.search li');
@@ -234,7 +245,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 });
-
 
 document.addEventListener("DOMContentLoaded", function() {
     const container = document.getElementById('total');

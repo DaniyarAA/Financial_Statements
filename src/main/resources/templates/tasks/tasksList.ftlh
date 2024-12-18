@@ -576,7 +576,7 @@
         }
 
         .task-create-description {
-            width: 324px;
+            width: 365px;
             height: 112px;
             background-color: #d9d9d9;
             color: #333;

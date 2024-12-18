@@ -113,7 +113,7 @@ function showTaskDetails(button) {
         </div>
 
   <label for="description" style="margin-top: 55px; font-size: 14px; font-style: italic; font-weight: 100">Описание</label>
-        <textarea id="description" name="description" style="width: 324px;
+        <textarea id="description" name="description" style="width: 360px;
     height: 112px;
     background-color: #d9d9d9;
     color: #333;
@@ -125,7 +125,7 @@ function showTaskDetails(button) {
     font-size: 16px;
     resize: none;
     overflow-y: auto;">${description}</textarea>
-        <div style="display: flex; justify-content: center; margin-top: 50px">
+        <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
 
         <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
             0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>

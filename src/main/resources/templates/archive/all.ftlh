@@ -27,7 +27,7 @@
             <tbody>
             <#if deletedUsers?has_content>
                 <#list deletedUsers as user>
-                    <tr>
+                    <tr id="${user.id}-tr">
                         <td class="return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
                           </td>
                         <td>${user.name} ${user.surname}</td>
@@ -141,7 +141,7 @@
         <#if deletedCompanies?has_content>
             <div class="accordion rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="${company.id}-item">
                         <h2 class="accordion-header d-flex align-items-center justify-content-between"
                             id="heading-${company_index}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"

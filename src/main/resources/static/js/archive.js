@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function resumeCompany(companyId) {
+    const companyItem = document.getElementById(companyId + "-item");
     fetch('/archive/resume/company/' + companyId, {
         method: "POST",
         headers: {
@@ -89,8 +90,8 @@ function resumeCompany(companyId) {
         .then(response => {
             if (response.ok) {
                 showNotification('Компания успешно восстановлена!', true);
+                companyItem.style.display = "none";
                 localStorage.setItem('activeTab', 'companies');
-                location.reload();
             } else {
                 showNotification('Ошибка при восстановлении компании.', false);
             }
@@ -99,6 +100,7 @@ function resumeCompany(companyId) {
 }
 
 function resumeUserWithRole(userId, roleId) {
+    const userTr = document.getElementById(userId + "-tr");
     fetch('/archive/resume/user/' + userId, {
         method: 'POST',
         headers: {
@@ -109,9 +111,9 @@ function resumeUserWithRole(userId, roleId) {
     })
         .then(response => {
             if (response.ok) {
+                userTr.style.display = "none";
                 showNotification('Пользователь успешно восстановлен!', true);
                 localStorage.setItem('activeTab', 'users');
-                location.reload();
             } else {
                 showNotification('Ошибка при восстановлении пользователя.', false);
             }

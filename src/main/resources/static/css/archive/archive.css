@@ -174,11 +174,6 @@ h2 {
     background: #fff;
 }
 
-.styled-table thead tr {
-    background-color: #4caf50;
-    color: #0e0620;
-    text-align: left;
-}
 
 .styled-table th, .styled-table td {
     padding: 12px 15px;
@@ -323,13 +318,6 @@ h2 {
     text-align: left;
 }
 
-.styled-table thead tr {
-    background-color: #007bff;
-    color: #ffffff;
-    text-align: left;
-    font-weight: bold;
-}
-
 .styled-table th,
 .styled-table td {
     padding: 12px 15px;
@@ -432,11 +420,7 @@ h2 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.styled-table thead tr {
-    background-color: #007bff;
-    color: #ffffff;
-    text-align: left;
-}
+
 
 .styled-table th, .styled-table td {
     padding: 12px 15px;
@@ -555,11 +539,6 @@ modal-header {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.styled-table thead {
-    background-color: #004085;
-    color: #fff;
-    font-weight: 600;
-}
 
 .styled-table thead th {
     padding: 14px 16px;
@@ -653,31 +632,6 @@ modal-header {
     padding: 20px 0;
 }
 
-@media (max-width: 768px) {
-    .styled-table thead {
-        display: none;
-    }
-
-    .styled-table tbody tr {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 15px;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-    }
-
-    .styled-table tbody td {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .styled-table tbody td:last-child {
-        border-bottom: none;
-    }
-}
-
 table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
     padding: 10px;
     text-align: center;
@@ -751,4 +705,36 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
     font-size: 16px;
     border-radius: 50px;
     padding: 5px;
+}
+
+/*      Media      */
+
+@media (max-width: 860px) {
+
+    .th-user-archive{
+        width: auto;
+        display: block;
+    }
+
+    .return-button-list-td{
+        margin-top: 25px;
+    }
+
+}
+
+@media (max-width: 610px) {
+
+    .styled-table thead th .styled-table tbody td{
+        display: block;
+        width: 95%;
+    }
+
+    .return-button-list-td{
+        margin-top: 22px;
+    }
+
+    .tab-button{
+        font-size: 14px;
+    }
+
 }

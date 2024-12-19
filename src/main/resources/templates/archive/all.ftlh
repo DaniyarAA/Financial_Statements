@@ -14,27 +14,27 @@
 
     <div id="users" class="tab-content active">
         <table class="styled-table" id="users-table">
-            <thead>
+            <thead class="thead-user-archive">
             <tr>
-                <th>№</th>
-                <th>ФИО</th>
-                <th>Логин</th>
-                <th>Адрес эл. почты</th>
-                <th>День рождения</th>
-                <th>Дата регистрации</th>
+                <th class="th-user-archive">№</th>
+                <th class="th-user-archive">ФИО</th>
+                <th class="th-user-archive">Логин</th>
+                <th class="th-user-archive">Адрес эл. почты</th>
+                <th class="th-user-archive">День рождения</th>
+                <th class="th-user-archive">Дата регистрации</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="tbody-user-archive">
             <#if deletedUsers?has_content>
                 <#list deletedUsers as user>
                     <tr id="${user.id}-tr">
-                        <td class="return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})" title="Восстановить пользователя : ${user.name}"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
+                        <td class="th-user-archive return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})" title="Восстановить пользователя : ${user.name}"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
                           </td>
-                        <td>${user.name} ${user.surname}</td>
-                        <td>${user.login}</td>
-                        <td>${user.email}</td>
-                        <td>${user.birthday}</td>
-                        <td>${user.registerDate}</td>
+                        <td class="th-user-archive">${user.name} ${user.surname}</td>
+                        <td class="th-user-archive">${user.login}</td>
+                        <td class="th-user-archive">${user.email}</td>
+                        <td class="th-user-archive">${user.birthday}</td>
+                        <td class="th-user-archive">${user.registerDate}</td>
                     </tr>
                 </#list>
             <#else>

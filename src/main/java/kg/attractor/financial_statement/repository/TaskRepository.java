@@ -38,4 +38,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 //
 //    boolean existsByUserCompanyAndStartDateAndEndDateAndDocumentType(
 //            UserCompany userCompany, LocalDate startDate, LocalDate endDate, DocumentType documentType);
+List<Task> findByCompanyInAndStartDatetimeYearAndStartDatetimeMonth(
+        List<Company> companies, int year, int month);
+
 }

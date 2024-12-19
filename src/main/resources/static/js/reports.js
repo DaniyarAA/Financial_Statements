@@ -28,6 +28,48 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         });
+
+        function setupDatePickers(startDateId, endDateId, defaultRange) {
+            const startDateInput = document.getElementById(startDateId);
+            const endDateInput = document.getElementById(endDateId);
+
+            function calculateDateRange(rangeType) {
+                const today = new Date();
+                if (rangeType === "monthly") {
+                    return {
+                        start: new Date(today.getFullYear(), today.getMonth(), 1),
+                        end: new Date(today.getFullYear(), today.getMonth() + 1, 0),
+                    };
+                } else if (rangeType === "quarterly") {
+                    const quarterStartMonth = Math.floor(today.getMonth() / 3) * 3;
+                    return {
+                        start: new Date(today.getFullYear(), quarterStartMonth, 1),
+                        end: new Date(today.getFullYear(), quarterStartMonth + 3, 0),
+                    };
+                } else if (rangeType === "yearly") {
+                    return {
+                        start: new Date(today.getFullYear(), 0, 1),
+                        end: new Date(today.getFullYear(), 11, 31),
+                    };
+                }
+                return { start: today, end: today };
+            }
+
+            const { start, end } = calculateDateRange(defaultRange);
+            startDateInput.value = formatDate(start);
+            endDateInput.value = formatDate(end);
+
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+        }
+
+        setupDatePickers("startDateMonthly", "endDateMonthly", "monthly");
+        setupDatePickers("startDateQuarterly", "endDateQuarterly", "quarterly");
+        setupDatePickers("startDateYearly", "endDateYearly", "yearly");
     }
     setupModal("monthlyReportModal", "companySearchMonthly", "selectAllMonthly", "companyCheckboxesMonthly");
     setupModal("quarterlyReportModal", "companySearchQuarterly", "selectAllQuarterly", "companyCheckboxesQuarterly");
@@ -93,20 +135,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 link.download = filename;
                 link.click();
             } catch (error) {
-                errorContainer.textContent = "Произошла ошибка при отправке формы.";
+                errorContainer.textContent = "Произошла ошибка при отправке формы." + error.message;
                 errorContainer.style.display = "block";
             }
         }
 
         csvButton.addEventListener('click', function (event) {
             event.preventDefault();
-            actionUrl = '/api/reports/' + formId.replace('ReportForm', '').toLowerCase() + '/csv';
+            actionUrl = '/api/reports/csv';
             submitForm(event);
         });
 
         pdfButton.addEventListener('click', function (event) {
             event.preventDefault();
-            actionUrl = '/api/reports/' + formId.replace('ReportForm', '').toLowerCase() + '/pdf';
+            actionUrl = '/api/reports/pdf';
             submitForm(event);
         });
     }

@@ -7,6 +7,11 @@
             <p>На вас нет зарегестрированных компаний!</p>
         </div>
     </#if>
+
+    <div id="responseMessage" style="display: none;">
+
+    </div>
+
     <div class="container p-3">
         <div class="main-content">
             <div class="table-container company-table" id="company-table" style="display: block">
@@ -22,7 +27,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <#list list as company>
+                        <#list companyDtos as company>
                             <tr class="table-striped-row">
                                 <td class="company-columns">${company.name}</td>
                             </tr>
@@ -31,25 +36,25 @@
                     </table>
                 </div>
 
-                <div class="pagination-container">
-                    <#if currentPage == 0 && currentPage == totalPages - 1>
+<#--                <div class="pagination-container">-->
+<#--                    <#if currentPage == 0 && currentPage == totalPages - 1>-->
 
-                    </#if>
-                    <#if currentPage != 0>
-                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">
-                            <div class="button-container">
-                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
-                            </div>
-                        </a>
-                    </#if>
-                    <#if currentPage < totalPages - 1>
-                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">
-                            <div class="button-container">
-                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
-                            </div>
-                        </a>
-                    </#if>
-                </div>
+<#--                    </#if>-->
+<#--                    <#if currentPage != 0>-->
+<#--                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">-->
+<#--                            <div class="button-container">-->
+<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">-->
+<#--                            </div>-->
+<#--                        </a>-->
+<#--                    </#if>-->
+<#--                    <#if currentPage < totalPages - 1>-->
+<#--                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">-->
+<#--                            <div class="button-container">-->
+<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">-->
+<#--                            </div>-->
+<#--                        </a>-->
+<#--                    </#if>-->
+<#--                </div>-->
 
             </div>
 
@@ -68,7 +73,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <#list list as company>
+                        <#list companyDtos as company>
                             <tr class="table-striped-row task-columns">
                                 <#list monthsMap?keys as yearMonth>
                                     <td>
@@ -84,7 +89,11 @@
                                                             data-end-date="${task.endDate}"
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
-                                                            data-description="${task.description}"
+                                                            <#if task.description??>
+                                                                data-description="${task.description}"
+                                                            <#else>
+                                                                data-description="Не задано"
+                                                            </#if>
                                                             <#if task.amount??>
                                                                 data-amount="${task.amount}"
                                                             <#else>
@@ -96,8 +105,7 @@
                                                     </button>
                                                 </#list>
                                             </div>
-                                        <#else>
-                                            <span class="no-tasks">Нет задач</span>
+
                                         </#if>
                                     </td>
                                 </#list>
@@ -160,7 +168,7 @@
                                         <select class="form-select" id="user" name="appointToUserId" required>
                                             <#if userDtos??>
                                                 <#list userDtos as user>
-                                                    <option value="${user.id}">${user.login}</option>
+                                                    <option value="${user.id}">${user.surname} ${user.name}</option>
                                                 </#list>
                                             <#else>
                                                 <option disabled>Нет доступных пользователей</option>
@@ -195,8 +203,8 @@
                                     </div>
 
                                     <div class="task-create-div" style="margin-top: 50px">
-                                        <label for="description" class="task-create-text">Описание</label>
-                                        <textarea id="description" name="description" class="task-create-description"></textarea>
+                                        <label for="description" class="task-create-text" style="margin-left: 10px; margin-bottom: 8px">Описание</label>
+                                        <textarea id="description" name="description" class="task-create-description" style="width: 95%; margin-left: 10px"></textarea>
                                     </div>
 
                                     <button type="button" class="btn btn-secondary" id="nextPageCreateTask" onclick="showSecondPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
@@ -350,6 +358,7 @@
     </script>
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 
     <style>
         .container {
@@ -366,11 +375,14 @@
         }
         .company-table {
             width: 244px;
-            overflow: hidden;
+            overflow-y: auto;
             margin-right: 5px;
             background-color: #d9d9d9;
 
             transition: width 0.3s ease, padding 0.3s ease;
+        }
+        .company-table::-webkit-scrollbar {
+            display: none;
         }
 
         .company-column-tr{
@@ -378,6 +390,7 @@
             height: 61px;
         }
         .tasks-table {
+            overflow-y: auto;
             width: 100%;
             background-color: #d9d9d9;
             flex: 1;
@@ -385,6 +398,9 @@
             margin-top: 26px;
             box-sizing: border-box;
 
+        }
+        .tasks-table::-webkit-scrollbar {
+            display: none;
         }
         .year-month-column {
             background-color: #ffffff;
@@ -570,7 +586,7 @@
         }
 
         .task-create-description {
-            width: 324px;
+            width: 365px;
             height: 112px;
             background-color: #d9d9d9;
             color: #333;
@@ -926,8 +942,16 @@
             transform: scale(1.1);
         }
 
-
+        .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            margin: 0;
+            padding: 0;
+        }
 
 
     </style>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 </@layout.layout>

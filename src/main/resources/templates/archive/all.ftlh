@@ -6,7 +6,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/css/archive/archive.css">
 
-    <div class="tabs my-5 mx-auto">
+    <div class="tabs mx-auto">
         <button class="tab-button active" onclick="showTab('users')">Удаленные пользователи</button>
         <button class="tab-button" onclick="showTab('tasks')">Завершенные задачи</button>
         <button class="tab-button" onclick="showTab('companies')">Удаленные компании</button>
@@ -22,22 +22,19 @@
                 <th>Адрес эл. почты</th>
                 <th>День рождения</th>
                 <th>Дата регистрации</th>
-                <th>Действие</th>
             </tr>
             </thead>
             <tbody>
             <#if deletedUsers?has_content>
                 <#list deletedUsers as user>
-                    <tr>
-                        <td>${user_index + 1}</td>
+                    <tr id="${user.id}-tr">
+                        <td class="return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
+                          </td>
                         <td>${user.name} ${user.surname}</td>
                         <td>${user.login}</td>
                         <td>${user.email}</td>
                         <td>${user.birthday}</td>
                         <td>${user.registerDate}</td>
-                        <td>
-                            <button class="action-button" onclick="openModal(${user.id})">Восстановить</button>
-                        </td>
                     </tr>
                 </#list>
             <#else>
@@ -52,18 +49,20 @@
     <div id="roleModal" class="modal">
         <div class="modal-content  mx-auto mt-5">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Выберите роль</h2>
+            <label for="roleSelect"><h2>Выберите роль</h2></label>
             <select id="roleSelect">
                 <#list roles as role>
                     <option value="${role.id}">${role.roleName}</option>
                 </#list>
             </select>
-            <button class="action-button" onclick="confirmRole()">Подтвердить</button>
+            <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-success choose-role-btn" onclick="confirmRole()"><i class="bi bi-check2 check-icon-choose-role"></i></button>
+            </div>
         </div>
     </div>
 
     <div id="tasks" class="tab-content">
-        <select id="filterDocumentType" class="form-control my-3">
+        <select id="filterDocumentType" class="form-control w-auto">
             <option value="">Все типы документов</option>
             <#list documentTypes as type>
                 <option value="${type.name}">${type.name}</option>
@@ -119,25 +118,30 @@
 
     <div id="statusModal" class="modal">
         <div class="modal-content mx-auto mt-5">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Подтвердите действие:</h5>
-                <span class="close" onclick="closeStatusModal()">&times;</span>
-            </div>
             <div class="modal-body" id="confirmMessage">
                 <p>Вы уверены, что хотите изменить статус для задачи "<span id="taskName"></span>"?</p>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        onclick="closeStatusModal()" >Отмена
+                </button>
                 <button class="btn btn-danger" onclick="confirmStatus()">ДА</button>
             </div>
         </div>
     </div>
 
     <div id="companies" class="tab-content">
-        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control my-3">
+
+        <div class="d-flex justify-content-center">
+
+        <input type="text" id="searchCompanies" placeholder="Поиск по имени компании..." class="form-control mb-3">
+
+        </div>
+
         <#if deletedCompanies?has_content>
-            <div class="accordion shadow-sm rounded" id="accordionCompanies">
+            <div class="accordion rounded" id="accordionCompanies">
                 <#list deletedCompanies as company>
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="${company.id}-item">
                         <h2 class="accordion-header d-flex align-items-center justify-content-between"
                             id="heading-${company_index}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -157,82 +161,82 @@
                                 <div class="row row-cols-1 row-cols-md-2">
                                     <div class="col">
                                         <ul class="company-details">
-                                            <li><i class="bi bi-info-circle"></i> <b>ИНН:</b> ${company.companyInn}
+                                            <li><i class="bi bi-info-circle" style="color: #1E1E1E"></i> <b>ИНН:</b> ${company.companyInn}
                                             </li>
-                                            <li><i class="bi bi-person-circle"></i> <b>ИНН
+                                            <li><i class="bi bi-person-circle" style="color: #1E1E1E"></i> <b>ИНН
                                                     директора:</b> ${company.directorInn}
                                             </li>
-                                            <li><i class="bi bi-shield-lock"></i> <b>Логин:</b> ${company.login}
+                                            <li><i class="bi bi-shield-lock" style="color: #1E1E1E"></i> <b>Логин:</b> ${company.login}
                                             </li>
-                                            <li><i class="bi bi-key"></i> <b>Пароль:</b> ${company.password}</li>
-                                            <li><i class="bi bi-person-badge"></i> <b>ЭЦП:</b> ${company.ecp}</li>
-                                            <li><i class="bi bi-laptop"></i> <b>Salyk.kg
+                                            <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>Пароль:</b> ${company.password}</li>
+                                            <li><i class="bi bi-person-badge" style="color: #1E1E1E"></i> <b>ЭЦП:</b> ${company.ecp}</li>
+                                            <li><i class="bi bi-laptop" style="color: #1E1E1E"></i> <b>Salyk.kg
                                                     логин:</b> ${company.kabinetSalyk}</li>
-                                            <li><i class="bi bi-key"></i> <b>Salyk.kg
+                                            <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>Salyk.kg
                                                     пароль:</b> ${company.kabinetSalykPassword}</li>
-                                            <li><i class="bi bi-bar-chart-line"></i> <b>Режим
+                                            <li><i class="bi bi-bar-chart-line" style="color: #1E1E1E"></i> <b>Режим
                                                     налогообложения:</b> ${company.taxMode}</li>
-                                            <li><i class="bi bi-building"></i> <b>ОПФ:</b> ${company.opf}</li>
-                                            <li><i class="bi bi-map"></i> <b>Район ГНС:</b> ${company.districtGns}
+                                            <li><i class="bi bi-building" style="color: #1E1E1E"></i> <b>ОПФ:</b> ${company.opf}</li>
+                                            <li><i class="bi bi-map" style="color: #1E1E1E"></i> <b>Район ГНС:</b> ${company.districtGns}
                                             </li>
-                                            <li><i class="bi bi-hospital"></i> <b>Номер социального
+                                            <li><i class="bi bi-hospital" style="color: #1E1E1E"></i> <b>Номер социального
                                                     фонда:</b> ${company.socfundNumber}</li>
-                                            <li><i class="bi bi-file-earmark"></i> <b>Регистрационный номер
+                                            <li><i class="bi bi-file-earmark" style="color: #1E1E1E"></i> <b>Регистрационный номер
                                                     МЮ:</b> ${company.registrationNumberMj}</li>
-                                            <li><i class="bi bi-cash-stack"></i> <b>ОКПО:</b> ${company.okpo}</li>
+                                            <li><i class="bi bi-cash-stack" style="color: #1E1E1E"></i> <b>ОКПО:</b> ${company.okpo}</li>
                                         </ul>
                                     </div>
                                     <div class="col">
                                         <ul class="company-details">
-                                            <li><i class="bi bi-person"></i> <b>ФИО
+                                            <li><i class="bi bi-person" style="color: #1E1E1E"></i> <b>ФИО
                                                     руководителя:</b> ${company.director}</li>
-                                            <li><i class="bi bi-code-slash"></i> <b>КЭД:</b> ${company.ked}</li>
+                                            <li><i class="bi bi-code-slash" style="color: #1E1E1E"></i> <b>КЭД:</b> ${company.ked}</li>
                                             <#if company.email?has_content>
-                                                <li><i class="bi bi-envelope"></i> <b>Почта:</b> ${company.email}
+                                                <li><i class="bi bi-envelope" style="color: #1E1E1E"></i> <b>Почта:</b> ${company.email}
                                                 </li>
                                             </#if>
                                             <#if company.emailPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>Пароль
+                                                <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>Пароль
                                                         почты:</b> ${company.emailPassword}</li>
                                             </#if>
                                             <#if company.phone?has_content>
-                                                <li><i class="bi bi-telephone"></i> <b>Телефон:</b> ${company.phone}
+                                                <li><i class="bi bi-telephone" style="color: #1E1E1E"></i> <b>Телефон:</b> ${company.phone}
                                                 </li>
                                             </#if>
                                             <#if company.esf?has_content>
-                                                <li><i class="bi bi-server"></i> <b>ЭСФ логин:</b> ${company.esf}
+                                                <li><i class="bi bi-server" style="color: #1E1E1E"></i> <b>ЭСФ логин:</b> ${company.esf}
                                                 </li>
                                             </#if>
                                             <#if company.esfPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>ЭСФ
+                                                <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>ЭСФ
                                                         пароль:</b> ${company.esfPassword}
                                                 </li>
                                             </#if>
                                             <#if company.kkm?has_content>
-                                                <li><i class="bi bi-credit-card"></i> <b>ККМ
+                                                <li><i class="bi bi-credit-card" style="color: #1E1E1E"></i> <b>ККМ
                                                         логин:</b> ${company.kkm}
                                                 </li>
                                             </#if>
                                             <#if company.kkmPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>ККМ
+                                                <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>ККМ
                                                         пароль:</b> ${company.kkmPassword}
                                                 </li>
                                             </#if>
                                             <#if company.fresh1c?has_content>
-                                                <li><i class="bi bi-archive"></i> <b>1С Фреш
+                                                <li><i class="bi bi-archive" style="color: #1E1E1E"></i> <b>1С Фреш
                                                         логин:</b> ${company.fresh1c}</li>
                                             </#if>
                                             <#if company.fresh1cPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>1С Фреш
+                                                <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>1С Фреш
                                                         пароль:</b> ${company.fresh1cPassword}
                                                 </li>
                                             </#if>
                                             <#if company.ettn?has_content>
-                                                <li><i class="bi bi-barcode"></i> <b>ЭТТН логин:</b> ${company.ettn}
+                                                <li><i class="bi bi-truck" style="color: #1E1E1E"></i> <b>ЭТТН логин:</b> ${company.ettn}
                                                 </li>
                                             </#if>
                                             <#if company.ettnPassword?has_content>
-                                                <li><i class="bi bi-key"></i> <b>ЭТТН
+                                                <li><i class="bi bi-key" style="color: #1E1E1E"></i> <b>ЭТТН
                                                         пароль:</b> ${company.ettnPassword}</li>
                                             </#if>
                                         </ul>

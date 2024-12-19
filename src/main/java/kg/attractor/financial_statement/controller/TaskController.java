@@ -30,67 +30,6 @@ public class TaskController {
     private final CompanyService companyService;
     private final TagService tagService;
 
-    @GetMapping("test")
-    public String getTasks(Model model) {
-        List<TaskDto> tasks = taskService.getAllTasks();
-
-        model.addAttribute("tasks", tasks);
-        model.addAttribute("dateUtils", new DateUtils());
-        return "tasks/tasksMain";
-    }
-
-    @GetMapping()
-    public String getPageTasks(
-            Model model,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size,
-            @RequestParam(value = "sort", defaultValue = "id") String sort,
-            @RequestParam(value = "direction", defaultValue = "desc") String direction,
-            @RequestParam(value = "documentType", required = false) Long documentTypeId,
-            @RequestParam(value = "taskStatus", required = false) Long taskStatusId,
-            Authentication authentication
-    ) {
-        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
-        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
-
-        Page<TaskDto> tasksPage = taskService.getTasksPage(page, size, sort, direction, documentTypeId, taskStatusId);
-
-        model.addAttribute("documentTypeDto", documentTypeDtos);
-        model.addAttribute("taskStatusDtos", taskStatusDtos);
-        model.addAttribute("taskDtos", tasksPage);
-
-        model.addAttribute("documentTypeId", documentTypeId);
-        model.addAttribute("taskStatusId", taskStatusId);
-
-        model.addAttribute("direction", direction);
-        model.addAttribute("sort", sort);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
-
-        model.addAttribute("dateUtils", new DateUtils());
-
-        return "tasks/tasksPage";
-    }
-
-    @GetMapping("create")
-    public String getCreateTaskForm(
-            Model model,
-            Authentication authentication
-    ) {
-        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
-        List<UserDto> userDtos = userService.getAllUsers();
-        List<CompanyDto> companyDtos = companyService.getAllCompanies();
-        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
-
-        model.addAttribute("userDtos", userDtos);
-        model.addAttribute("companyDtos", companyDtos);
-        model.addAttribute("taskStatusDtos", taskStatusDtos);
-        model.addAttribute("documentTypeDtos", documentTypeDtos);
-        model.addAttribute("taskCreateDto", new TaskCreateDto());
-
-        return "tasks/create";
-    }
-
     @PostMapping("create")
     public String createTask(
             @Valid TaskCreateDto taskCreateDto,
@@ -106,33 +45,14 @@ public class TaskController {
             return "tasks/create";
         }
         if (taskCreateDto.getEndDate() == null || taskCreateDto.getStartDate() == null) {
-            return "redirect:/tasks/list";
+            return "redirect:/tasks";
         }
 
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
-        return "redirect:/tasks/list";
+        return "redirect:/tasks";
 
     }
 
-    @GetMapping("edit/{id}")
-    public String getEditTaskForm(
-            @PathVariable Long id,
-            Model model
-    ) {
-        TaskDto taskDto = taskService.getTaskById(id);
-        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
-        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
-        List<CompanyDto> companyDtos = companyService.getAllCompanies();
-
-        model.addAttribute("taskDto", taskDto);
-        model.addAttribute("documentTypeDtos", documentTypeDtos);
-        model.addAttribute("taskStatusDtos", taskStatusDtos);
-        model.addAttribute("companyDtos", companyDtos);
-        model.addAttribute("taskEditDto", new TaskEditDto());
-        model.addAttribute("dateUtils", new DateUtils());
-
-        return "tasks/edit";
-    }
 
     @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id) {
@@ -140,14 +60,15 @@ public class TaskController {
         return "redirect:/tasks";
     }
 
-    @GetMapping("list")
+    @GetMapping()
     public String getTaskListPage(
             Model model,
             Authentication authentication,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "8") int size,
-            @RequestParam(required = false, defaultValue = "") String yearMonth
-    ) throws JsonProcessingException {
+            @RequestParam(required = false, defaultValue = "") String yearMonth,
+            @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal
+            ) throws JsonProcessingException {
         if (authentication == null) {
             return "redirect:/login";
         }
@@ -191,32 +112,32 @@ public class TaskController {
         System.out.println("Json task statuses: " + taskStatusDtosJson);
         System.out.println("Json year month: " + availableYearMonths);
 
+        model.addAttribute("openModal", openModal);
+
         return "tasks/tasksList";
     }
 
     @PostMapping("/edit/{id}")
-    public String updateTaskInListPage(
+    @ResponseBody
+    public ResponseEntity<?> updateTaskInListPage(
             @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
             @PathVariable Long id,
-            BindingResult bindingResult,
-            Model model,
             Authentication authentication
     ) {
-        if (bindingResult.hasErrors() ) {
-            model.addAttribute("taskDto", taskDto);
-            return "tasks/tasksList";
-        }
         if (!taskService.checkIsAuthor(authentication.getName(), id)) {
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Вы не имеете прав редактировать эту задачу!"));
         }
+
         if (!taskService.areValidDates(taskDto.getFrom(), taskDto.getTo())) {
-            return "redirect:/tasks/list";
-
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Выбраны неправильные даты!"));
         }
-        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
-        return "redirect:/tasks/list";
 
+        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+        return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
     }
+
 
     @PostMapping("/{taskId}/priority")
     public ResponseEntity<String> updateTaskPriority(@PathVariable Long taskId, @RequestParam Long priorityId) {

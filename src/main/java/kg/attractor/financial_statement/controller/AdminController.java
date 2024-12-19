@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.User;
@@ -42,13 +43,14 @@ public class AdminController {
     }
 
     @PostMapping("register")
-    public String register(@Valid UserDto userDto, BindingResult bindingResult, Model model) {
+    public String register(@Valid UserDto userDto, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getAll());
             return "admin/register";
         }
         try {
-            userService.registerUser(userDto);
+            Long userId = userService.registerUser(userDto);
+            session.setAttribute("userId", userId);
             model.addAttribute("userDto", userDto);
             return "admin/message";
         } catch (IllegalArgumentException e) {
@@ -60,10 +62,12 @@ public class AdminController {
     }
 
     @PostMapping("/message")
-    public String messageToNewUserPost(HttpServletRequest request, Model model) {
+    public String messageToNewUserPost(HttpServletRequest request, Model model, HttpSession session) {
         Map<String, Object> answer = userService.sendMessageToUser(request);
         if (userService.messageIsSuccessfullySent(answer)){
-            return "redirect:/admin/users";
+            Long userId = (Long) session.getAttribute("userId");
+            session.removeAttribute("userId");
+            return "redirect:/admin/users?userId=" + userId;
         }
         model.addAttribute(answer);
         return "admin/message";

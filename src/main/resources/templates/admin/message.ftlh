@@ -21,16 +21,14 @@
                     </#if>
                     <div class="card border-secondary rounded p-3">
                         <div class="card-body">
-                            <h5 class="card-title">Пользователь создан успешно!</h5>
-                            <p class="card-text">Вы можете отправить данные на почту пользователя:</p>
-                            <p class="card-text"><strong>Пример сообщения:</strong></p>
-                            <p class="card-text">Здравствуйте, ${userDto.name}!</p>
-                            <p class="card-text">Ваш логин для входа в систему: ${userDto.login}</p>
-                            <p class="card-text">Ваш пароль для входа в систему: ${userDto.password}</p>
-                            <p class="card-text">Здесь будет ссылка на вход!</p>
-                            <p class="card-text">А здесь вы можете написать дополнительно для пользователя...</p>
+                            <h5 class="card-title text-center">Пользователь создан успешно!</h5>
+                            <p class="card-text">Сообщение для пользователя ${userDto.surname} ${userDto.name}:</p>
+                            <p class="card-text fst-italic">"Здравствуйте, ${userDto.name}!</p>
+                            <p class="card-text fst-italic">Ваш логин для входа в систему: ${userDto.login}</p>
+                            <p class="card-text fst-italic">Ваш пароль для входа в систему: ${userDto.password}</p>
+                            <p class="card-text fst-italic">Здесь будет ссылка на вход!"</p>
+                            <p class="card-text ">Ниже вы можете дополнить сообщение для пользователя:</p>
                             <div class="mb-3">
-                                <label for="adminText" class="form-label">Сообщение пользователю</label>
                                 <textarea name="adminText" id="adminText" class="form-control" rows="4"></textarea>
                             </div>
                             <input type="email" value="${userDto.email}" hidden="hidden" name="email">

@@ -21,7 +21,6 @@
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-lg-0">
                 <li class="nav-item">
@@ -34,6 +33,23 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item me-5">
+                    <button type="button" class="btn btn-light plus-btn-over" id="sortButton" data-bs-toggle="collapse" data-bs-target="#sortSelect">
+                        <i class="bi bi-filter plus-btn"></i>
+                    </button>
+                </li>
+                <li class="nav-item collapse mt-2 me-5" id="sortSelect">
+                    <#assign sort = sort! "actual">
+                    <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get"
+                          action="/company/all?companyId=0&page=0&sort=${sort}">
+                        <div class="form-group">
+                            <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
+                                <option value="actual" <#if sort == "actual">selected</#if>>Актуальные Компании</option>
+                                <option value="archive" <#if sort == "archive">selected</#if>>Удаленные Компании</option>
+                            </select>
+                        </div>
+                    </form>
+                </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-light plus-btn-over" id="createCompanyButton"
                             data-bs-toggle="modal" data-bs-target="#createCompanyModal">
@@ -42,7 +58,6 @@
                 </li>
             </ul>
         </div>
-
     </div>
 </nav>
 
@@ -54,25 +69,11 @@
     <div class="row">
         <div class="companies-sidebar-main">
             <div class="list-group">
-                <div>
-                    <label for="search" class="w-100">
-                        <input type="text" class="w-100" id="search" placeholder="Поиск...">
-                    </label>
-                </div>
 
-                <#assign sort = sort! "actual">
-                <form id="filterForm" class="list-group-item list-group-item-action titleList" method="get"
-                      action="/company/all?companyId=0&page=0&sort=${sort}">
-                    <div class="form-group">
-                        <label for="sort">Выберите список:</label>
-                        <select id="sort" name="sort" class="form-control" onchange="updateFilter()">
-                            <option value="actual" <#if sort == "actual">selected</#if>>Актуальные Компании</option>
-                            <option value="archive" <#if sort == "archive">selected</#if>>Удаленные Компании</option>
-                        </select>
-                    </div>
-                </form>
+                <label for="search" class="w-100 list-group-item titleList top-title custom-search">
+                    <input type="text" class="w-100 search-input" id="search" placeholder="Название">
+                </label>
 
-                <p class="list-group-item list-group-item-action titleList top-title">Название</p>
                 <div class="scroll-company" id="total">
                     <ul class="search">
                         <#list list as item>
@@ -104,7 +105,7 @@
                                     <i class="bi bi-copy icon-custom"></i>
                                 </button>
                                 <div class="company-name-edit">
-                                    <input type="text" id="editInputcompanyName" class="form-control edit-input d-none fs-5"
+                                    <input type="text" id="editInputcompanyName" class="form-control edit-input d-none"
                                            value="${company.name!}">
                                     <button id="cancelBtncompanyName" class="btn btn-light d-none"
                                             onclick="cancelEdit('companyName')">&#10005;
@@ -201,9 +202,9 @@
                     </div>
 
                         <div class="row">
-                            <div class="company-not-required-info">
+                            <div class="company-required-info">
                                 <ul class="list-group">
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ИНН:</span>
                                         <strong id="companyInn">${company.companyInn!}</strong>
                                         <button id="editBtncompanyInn"
@@ -217,7 +218,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputcompanyInn"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none"
                                                value="${company.companyInn!}">
                                         <button id="cancelBtncompanyInn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('companyInn')">&#10005;
@@ -227,7 +228,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ИНН руководителя:</span>
                                         <strong id="directorInn">${company.directorInn!}</strong>
                                         <button id="editBtndirectorInn"
@@ -241,7 +242,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdirectorInn"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none"
                                                value="${company.directorInn!}">
                                         <button id="cancelBtndirectorInn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('directorInn')">&#10005;
@@ -251,7 +252,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Логин:</span>
                                         <strong id="login">${company.login!}</strong>
                                         <button id="editBtnlogin" onclick="editText('login', ${company.id})"
@@ -264,7 +265,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputlogin"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none"
                                                value="${company.login!}">
                                         <button id="cancelBtnlogin" class="btn btn-light d-none"
                                                 onclick="cancelEdit('login')">&#10005;
@@ -274,7 +275,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Пароль:</span>
                                         <strong id="password"
                                               data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></strong>
@@ -291,7 +292,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputpassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.password!}">
                                         <button id="cancelBtnpassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('password')">&#10005;
@@ -301,7 +302,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭЦП:</span>
                                         <strong id="ecp">${company.ecp!}</strong>
                                         <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
@@ -314,7 +315,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputecp"
-                                               class="form-control edit-input d-none fs-5" value="${company.ecp!}">
+                                               class="form-control edit-input d-none " value="${company.ecp!}">
                                         <button id="cancelBtnecp" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ecp')">&#10005;
                                         </button>
@@ -323,7 +324,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Salyk.kg логин:</span>
                                         <strong id="kabinetSalyk">${company.kabinetSalyk!}</strong>
                                         <button id="editBtnkabinetSalyk"
@@ -337,7 +338,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalyk"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.kabinetSalyk!}">
                                         <button id="cancelBtnkabinetSalyk" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kabinetSalyk')">&#10005;
@@ -347,7 +348,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Salyk.kg пароль:</span>
                                         <strong id="kabinetSalykPassword"
                                               data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></strong>
@@ -365,7 +366,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalykPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.kabinetSalykPassword!}">
                                         <button id="cancelBtnkabinetSalykPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kabinetSalykPassword')">&#10005;
@@ -376,7 +377,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Режим налогообложения:</span>
                                         <strong id="taxMode">${company.taxMode!}</strong>
                                         <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
@@ -389,7 +390,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputtaxMode"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.taxMode!}">
                                         <button id="cancelBtntaxMode" class="btn btn-light d-none"
                                                 onclick="cancelEdit('taxMode')">&#10005;
@@ -399,7 +400,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ОПФ:</span>
                                         <strong id="opf">${company.opf!}</strong>
                                         <button id="editBtnopf" onclick="editText('opf', ${company.id})"
@@ -412,7 +413,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputopf"
-                                               class="form-control edit-input d-none fs-5" value="${company.opf!}">
+                                               class="form-control edit-input d-none " value="${company.opf!}">
                                         <button id="cancelBtnopf" class="btn btn-light d-none"
                                                 onclick="cancelEdit('opf')">&#10005;
                                         </button>
@@ -421,7 +422,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Район ГНС:</span>
                                         <strong id="districtGns">${company.districtGns!}</strong>
                                         <button id="editBtndistrictGns"
@@ -435,7 +436,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdistrictGns"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.districtGns!}">
                                         <button id="cancelBtndistrictGns" class="btn btn-light d-none"
                                                 onclick="cancelEdit('districtGns')">&#10005;
@@ -445,7 +446,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Номер социального фонда:</span>
                                         <strong id="socfundNumber">${company.socfundNumber!}</strong>
                                         <button id="editBtnsocfundNumber"
@@ -459,7 +460,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputsocfundNumber"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.socfundNumber!}">
                                         <button id="cancelBtnsocfundNumber" class="btn btn-light d-none"
                                                 onclick="cancelEdit('socfundNumber')">&#10005;
@@ -469,7 +470,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Регистрационный номер МЮ:</span>
                                         <strong id="registrationNumberMj">${company.registrationNumberMj!}</strong>
                                         <button id="editBtnregistrationNumberMj"
@@ -483,7 +484,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputregistrationNumberMj"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.registrationNumberMj!}">
                                         <button id="cancelBtnregistrationNumberMj" class="btn btn-light d-none"
                                                 onclick="cancelEdit('registrationNumberMj')">&#10005;
@@ -494,7 +495,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ОКПО:</span>
                                         <strong id="okpo">${company.okpo!}</strong>
                                         <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
@@ -507,7 +508,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputokpo"
-                                               class="form-control edit-input d-none fs-5" value="${company.okpo!}">
+                                               class="form-control edit-input d-none " value="${company.okpo!}">
                                         <button id="cancelBtnokpo" class="btn btn-light d-none"
                                                 onclick="cancelEdit('okpo')">&#10005;
                                         </button>
@@ -516,7 +517,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ФИО руководителя:</span>
                                         <strong id="director">${company.director!}</strong>
                                         <button id="editBtndirector" onclick="editText('director', ${company.id})"
@@ -529,7 +530,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputdirector"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.director!}">
                                         <button id="cancelBtndirector" class="btn btn-light d-none"
                                                 onclick="cancelEdit('director')">&#10005;
@@ -539,7 +540,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>КЭД:</span>
                                         <strong id="ked">${company.ked!}</strong>
                                         <button id="editBtnked" onclick="editText('ked', ${company.id})"
@@ -552,7 +553,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputked"
-                                               class="form-control edit-input d-none fs-5" value="${company.ked!}">
+                                               class="form-control edit-input d-none " value="${company.ked!}">
                                         <button id="cancelBtnked" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ked')">&#10005;
                                         </button>
@@ -563,9 +564,9 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="company-required-info">
+                            <div class="company-not-required-info">
                                 <ul class="list-group">
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Почта:</span> <strong id="email">${company.email!}</strong>
                                         <button id="editBtnemail" onclick="editText('email', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -577,7 +578,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemail"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.email!}">
                                         <button id="cancelBtnemail" class="btn btn-light d-none"
                                                 onclick="cancelEdit('email')">&#10005;
@@ -587,7 +588,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Пароль от почты:</span> <strong id="emailPassword"
                                                                                 data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnemailPassword"
@@ -604,7 +605,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemailPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.emailPassword!}">
                                         <button id="cancelBtnemailPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('emailPassword')">&#10005;
@@ -614,7 +615,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>Телефон:</span> <strong id="phone">${company.phone!}</strong>
                                         <button id="editBtnphone" onclick="editText('phone', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -626,7 +627,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputphone"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.phone!}">
                                         <button id="cancelBtnphone" class="btn btn-light d-none"
                                                 onclick="cancelEdit('phone')">&#10005;
@@ -636,7 +637,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ логин:</span> <strong id="esf">${company.esf!}</strong>
                                         <button id="editBtnesf" onclick="editText('esf', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -648,7 +649,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesf"
-                                               class="form-control edit-input d-none fs-5" value="${company.esf!}">
+                                               class="form-control edit-input d-none " value="${company.esf!}">
                                         <button id="cancelBtnesf" class="btn btn-light d-none"
                                                 onclick="cancelEdit('esf')">&#10005;
                                         </button>
@@ -657,7 +658,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ пароль:</span> <strong id="esfPassword"
                                                                            data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnesfPassword"
@@ -674,7 +675,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesfPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.esfPassword!}">
                                         <button id="cancelBtnesfPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('esfPassword')">&#10005;
@@ -684,7 +685,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ККМ логин:</span> <strong id="kkm">${company.kkm!}</strong>
                                         <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -696,7 +697,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkm"
-                                               class="form-control edit-input d-none fs-5" value="${company.kkm!}">
+                                               class="form-control edit-input d-none " value="${company.kkm!}">
                                         <button id="cancelBtnkkm" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kkm')">&#10005;
                                         </button>
@@ -705,7 +706,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ККМ пароль:</span> <strong id="kkmPassword"
                                                                            data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnkkmPassword"
@@ -722,7 +723,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkmPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.kkmPassword!}">
                                         <button id="cancelBtnkkmPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('kkmPassword')">&#10005;
@@ -732,7 +733,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш логин:</span>
                                         <strong id="fresh1c">${company.fresh1c!}</strong>
                                         <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
@@ -745,7 +746,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1c"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.fresh1c!}">
                                         <button id="cancelBtnfresh1c" class="btn btn-light d-none"
                                                 onclick="cancelEdit('fresh1c')">&#10005;
@@ -755,7 +756,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш пароль:</span> <strong id="fresh1cPassword"
                                                                                data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></strong>
                                         <button id="editBtnfresh1cPassword"
@@ -772,7 +773,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1cPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.fresh1cPassword!}">
                                         <button id="cancelBtnfresh1cPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('fresh1cPassword')">&#10005;
@@ -782,7 +783,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН логин:</span>
                                         <strong id="ettn">${company.ettn!}</strong>
                                         <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
@@ -795,7 +796,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettn"
-                                               class="form-control edit-input d-none fs-5" value="${company.ettn!}">
+                                               class="form-control edit-input d-none " value="${company.ettn!}">
                                         <button id="cancelBtnettn" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ettn')">&#10005;
                                         </button>
@@ -804,7 +805,7 @@
                                         </button>
                                         </div>
                                     </li>
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН пароль:</span>
                                         <strong id="ettnPassword"
                                               data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></strong>
@@ -822,7 +823,7 @@
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettnPassword"
-                                               class="form-control edit-input d-none fs-5"
+                                               class="form-control edit-input d-none "
                                                value="${company.ettnPassword!}">
                                         <button id="cancelBtnettnPassword" class="btn btn-light d-none"
                                                 onclick="cancelEdit('ettnPassword')">&#10005;
@@ -833,7 +834,7 @@
                                         </div>
                                     </li>
 
-                                    <li class="list-group-item list-none-line">
+                                    <li class="list-group-item list-none-line company-info">
                                         <#if company.deleted>
                                             <span>Состояние:</span> <strong> Удаленная компания</strong>
                                         <#else>
@@ -1134,12 +1135,14 @@
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="reportFrequency">Выберите частоту отчета НСП:</label>
-                                                        <select name="reportFrequency" id="reportFrequency" class="form-control" required>
-                                                            <option value="" disabled selected>Выбор частоты</option>
-                                                            <option value="MONTHLY">Ежемесячно</option>
-                                                            <option value="QUARTERLY">Ежеквартально</option>
-                                                        </select>
+                                                        <label for="reportFrequency" class="col-md-4 col-form-label">Выберите частоту отчета НСП:</label>
+                                                        <div class="col-md-8">
+                                                            <select name="reportFrequency" id="reportFrequency" class="form-control" required>
+                                                                <option value="" disabled selected>Выбор частоты</option>
+                                                                <option value="MONTHLY">Ежемесячно</option>
+                                                                <option value="QUARTERLY">Ежеквартально</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </fieldset>
                                             </div>

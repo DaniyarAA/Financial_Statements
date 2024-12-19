@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 067
+      author: Daniiar
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: file_path
+                  type: varchar(500)

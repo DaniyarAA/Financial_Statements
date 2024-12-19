@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 061
+      author: Adil
+      changes:
+        - dropColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: tag

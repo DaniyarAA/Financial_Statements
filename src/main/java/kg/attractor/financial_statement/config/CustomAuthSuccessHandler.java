@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,12 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
         usernameCookie.setMaxAge(30 * 24 * 60 * 60);
         usernameCookie.setPath("/");
         response.addCookie(usernameCookie);
-        response.sendRedirect("/");
+        var authorities = auth.getAuthorities();
+        if (authorities.contains(new SimpleGrantedAuthority("SuperUser"))) {
+            response.sendRedirect("/admin/users");
+        } else {
+            response.sendRedirect("/");
+        }
+
     }
 }

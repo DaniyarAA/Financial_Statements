@@ -10,9 +10,44 @@
 }
 
 .plus-btn {
-    font-size: 40px;
+    font-size: 48px;
     color: #1E1E1E;
     margin: 0;
+    font-weight: 48;
+}
+
+.container{
+    max-width: 100%;
+    width: 100%;
+    padding: 0 15px;
+}
+
+.navbar {
+    padding: 10px 20px;
+    color: #000;
+}
+
+.navbar-brand span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.nav-link{
+    margin: 0;
+    color: #000000;
+    font-weight: 400 ;
+    font-size: 20px;
+}
+
+.navbar-nav .nav-link {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #000 !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #000 !important;
 }
 
 .titleList {
@@ -64,9 +99,46 @@ form {
 }
 
 .btn-custom-delete {
-    width: 180px;
-    margin-top: 20px;
-    margin-left: 20px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+}
+
+.btn-custom-delete i {
+    position: static;
+    font-size: 1.25rem;
+}
+
+.delete-icon::before{
+    font-size: 30px;
+}
+
+.bi-reply-all::before{
+    font-size: 30px;
+}
+
+.scroll-company{
+   overflow-y:scroll;
+    max-height: 665px;
+}
+
+.h-company-info{
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+.titleInfoCreate{
+    text-align: center;
+}
+
+.company-info-buttons{
+    width: 5%;
+}
+
+.h-company-info{
+    width: 95%;
 }
 
 .row {
@@ -83,12 +155,23 @@ form {
     color: #1E1E1E;
 }
 
+.edit-input[type="text"],
+.edit-input[type="password"],
+.edit-input[type="email"] {
+    border: 1px solid #ddd;
+    padding: 3px;
+    font-size: 15px;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+    width: calc(100% - 60px);
+}
+
 input[type="text"],
 input[type="password"],
 input[type="email"] {
     border: 1px solid #ddd;
     padding: 10px;
-    font-size: 1em;
+    font-size: 19px;
     border-radius: 5px;
     transition: border-color 0.3s;
 }
@@ -106,14 +189,380 @@ input[type="email"]:focus {
     color: #e74c3c;
 }
 
+.forms-back-color {
+    background-color: #d9d9d9;
+    padding: 1px 0 1px;
+}
+
+.forms {
+    margin: 7px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 1.8px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+.search {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search li.choice-company {
+    --background-color: white;
+    --text-color: inherit;
+    box-shadow: 0 4px 1.8px 2px rgba(0, 0, 0, 0.25);
+    padding: 13px 10px;
+    background-color: var(--background-color);
+    font-size: 16px;
+    text-align: center;
+}
+
+label.custom-search input[type="text"] {
+    border: none;
+}
+
+.custom-search:hover {
+    background-color:#f8f9fa;
+}
+
+.custom-search .search-input:hover {
+    background-color: #f8f9fa;
+}
+
+.top-title{
+    font-size: 23px;
+    text-align: center;
+}
+
+.search-input {
+    font-size: 23px;
+    text-align: center;
+    caret-color: black;
+}
+
+.search-input:focus {
+    text-align: left;
+}
+
+.search-input::placeholder {
+    color: black;
+}
+
+.search li.choice-company:nth-child(even) {
+    --background-color: #d9d9d9;
+}
+
+.search li.choice-company.active {
+    border: 3px solid blue;
+    --text-color: #1E1E1E;
+}
+
+.search li.choice-company a {
+    text-decoration: none;
+    color: var(--text-color);
+    display: block;
+    width: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.companies-nav{
+    background-color: #d9d9d9;
+}
+
+.form-group,
+.list-none-line {
+    border: none;
+}
+
 @media (max-width: 768px) {
     .col-md-6 {
         margin-bottom: 20px;
     }
 }
 
+.inline-block {
+    display: inline-block;
+}
+
+.edit-input {
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.icon-custom{
+    color: black;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.icon-custom-pencil{
+    color: black;
+    font-size: 0.8em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.icon-custom-eye{
+    color: black;
+    font-size: 1.4em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#cancelBtn, #saveBtn {
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.modal-dialog.custom-modal-width {
+    max-width: 100% !important;
+    margin: 6.2% 4% 0 18.5% !important;
+    max-height: 83vh !important;
+    overflow-y: auto !important;
+}
 
 
 
+.modal-header-create {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: none;
+}
 
+.modal-header-create .modal-title-create {
+    flex-grow: 1;
+    text-align: center;
+}
 
+.modal-header-create .btn-close-create {
+    position: absolute;
+    right: 20px;
+}
+
+/* Модальное окно регистрации компании */
+
+@media (max-width: 1730px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 7% 2% 0 24%;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1630px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 7% 2% 0 24%;
+        max-height: 84vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1440px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 8% 2% 0 24%;
+        max-height: 84vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1240px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 9% 2% 0 24%;
+        max-height: 84vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1200px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 6% 2% 0 28%;
+        max-height: 84vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1120px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 7% 2% 0 28%;
+        max-height: 84vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 991px) {
+    .custom-modal-width {
+        max-width: 90%;
+        margin: 8% 5% 0 5%;
+        max-height: 88vh;
+        overflow-y: auto;
+    }
+}
+
+/* Главная станица */
+
+@media (max-width: 1730px) {
+    .companies-sidebar-main {
+        width: 17%;
+    }
+    .companies-info-main {
+        width: 81%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .plus-btn{
+        font-size: 28px;
+    }
+    .search li.choice-company{
+        font-size: 16px;
+    }
+    .companies-sidebar-main {
+        width: 25%;
+    }
+    .companies-info-main {
+        width: 75%;
+    }
+    .titleInfoCreate{
+        font-size: 28px;
+    }
+    .scroll-company{
+        overflow-y:scroll;
+        max-height: 505px;
+    }
+}
+
+@media (max-width: 991px) {
+    .companies-sidebar-main {
+        width: 100%;
+    }
+    .companies-info-main {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .scroll-company{
+        overflow-y:scroll;
+        max-height: 265px;
+    }
+}
+
+@media (max-width: 615px) {
+    .company-info-buttons{
+        width: 10%;
+    }
+
+    .h-company-info{
+        width: 90%;
+    }
+
+    .delete-icon::before{
+        font-size: 24px;
+    }
+
+    .bi-reply-all::before{
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 580px) {
+    .titleInfoCreate{
+        font-size: 20px;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 462px) {
+    .edit-input{
+        width: 140px;
+    }
+}
+
+@media (max-width: 380px) {
+    .edit-input{
+        width: 100px;
+    }
+}
+
+/* Таблица компании */
+
+.company-not-required-info {
+    text-align: center;
+}
+
+.company-required-info {
+    text-align: center;
+}
+
+@media (min-width: 892px) {
+    .company-not-required-info {
+        width: 38%;
+    }
+
+    .company-required-info {
+        width: 50%;
+    }
+}
+
+@media (max-width: 892px) {
+    .company-not-required-info {
+        width: 100%;
+    }
+
+    .company-required-info {
+        width: 100%;
+    }
+}
+
+@media (max-width: 580px) {
+    .forms{
+        padding: 0;
+    }
+    .company-not-required-info {
+        padding: 0;
+    }
+
+    .company-required-info {
+        padding: 0;
+    }
+}
+.company-info {
+    padding: 5px 0;
+    margin: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    flex-wrap: nowrap;
+}
+
+.company-info span {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 50%;
+    text-align: right;
+    margin-right: 5px;
+    padding: 0
+}
+
+.company-info strong {
+    font-size: 20px;
+    text-align: left;
+    white-space: nowrap;
+    font-weight: normal;
+}
+
+.company-info button {
+    margin-left: 4px;
+    padding: 0;
+}

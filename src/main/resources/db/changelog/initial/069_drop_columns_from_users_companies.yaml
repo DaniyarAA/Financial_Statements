@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 069
+      author: Daniiar
+      changes:
+        - dropColumn:
+            tableName: users_companies
+            columns:
+              - column:
+                  name: id
+              - column:
+                  name: is_automatic

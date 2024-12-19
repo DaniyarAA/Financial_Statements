@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 063
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: tag_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_tag_id_tasks
+                    references: tags(id)

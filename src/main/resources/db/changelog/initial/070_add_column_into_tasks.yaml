@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 070
+      author: Daniiar
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: company_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_company_id_tasks
+                    references: companies(id)

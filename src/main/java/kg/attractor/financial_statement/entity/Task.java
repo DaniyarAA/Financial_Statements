@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -24,18 +26,14 @@ public class Task {
     private DocumentType documentType;
 
     @ManyToOne
-    @JoinColumn(name = "user_company_id", referencedColumnName = "id")
-    private UserCompany userCompany;
-
-    @ManyToOne
     @JoinColumn(name = "status_id")
     private TaskStatus taskStatus;
 
-    @Column(name = "start_datetime")
-    private LocalDateTime startDateTime;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-    @Column(name = "end_datetime")
-    private LocalDateTime endDateTime;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @Column(name = "amount")
     private BigDecimal amount;
@@ -43,6 +41,28 @@ public class Task {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
-    private List<Report> reports;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @Column(name = "time_spent")
+    private LocalDateTime timeSpent;
+
+    @Column(name = "priority_id")
+    private Long priorityId;
+
+    @Column(name = "file_path")
+    private String filePath;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_tag_id_tasks"))
+    private Tag tag;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tasks", cascade = CascadeType.ALL)
+    private Collection<User> users;
+
+
 }

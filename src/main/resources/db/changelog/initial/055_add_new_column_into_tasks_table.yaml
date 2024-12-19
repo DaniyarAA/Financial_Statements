@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 055
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: priority_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_priority_id_tasks
+                    references: tasks(id)
+              - column:
+                  name: tag
+                  type: varchar(55)

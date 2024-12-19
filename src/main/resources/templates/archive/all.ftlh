@@ -28,7 +28,7 @@
             <#if deletedUsers?has_content>
                 <#list deletedUsers as user>
                     <tr id="${user.id}-tr">
-                        <td class="return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
+                        <td class="return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})" title="Восстановить пользователя : ${user.name}"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
                           </td>
                         <td>${user.name} ${user.surname}</td>
                         <td>${user.login}</td>

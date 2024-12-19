@@ -4,7 +4,6 @@ import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.Role;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.repository.UserPageableRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
@@ -30,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

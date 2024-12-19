@@ -54,6 +54,4 @@ public class Company {
     @Enumerated(EnumType.STRING)
     private ReportFrequency reportFrequency;
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    private List<UserCompany> usersCompany;
 }

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 066
+      author: Daniiar
+      changes:
+        - dropTable:
+            tableName: reports

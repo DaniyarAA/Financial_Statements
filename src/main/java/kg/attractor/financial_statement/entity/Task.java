@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -23,10 +24,6 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "document_type_id")
     private DocumentType documentType;
-
-    @ManyToOne
-    @JoinColumn(name = "user_company_id", referencedColumnName = "id")
-    private UserCompany userCompany;
 
     @ManyToOne
     @JoinColumn(name = "status_id")
@@ -53,10 +50,19 @@ public class Task {
     @Column(name = "priority_id")
     private Long priorityId;
 
+    @Column(name = "file_path")
+    private String filePath;
+
     @ManyToOne
     @JoinColumn(name = "tag_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_tag_id_tasks"))
     private Tag tag;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
-    private List<Report> reports;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tasks", cascade = CascadeType.ALL)
+    private Collection<User> users;
+
+
 }

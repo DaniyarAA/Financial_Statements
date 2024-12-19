@@ -45,11 +45,11 @@ public class TaskController {
             return "tasks/create";
         }
         if (taskCreateDto.getEndDate() == null || taskCreateDto.getStartDate() == null) {
-            return "redirect:/tasks/list";
+            return "redirect:/tasks";
         }
 
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
-        return "redirect:/tasks/list";
+        return "redirect:/tasks";
 
     }
 

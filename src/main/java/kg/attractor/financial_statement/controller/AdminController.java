@@ -65,7 +65,9 @@ public class AdminController {
     public String messageToNewUserPost(HttpServletRequest request, Model model, HttpSession session) {
         Map<String, Object> answer = userService.sendMessageToUser(request);
         if (userService.messageIsSuccessfullySent(answer)){
-            return "redirect:/admin/users?userId=" + session.getAttribute("userId");
+            Long userId = (Long) session.getAttribute("userId");
+            session.removeAttribute("userId");
+            return "redirect:/admin/users?userId=" + userId;
         }
         model.addAttribute(answer);
         return "admin/message";

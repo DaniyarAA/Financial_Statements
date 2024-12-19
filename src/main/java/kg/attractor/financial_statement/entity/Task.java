@@ -62,7 +62,7 @@ public class Task {
     private Company company;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tasks", cascade = CascadeType.ALL)
-    private Collection<User> users;
+    private List<User> users;
 
 
 }

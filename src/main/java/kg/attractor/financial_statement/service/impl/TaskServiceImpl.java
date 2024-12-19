@@ -367,7 +367,7 @@
 //        YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
 //        YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
 //
-//        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
+//        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
 //        List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 //
 //        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);

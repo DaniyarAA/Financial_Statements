@@ -19,7 +19,7 @@ public class Role {
     private String roleName;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
-    private Collection<Authority> authorities;
+    private List<Authority> authorities;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
     private List<User> users;

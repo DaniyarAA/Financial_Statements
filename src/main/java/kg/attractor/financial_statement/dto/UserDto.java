@@ -54,4 +54,5 @@ public class UserDto {
 
     private int displayIndex;
     private List<CompanyDto> companies;
+    private List<Long> companyIds;
 }

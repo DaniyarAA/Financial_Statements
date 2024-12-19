@@ -539,19 +539,13 @@ function saveUserData(userId) {
         roleName: roleSelect.options[roleSelect.selectedIndex].textContent
     };
     const notes = document.getElementById("notesInput").value;
-    const companies = Array.from(document.querySelectorAll("#companyCheckboxes input:checked")).map(checkbox => {
-        const label = document.querySelector(`label[for="${checkbox.id}"]`);
-        return {
-            id: checkbox.value,
-            name: label ? label.textContent.trim() : ""
-        };
-    });
+    const companyIds = Array.from(document.querySelectorAll("#companyCheckboxes input:checked")).map(checkbox => Number(checkbox.value));
 
 
     const userDto = {
         roleDto: selectedRoleDto,
         notes: notes,
-        companies: companies,
+        companyIds: companyIds,
         name: username,
         birthday: birthday,
         surname: surname,

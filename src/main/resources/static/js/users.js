@@ -4,7 +4,7 @@ let editUserHandler = null;
 const userModal = document.getElementById("userModal");
 const archiveLink = document.getElementById("archive-link");
 const editUserBtn = document.getElementById("edit-user-info-button");
-
+let currentUserId = null;
 
 function switchToTileView() {
     document.getElementById('tileView').classList.remove('hidden');
@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    let currentUserId = null;
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId');
     if(userId){
@@ -527,8 +526,12 @@ function saveUserData(userId) {
     const email = document.getElementById("emailInput").value;
     const fullnameDispayInList = document.getElementById("list-" + userId + "-name-surname");
     const fullnameDispayInTile = document.getElementById("tile-" + userId + "-name-surname");
-    const currentNameSurname = fullnameDispayInList? fullnameDispayInList.innerText : fullnameDispayInTile.innerText;
-    const parts = currentNameSurname.split('.');
+    const currentNameSurname = fullnameDispayInList
+        ? fullnameDispayInList.innerText
+        : fullnameDispayInTile
+            ? fullnameDispayInTile.innerText
+            : null;
+    const parts = currentNameSurname?.split('.') || [];
     const userRoleDisplayInList = document.getElementById("list-" + userId + "-role")
     const userRoleDisplayInTile = document.getElementById("tile-" + userId + "-role");
     const selectedRoleDto = {
@@ -566,13 +569,13 @@ function saveUserData(userId) {
     })
         .then(response => {
             if (response.ok) {
-                fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}`;
-                fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}`;
-                userRoleDisplayInList.innerText = selectedRoleDto.roleName;
-                userRoleDisplayInTile.innerText = selectedRoleDto.roleName;
+               fullnameDispayInList ? fullnameDispayInList.innerText = `${parts[0]}.${username} ${surname}` : null;
+               fullnameDispayInTile ? fullnameDispayInTile.innerText = `${parts[0]}.${username} ${surname}` : null;
+               userRoleDisplayInList ? userRoleDisplayInList.innerText = selectedRoleDto.roleName : null;
+               userRoleDisplayInTile ? userRoleDisplayInTile.innerText = selectedRoleDto.roleName : null;
 
-                bootstrap.Modal.getInstance(modalElement).hide();
-                showNotification("Информация успешно обновлена!", "green");
+               bootstrap.Modal.getInstance(modalElement).hide();
+               showNotification("Информация успешно обновлена!", "green");
 
 
             } else {

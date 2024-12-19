@@ -191,7 +191,6 @@
 
                                         <div class="task-priority-arrows" data-task-id="${task.id}">
                                             <#if task.priorityId?has_content>
-
                                                 <img src="/images/${task.priorityId}-arrow.png" alt="priority">
                                             <#else>
                                                 <span class="no-priority-message"></span>
@@ -241,7 +240,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/api/reports/monthly/csv" method="post" id="monthlyReportForm">
+                    <form action="/api/reports/csv" method="post" id="monthlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
@@ -273,32 +272,15 @@
 
 
 
-                        <div class="form-group" style="margin-top: 220px">
-                            <label for="yearSelect">Год:</label>
-                            <select class="form-control" id="yearSelect" name="year">
-                                <#assign currentYear = .now?string("yyyy")?number>
-                                <#list (currentYear - 2)..(currentYear + 2) as y>
-                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
-                                </#list>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="monthSelect">Месяц:</label>
-                            <select class="form-control" id="monthSelect" name="month">
-                                <option value="1">Январь</option>
-                                <option value="2">Февраль</option>
-                                <option value="3">Март</option>
-                                <option value="4">Апрель</option>
-                                <option value="5">Май</option>
-                                <option value="6">Июнь</option>
-                                <option value="7">Июль</option>
-                                <option value="8">Август</option>
-                                <option value="9">Сентябрь</option>
-                                <option value="10">Октябрь</option>
-                                <option value="11">Ноябрь</option>
-                                <option value="12">Декабрь</option>
-                            </select>
+                        <div class="form-group mt-4">
+                            <div class="d-flex align-items-center justify-content-center" style="margin-top: 230px; margin-bottom: 10px">
+                                <div class="date-picker-container">
+                                    <input type="date" id="startDateMonthly" name="startDate" class="form-control" style="font-size: 20px;">
+                                </div>
+                                <div class="date-picker-container">
+                                    <input type="date" id="endDateMonthly" name="endDate" class="form-control" style="font-size: 20px; margin-left: 10px;">
+                                </div>
+                            </div>
                         </div>
 
                         <button type="button" class="pdf-button" id="downloadMonthlyPdfButton">Скачать в формате PDF</button>
@@ -321,7 +303,7 @@
                     <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/api/reports/quarterly/csv" method="post" id="quarterlyReportForm">
+                    <form action="/api/reports/csv" method="post" id="quarterlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
@@ -351,24 +333,15 @@
                         </div>
 
 
-                        <div class="form-group" style="margin-top: 220px">
-                            <label for="yearSelectQuarterly">Год:</label>
-                            <select class="form-control" id="yearSelectQuarterly" name="year">
-                                <#assign currentYear = .now?string("yyyy")?number>
-                                <#list (currentYear - 2)..(currentYear + 2) as y>
-                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
-                                </#list>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="quarterSelect">Квартал:</label>
-                            <select class="form-control" id="quarterSelect" name="quarter">
-                                <option value="1">1 квартал</option>
-                                <option value="2">2 квартал</option>
-                                <option value="3">3 квартал</option>
-                                <option value="4">4 квартал</option>
-                            </select>
+                        <div class="form-group mt-4">
+                            <div class="d-flex align-items-center justify-content-center" style="margin-top: 230px; margin-bottom: 10px">
+                                <div class="date-picker-container">
+                                    <input type="date" id="startDateQuarterly" name="startDate" class="form-control" style="font-size: 20px;">
+                                </div>
+                                <div class="date-picker-container">
+                                    <input type="date" id="endDateQuarterly" name="endDate" class="form-control" style="font-size: 20px; margin-left: 10px;">
+                                </div>
+                            </div>
                         </div>
 
                         <button type="button" class="pdf-button" id="downloadQuarterlyPdfButton">Скачать в формате PDF</button>
@@ -390,7 +363,7 @@
                     <button type="button" class="close btn-close report-modal-close-button" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/api/reports/yearly/csv" method="post" id="yearlyReportForm">
+                    <form action="/api/reports/csv" method="post" id="yearlyReportForm">
                         <!-- CSRF -->
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
@@ -421,16 +394,16 @@
 
 
 
-                        <div class="form-group" style="margin-top: 220px">
-                            <label for="yearSelectYearly">Год:</label>
-                            <select class="form-control" id="yearSelectYearly" name="year">
-                                <#assign currentYear = .now?string("yyyy")?number>
-                                <#list (currentYear - 2)..(currentYear + 2) as y>
-                                    <option value="${y?c}" <#if y == currentYear>selected</#if>>${y?c}</option>
-                                </#list>
-                            </select>
+                        <div class="form-group mt-4">
+                            <div class="d-flex align-items-center justify-content-center" style="margin-top: 230px; margin-bottom: 10px">
+                                <div class="date-picker-container">
+                                    <input type="date" id="startDateYearly" name="startDate" class="form-control" style="font-size: 20px;">
+                                </div>
+                                <div class="date-picker-container">
+                                    <input type="date" id="endDateYearly" name="endDate" class="form-control" style="font-size: 20px; margin-left: 10px;">
+                                </div>
+                            </div>
                         </div>
-
                         <button type="button" class="pdf-button" id="downloadYearlyPdfButton">Скачать в формате PDF</button>
 
 

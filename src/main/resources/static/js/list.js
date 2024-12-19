@@ -1,3 +1,7 @@
+// if (window.history.replaceState) {
+//     const urlWithoutParams = window.location.origin + window.location.pathname;
+//     window.history.replaceState(null, null, urlWithoutParams);
+// }
 function showTaskDetails(button) {
     console.log(taskStatusDtos);
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
@@ -609,5 +613,26 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 2000);
     }
+    const sidebar = document.querySelector('.company-table');
+    const taskListWrapper = document.querySelector('.tasks-table');
+    if (!taskListWrapper){
+        console.log("Не нашел")
+    }
+
+    if (sidebar && taskListWrapper) {
+        sidebar.addEventListener('scroll', () => {
+            taskListWrapper.scrollTop = sidebar.scrollTop;
+            console.log("HHHH")
+        });
+
+        taskListWrapper.addEventListener('scroll', () => {
+            console.log("hhh")
+            sidebar.scrollTop = taskListWrapper.scrollTop;
+        });
+    } else {
+        console.error('Ошибка синхронизации скролла');
+    }
 
 });
+
+

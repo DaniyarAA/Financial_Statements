@@ -30,11 +30,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +44,12 @@ public class ReportServiceImpl implements ReportService {
 
 
     @Override
-    public HttpHeaders createHeaders(String reportType, int year, Integer month, Integer quarter, String fileFormat) {
-        String datePart;
-        if (month != null){
-            LocalDate date = LocalDate.of(year, month, 1);
-            String monthName = date.getMonth().getDisplayName(TextStyle.FULL, Locale.of("ru"));
-            datePart = String.format("%s_%d_года", monthName, year);
-        } else if (quarter != null){
-            datePart = String.format("%d_квартал_%d_года", quarter, year);
-        } else {
-            datePart = String.format("%d_год", year);
-        }
+    public HttpHeaders createHeaders(String reportType, LocalDate startDate, LocalDate endDate, String fileFormat) {
+        String dateRange = String.format("с_%s_по_%s",
+                startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         String extension = fileFormat.equalsIgnoreCase("pdf") ? "pdf" : "csv";
-        String filename = String.format("%s_отчёт_%s.%s", reportType, datePart, extension);
+        String filename = String.format("%s_отчёт_%s.%s", reportType, dateRange, extension);
         String encodedFilename;
         try {
             encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
@@ -74,53 +65,11 @@ public class ReportServiceImpl implements ReportService {
 
 
     @Override
-    public byte[] generateMonthlyReport(List<Long> companyIds, int year, int month, String fileFormat) {
-        LocalDate startDate = LocalDate.of(year, month, 1);
-        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-        if (fileFormat.equals("csv")){
-            return generateReportCSV(companyIds, startDate, endDate, "Ежемесячный отчёт");
+    public byte[] generateReport(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String fileFormat) {
+        if (fileFormat.equals("csv")) {
+            return generateReportCSV(companyIds, startDate, endDate, "Отчёт");
         } else {
-            return generateReportPDF(companyIds, startDate, endDate, "Ежемесячный отчёт");
-        }
-    }
-
-    @Override
-    public byte[] generateQuarterlyReport(List<Long> companyIds, int year, int quarter, String fileFormat){
-        LocalDate startDate;
-        LocalDate endDate = switch (quarter) {
-            case 1 -> {
-                startDate = LocalDate.of(year, 1, 1);
-                yield LocalDate.of(year, 3, 31);
-            }
-            case 2 -> {
-                startDate = LocalDate.of(year, 4, 1);
-                yield LocalDate.of(year, 6, 30);
-            }
-            case 3 -> {
-                startDate = LocalDate.of(year, 7, 1);
-                yield LocalDate.of(year, 9, 30);
-            }
-            case 4 -> {
-                startDate = LocalDate.of(year, 10, 1);
-                yield LocalDate.of(year, 12, 31);
-            }
-            default -> throw new IllegalArgumentException("Неверный квартал" + quarter);
-        };
-        if (fileFormat.equals("csv")){
-            return generateReportCSV(companyIds, startDate, endDate, "Ежеквартальный отчёт");
-        } else {
-            return generateReportPDF(companyIds, startDate, endDate, "Ежеквартальный отчёт");
-        }
-    }
-
-    @Override
-    public byte[] generateYearlyReport(List<Long> companyIds, int year,  String fileFormat){
-        LocalDate startDate = LocalDate.of(year, 1, 1);
-        LocalDate endDate = LocalDate.of(year, 12, 31);
-        if (fileFormat.equals("csv")){
-            return generateReportCSV(companyIds, startDate, endDate, "Годовой отчёт");
-        } else {
-            return generateReportPDF(companyIds, startDate, endDate, "Годовой отчёт");
+            return generateReportPDF(companyIds, startDate, endDate, "Отчёт");
         }
     }
 

@@ -27,7 +27,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <#list list as company>
+                        <#list companyDtos as company>
                             <tr class="table-striped-row">
                                 <td class="company-columns">${company.name}</td>
                             </tr>
@@ -36,25 +36,25 @@
                     </table>
                 </div>
 
-                <div class="pagination-container">
-                    <#if currentPage == 0 && currentPage == totalPages - 1>
+<#--                <div class="pagination-container">-->
+<#--                    <#if currentPage == 0 && currentPage == totalPages - 1>-->
 
-                    </#if>
-                    <#if currentPage != 0>
-                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">
-                            <div class="button-container">
-                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">
-                            </div>
-                        </a>
-                    </#if>
-                    <#if currentPage < totalPages - 1>
-                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">
-                            <div class="button-container">
-                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">
-                            </div>
-                        </a>
-                    </#if>
-                </div>
+<#--                    </#if>-->
+<#--                    <#if currentPage != 0>-->
+<#--                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">-->
+<#--                            <div class="button-container">-->
+<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">-->
+<#--                            </div>-->
+<#--                        </a>-->
+<#--                    </#if>-->
+<#--                    <#if currentPage < totalPages - 1>-->
+<#--                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">-->
+<#--                            <div class="button-container">-->
+<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">-->
+<#--                            </div>-->
+<#--                        </a>-->
+<#--                    </#if>-->
+<#--                </div>-->
 
             </div>
 
@@ -73,7 +73,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <#list list as company>
+                        <#list companyDtos as company>
                             <tr class="table-striped-row task-columns">
                                 <#list monthsMap?keys as yearMonth>
                                     <td>
@@ -105,8 +105,7 @@
                                                     </button>
                                                 </#list>
                                             </div>
-                                        <#else>
-                                            <span class="no-tasks">Нет задач</span>
+
                                         </#if>
                                     </td>
                                 </#list>
@@ -376,11 +375,14 @@
         }
         .company-table {
             width: 244px;
-            overflow: hidden;
+            overflow-y: auto;
             margin-right: 5px;
             background-color: #d9d9d9;
 
             transition: width 0.3s ease, padding 0.3s ease;
+        }
+        .company-table::-webkit-scrollbar {
+            display: none;
         }
 
         .company-column-tr{
@@ -388,6 +390,7 @@
             height: 61px;
         }
         .tasks-table {
+            overflow-y: auto;
             width: 100%;
             background-color: #d9d9d9;
             flex: 1;
@@ -395,6 +398,9 @@
             margin-top: 26px;
             box-sizing: border-box;
 
+        }
+        .tasks-table::-webkit-scrollbar {
+            display: none;
         }
         .year-month-column {
             background-color: #ffffff;

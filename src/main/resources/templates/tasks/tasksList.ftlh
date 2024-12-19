@@ -168,7 +168,7 @@
                                         <select class="form-select" id="user" name="appointToUserId" required>
                                             <#if userDtos??>
                                                 <#list userDtos as user>
-                                                    <option value="${user.id}">${user.login}</option>
+                                                    <option value="${user.id}">${user.surname} ${user.name}</option>
                                                 </#list>
                                             <#else>
                                                 <option disabled>Нет доступных пользователей</option>
@@ -203,8 +203,8 @@
                                     </div>
 
                                     <div class="task-create-div" style="margin-top: 50px">
-                                        <label for="description" class="task-create-text">Описание</label>
-                                        <textarea id="description" name="description" class="task-create-description"></textarea>
+                                        <label for="description" class="task-create-text" style="margin-left: 10px; margin-bottom: 8px">Описание</label>
+                                        <textarea id="description" name="description" class="task-create-description" style="width: 95%; margin-left: 10px"></textarea>
                                     </div>
 
                                     <button type="button" class="btn btn-secondary" id="nextPageCreateTask" onclick="showSecondPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">

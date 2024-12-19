@@ -28,4 +28,5 @@ public class TaskDto {
     private String priorityColor;
     private Long priorityId;
     private String tag;
+    private String filePath;
 }

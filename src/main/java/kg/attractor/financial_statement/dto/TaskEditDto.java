@@ -24,4 +24,5 @@ public class TaskEditDto {
     private String description;
     private BigDecimal amount;
     private Long statusId;
+    private String filePath;
 }

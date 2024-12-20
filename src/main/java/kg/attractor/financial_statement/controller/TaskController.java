@@ -101,7 +101,7 @@ public class TaskController {
         model.addAttribute("dateUtils", new DateUtils());
 
         model.addAttribute("userDtos", userDtos);
-        model.addAttribute("companyDtos", companyDtos);
+        model.addAttribute("companies", companyDtos);
         model.addAttribute("taskStatusDtos", taskStatusDtos);
         model.addAttribute("documentTypeDtos", documentTypeDtos);
         model.addAttribute("taskCreateDto", new TaskCreateDto());

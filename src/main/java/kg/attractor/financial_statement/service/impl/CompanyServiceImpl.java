@@ -105,7 +105,6 @@ public class CompanyServiceImpl implements CompanyService {
             company.getUsers().add(user);
         }
         companyRepository.save(company);
-
 //        UserCompany userCompany = new UserCompany();
 //        userCompany.setCompany(company);
 //        if (hasCreateTaskPermission) {
@@ -114,7 +113,7 @@ public class CompanyServiceImpl implements CompanyService {
 //            userCompany.setUser(null);
 //        }
 //        userCompany.setIsAutomatic(true);
-//        userCompanyService.save(userCompany);
+//        userCompanyService.save(userCompany); //TODO: Поменять логику
     }
 
     @Override
@@ -495,22 +494,6 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyForTaskDto> getAllCompaniesForUser(Long userId) {
         User user = userService.getUserById(userId);
         return convertToCompanyForTaskDtoList(user.getCompanies());
-
-//        List<UserCompany> userCompanies = userCompanyService.findByUserIdAndCompanyIdIn(
-//                userId,
-//                companyRepository.findAll().stream()
-//                        .filter(company -> !company.isDeleted())
-//                        .map(Company::getId).collect(Collectors.toList())
-//        );
-//
-//        List<Long> userCompanyIds = userCompanies.stream()
-//                .map(userCompany -> userCompany.getCompany().getId())
-//                .collect(Collectors.toList());
-//
-//        List<Company> companies = companyRepository.findAllById(userCompanyIds);
-//
-//
-//        return convertToCompanyForTaskDtoList(companies);
     }
 
     @Override
@@ -534,11 +517,6 @@ public class CompanyServiceImpl implements CompanyService {
         return deletedCompaniesByUser.stream()
                 .map(this::convertToDto)
                 .toList();
-//
-//        return companyRepository.findDeletedCompaniesByUser(user)
-//                .stream()
-//                .map(this::convertToDto)
-//                .toList();
     }
 
     @Override

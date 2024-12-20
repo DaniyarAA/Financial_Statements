@@ -160,10 +160,6 @@ public class UserServiceImpl implements UserService {
         user.setNotes(userDto.getNotes());
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
-//        List<Company> newCompanies = userDto.getCompanies().stream()
-//                .map(companyDto -> companyService.getCompanyById(companyDto.getId()))
-//                .toList();
-//        userCompanyService.updateUserCompanies(user, newCompanies);
         List<Company> selectedCompanies = companyService.findAllById(userDto.getCompanyIds());
         for(Company company : selectedCompanies){
             if(!user.getCompanies().contains(company)){
@@ -356,10 +352,6 @@ public class UserServiceImpl implements UserService {
         return user.getCompanies().stream()
                 .map(companyService::convertToDto)
                 .toList();
-//        return user.getUserCompanies().stream()
-//                .map(UserCompany::getCompany)
-//                .map(userCompanyService::convertToCompanyToCompanyDto)
-//                .toList();
     }
 
     @Override

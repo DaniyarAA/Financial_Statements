@@ -179,8 +179,8 @@
                                     <div class="task-create-div">
                                         <label for="category" class="task-create-text">Компания</label>
                                         <select class="form-select" id="company" name="companyId" required>
-                                            <#if companyDtos??>
-                                                <#list companyDtos as company>
+                                            <#if companies??>
+                                                <#list companies as company>
                                                     <option value="${company.id}">${company.name}</option>
                                                 </#list>
                                             <#else>

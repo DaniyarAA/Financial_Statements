@@ -39,6 +39,4 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     List<Company> findAllByIsDeletedTrue();
 
-//    @Query("SELECT c FROM Company c JOIN UserCompany uc ON c.id = uc.company.id WHERE uc.user = :user AND c.isDeleted = true")
-//    List<Company> findDeletedCompaniesByUser(@Param("user") User user);
 }

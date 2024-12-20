@@ -424,6 +424,7 @@
         .main {
             display: flex;
             flex-wrap: wrap;
+            margin-top: 45px;
         }
 
         .main-content {
@@ -645,7 +646,8 @@
 
         .tasks {
             max-width: 650px;
-            height: 517px;
+            height: 560px;
+
 
             box-shadow: 2px 0 5px #BFBFBF, -2px 0 5px #BFBFBF, 0 5px 5px #BFBFBF;
             border: 1px solid #BFBFBF;

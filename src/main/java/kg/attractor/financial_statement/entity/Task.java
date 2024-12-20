@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class Task {
     private Company company;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tasks", cascade = CascadeType.ALL)
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
 
 }

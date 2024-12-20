@@ -115,11 +115,12 @@ public class AdminController {
                 case null, default ->
                         ResponseEntity.badRequest().body(Map.of("message", "Неизвестная ошибка валидации", "errorCode", "UNKNOWN_VALIDATION_ERROR"));
             };
-        } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+//        catch (Exception e) {
+//            Map<String, String> errorResponse = new HashMap<>();
+//            errorResponse.put("message", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+//        }
     }
 
     @DeleteMapping("/user/delete/{id}")

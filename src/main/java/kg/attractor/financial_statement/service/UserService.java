@@ -49,6 +49,8 @@ public interface UserService {
 
     UserForTaskDto getUserForTaskDto(Long id);
 
+    UserForTaskDto getUserForTaskDto(User user);
+
     User getUserByLogin(String login);
 
     UserDto convertToUserDto(User user);

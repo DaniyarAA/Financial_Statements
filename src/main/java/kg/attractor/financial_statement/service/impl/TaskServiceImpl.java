@@ -1,4 +1,6 @@
-\package kg.attractor.financial_statement.service.impl;
+package kg.attractor.financial_statement.service.impl;
+
+
 
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.*;
@@ -8,6 +10,7 @@ import kg.attractor.financial_statement.enums.ReportFrequency;
 import kg.attractor.financial_statement.enums.TaskPriority;
 import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
+import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.service.impl.DocumentTypeServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +47,10 @@ public class TaskServiceImpl implements TaskService {
     private final TaskPageableRepository taskPageableRepository;
     private final UserService userService;
     private final DocumentTypeServiceImpl documentTypeService;
-    //    private final UserCompanyService userCompanyService;
+//    private final UserCompanyService userCompanyService;
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
+    private final UserRepository userRepository;
 
     @Override
     public TaskDto getTaskById(Long id) {
@@ -72,7 +76,8 @@ public class TaskServiceImpl implements TaskService {
 
         User user = userService.getUserByLogin(principal.getName());
 
-        List<Company> companies = companyService.findByUser(user);
+//        List<Company> companies = companyService.findByUser(user);
+        List<Company> companies = user.getCompanies();
 
         int year = yearMonth.get("year");
         int month = yearMonth.get("month");
@@ -119,6 +124,8 @@ public class TaskServiceImpl implements TaskService {
         return null;
     }
 
+
+    //ПОМЕНЯЛ ЛОГИКУ
     @Override
     public List<TaskDto> getAllTaskDtosForUser(User user) {
 
@@ -126,8 +133,22 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Пользователь не может быть null");
         }
 
-        List<Company> companies = companyService.findByUser(user);
-        List<Task> tasks = taskRepository.findByCompanyIn(companies);
+//        List<Company> companies = companyService.findByUser(user);
+        List<Company> companies = user.getCompanies();
+        Set<Long> companyIds = companies.stream()
+                .map(Company::getId)
+                .collect(Collectors.toSet());
+
+        List<Task> tasks = new ArrayList<>();
+//        List<Task> tasks = taskRepository.findByCompanyIn(companies);
+        for(Company company : companies){
+            if(!taskRepository.findByCompanyId(company.getId()).isEmpty()){
+                List<Task> tasks1 = taskRepository.findByCompanyId(company.getId());
+                tasks.addAll(tasks1);
+            }
+        }
+
+//        List<Task> tasks = taskRepository.findAllByCompanyIds(companyIds);
         return convertToDtoList(tasks);
     }
 
@@ -137,11 +158,31 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Пользователь не может быть null");
         }
 
-        List<Company> companies = companyService.findByUser(user);
+//        List<Company> companies = companyService.findByUser(user);
+        List<Company> companies = user.getCompanies();
+        Set<Long> companyIds = companies.stream()
+                .map(Company::getId)
+                .collect(Collectors.toSet());
+
 
         Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        List<Task> tasks = taskRepository.findByCompanyIn(companies, Sort.by(direction, sortBy));
+//        List<Task> tasks = taskRepository.findAllByCompanyIds(companyIds, Sort.by(direction, sortBy));
+        List<Task> tasks = new ArrayList<>();
+
+
+//        for (Task task : tasks){
+//            for(Company company : companies){
+//                tasks.add(taskRepository.findAllByCompany(company));
+//
+//            }
+//        }
+        for(Company company : companies){
+            if(!taskRepository.findByCompanyId(company.getId()).isEmpty()){
+                List<Task> tasks1 = taskRepository.findByCompanyId(company.getId());
+                tasks.addAll(tasks1);
+            }
+        }
 
         return convertToDtoList(tasks);
     }
@@ -151,9 +192,23 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Пользователь не может быть null");
         }
 
-        List<Company> companies = companyService.findByUser(user);
+//        List<Company> companies = companyService.findByUser(user);
+        List<Company> companies = user.getCompanies();
+        Set<Long> companyIds = companies.stream()
+                .map(Company::getId)
+                .collect(Collectors.toSet());
 
-        return taskRepository.findByCompanyIn(companies);
+        List<Task> tasks = new ArrayList<>();
+
+        for(Company company : companies){
+            if(!taskRepository.findByCompanyId(company.getId()).isEmpty()){
+                List<Task> tasks1 = taskRepository.findByCompanyId(company.getId());
+                tasks.addAll(tasks1);
+            }
+        }
+
+//        return taskRepository.findAllByCompanyIds(companyIds);
+        return tasks;
     }
 
     @Override
@@ -162,9 +217,10 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Пользователь и месяц/год не могут быть null");
         }
 
-        List<Company> companies = companyService.findByUser(user);
+//        List<Company> companies = companyService.findByUser(user);
+        List<Company> companies = user.getCompanies();
 
-        List<Task> tasks = taskRepository.findByCompanyInAndStartDatetimeYearAndStartDatetimeMonth(
+        List<Task> tasks = taskRepository.findByCompanyInAndStartDateYearAndStartDateMonth(
                 companies,
                 selectedMonthYear.getYear(),
                 selectedMonthYear.getMonthValue()
@@ -185,7 +241,7 @@ public class TaskServiceImpl implements TaskService {
     public Long createTask(TaskCreateDto taskCreateDto, String login) {
         System.out.println("login: " + taskCreateDto.getAppointToUserId());
 
-        Task task = (taskCreateDto.getAppointToUserId() != null) ? convertToEntity(taskCreateDto) : convertToEntity(taskCreateDto, login);
+        Task task = (taskCreateDto.getAppointToUserId() != null) ?convertToEntity(taskCreateDto, taskCreateDto.getAppointToUserId()) : convertToEntity(taskCreateDto);
         Task newTask = taskRepository.save(task);
         return newTask.getId();
     }
@@ -206,17 +262,18 @@ public class TaskServiceImpl implements TaskService {
 
                 ReportFrequency frequency = company.getReportFrequency();
 
-                List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
+//                List<UserCompany> userCompanies = userCompanyService.findByCompanyAndIsAutomatic(company, true);
+                  generateAutomaticTasks(company, currentDate, frequency);
 
-                for (UserCompany userCompany : userCompanies) {
-                    generateAutomaticTasks(userCompany, currentDate, frequency);
-                }
+//                for (UserCompany userCompany : userCompanies) {
+//                    generateAutomaticTasks(userCompany, currentDate, frequency);
+//                }
             }
         }
     }
 
     @Override
-    public void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency) {
+    public void generateAutomaticTasks(Company company, LocalDate currentDate, ReportFrequency frequency) {
         int currentYear = currentDate.getYear();
         List<DocumentType> automaticDocumentTypes = documentTypeService.getNonOptionalDocumentTypes();
         TaskStatus defaultStatus = taskStatusService.getTaskStatusById(1L);
@@ -240,7 +297,7 @@ public class TaskServiceImpl implements TaskService {
                     LocalDate endDate = nextMonth.atEndOfMonth();
 
                     Task task = new Task();
-                    task.setUserCompany(userCompany);
+                    task.setCompany(company);
                     task.setStartDate(startDate);
                     task.setEndDate(endDate);
                     task.setDocumentType(documentType);
@@ -259,7 +316,7 @@ public class TaskServiceImpl implements TaskService {
                 LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
 
                 Task enTask = new Task();
-                enTask.setUserCompany(userCompany);
+                enTask.setCompany(company);
                 enTask.setStartDate(startDate);
                 enTask.setEndDate(endDate);
                 enTask.setDocumentType(enReport);
@@ -268,7 +325,7 @@ public class TaskServiceImpl implements TaskService {
 
                 if (frequency == ReportFrequency.QUARTERLY) {
                     Task nspTask = new Task();
-                    nspTask.setUserCompany(userCompany);
+                    nspTask.setCompany(company);
                     nspTask.setStartDate(startDate);
                     nspTask.setEndDate(endDate);
                     nspTask.setDocumentType(nspReport);
@@ -282,7 +339,7 @@ public class TaskServiceImpl implements TaskService {
             LocalDate endDate = quarterStartMonth.plusMonths(2).atEndOfMonth();
 
             Task enTask = new Task();
-            enTask.setUserCompany(userCompany);
+            enTask.setCompany(company);
             enTask.setStartDate(startDate);
             enTask.setEndDate(endDate);
             enTask.setDocumentType(enReport);
@@ -291,7 +348,7 @@ public class TaskServiceImpl implements TaskService {
 
             if (frequency == ReportFrequency.QUARTERLY) {
                 Task nspTask = new Task();
-                nspTask.setUserCompany(userCompany);
+                nspTask.setCompany(company);
                 nspTask.setStartDate(startDate);
                 nspTask.setEndDate(endDate);
                 nspTask.setDocumentType(nspReport);
@@ -362,7 +419,7 @@ public class TaskServiceImpl implements TaskService {
         YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
         YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
 
-        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user);
+        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
         List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 
         List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
@@ -426,54 +483,70 @@ public class TaskServiceImpl implements TaskService {
 
         User user = userService.getUserByLogin(userLogin);
 
-        List<Company> userCompanies = companyService.findByUser(user);
+//        List<Company> userCompanies = companyService.findByUser(user);
+        List<Company> companies = user.getCompanies();
 
-        return userCompanies.stream()
+        return companies.stream()
                 .anyMatch(company -> task.getCompany().equals(company));
     }
 
     @Override
     public List<Task> findByCompanyAndDate(Long companyId, LocalDate startDate, LocalDate endDate) {
-        return taskRepository.findByUserCompany_Company_IdAndEndDateBetween(companyId, startDate, endDate);
+//        return taskRepository.findByUserCompany_Company_IdAndEndDateBetween(companyId, startDate, endDate);
+        return taskRepository.findByCompanyIdAndEndDateBetween(companyId, startDate, endDate);
     }
 
 
-    private Task convertToEntity(TaskCreateDto taskCreateDto, String login) {
+    private Task convertToEntity(TaskCreateDto taskCreateDto, Long userId) {
+        Company company = companyService.getCompanyById(taskCreateDto.getCompanyId());
+        User user = userService.getUserById(userId);
         Task task = new Task();
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
-        task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDtoAndLogin(taskCreateDto, login));
+//        task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDtoAndLogin(taskCreateDto, login));
+        task.setCompany(company);
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
         task.setDescription(taskCreateDto.getDescription());
         task.setStartDate(taskCreateDto.getStartDate());
         task.setEndDate(taskCreateDto.getEndDate());
-        task.getUserCompany().setIsAutomatic(false);
+        task.getUsers().add(user);
+        user.getTasks().add(task);
+        taskRepository.save(task);
+        userRepository.save(user);
+//        task.getUserCompany().setIsAutomatic(false);
 
         return task;
     }
 
     private Task convertToEntity(TaskCreateDto taskCreateDto) {
+        Company company = companyService.getCompanyById(taskCreateDto.getCompanyId());
         Task task = new Task();
         task.setDocumentType(documentTypeService.getDocumentTypeById(taskCreateDto.getDocumentTypeId()));
-        task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDto(taskCreateDto));
+//        task.setUserCompany(userCompanyService.findUserCompanyByTaskCreateDto(taskCreateDto));
+        task.setCompany(company);
         task.setTaskStatus(taskStatusService.getTaskStatusById(taskCreateDto.getTaskStatusId()));
         task.setDescription(taskCreateDto.getDescription());
         task.setStartDate(taskCreateDto.getStartDate());
         task.setEndDate(taskCreateDto.getEndDate());
-        task.getUserCompany().setIsAutomatic(false);
+
 
         return task;
     }
 
     private TaskDto convertToDto(Task task) {
+        List<UserForTaskDto> users = task.getUsers().stream()
+                .map(userService::getUserForTaskDto)
+                .toList();
         return TaskDto.builder()
                 .id(task.getId())
                 .statusId(task.getTaskStatus().getName())
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
-                .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
+//                .user(userService.getUserForTaskDto(task.getUserCompany().getUser().getId()))
+                .users(users)
 
-                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+//                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+                .company(companyService.getCompanyForTaskDto(task.getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
                 .isCompleted(taskStatusService.getIsCompleted(task.getTaskStatus()))
@@ -618,10 +691,20 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> getFinishedTasksForUser(Long userId) {
         TaskStatus taskStatus = taskStatusService.getStatusDone();
-        return taskRepository.findAllByUserCompany_UserAndTaskStatus(userService.getUserById(userId), taskStatus)
+        User user = userService.getUserById(userId);
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        List<Task> tasks = user.getTasks();
+
+        return taskRepository.findAllByUsersAndTaskStatus(users,taskStatus)
                 .stream()
                 .map(this::convertToDtoForGetFinishedTasks)
                 .toList();
+
+//        return taskRepository.findAllByUserCompany_UserAndTaskStatus(userService.getUserById(userId), taskStatus)
+//                .stream()
+//                .map(this::convertToDtoForGetFinishedTasks)
+//                .toList();
     }
 
     private TaskDto convertToDtoForGetFinishedTasks(Task task) {
@@ -631,7 +714,8 @@ public class TaskServiceImpl implements TaskService {
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
                 .documentTypeName(documentTypeService.getDocumentName(task.getDocumentType().getId()))
-                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+//                .company(companyService.getCompanyForTaskDto(task.getUserCompany().getCompany().getId()))
+                .company(companyService.getCompanyForTaskDto(task.getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
                 .build();
@@ -668,4 +752,4 @@ public class TaskServiceImpl implements TaskService {
         return true;
     }
 }
->>>>>>> refs/remotes/origin/FS-97
+

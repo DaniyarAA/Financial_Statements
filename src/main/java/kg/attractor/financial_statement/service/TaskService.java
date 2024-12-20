@@ -1,10 +1,10 @@
 package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.*;
+import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.Tag;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.entity.UserCompany;
 import kg.attractor.financial_statement.enums.ReportFrequency;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +50,7 @@ public interface TaskService {
     @Scheduled(cron = "0 0 0 1 1 *")
     void tasksGenerator();
 
-    void generateAutomaticTasks(UserCompany userCompany, LocalDate currentDate, ReportFrequency frequency);
+    void generateAutomaticTasks(Company userCompany, LocalDate currentDate, ReportFrequency frequency);
 
     List<Task> findByCompanyAndDate(Long companyId, LocalDate startDate, LocalDate endDate);
 

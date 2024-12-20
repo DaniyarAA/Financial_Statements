@@ -171,12 +171,15 @@ public class UserServiceImpl implements UserService {
                 company.getUsers().add(user);
             }
         }
-        for(Company company : user.getCompanies()){
-            if(!selectedCompanies.contains(company)){
-                user.getCompanies().remove(company);
+        Iterator<Company> iterator = user.getCompanies().iterator();
+        while (iterator.hasNext()) {
+            Company company = iterator.next();
+            if (!selectedCompanies.contains(company)) {
+                iterator.remove();
                 company.getUsers().remove(user);
             }
         }
+
 
         log.info("edit user {}in process...", user.getLogin());
         userRepository.save(user);
@@ -390,6 +393,10 @@ public class UserServiceImpl implements UserService {
     public UserForTaskDto getUserForTaskDto(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found for id: " + id));
+        return convertToUserForTaskDto(user);
+    }
+    @Override
+    public UserForTaskDto getUserForTaskDto(User user) {
         return convertToUserForTaskDto(user);
     }
 

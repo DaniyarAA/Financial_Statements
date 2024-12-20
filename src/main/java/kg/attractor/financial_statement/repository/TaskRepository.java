@@ -1,13 +1,17 @@
 package kg.attractor.financial_statement.repository;
 
 import kg.attractor.financial_statement.entity.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -38,7 +42,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 //
 //    boolean existsByUserCompanyAndStartDateAndEndDateAndDocumentType(
 //            UserCompany userCompany, LocalDate startDate, LocalDate endDate, DocumentType documentType);
-List<Task> findByCompanyInAndStartDatetimeYearAndStartDatetimeMonth(
-        List<Company> companies, int year, int month);
+//List<Task> findByCompanyInAndStartDateYearAndStartDateMonth(
+//        List<Company> companies, int year, int month);
+    @Query("SELECT t FROM Task t WHERE t.company IN :companies AND YEAR(t.startDate) = :year AND MONTH(t.startDate) = :month")
+    List<Task> findByCompanyInAndStartDateYearAndStartDateMonth(@Param("companies") List<Company> companies, @Param("year") int year, @Param("month") int month);
+  List<Task> findAllByCompany(Company company);
+  List<Task> findByCompanyId(Long company_id);
+//    List<Task> findAllByCompanyIds(Set<Long> companyIds);
+    List<Task> findByCompanyIdAndEndDateBetween(Long companyId, LocalDate startDate, LocalDate endDate);
+    List<Task> findAllByUsersAndTaskStatus(List<User> users, TaskStatus taskStatus);
+
 
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,7 +20,8 @@ public class TaskDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String documentTypeName;
-    private UserForTaskDto user;
+//    private UserForTaskDto user;
+    private List<UserForTaskDto> users;
     private CompanyForTaskDto company;
     private BigDecimal amount;
     private String description;

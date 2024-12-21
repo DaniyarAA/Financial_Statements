@@ -13,7 +13,7 @@
     </div>
 
     <div id="users" class="tab-content user-main-div active">
-        <table class="styled-table user-table-main" id="users-table">
+        <table class="styled-table styled-table-user user-table-main" id="users-table">
             <thead class="thead-user-archive">
             <tr>
                 <th class="th-user-archive">№</th>
@@ -62,37 +62,37 @@
     </div>
 
     <div id="tasks" class="tab-content">
-        <select id="filterDocumentType" class="form-control w-auto">
+        <select id="filterDocumentType" class="form-control main-title-item w-auto">
             <option value="">Все типы документов</option>
             <#list documentTypes as type>
                 <option value="${type.name}">${type.name}</option>
             </#list>
         </select>
-        <table id="tasksTable" class="styled-table">
-            <thead>
+        <table id="tasksTable" class="styled-table styled-table-task">
+            <thead class="thead-task-archive">
             <tr>
-                <th>Компания</th>
-                <th>ИНН компании</th>
-                <th>Тип документа</th>
-                <th>Дата начала</th>
-                <th>Дата окончания</th>
-                <th>Сумма</th>
-                <th>Файл</th>
-                <th>Изменить статус</th>
+                <th class="th-task-archive">Компания</th>
+                <th class="th-task-archive">ИНН компании</th>
+                <th class="th-task-archive">Тип документа</th>
+                <th class="th-task-archive">Дата начала</th>
+                <th class="th-task-archive">Дата окончания</th>
+                <th class="th-task-archive">Сумма</th>
+                <th class="th-task-archive">Файл</th>
+                <th class="th-task-archive">Изменить статус</th>
             </tr>
             </thead>
             <tbody>
             <#if finishedTasks?has_content>
                 <#list finishedTasks as task>
                     <tr data-task-id="${task.id}">
-                        <td>${task.company.name}</td>
-                        <td>${task.company.inn}</td>
-                        <td>${task.documentTypeName}</td>
-                        <td>${task.startDate}</td>
-                        <td>${task.endDate}</td>
-                        <td>${task.amount}</td>
-                        <td>Здесь должен быть прикрепленный файл</td>
-                        <td>
+                        <td class="td-task-archive  td-task-archive-top">${task.company.name}</td>
+                        <td class="td-task-archive">${task.company.inn}</td>
+                        <td class="td-task-archive">${task.documentTypeName}</td>
+                        <td class="td-task-archive">${task.startDate}</td>
+                        <td class="td-task-archive">${task.endDate}</td>
+                        <td class="td-task-archive">${task.amount}</td>
+                        <td class="td-task-archive">Здесь должен быть прикрепленный файл</td>
+                        <td class="td-task-archive">
                             <select class="status-dropdown"
                                     data-original-status="${task.statusId}"
                                     onchange="openStatusModal(${task.id}, '${task.company.name}', this)">

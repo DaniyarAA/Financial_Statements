@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return `Показано ${start} - ${end} из ${total}`;
         },
-        dom: "<'row align-items-center document-header'<'col-md-auto'l><'col-md-auto'f><'col-md-auto'i>>" +
+        dom: "<'row main-title-task align-items-center document-header'<'col-md-auto main-title-item 'l><'col-md-auto main-title-item 'f><'col-md-auto main-title-item 'i>>" +
             "<'row'<'col-12'tr>>" +
             "<'row'<'col-12'p>>",
         responsive: true

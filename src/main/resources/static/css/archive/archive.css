@@ -708,6 +708,7 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
 }
 
 /*      Media      */
+/* user */
 
 @media (max-width: 860px) {
 
@@ -720,7 +721,7 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
         margin-top: 25px;
     }
 
-    .styled-table thead {
+    .styled-table-user thead {
         display: none;
     }
 }
@@ -765,6 +766,7 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
 
     .btn-return-user-in-list{
         width: 80px;
+        font-size: 12px;
     }
 
     .tab-button{
@@ -807,3 +809,58 @@ table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
         box-sizing: border-box;
     }
 }
+
+/*   task  */
+
+@media (max-width: 1200px) {
+    .styled-table-task tbody .td-task-archive{
+        display: block;
+    }
+
+    .td-task-archive-top{
+        margin-top: 20px;
+    }
+
+    .thead-task-archive{
+        display: none;
+    }
+}
+
+@media (max-width: 1055px) {
+    .main-title-task {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-title-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 810px) {
+    .tab-button{
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 740px) {
+    .tab-button{
+        font-size: 12px;
+    }
+
+    .main-title-item {
+        font-size: 12px;
+    }
+
+    .dataTables_filter label input{
+        font-size: 12px;
+    }
+
+    .paginate_button{
+        font-size: 12px;
+    }
+}
+

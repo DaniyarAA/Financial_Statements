@@ -12,8 +12,8 @@
         <button class="tab-button" onclick="showTab('companies')">Удаленные компании</button>
     </div>
 
-    <div id="users" class="tab-content active">
-        <table class="styled-table" id="users-table">
+    <div id="users" class="tab-content user-main-div active">
+        <table class="styled-table user-table-main" id="users-table">
             <thead class="thead-user-archive">
             <tr>
                 <th class="th-user-archive">№</th>
@@ -27,7 +27,7 @@
             <tbody class="tbody-user-archive">
             <#if deletedUsers?has_content>
                 <#list deletedUsers as user>
-                    <tr id="${user.id}-tr">
+                    <tr class="tr-user-archive" id="${user.id}-tr">
                         <td class="th-user-archive return-button-list-td"><button class="btn btn-light btn-return-user-in-list" onclick="openModal(${user.id})" title="Восстановить пользователя : ${user.name}"><i class="bi bi-rewind-fill return-list-icon" style="color: #1E1E1E"></i>  ${user_index + 1}</button>
                           </td>
                         <td class="th-user-archive">${user.name} ${user.surname}</td>

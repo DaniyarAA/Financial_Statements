@@ -188,14 +188,6 @@
                                                 </button>
                                             </div>
                                         </div>
-
-                                        <div class="task-priority-arrows" data-task-id="${task.id}">
-                                            <#if task.priorityId?has_content>
-                                                <img src="/images/${task.priorityId}-arrow.png" alt="priority">
-                                            <#else>
-                                                <span class="no-priority-message"></span>
-                                            </#if>
-                                        </div>
                                     </div>
 
 

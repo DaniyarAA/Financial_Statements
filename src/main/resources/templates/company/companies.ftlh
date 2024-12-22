@@ -869,7 +869,7 @@
                                                 <fieldset class="p-4 mb-4">
                                                     <div class="form-group row">
                                                         <label for="name" class="col-md-4 col-form-label">Название
-                                                            компании:</label>
+                                                            компании:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="name" name="name"
                                                                    class="form-control" required>
@@ -880,7 +880,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="companyInn"
-                                                               class="col-md-4 col-form-label">ИНН:</label>
+                                                               class="col-md-4 col-form-label">ИНН:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="companyInn" name="companyInn"
                                                                    class="form-control" required>
@@ -891,7 +891,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="directorInn" class="col-md-4 col-form-label">ИНН
-                                                            руководителя:</label>
+                                                            руководителя:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="directorInn" name="directorInn"
                                                                    class="form-control" required>
@@ -902,7 +902,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="login"
-                                                               class="col-md-4 col-form-label">Логин:</label>
+                                                               class="col-md-4 col-form-label">Логин:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="login" name="login"
                                                                    class="form-control" required>
@@ -913,7 +913,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="password"
-                                                               class="col-md-4 col-form-label">Пароль:</label>
+                                                               class="col-md-4 col-form-label">Пароль:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="password" id="password" name="password"
                                                                    class="form-control" required>
@@ -923,7 +923,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="ecp" class="col-md-4 col-form-label">ЭЦП:</label>
+                                                        <label for="ecp" class="col-md-4 col-form-label">ЭЦП:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="ecp" name="ecp" class="form-control"
                                                                    required>
@@ -934,7 +934,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="kabinetSalyk" class="col-md-4 col-form-label">Salyk.kg
-                                                            логин:</label>
+                                                            логин:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="kabinetSalyk" name="kabinetSalyk"
                                                                    class="form-control" required>
@@ -945,7 +945,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="kabinetSalykPassword"
-                                                               class="col-md-4 col-form-label">Salyk.kg пароль:</label>
+                                                               class="col-md-4 col-form-label">Salyk.kg пароль:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="password" id="kabinetSalykPassword"
                                                                    name="kabinetSalykPassword" class="form-control"
@@ -957,7 +957,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="taxMode" class="col-md-4 col-form-label">Режим
-                                                            налогооблажения:</label>
+                                                            налогооблажения:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="taxMode" name="taxMode"
                                                                    class="form-control" required>
@@ -967,7 +967,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="opf" class="col-md-4 col-form-label">ОПФ:</label>
+                                                        <label for="opf" class="col-md-4 col-form-label">ОПФ:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="opf" name="opf" class="form-control"
                                                                    required>
@@ -978,7 +978,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="districtGns" class="col-md-4 col-form-label">Район
-                                                            ГНС:</label>
+                                                            ГНС:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="districtGns" name="districtGns"
                                                                    class="form-control" required>
@@ -989,7 +989,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="socfundNumber" class="col-md-4 col-form-label">Номер
-                                                            соцфонда:</label>
+                                                            соцфонда:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="socfundNumber" name="socfundNumber"
                                                                    class="form-control" required>
@@ -1001,7 +1001,7 @@
                                                     <div class="form-group row">
                                                         <label for="registrationNumberMj"
                                                                class="col-md-4 col-form-label">Регистрационный номер
-                                                            МЮ:</label>
+                                                            МЮ:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="registrationNumberMj"
                                                                    name="registrationNumberMj" class="form-control"
@@ -1012,7 +1012,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="okpo" class="col-md-4 col-form-label">ОКПО:</label>
+                                                        <label for="okpo" class="col-md-4 col-form-label">ОКПО:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="okpo" name="okpo"
                                                                    class="form-control" required>
@@ -1023,7 +1023,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="director" class="col-md-4 col-form-label">ФИО
-                                                            руководителя:</label>
+                                                            руководителя:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="director" name="director"
                                                                    class="form-control" required>
@@ -1033,7 +1033,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="ked" class="col-md-4 col-form-label">КЭД:</label>
+                                                        <label for="ked" class="col-md-4 col-form-label">КЭД:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="ked" name="ked" class="form-control"
                                                                    required>

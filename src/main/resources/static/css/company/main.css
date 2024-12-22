@@ -226,6 +226,10 @@ label.custom-search input[type="text"] {
     background-color:#f8f9fa;
 }
 
+.required-asterisk{
+    color: red;
+}
+
 .custom-search .search-input:hover {
     background-color: #f8f9fa;
 }

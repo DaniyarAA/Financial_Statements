@@ -163,18 +163,6 @@
 
                             <div class="create-task-info">
                                 <div id="formPage1" class="form-page">
-                                    <div class="task-create-div">
-                                        <label for="category" class="task-create-text">Назначить</label>
-                                        <select class="form-select" id="user" name="appointToUserId" required>
-                                            <#if userDtos??>
-                                                <#list userDtos as user>
-                                                    <option value="${user.id}">${user.surname} ${user.name}</option>
-                                                </#list>
-                                            <#else>
-                                                <option disabled>Нет доступных пользователей</option>
-                                            </#if>
-                                        </select>
-                                    </div>
 
                                     <div class="task-create-div">
                                         <label for="category" class="task-create-text">Компания</label>
@@ -185,6 +173,19 @@
                                                 </#list>
                                             <#else>
                                                 <option disabled>Нет доступных компаний</option>
+                                            </#if>
+                                        </select>
+                                    </div>
+
+                                    <div class="task-create-div">
+                                        <label for="category" class="task-create-text">Назначить</label>
+                                        <select class="form-select" id="user" name="appointToUserId" required>
+                                            <#if userDtos??>
+                                                <#list userDtos as user>
+                                                    <option value="${user.id}">${user.surname} ${user.name}</option>
+                                                </#list>
+                                            <#else>
+                                                <option disabled>Нет доступных пользователей</option>
                                             </#if>
                                         </select>
                                     </div>

@@ -141,12 +141,15 @@ public class TaskController {
         List<UserDto> userDtos = userService.getAllUsers();
         List<CompanyDto> companyDtos = companyService.getAllCompanies();
 
+        String companyDtosJson = objectMapper.writeValueAsString(companyDtos);
+
         model.addAllAttributes(taskListData);
 
         model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
         model.addAttribute("userDtos", userDtos);
         model.addAttribute("companies", companyDtos);
+        model.addAttribute("companyDtosJson", companyDtosJson);
         model.addAttribute("taskStatusDtos", taskStatusDtos);
         model.addAttribute("documentTypeDtos", documentTypeDtos);
         model.addAttribute("taskCreateDto", new TaskCreateDto());

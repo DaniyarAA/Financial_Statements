@@ -144,16 +144,16 @@
                                 <div id="formPage1" class="form-page">
 
                                     <div class="task-create-div">
-                                        <label for="category" class="task-create-text">Компания</label>
-                                        <select class="form-select" id="company" name="companyId" required>
-                                            <#if companies??>
-                                                <#list companies as company>
-                                                    <option value="${company.id}">${company.name}</option>
-                                                </#list>
-                                            <#else>
-                                                <option disabled>Нет доступных компаний</option>
-                                            </#if>
-                                        </select>
+                                        <label for="company-search" class="task-create-text">Компания</label>
+                                        <input
+                                                type="text"
+                                                id="company-search"
+                                                class="form-control"
+                                                placeholder="Поиск компании..."
+                                                oninput="updateDropdown()"
+                                                autocomplete="off"
+                                        />
+                                        <ul id="company-dropdown" class="dropdown-menu"></ul>
                                     </div>
 
                                     <div class="task-create-div">
@@ -332,6 +332,9 @@
 
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
+    </script>
+    <script>
+        const companyDtos = ${companyDtosJson?no_esc};
     </script>
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
@@ -585,6 +588,8 @@
 
         .task-create-div {
             margin-bottom: 10px;
+            position: relative;
+
         }
 
         .task-create-week-decade-month-selection {
@@ -920,6 +925,43 @@
             padding: 0;
         }
 
+        #company-search {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #company-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+        }
+
+        #company-dropdown .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        #company-dropdown .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        #company-dropdown .dropdown-item:hover {
+            background-color: #e9ecef;
+        }
 
     </style>
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">

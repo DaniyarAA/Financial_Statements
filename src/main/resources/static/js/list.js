@@ -3,7 +3,6 @@
 //     window.history.replaceState(null, null, urlWithoutParams);
 // }
 function showTaskDetails(button) {
-    console.log(taskStatusDtos);
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 
     const taskId = button.getAttribute("data-task-id");
@@ -580,5 +579,60 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("company-search");
+    const dropdown = document.getElementById("company-dropdown");
+
+    searchInput.addEventListener("focus", () => {
+        populateDropdown(companyDtos);
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target) && event.target !== searchInput) {
+            dropdown.style.display = "none";
+        }
+    });
+});
+
+function populateDropdown(companies) {
+    const dropdown = document.getElementById("company-dropdown");
+    dropdown.innerHTML = "";
+
+    if (companies.length > 0) {
+        companies.forEach(company => {
+            const li = document.createElement("li");
+            li.textContent = company.name;
+            li.className = "dropdown-item";
+            li.dataset.companyId = company.id;
+
+            li.addEventListener("click", () => selectCompany(company));
+            dropdown.appendChild(li);
+        });
+
+        dropdown.style.display = "block";
+    } else {
+        dropdown.style.display = "none";
+    }
+}
+
+function updateDropdown() {
+    const searchInput = document.getElementById("company-search").value.toLowerCase();
+    const filteredCompanies = companyDtos.filter(company =>
+        company.name.toLowerCase().includes(searchInput)
+    );
+
+    populateDropdown(filteredCompanies);
+}
+
+function selectCompany(company) {
+    const searchInput = document.getElementById("company-search");
+    const dropdown = document.getElementById("company-dropdown");
+
+    searchInput.value = company.name;
+
+    dropdown.style.display = "none";
+}
+
 
 

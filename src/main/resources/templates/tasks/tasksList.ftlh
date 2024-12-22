@@ -35,27 +35,6 @@
                         </tbody>
                     </table>
                 </div>
-
-<#--                <div class="pagination-container">-->
-<#--                    <#if currentPage == 0 && currentPage == totalPages - 1>-->
-
-<#--                    </#if>-->
-<#--                    <#if currentPage != 0>-->
-<#--                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">-->
-<#--                            <div class="button-container">-->
-<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">-->
-<#--                            </div>-->
-<#--                        </a>-->
-<#--                    </#if>-->
-<#--                    <#if currentPage < totalPages - 1>-->
-<#--                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">-->
-<#--                            <div class="button-container">-->
-<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">-->
-<#--                            </div>-->
-<#--                        </a>-->
-<#--                    </#if>-->
-<#--                </div>-->
-
             </div>
 
             <div class="table-container tasks-table">
@@ -354,9 +333,6 @@
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
-<#--    <script>-->
-<#--        const availableYearMonths = ${availableYearMonthsJson?no_esc};-->
-<#--    </script>-->
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
@@ -398,7 +374,6 @@
             margin-right: 10px;
             margin-top: 26px;
             box-sizing: border-box;
-
         }
         .tasks-table::-webkit-scrollbar {
             display: none;
@@ -406,21 +381,18 @@
         .year-month-column {
             background-color: #ffffff;
             height: 35px;
-
         }
 
         .year-month-th {
             padding: 5px;
-
         }
 
-        .year-month-th.first-th {
-            background-color: #d9d9d9;
-        }
-
-        .year-month-th.second-th {
-            background-color: #ededed;
-            border-right: 2px solid #c8c8c8;
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ccc;
         }
 
         .table-wrapper {
@@ -449,16 +421,14 @@
         }
         .table-main {
             background-color: #d9d9d9;
-
         }
 
         .company-columns {
             text-align: center;
-            height: 52px;
+            height: 56px;
         }
         .task-columns {
-            height: 52px;
-
+            height: 56px;
         }
 
         .table-striped-row:nth-child(odd) {
@@ -471,8 +441,10 @@
 
         .task-buttons {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 5px;
+            margin: 3px 20px 3px 20px;
         }
 
         .task-button {
@@ -835,6 +807,14 @@
             height: 100%;
         }
 
+        .year-month-th:nth-child(odd) {
+            background-color: #d9d9d9;
+        }
+
+        .year-month-th:nth-child(even) {
+            background-color: #ededed;
+        }
+
         .year-month-label {
             padding: 0 20px;
             white-space: nowrap;
@@ -853,18 +833,6 @@
             font-size: 14px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-        }
-
-        .year-month-navigation button:hover {
-            background-color: #0056b3;
-        }
-
-        .year-month-navigation .btn-nav:first-of-type {
-            margin-right: auto;
-        }
-
-        .year-month-navigation .btn-nav:last-of-type {
-            margin-left: auto;
         }
 
         .btn-nav {

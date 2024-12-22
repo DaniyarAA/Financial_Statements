@@ -367,18 +367,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
-        YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
-        YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
+    public Map<String, Object> getTaskListData(User user) {
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
         List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 
-        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
-        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks, paramYearMonth);
+        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(taskDtos);
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = groupTasksByYearMonthAndCompany(
-                filteredTasks, companyDtos);
+                taskDtos, companyDtos);
 
         List<String> availableYearMonths = new ArrayList<>(tasksByYearMonthAndCompany.keySet());
 
@@ -388,7 +385,7 @@ public class TaskServiceImpl implements TaskService {
 
         System.out.println("Month map: " + monthsMap);
 
-        Map<String, Object> response = buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        Map<String, Object> response = buildResponse(companyDtos, monthsMap, tasksByYearMonthAndCompany);
         response.put("availableYearMonths", availableYearMonths);
         return response;
     }
@@ -529,7 +526,7 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.toList());
     }
 
-    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks, String paramYearMonth) {
+    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
         Map<String, String> monthsMap = tasks.stream()
                 .sorted(Comparator.comparing(task -> YearMonth.from(task.getEndDate())))
@@ -544,17 +541,6 @@ public class TaskServiceImpl implements TaskService {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
-
-        if (paramYearMonth == null || paramYearMonth.trim().isEmpty()) {
-            String currentYearMonth = YearMonth.now().format(formatter);
-            if (!monthsMap.containsKey(currentYearMonth)) {
-                YearMonth currentYM = YearMonth.now();
-                monthsMap.put(
-                        currentYearMonth,
-                        currentYM.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru")) + " " + currentYM.getYear()
-                );
-            }
-        }
 
         return monthsMap;
     }
@@ -584,18 +570,13 @@ public class TaskServiceImpl implements TaskService {
         return tasksByYearMonthAndCompany;
     }
 
-    private Map<String, Object> buildResponse(int page, int size, List<CompanyForTaskDto> companyDtos,
+    private Map<String, Object> buildResponse(List<CompanyForTaskDto> companyDtos,
                                               Map<String, String> monthsMap,
                                               Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany) {
         int totalCompanies = companyDtos.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-        List<CompanyForTaskDto> paginatedCompanies = companyDtos.subList(start, end);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("currentPage", page);
-        response.put("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        response.put("list", paginatedCompanies);
+        response.put("list", companyDtos);
         response.put("monthsMap", monthsMap);
         response.put("companyDtos", companyDtos);
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);

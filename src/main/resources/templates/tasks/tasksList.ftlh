@@ -354,9 +354,9 @@
     <script>
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
-    <script>
-        const availableYearMonths = ${availableYearMonthsJson?no_esc};
-    </script>
+<#--    <script>-->
+<#--        const availableYearMonths = ${availableYearMonthsJson?no_esc};-->
+<#--    </script>-->
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">

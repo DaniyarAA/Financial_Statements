@@ -12,7 +12,6 @@ import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.*;
-import kg.attractor.financial_statement.service.impl.DocumentTypeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -185,7 +182,7 @@ public class TaskServiceImpl implements TaskService {
 //        List<Company> companies = companyService.findByUser(user);
         List<Company> companies = user.getCompanies();
 
-        List<Task> tasks = taskRepository.findByCompanyInAndStartDateYearAndStartDateMonth(
+        List<Task> tasks = taskRepository.findByCompanyInAndEndDateYearAndEndDateMonth(
                 companies,
                 selectedMonthYear.getYear(),
                 selectedMonthYear.getMonthValue()
@@ -318,7 +315,7 @@ public class TaskServiceImpl implements TaskService {
         User user = userService.getUserByLogin(login);
         List<Task> tasks = getAllTasksForUser(user);
         List<String> yearMonths = tasks.stream()
-                .map(Task::getStartDate)
+                .map(Task::getEndDate)
                 .map(date -> date.format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .distinct()
                 .sorted(Comparator.comparing(
@@ -526,7 +523,7 @@ public class TaskServiceImpl implements TaskService {
     private List<TaskDto> filterTasksByYearMonth(List<TaskDto> tasks, YearMonth filterYearMonth, YearMonth nextYearMonth) {
         return tasks.stream()
                 .filter(task -> {
-                    YearMonth taskYearMonth = YearMonth.from(task.getStartDate());
+                    YearMonth taskYearMonth = YearMonth.from(task.getEndDate());
                     return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(nextYearMonth);
                 })
                 .collect(Collectors.toList());
@@ -535,8 +532,8 @@ public class TaskServiceImpl implements TaskService {
     private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks, String paramYearMonth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
         Map<String, String> monthsMap = tasks.stream()
-                .sorted(Comparator.comparing(task -> YearMonth.from(task.getStartDate())))
-                .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
+                .sorted(Comparator.comparing(task -> YearMonth.from(task.getEndDate())))
+                .map(task -> YearMonth.from(task.getEndDate()).format(formatter))
                 .distinct()
                 .collect(Collectors.toMap(
                         ym -> ym,
@@ -567,7 +564,7 @@ public class TaskServiceImpl implements TaskService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
 
         List<String> sortedYearMonths = tasks.stream()
-                .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
+                .map(task -> YearMonth.from(task.getEndDate()).format(formatter))
                 .distinct()
                 .sorted(Comparator.comparing(yearMonth -> YearMonth.parse(yearMonth, formatter)))
                 .toList();
@@ -577,7 +574,7 @@ public class TaskServiceImpl implements TaskService {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companies) {
                 List<TaskDto> tasksForCompanyAndMonth = tasks.stream()
-                        .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
+                        .filter(task -> YearMonth.from(task.getEndDate()).format(formatter).equals(yearMonth)
                                 && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
                 tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);

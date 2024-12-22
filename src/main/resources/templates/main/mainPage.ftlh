@@ -656,13 +656,26 @@
         .tasks-header {
             background-color: #FFFFFF;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             font-size: 24px;
             text-align: center;
-            padding: 0;
+            padding: 0 20px;
             height: 53px;
+            position: relative;
         }
+
+        .tasks-header h3 {
+            margin: 0 auto;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .tasks-header .add-task {
+            margin-left: auto;
+        }
+
         .tasks-header p {
             margin: 0;
             line-height: 1;

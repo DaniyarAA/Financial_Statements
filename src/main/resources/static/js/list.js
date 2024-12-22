@@ -353,60 +353,6 @@ function getDate(element) {
     return date;
 }
 
-function setupCompanyToggleButton() {
-    const companyHeader = document.querySelector(".company-column-th .company-header");
-
-    if (!companyHeader) return;
-
-    if (!document.querySelector(".btn-nav-img-toggle")) {
-        const toggleButtonImage = document.createElement("img");
-        toggleButtonImage.src = "/images/company-arrow.png";
-        toggleButtonImage.alt = "Toggle Company Table";
-        toggleButtonImage.classList.add("btn-nav-img", "btn-nav-img-toggle");
-
-        toggleButtonImage.style.position = "fixed";
-        toggleButtonImage.style.top = "85px";
-        toggleButtonImage.style.left = "240px";
-        toggleButtonImage.style.transform = "rotate(0deg)";
-        toggleButtonImage.style.transition = "left 0.3s ease, transform 0.3s ease";
-        toggleButtonImage.style.cursor = "pointer";
-        toggleButtonImage.style.width = "24px";
-        toggleButtonImage.style.height = "24px";
-
-        toggleButtonImage.addEventListener("click", () => {
-            toggleCompanyTable(toggleButtonImage);
-        });
-
-        document.body.appendChild(toggleButtonImage);
-    }
-}
-
-function toggleCompanyTable(toggleButtonImage) {
-    const companyTable = document.getElementById("company-table");
-    const isHidden = companyTable.style.width === "0px" || companyTable.style.display === "none";
-
-    if (isHidden) {
-        companyTable.style.width = "244px";
-        companyTable.style.marginLeft = "0";
-        companyTable.style.transition = "width 0.3s ease, padding 0.3s ease";
-
-        toggleButtonImage.style.left = "240px";
-        toggleButtonImage.style.transform = "rotate(0deg)";
-    } else {
-        companyTable.style.width = "0";
-        companyTable.style.marginLeft = "0";
-        companyTable.style.transition = "width 0.3s ease, padding 0.3s ease";
-
-        toggleButtonImage.style.left = "20px";
-        toggleButtonImage.style.transform = "rotate(180deg)";
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    setupCompanyToggleButton();
-});
-
-
 function addCollapseButtonToTaskDetails() {
     const taskDetailsHeader = document.querySelector('.task-details-header');
 

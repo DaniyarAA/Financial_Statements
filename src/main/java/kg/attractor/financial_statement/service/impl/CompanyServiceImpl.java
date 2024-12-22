@@ -77,18 +77,22 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = convertToEntity(companyDto);
         company.setDeleted(Boolean.FALSE);
 
-        ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
-        company.setReportFrequency(frequency);
+        if (companyDto.getReportFrequency() != null && !companyDto.getReportFrequency().isBlank()) {
+            ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
+            company.setReportFrequency(frequency);
+        }
 
         Company companyCreated = companyRepository.save(company);
+        LocalDate currentDate = LocalDate.now();
+        User user = userService.getUserByLogin(login);
+        user.getCompanies().add(companyCreated);
+        companyCreated.getUsers().add(user);
+        userService.editUser(user.getId(),userService.convertToUserDto(user));
+        companyRepository.save(companyCreated);
 
-        assignUserToCompany(companyCreated, login); //TODO: Переделать логику
-
-//        LocalDate currentDate = LocalDate.now();
-//        UserCompany userCompany = userCompanyService.findByCompany(companyCreated)
-//                .orElseThrow(() -> new RuntimeException("UserCompany not found"));
-//
-//        taskService.generateAutomaticTasks(userCompany, currentDate, frequency);
+        if (company.getReportFrequency() != null) {
+            taskService.generateAutomaticTasks(companyCreated, currentDate, company.getReportFrequency());
+        }
 
         return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }

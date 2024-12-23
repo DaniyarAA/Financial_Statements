@@ -156,6 +156,12 @@ public class TaskServiceImpl implements TaskService {
             } else {
                 tasks = taskRepository.findByUsersIdOrderByEndDateDesc(user.getId());
             }
+        } else if ("priority".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUsersIdOrderByPriorityIdAsc(user.getId());
+            } else {
+                tasks = taskRepository.findByUsersIdOrderByPriorityIdDesc(user.getId());
+            }
         } else {
             tasks = taskRepository.findByUsersIdOrderByEndDateAsc(user.getId());
         }

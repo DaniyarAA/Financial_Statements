@@ -23,6 +23,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUsersIdOrderByIdDesc(Long userId);
     List<Task> findByUsersIdOrderByEndDateAsc(Long userId);
     List<Task> findByUsersIdOrderByEndDateDesc(Long userId);
+    List<Task> findByUsersIdOrderByPriorityIdAsc(Long userId);
+    List<Task> findByUsersIdOrderByPriorityIdDesc(Long userId);
     List<Task> findByCompanyIdAndEndDateBetween(Long companyId, LocalDate startDate, LocalDate endDate);
     List<Task> findAllByUsersAndTaskStatus(List<User> users, TaskStatus taskStatus);
 }

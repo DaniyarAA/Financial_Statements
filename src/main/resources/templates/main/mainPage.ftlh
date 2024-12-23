@@ -198,17 +198,15 @@
                                             </div>
                                         </div>
 
-
-
-                                        <div class="task-priority-arrows" data-task-id="${task.id}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
-                                                <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
-                                            </svg>
-                                        </div>
+                                        <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=priority"
+                                           style="text-decoration: none; color: inherit; display: inline;">
+                                            <div class="task-priority-arrows" data-task-id="${task.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                                                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+                                                </svg>
+                                            </div>
+                                        </a>
                                     </div>
-
-
-
 
                                     <div class="task-priority-bar" data-task-id="${task.id}"
                                          style="background-color: ${task.priorityColor};"></div>

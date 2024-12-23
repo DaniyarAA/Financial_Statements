@@ -1,8 +1,10 @@
 package kg.attractor.financial_statement.config;
 
-import lombok.RequiredArgsConstructor;
+import kg.attractor.financial_statement.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,17 +13,26 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
+
     private final CustomAuthSuccessHandler authSuccessHandler;
+    private final UserService userService;
+
+    @Autowired
+    public SecurityConfig(CustomAuthSuccessHandler authSuccessHandler, @Lazy UserService userService) {
+        this.authSuccessHandler = authSuccessHandler;
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(new CredentialsFilter(userService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form ->
@@ -54,8 +65,8 @@ public class SecurityConfig {
                         .requestMatchers("/tasks/edit/").hasAuthority("EDIT_TASK")
                         .requestMatchers("/tasks/delete/").hasAuthority("DELETE_TASK")
                         .requestMatchers("/archive/all").hasAuthority("VIEW_ARCHIVE")
+                        .requestMatchers("/change-credentials").authenticated()
                         .requestMatchers("/").authenticated()
-
                         .anyRequest().permitAll());
         return http.build();
     }

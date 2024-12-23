@@ -143,19 +143,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getAllTasksForUserSorted(User user, String sortBy, String sort) {
-        if (user == null) {
-            throw new IllegalArgumentException("Пользователь не может быть null");
-        }
-
-        List<Company> companies = user.getCompanies();
-
-        Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        List<Task> tasks = new ArrayList<>();
-        for(Company company : companies){
-            if(!taskRepository.findByCompanyId(company.getId()).isEmpty()){
-                List<Task> tasks1 = taskRepository.findByCompanyId(company.getId(), Sort.by(direction, sortBy));
-                tasks.addAll(tasks1);
+        List<Task> tasks;
+        if ("id".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUsersIdOrderByIdAsc(user.getId());
+            } else {
+                tasks = taskRepository.findByUsersIdOrderByIdDesc(user.getId());
             }
+        } else if ("endDate".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findByUsersIdOrderByEndDateAsc(user.getId());
+            } else {
+                tasks = taskRepository.findByUsersIdOrderByEndDateDesc(user.getId());
+            }
+        } else {
+            tasks = taskRepository.findByUsersIdOrderByEndDateAsc(user.getId());
         }
 
         return convertToDtoList(tasks);

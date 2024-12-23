@@ -220,11 +220,12 @@ public class UserServiceImpl implements UserService {
 
     private void updateLoginIfChanged(String newLogin, User user) {
         if (!Objects.equals(newLogin, user.getLogin())) {
+            log.info("Проверка уникальности логина: {}", newLogin);
             if (checkIfUserExistsByLogin(newLogin)) {
-                log.info("Пользователь с таким логином уже существует");
+                log.error("Пользователь с логином {} уже существует", newLogin);
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
-            log.info("changed login for user");
+            log.info("Обновление логина для пользователя: {}", newLogin);
             user.setLogin(newLogin);
         }
     }
@@ -368,7 +369,8 @@ public class UserServiceImpl implements UserService {
                 try {
                     return getUserDtoByLogin(username);
                 } catch (UsernameNotFoundException e) {
-                    log.info("Пользователь с логином '{}' не найден", username);
+                    log.info("Пользователь с логином '{}' не найден, удаляем куку.", username);
+                    return null;
                 }
             }
         }
@@ -433,6 +435,7 @@ public class UserServiceImpl implements UserService {
                 .roleDto(roleDto)
                 .email(user.getEmail())
                 .companies(getCompaniesByUserId(user.getId()))
+                .credentialsUpdated(user.isCredentialsUpdated())
                 .build();
     }
 

@@ -1249,22 +1249,6 @@ h2 {
     opacity: 1;
 }
 
-.task-priority-arrows {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-left: 5px;
-    padding: 0;
-    width: auto;
-}
-
-.task-priority-arrows svg {
-    display: block;
-    margin-bottom: -5px;
-    margin-right: 40px;
-}
-
 .no-priority-message {
     margin-left: 59px;
 }
@@ -1370,7 +1354,7 @@ h2 {
 .tooltip {
     position: absolute;
     top: -1%;
-    left: 89%;
+    left: 82%;
     transform: translateX(-50%);
     background-color: #333;
     color: white;

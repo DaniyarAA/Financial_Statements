@@ -78,14 +78,23 @@
             <div class="col tasks">
                 <div class="tasks-header">
                     <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
-                    <a href="/tasks?openModal=true" class="btn type-btn add-task">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" font-weight="bold"
-                             fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                        </svg>
-                    </a>
+                    <div class="task-actions">
+                        <a href="#" class="btn type-btn help-task" onclick="openModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+                            </svg>
+                        </a>
+                        <a href="/tasks?openModal=true" class="btn type-btn add-task">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" font-weight="bold"
+                                 fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
+
 
                 <div class="task-list">
                     <div class="tasks-scroll">
@@ -408,7 +417,64 @@
         </div>
     </div>
 
+<div id="legendMapModal" class="legend-map-modal" style="display: none;">
+    <div class="modal-content-map">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Руководство по управлению задачами</h2>
+        <p><strong>1. Сортировка по номеру задачи:</strong> Если нажать на номер задачи, вы можете отсортировать их по убыванию или возрастанию.</p>
+        <p><strong>2. Сортировка по дате:</strong> Аналогично, если нажать на дату, можно отсортировать задачи по возрастанию или убыванию дат.</p>
+        <p><strong>3. Создание задачи:</strong> Нажмите на иконку с плюсом, чтобы перейти к созданию новой задачи.</p>
+    </div>
+</div>
+
     <style>
+        .legend-map-modal {
+            display: none;
+            position: fixed;
+            top: 1%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 100%;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(-50%) scale(0.9);
+        }
+
+        .legend-map-modal.show {
+            display: flex;
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .modal-content-map {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            width: 60%;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        #legendMapModal .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-weight: bold;
+        }
+
         .main-container {
             max-width: 1350px;
         }
@@ -652,7 +718,6 @@
             align-items: center;
             font-size: 24px;
             text-align: center;
-            padding: 0 20px;
             height: 53px;
             position: relative;
         }
@@ -664,14 +729,25 @@
             transform: translateX(-50%);
         }
 
-        .tasks-header .add-task {
+        .tasks-header .task-actions {
+            display: flex;
+            align-items: center;
             margin-left: auto;
         }
 
-        .tasks-header p {
-            margin: 0;
-            line-height: 1;
+        .tasks-header .help-task {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .tasks-header .add-task {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
 
         .tasks-content {
             height: 500px;
@@ -772,8 +848,8 @@
 
 
     </style>
-
+    <script src="/js/legendMap.js"></script>
     <script src="/js/tags.js"></script>
     <script src="/js/priority.js"></script>
-    <script src="/js/reports.js"></script>
+    <script src="/js/reports.js">
 </@layout.layout>

@@ -7,6 +7,13 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".task-priority-bar").forEach(function (priorityBar) {
         priorityBar.addEventListener("click", function (event) {
             const taskId = priorityBar.dataset.taskId;
+            const rect = priorityBar.getBoundingClientRect();
+            const modalWidth = modal.offsetWidth;
+            const modalHeight = modal.offsetHeight;
+
+            modal.style.left = `${rect.left + window.scrollX - (modalWidth / 2) + (rect.width / 2) - 400}px`;
+            modal.style.top = `${rect.top + window.scrollY - modalHeight - 90}px`;
+
             modal.style.display = "block";
             priorityList.dataset.taskId = taskId;
         });

@@ -7,11 +7,6 @@
             <p>На вас нет зарегестрированных компаний!</p>
         </div>
     </#if>
-
-    <div id="responseMessage" style="display: none;">
-
-    </div>
-
     <div class="container p-3">
         <div class="main-content">
             <div class="table-container company-table" id="company-table" style="display: block">
@@ -99,6 +94,9 @@
                 <input type="hidden" id="csrfToken" value="${(_csrf.token)!'csrf-token'}"/>
                 <div class="task-details-header">
                     <h5>Подробнее</h5>
+                    <div id="responseMessage" style="display: none;">
+
+                    </div>
                 </div>
 
                 <div id="task-content">
@@ -150,10 +148,25 @@
                                                 id="company-search"
                                                 class="form-control"
                                                 placeholder="Поиск компании..."
-                                                oninput="updateDropdown()"
-                                                autocomplete="off"
+                                                readonly
+                                                onclick="openCompanyPopup()"
                                         />
-                                        <ul id="company-dropdown" class="dropdown-menu"></ul>
+                                        <input type="hidden" id="company-id" name="companyId" />
+                                    </div>
+
+                                    <div id="company-modal" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close" onclick="closeCompanyPopup()">&times;</span>
+                                            <h5>Выберите компанию</h5>
+                                            <input
+                                                    type="text"
+                                                    id="company-modal-search"
+                                                    class="form-control"
+                                                    placeholder="Поиск компании..."
+                                                    oninput="updateModalDropdown()"
+                                            />
+                                            <ul id="modal-company-dropdown" class="dropdown-menu"></ul>
+                                        </div>
                                     </div>
 
                                     <div class="task-create-div">
@@ -925,42 +938,46 @@
             padding: 0;
         }
 
-        #company-search {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        #company-dropdown {
+        .modal {
+            display: none; /* Hidden by default */
             position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
+            left: 50%; /* Center alignment */
+            top: 20%;
+            transform: translate(-50%, 0);
+            z-index: 10;
+            width: 300px;
+            height: 600px;
+            background-color: #fff;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-            display: none;
-            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow-y: auto;
+            padding: 16px;
         }
 
-        #company-dropdown .dropdown-item {
-            padding: 10px 12px;
+        .modal-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-content .close {
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 14px;
-            border-bottom: 1px solid #f0f0f0;
         }
 
-        #company-dropdown .dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        #company-dropdown .dropdown-item:hover {
-            background-color: #e9ecef;
+        .dropdown-menu {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 8px 0 0;
+            list-style: none;
+            border: 1px solid #ccc;
+            background: #fff;
+            position: relative;
         }
 
     </style>

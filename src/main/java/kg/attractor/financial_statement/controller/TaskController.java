@@ -30,89 +30,11 @@ public class TaskController {
     private final CompanyService companyService;
     private final TagService tagService;
 
-    @PostMapping("create")
-    public String createTask(
-            @Valid TaskCreateDto taskCreateDto,
-            BindingResult bindingResult,
-            Model model,
-            Authentication authentication
-    ) {
-        if (bindingResult.hasErrors() ) {
-            List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
-            model.addAttribute("documentTypeDtos", documentTypeDtos);
-            model.addAttribute("taskCreateDto", taskCreateDto);
-
-            return "tasks/create";
-        }
-        if (taskCreateDto.getEndDate() == null || taskCreateDto.getStartDate() == null) {
-            return "redirect:/tasks";
-        }
-
-        Long id = taskService.createTask(taskCreateDto, authentication.getName());
-        return "redirect:/tasks";
-
-    }
-
-
     @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return "redirect:/tasks";
     }
-
-//    @GetMapping()
-//    public String getTaskListPage(
-//            Model model,
-//            Authentication authentication,
-//            @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal
-//            ) throws JsonProcessingException {
-//        if (authentication == null) {
-//            return "redirect:/login";
-//        }
-//
-//        String userLogin = authentication.getName();
-//        User user = userService.getUserByLogin(userLogin);
-//
-//        Map<String, Object> taskListData = taskService.getTaskListData(user);
-//        List<CompanyForTaskDto> companiesList = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
-//        if (companiesList == null || companiesList.isEmpty()) {
-//            model.addAttribute("errorMsg", "У вас нет компаний");
-//        }
-//        List<String> availableYearMonths = taskService.getAllYearMonths(authentication.getName());
-//
-//
-//        List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
-//
-//        String availableYearMonthsJson = objectMapper.writeValueAsString(availableYearMonths);
-//
-//        List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
-//        List<UserDto> userDtos = userService.getAllUsers();
-//        List<CompanyDto> companyDtos = companyService.getAllCompanies();
-//
-//        model.addAllAttributes(taskListData);
-//
-//        model.addAttribute("availableYearMonthsJson", availableYearMonthsJson);
-//        model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
-//        model.addAttribute("dateUtils", new DateUtils());
-//
-//        model.addAttribute("userDtos", userDtos);
-//        model.addAttribute("companies", companyDtos);
-//        model.addAttribute("taskStatusDtos", taskStatusDtos);
-//        model.addAttribute("documentTypeDtos", documentTypeDtos);
-//        model.addAttribute("taskCreateDto", new TaskCreateDto());
-//
-//        System.out.println("availableYearMonths: " + availableYearMonths);
-//        System.out.println("taskListData: " + taskListData);
-//
-//        System.out.println("Json task statuses: " + taskStatusDtosJson);
-//        System.out.println("Json year month: " + availableYearMonths);
-//
-//        model.addAttribute("openModal", openModal);
-//
-//        return "tasks/tasksList";
-//    }
 
     @GetMapping()
     public String getTaskListPage(
@@ -160,6 +82,21 @@ public class TaskController {
         System.out.println("Json task statuses: " + taskStatusDtosJson);
 
         return "tasks/tasksList";
+    }
+
+    @PostMapping("create")
+    @ResponseBody
+    public ResponseEntity<?> createTaskInListPage(
+            @Valid TaskCreateDto taskCreateDto,
+            Model model,
+            Authentication authentication
+    ) {
+        if (!taskService.createIsValid(taskCreateDto)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Выбраны неправильные даты!"));
+        }
+        Long id = taskService.createTask(taskCreateDto, authentication.getName());
+        return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
     }
 
     @PostMapping("/edit/{id}")

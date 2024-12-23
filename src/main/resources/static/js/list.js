@@ -495,7 +495,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-
+////
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("task-details");
 
@@ -580,59 +580,66 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("company-search");
-    const dropdown = document.getElementById("company-dropdown");
+function openCompanyPopup() {
+    const modal = document.getElementById("company-modal");
+    const dropdown = document.getElementById("modal-company-dropdown");
+    modal.style.display = "block";
 
-    searchInput.addEventListener("focus", () => {
-        populateDropdown(companyDtos);
-    });
+    // Populate all companies initially
+    populateModalDropdown(companyDtos);
+}
 
-    document.addEventListener("click", (event) => {
-        if (!dropdown.contains(event.target) && event.target !== searchInput) {
-            dropdown.style.display = "none";
-        }
-    });
-});
+function closeCompanyPopup() {
+    const modal = document.getElementById("company-modal");
+    modal.style.display = "none";
+}
 
-function populateDropdown(companies) {
-    const dropdown = document.getElementById("company-dropdown");
+function populateModalDropdown(companies) {
+    const dropdown = document.getElementById("modal-company-dropdown");
     dropdown.innerHTML = "";
 
-    if (companies.length > 0) {
-        companies.forEach(company => {
-            const li = document.createElement("li");
-            li.textContent = company.name;
-            li.className = "dropdown-item";
-            li.dataset.companyId = company.id;
+    companies.forEach(company => {
+        const li = document.createElement("li");
+        li.textContent = company.name;
+        li.className = "dropdown-item";
+        li.dataset.companyId = company.id;
 
-            li.addEventListener("click", () => selectCompany(company));
-            dropdown.appendChild(li);
+        li.addEventListener("click", () => {
+            selectCompanyFromModal(company);
         });
 
-        dropdown.style.display = "block";
-    } else {
-        dropdown.style.display = "none";
-    }
+        dropdown.appendChild(li);
+    });
 }
 
-function updateDropdown() {
-    const searchInput = document.getElementById("company-search").value.toLowerCase();
+function updateModalDropdown() {
+    const searchValue = document.getElementById("company-modal-search").value.toLowerCase();
     const filteredCompanies = companyDtos.filter(company =>
-        company.name.toLowerCase().includes(searchInput)
+        company.name.toLowerCase().includes(searchValue)
     );
 
-    populateDropdown(filteredCompanies);
+    populateModalDropdown(filteredCompanies);
 }
 
-function selectCompany(company) {
+function selectCompanyFromModal(company) {
     const searchInput = document.getElementById("company-search");
-    const dropdown = document.getElementById("company-dropdown");
+    const hiddenInput = document.getElementById("company-id");
 
+    // Set the name in the visible input
     searchInput.value = company.name;
 
-    dropdown.style.display = "none";
+    // Set the id in the hidden input
+    hiddenInput.value = company.id;
+
+    closeCompanyPopup();
 }
 
 
+// Close modal when clicking outside
+document.addEventListener("click", event => {
+    const modal = document.getElementById("company-modal");
+    if (event.target === modal) {
+        closeCompanyPopup();
+    }
+});
 

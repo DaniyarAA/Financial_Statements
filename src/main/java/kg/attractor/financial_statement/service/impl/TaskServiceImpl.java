@@ -666,5 +666,10 @@ public class TaskServiceImpl implements TaskService {
 
         return true;
     }
+
+    @Override
+    public boolean createIsValid(TaskCreateDto taskCreateDto) {
+        return taskCreateDto.getDocumentTypeId() != null && taskCreateDto.getCompanyId() != null && taskCreateDto.getTaskStatusId() != null;
+    }
 }
 

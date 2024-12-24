@@ -590,7 +590,10 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Пароль от почты:</span> <strong id="emailPassword"
-                                                                                data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></strong>
+                                                                                data-password="${company.emailPassword!}"><#if company.emailPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.emailPassword!?length) as i>•</#list>
+                                            </#if></strong>
                                         <button id="editBtnemailPassword"
                                                 onclick="editText('emailPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -660,7 +663,10 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ пароль:</span> <strong id="esfPassword"
-                                                                           data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></strong>
+                                                                           data-password="${company.esfPassword!}"><#if company.esfPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.esfPassword!?length) as i>•</#list>
+                                            </#if></strong>
                                         <button id="editBtnesfPassword"
                                                 onclick="editText('esfPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -708,7 +714,10 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ККМ пароль:</span> <strong id="kkmPassword"
-                                                                           data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></strong>
+                                                                           data-password="${company.kkmPassword!}"> <#if company.kkmPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.kkmPassword!?length) as i>•</#list>
+                                            </#if></strong>
                                         <button id="editBtnkkmPassword"
                                                 onclick="editText('kkmPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -758,7 +767,10 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш пароль:</span> <strong id="fresh1cPassword"
-                                                                               data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></strong>
+                                                                               data-password="${company.fresh1cPassword!}"><#if company.fresh1cPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.fresh1cPassword!?length) as i>•</#list>
+                                            </#if></strong>
                                         <button id="editBtnfresh1cPassword"
                                                 onclick="editText('fresh1cPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">
@@ -808,7 +820,10 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН пароль:</span>
                                         <strong id="ettnPassword"
-                                              data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></strong>
+                                              data-password="${company.ettnPassword!}"><#if company.ettnPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.ettnPassword!?length) as i>•</#list>
+                                            </#if></strong>
                                         <button id="editBtnettnPassword"
                                                 onclick="editText('ettnPassword', ${company.id})"
                                                 title="Редактировать" class="btn btn-link p-0">

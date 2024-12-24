@@ -888,9 +888,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="name" name="name"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("name"))>
-                                                                <span class="text-danger">${errors.getFieldError("name").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="name-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -899,9 +897,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="companyInn" name="companyInn"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("inn"))>
-                                                                <span class="text-danger">${errors.getFieldError("inn").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="companyInn-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -910,9 +906,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="directorInn" name="directorInn"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("directorInn"))>
-                                                                <span class="text-danger">${errors.getFieldError("directorInn").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="directorInn-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -921,9 +915,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="login" name="login"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("login"))>
-                                                                <span class="text-danger">${errors.getFieldError("login").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="login-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -932,9 +924,7 @@
                                                         <div class="col-md-8">
                                                             <input type="password" id="password" name="password"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("password"))>
-                                                                <span class="text-danger">${errors.getFieldError("password").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="password-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -942,9 +932,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="ecp" name="ecp" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("ecp"))>
-                                                                <span class="text-danger">${errors.getFieldError("ecp").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="ecp-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -953,9 +941,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="kabinetSalyk" name="kabinetSalyk"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("kabinetSalyk"))>
-                                                                <span class="text-danger">${errors.getFieldError("kabinetSalyk").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="kabinetSalyk-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -965,9 +951,7 @@
                                                             <input type="password" id="kabinetSalykPassword"
                                                                    name="kabinetSalykPassword" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("kabinetSalykPassword"))>
-                                                                <span class="text-danger">${errors.getFieldError("kabinetSalykPassword").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="kabinetSalykPassword-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -976,9 +960,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="taxMode" name="taxMode"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("taxMode"))>
-                                                                <span class="text-danger">${errors.getFieldError("taxMode").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="taxMode-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -986,9 +968,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="opf" name="opf" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("opf"))>
-                                                                <span class="text-danger">${errors.getFieldError("opf").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="opf-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -997,9 +977,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="districtGns" name="districtGns"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("districtGns"))>
-                                                                <span class="text-danger">${errors.getFieldError("districtGns").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="districtGns-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -1008,9 +986,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="socfundNumber" name="socfundNumber"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("socfundNumber"))>
-                                                                <span class="text-danger">${errors.getFieldError("socfundNumber").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="socfundNumber-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -1021,9 +997,7 @@
                                                             <input type="text" id="registrationNumberMj"
                                                                    name="registrationNumberMj" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("registrationNumberMj"))>
-                                                                <span class="text-danger">${errors.getFieldError("registrationNumberMj").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="registrationNumberMj-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -1031,9 +1005,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="okpo" name="okpo"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("okpo"))>
-                                                                <span class="text-danger">${errors.getFieldError("okpo").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="okpo-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -1042,9 +1014,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="director" name="director"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("director"))>
-                                                                <span class="text-danger">${errors.getFieldError("director").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="director-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -1052,9 +1022,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="ked" name="ked" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("ked"))>
-                                                                <span class="text-danger">${errors.getFieldError("ked").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="ked-error"></span>
                                                         </div>
                                                     </div>
                                                 </fieldset>
@@ -1084,6 +1052,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="phone" name="phone"
                                                                    class="form-control">
+                                                            <span class="company-create-errors" id="phone-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">

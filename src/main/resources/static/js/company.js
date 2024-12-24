@@ -125,6 +125,7 @@ function saveChanges(elementId, companyId) {
             .then(data => {
                 showResponseMessage(data.message);
                 cancelEdit(elementId);
+                location.reload();
             })
             .catch(error => {
                 showResponseMessage(error.message, false);

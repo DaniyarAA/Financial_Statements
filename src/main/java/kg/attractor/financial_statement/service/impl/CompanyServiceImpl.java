@@ -85,10 +85,27 @@ public class CompanyServiceImpl implements CompanyService {
         Company companyCreated = companyRepository.save(company);
         LocalDate currentDate = LocalDate.now();
         User user = userService.getUserByLogin(login);
-        user.getCompanies().add(companyCreated);
-        companyCreated.getUsers().add(user);
-        userService.editUser(user.getId(),userService.convertToUserDto(user));
-        companyRepository.save(companyCreated);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("CREATE_COMPANY"))){
+
+            if (user.getCompanies() != null){
+                user.getCompanies().add(companyCreated);
+            }else {
+                List<Company> companies = new ArrayList<>();
+                companies.add(companyCreated);
+                user.setCompanies(companies);
+            }
+
+            if (company.getUsers() != null){
+                companyCreated.getUsers().add(user);
+            }else {
+                List<User> users = new ArrayList<>();
+                users.add(user);
+                companyCreated.setUsers(users);
+            }
+        }
 
         if (company.getReportFrequency() != null) {
             taskService.generateAutomaticTasks(companyCreated, currentDate, company.getReportFrequency());

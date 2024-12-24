@@ -50,10 +50,24 @@ async function submitForm(event) {
         window.location.href = currentUrl.toString();
     } else {
         const errors = await response.json();
-        const errorMessages = Object.values(errors).join('\n');
-        showResponseMessage(errorMessages, false);
+        displayErrors(errors);
     }
 }
+
+function displayErrors(errors) {
+    const errorSpans = document.querySelectorAll('.company-create-errors');
+    errorSpans.forEach(errorElement => {
+        errorElement.textContent = '';
+    });
+
+    for (const [field, message] of Object.entries(errors)) {
+        const errorElement = document.getElementById(`${field}-error`);
+        if (errorElement) {
+            errorElement.textContent = message;
+        }
+    }
+}
+
 
 function addNotification(message) {
     const notification = document.createElement('div');

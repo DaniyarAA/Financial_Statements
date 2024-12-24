@@ -1349,6 +1349,20 @@ h2 {
     max-width: 90%;
     transform: translate(130%, -50%);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+#user-tags-select-${task.id} {
+    width: 100%;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag-select-modal select {
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .tooltip {

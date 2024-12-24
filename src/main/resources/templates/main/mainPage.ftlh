@@ -14,6 +14,9 @@
                                 <a href="#">
                                     <div class="report-header report-button">
                                         <p>СФОРМИРОВАТЬ ОТЧЕТ</p>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black" class="bi bi-lock report-icon" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 1a3 3 0 0 1 3 3v3h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1V4a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v3h4V4a2 2 0 0 0-2-2zM4 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H4z"/>
+                                        </svg>
                                     </div>
                                 </a>
                                 <button type="button" class="button btn type-btn reports-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
@@ -529,9 +532,8 @@
             text-align: center;
             margin: 0;
             color: #000000;
-
+            position: relative;
             box-shadow: 0 5px 5px #a3a3a3;
-
         }
 
         .report-button p {
@@ -548,6 +550,18 @@
             margin-top: 8px;
             font-size: 15px;
             background-color: #EBEBEB;
+        }
+
+        .report-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            fill: black;
+            stroke: black;
+            stroke-width: 1.5px;
+            cursor: pointer;
         }
 
         .report-header-text {

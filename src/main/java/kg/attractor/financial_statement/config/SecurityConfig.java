@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .addFilterBefore(new CredentialsFilter(userService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll())
                 .formLogin(form ->
                         form.loginPage("/login")
                                 .loginProcessingUrl("/login")

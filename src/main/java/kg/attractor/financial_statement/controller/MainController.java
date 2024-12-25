@@ -50,14 +50,11 @@ public class MainController {
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         model.addAttribute("csrfToken", csrfToken);
-        boolean canViewCompany = false;
         boolean canCreateCompany = false;
 
         if (principal != null) {
             canCreateCompany = userService.canCreate(principal.getName());
-            canViewCompany = userService.canViewCompany(principal.getName());
         }
-        model.addAttribute("canViewCompany", canViewCompany);
         model.addAttribute("canCreateCompany", canCreateCompany);
         model.addAttribute("companies", companyService.getAllCompanies());
         model.addAttribute("userDto", userDto);

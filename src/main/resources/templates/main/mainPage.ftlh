@@ -56,7 +56,6 @@
                                   </div>
                                 </a>
                             </#if>
-                            <#if canViewCompany>
                                  <a href="/company/all?sort=actual">
                                     <div class="company-button">
                                         <div class="button-text company-text">
@@ -64,7 +63,6 @@
                                         </div>
                                     </div>
                                  </a>
-                            </#if>
                         </div>
                         <div class="calendars col-6 main-content">
                             <div class="calendar-header">

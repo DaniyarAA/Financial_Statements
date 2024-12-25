@@ -179,8 +179,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public void deleteCompany(Long companyId) {
+    public void deleteCompany(Long companyId ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("DELETE_COMPANY"))){
         companyRepository.changeIsDeleted(companyId, Boolean.TRUE);
+        }
     }
 
     @Override
@@ -195,7 +201,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                noneMatch(a -> a.getAuthority().equals("EDIT_COMPANY"))){
+            return ResponseEntity.badRequest().body(Map.of("message", " У вас не доступа редактирования  !"));
+        }
         String companyIdStr = data.get("companyId");
         String fieldToEdit = data.get("field");
         String newValue = data.get("value");
@@ -466,8 +479,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void returnCompany(Long companyId) {
-        companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+    public void returnCompany(Long companyId ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("CREATE_COMPANY"))){ //TODO: изменить на RETURN_COMPANY сейчас нет в базе
+            companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+        }
     }
 
     @Override

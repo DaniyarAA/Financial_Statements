@@ -74,19 +74,19 @@ public class CompanyController {
 
     @PostMapping("/edit")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data) {
-        return companyService.editByOne(data);
+    public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data ,Principal principal) {
+        return companyService.editByOne(data , principal.getName());
     }
 
     @PostMapping("/delete")
-    public String deleteById(@RequestParam Long companyId) {
-        companyService.deleteCompany(companyId);
+    public String deleteById(@RequestParam Long companyId , Principal principal) {
+        companyService.deleteCompany(companyId , principal.getName());
         return "redirect:/company/all?sort=actual";
     }
 
     @PostMapping("/return")
-    public String returnById(@RequestParam Long companyId) {
-        companyService.returnCompany(companyId);
+    public String returnById(@RequestParam Long companyId , Principal principal) {
+        companyService.returnCompany(companyId , principal.getName());
         taskService.tasksGenerator();
         return "redirect:/company/all?sort=actual";
     }

@@ -1282,13 +1282,6 @@ h2 {
     transition: transform 0.3s ease-in-out;
 }
 
-.tag-modal-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #333;
-}
-
 #tag-input {
     width: 100%;
     padding: 10px;
@@ -1298,36 +1291,12 @@ h2 {
     font-size: 16px;
 }
 
-.tag-close-button {
-    color: #999;
-    font-size: 24px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-}
-
-.tag-save-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.tag-save-button:hover {
-    background-color: #45a049;
-}
-
 .tag-modal.show {
     opacity: 1;
     transform: scale(1);
 }
 
+/* Общие стили для модального окна */
 .tag-select-modal {
     display: none;
     position: fixed;
@@ -1335,21 +1304,116 @@ h2 {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: transparent;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
 .tag-select-modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 350px;
     max-width: 90%;
-    transform: translate(130%, -50%);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tag-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.tag-modal-title {
+    margin-top: 0;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+}
+
+.tag-select-dropdown {
+    width: 100%;
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.tag-select-dropdown:focus {
+    border-color: #4CAF50;
+}
+
+.tag-add-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-add-button:hover {
+    background: #45a049;
+}
+
+.tag-input-field {
+    width: 100%;
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.tag-input-field:focus {
+    border-color: #4CAF50;
+}
+
+.tag-save-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-save-button:hover {
+    background: #45a049;
 }
 
 #user-tags-select-${task.id} {

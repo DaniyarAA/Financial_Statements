@@ -146,19 +146,17 @@
                                                 <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
                                             </svg>
 
-                                            <div id="tag-modal-${task.id}" class="tag-select-modal" style="display: none;">
+                                            <div id="tag-modal-${task.id}" class="tag-select-modal">
                                                 <div class="tag-select-modal-content">
-                                                    <span class="tag-close-button"
-                                                          onclick="closeTagModal('select', ${task.id})">&times;</span>
-                                                    <h3>Выберите тег</h3>
-                                                    <select id="user-tags-select-${task.id}"
-                                                            onchange="applySelectedTag(${task.id}, this.value)">
+                                                    <span class="tag-close-button" onclick="closeTagModal('select', ${task.id})">&times;</span>
+                                                    <h3 class="tag-modal-title">Назначьте тег для задачи</h3>
+                                                    <select id="user-tags-select-${task.id}" class="tag-select-dropdown" onchange="applySelectedTag(${task.id}, this.value)">
                                                         <option value="" disabled selected>Выберите тег</option>
                                                     </select>
-                                                    <button onclick="openTagModal(${task.id})" class="tag-add-button">+
-                                                    </button>
+                                                    <button onclick="openTagModal(${task.id})" class="tag-add-button">+ Добавить тег</button>
                                                 </div>
                                             </div>
+
                                         </div>
 
                                         <div class="task-tag" data-task-id="${task.id}">
@@ -187,19 +185,16 @@
                                             </#if>
                                         </div>
 
-                                        <div id="tag-modal-create-${task.id}" class="tag-select-modal"
-                                             style="display: none;">
+                                        <div id="tag-modal-create-${task.id}" class="tag-select-modal">
                                             <div class="tag-select-modal-content">
-                                            <span class="tag-close-button"
-                                                  onclick="closeTagModal('create', ${task.id})">&times;</span>
+                                                <span class="tag-close-button" onclick="closeTagModal('create', ${task.id})">&times;</span>
                                                 <h3 class="tag-modal-title">Добавьте текст для тега</h3>
-                                                <input type="text" id="tag-input-${task.id}"
-                                                       placeholder="Введите текст тега">
+                                                <input type="text" id="tag-input-${task.id}" class="tag-input-field" placeholder="Введите текст тега">
                                                 <input type="hidden" id="task-id-${task.id}" value="${task.id}">
-                                                <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить
-                                                </button>
+                                                <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить</button>
                                             </div>
                                         </div>
+
 
                                         <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=priority"
                                            style="text-decoration: none; color: inherit; display: inline;">

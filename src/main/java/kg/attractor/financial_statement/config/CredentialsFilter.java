@@ -30,13 +30,19 @@ public class CredentialsFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+
+        if (requestURI.startsWith("/css/") || requestURI.startsWith("/js/") || requestURI.startsWith("/images/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()
             && authentication.getPrincipal() instanceof UserDetails) {
 
             UserDto userDto = userService.getUserDtoByLogin(authentication.getName());
-            String requestURI = request.getRequestURI();
 
             if (userDto != null && !userDto.isCredentialsUpdated() && !requestURI.equals("/change-credentials")) {
                 response.sendRedirect("/change-credentials");

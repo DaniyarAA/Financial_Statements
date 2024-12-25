@@ -66,4 +66,6 @@ public interface UserService {
     boolean canCreate(String name);
 
     boolean canReturn(String name);
+
+    boolean canViewCompany(String name);
 }

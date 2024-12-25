@@ -494,4 +494,16 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public boolean canViewCompany(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("VIEW_COMPANY"));
+            }
+        }
+        return false;
+    }
+
 }

@@ -225,6 +225,9 @@ public class UserServiceImpl implements UserService {
                 log.error("Пользователь с логином {} уже существует", newLogin);
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
+            if (newLogin.isBlank()) {
+                throw new IllegalArgumentException("Заполните пожалуйста логин!");
+            }
             log.info("Обновление логина для пользователя: {}", newLogin);
             user.setLogin(newLogin);
         }

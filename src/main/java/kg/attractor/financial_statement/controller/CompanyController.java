@@ -53,14 +53,22 @@ public class CompanyController {
             model.addAttribute("companyId", allCompanies.getFirst().getId());
         }
 
-        boolean isAdmin = false;
+        boolean canDelete = false;
+        boolean canEdit = false;
+        boolean canCreate = false;
+        boolean canReturn = false;
         if (principal != null) {
-            isAdmin = userService.isAdmin(principal.getName());
+            canDelete = userService.isAdmin(principal.getName());
+            canEdit = userService.canEdit(principal.getName());
+            canCreate = userService.canCreate(principal.getName());
+            canReturn = userService.canReturn(principal.getName());
         }
-        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("canDelete", canDelete);
         model.addAttribute("sort", sort);
         model.addAttribute("openModal", openModal);
-
+        model.addAttribute("canEdit", canEdit);
+        model.addAttribute("canCreate", canCreate);
+        model.addAttribute("canReturn", canReturn);
         return "company/companies";
     }
 

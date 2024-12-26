@@ -96,7 +96,7 @@ public class TaskController {
                     .body(Map.of("error", "Выбраны неправильные даты!"));
         }
         Long id = taskService.createTask(taskCreateDto, authentication.getName());
-        return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
+        return ResponseEntity.ok(Map.of("success", "Создано"));
     }
 
     @PostMapping("/edit/{id}")

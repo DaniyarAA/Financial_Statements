@@ -522,10 +522,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-                showAlert(data.success || "Task updated successfully!", "success");
+                showAlert(data.success || "Задача успешно обновлена!", "success");
             })
             .catch(error => {
-                showAlert(error.error || "An unexpected error occurred.", "error");
+                showAlert(error.error || "Возникла ошибка.", "error");
             });
     });
 
@@ -577,8 +577,73 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error('Ошибка синхронизации скролла');
     }
-
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const createTaskForm = document.getElementById("form-create");
+
+    if (createTaskForm) {
+        createTaskForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(createTaskForm);
+            const actionUrl = createTaskForm.getAttribute("action");
+
+            const existingAlert = document.getElementById("alertMessage");
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            fetch(actionUrl, {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        return response.json().then((err) => Promise.reject(err));
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    showAlert(data.success || "Задача успешно создана!", "success");
+                })
+                .catch((error) => {
+                    showAlert(error.error || "Возникла ошибка при создании задачи.", "error");
+                });
+        });
+    }
+
+    function showAlert(message, type) {
+        const alertDiv = document.createElement("div");
+        alertDiv.id = "alertMessage";
+        alertDiv.textContent = message;
+        alertDiv.style.position = "absolute";
+        alertDiv.style.top = "20px";
+        alertDiv.style.right = "20px";
+        alertDiv.style.padding = "15px 20px";
+        alertDiv.style.borderRadius = "8px";
+        alertDiv.style.color = "#fff";
+        alertDiv.style.fontSize = "14px";
+        alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+        alertDiv.style.zIndex = "1000";
+
+        if (type === "success") {
+            alertDiv.style.backgroundColor = "#28a745";
+        } else {
+            alertDiv.style.backgroundColor = "#dc3545";
+        }
+
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+            if (type === "success") {
+                window.location.reload();
+            }
+        }, 2000);
+    }
+});
+
 
 function openCompanyPopup() {
     const modal = document.getElementById("company-modal");
@@ -642,7 +707,6 @@ document.addEventListener("click", event => {
 
 let selectedCompanyUsers = [];
 
-// Open User Popup
 function openUserPopup() {
     const modal = document.getElementById("user-modal");
     modal.style.display = "block";
@@ -675,7 +739,6 @@ function populateUserModalDropdown(users) {
     });
 }
 
-// Update User Dropdown
 function updateUserModalDropdown() {
     const searchValue = document.getElementById("user-modal-search").value.toLowerCase();
     const filteredUsers = selectedCompanyUsers.filter(user =>
@@ -685,7 +748,6 @@ function updateUserModalDropdown() {
     populateUserModalDropdown(filteredUsers);
 }
 
-// Select User from Modal
 function selectUserFromModal(user) {
     const searchInput = document.getElementById("user-search");
     const hiddenInput = document.getElementById("user-id");
@@ -696,10 +758,10 @@ function selectUserFromModal(user) {
     closeUserPopup();
 }
 
-// Update Users based on Selected Company
 function onCompanySelected(companyId) {
     const company = companyDtos.find(c => c.id === companyId);
     selectedCompanyUsers = company ? company.users : [];
 }
+
 
 

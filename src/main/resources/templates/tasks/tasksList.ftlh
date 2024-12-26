@@ -113,7 +113,7 @@
                     <div class="task-create-container">
 
                         <div class="task-create-indicator"></div>
-                        <form action="/tasks/create" method="post">
+                        <form action="/tasks/create" method="post" id="form-create">
                             <#if _csrf??>
                                 <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                        value="${(_csrf.token)!'csrf-token'}"/>
@@ -331,7 +331,7 @@
                                             <input type="hidden" id="endDate" name="endDate">
                                         </div>
                                     </div>
-                                    <div style="display: flex; justify-content: center; margin-top: 50px">
+                                    <div style="display: flex; justify-content: center; margin-top: 25px">
                                         <button
                                                 class="button-save-create-task"
                                                 style="cursor: not-allowed; opacity: 0.5;"
@@ -1001,11 +1001,7 @@
             background: #fff;
             position: relative;
         }
-        .task-create-div input {
-            border: none;
-            box-shadow: none;
-            outline: none;
-        }
+
 
         #company-modal-search {
             border: none;
@@ -1054,22 +1050,9 @@
             background-color: #f0f0f0;
         }
 
-        /* Highlighted Selection (Optional) */
         .dropdown-menu li.selected {
             background-color: #e0e0e0;
             font-weight: bold;
-        }
-
-        /* Task Input Styles */
-        .task-create-div input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            background-color: #ffffff;
         }
 
         /* Label Styles */

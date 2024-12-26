@@ -21,6 +21,6 @@ public class Role {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
     private List<Authority> authorities;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "role")
     private List<User> users;
 }

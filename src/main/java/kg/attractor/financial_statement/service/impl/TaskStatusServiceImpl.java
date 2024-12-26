@@ -2,12 +2,14 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.TaskStatusDto;
 import kg.attractor.financial_statement.entity.TaskStatus;
+import kg.attractor.financial_statement.enums.Status;
 import kg.attractor.financial_statement.repository.TaskStatusRepository;
 import kg.attractor.financial_statement.service.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -49,5 +51,29 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     public TaskStatus getStatusDone() {
         return taskStatusRepository.findByName("Сдан");
+    }
+
+    @Override
+    public List<TaskStatusDto> getDefaultTaskStatuses() {
+       List<String> defaultTaskStatusNames = Arrays.stream(Status.values()).
+               map(Status::getTitle).
+               toList();
+       List<TaskStatus> allTaskStatuses = taskStatusRepository.findAll();
+       List<TaskStatus> defaultTaskStatuses = allTaskStatuses.stream().
+               filter(taskStatus -> defaultTaskStatusNames.contains(taskStatus.getName())).
+               toList();
+       return convertToDtoList(defaultTaskStatuses);
+    }
+
+    @Override
+    public List<TaskStatusDto> getChangeableTaskStatuses() {
+        List<String> defaultTaskStatusNames = Arrays.stream(Status.values()).
+                map(Status::getTitle).
+                toList();
+        List<TaskStatus> allTaskStatuses = taskStatusRepository.findAll();
+        List<TaskStatus> defaultTaskStatuses = allTaskStatuses.stream().
+                filter(taskStatus -> !defaultTaskStatusNames.contains(taskStatus.getName())).
+                toList();
+        return convertToDtoList(defaultTaskStatuses);
     }
 }

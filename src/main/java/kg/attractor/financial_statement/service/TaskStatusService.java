@@ -13,4 +13,8 @@ public interface TaskStatusService {
     Boolean getIsCompleted(TaskStatus taskStatus);
 
     TaskStatus getStatusDone();
+
+    List<TaskStatusDto> getDefaultTaskStatuses();
+
+    List<TaskStatusDto> getChangeableTaskStatuses();
 }

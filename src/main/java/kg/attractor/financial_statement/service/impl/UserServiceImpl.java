@@ -464,4 +464,52 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public boolean canEdit(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("EDIT_COMPANY"));
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canCreate(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("CREATE_COMPANY"));
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canReturn(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("CREATE_COMPANY"));//TODO: сделать на RETURN_COMPANY сейчас его нет
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canViewCompany(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("VIEW_COMPANY"));
+            }
+        }
+        return false;
+    }
+
 }

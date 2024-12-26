@@ -19,13 +19,13 @@ public interface CompanyService {
 
     void editCompany(CompanyDto company);
 
-    void deleteCompany(Long companyId);
+    void deleteCompany(Long companyId , String login);
 
     List<CompanyDto> getAllCompanies();
 
     List<Company> findAllById(List<Long> companyIds);
 
-    ResponseEntity<Map<String, String>> editByOne(Map<String, String> data);
+    ResponseEntity<Map<String, String>> editByOne(Map<String, String> data ,String login);
 
     CompanyDto convertToDto(Company company);
 
@@ -35,9 +35,9 @@ public interface CompanyService {
 
     Company convertToEntity(CompanyDto companyDto);
 
-    List<CompanyDto> getAllCompaniesBySort(String sort);
+    List<CompanyDto> getAllCompaniesBySort(String sort,String login);
 
-    void returnCompany(Long companyId);
+    void returnCompany(Long companyId,String login);
 
     boolean existsByCompanyName(String companyName);
 
@@ -62,4 +62,6 @@ public interface CompanyService {
     List<CompanyDto> getAllDeletedCompanies();
 
     void resumeCompany(Long companyId);
+
+    CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId);
 }

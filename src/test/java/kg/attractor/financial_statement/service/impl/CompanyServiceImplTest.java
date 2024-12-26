@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.repository.CompanyRepository;
+import kg.attractor.financial_statement.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,9 @@ public class CompanyServiceImplTest {
 
     @Mock
     private CompanyRepository companyRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private CompanyServiceImpl companyService;
@@ -181,14 +185,16 @@ public class CompanyServiceImplTest {
     @Test
     void deleteCompany() {
         Mockito.doNothing().when(companyRepository).changeIsDeleted(anyLong(), eq(Boolean.TRUE));
-        companyService.deleteCompany(1L);
+        Mockito.doNothing().when(userRepository).findByLogin(anyString());
+        companyService.deleteCompany(1L,"baqdoolot");
         Mockito.verify(companyRepository, times(1)).changeIsDeleted(1L, Boolean.TRUE);
     }
 
     @Test
     void returnCompany() {
         Mockito.doNothing().when(companyRepository).changeIsDeleted(anyLong(), eq(Boolean.FALSE));
-        companyService.returnCompany(1L);
+        Mockito.doNothing().when(userRepository).findByLogin(anyString());
+        companyService.returnCompany(1L , "baqdoolot");
         Mockito.verify(companyRepository, times(1)).changeIsDeleted(1L, Boolean.FALSE);
     }
 

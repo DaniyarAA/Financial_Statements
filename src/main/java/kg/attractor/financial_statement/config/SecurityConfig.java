@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/admin/users/edit/**").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/user/delete/**").hasAuthority("DELETE_USER")
                         .requestMatchers("/admin/users/change-password/**").hasAuthority("EDIT_USER")
-                        .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
+                        .requestMatchers("/company/all").authenticated()
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/add").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")

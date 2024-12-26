@@ -179,8 +179,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public void deleteCompany(Long companyId) {
+    public void deleteCompany(Long companyId ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("DELETE_COMPANY"))){
         companyRepository.changeIsDeleted(companyId, Boolean.TRUE);
+        }
     }
 
     @Override
@@ -195,7 +201,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                noneMatch(a -> a.getAuthority().equals("EDIT_COMPANY"))){
+            return ResponseEntity.badRequest().body(Map.of("message", " У вас не доступа редактирования  !"));
+        }
         String companyIdStr = data.get("companyId");
         String fieldToEdit = data.get("field");
         String newValue = data.get("value");
@@ -448,26 +461,53 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> getAllCompaniesBySort(String sort) {
+    public List<CompanyDto> getAllCompaniesBySort(String sort,String login) {
         final String ARCHIVE = "archive";
         List<Company> companyList = Collections.emptyList();
-
-        if (sort != null) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("VIEW_COMPANY"))){
+            if (sort != null) {
+                if (sort.equalsIgnoreCase(ARCHIVE)) {
+                    companyList = companyRepository.findByIsDeleted(Boolean.TRUE);
+                } else {
+                    companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+                }
+            }
+            return convertToDtoListCompany(companyList);
+        }else {
+            if (sort != null) {
             if (sort.equalsIgnoreCase(ARCHIVE)) {
-                companyList = companyRepository.findByIsDeleted(Boolean.TRUE);
+                companyList = sortByDeleted(user.getCompanies(),Boolean.TRUE);
             } else {
-                companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+                companyList = sortByDeleted(user.getCompanies(),Boolean.FALSE);
             }
         }
+        return convertToDtoListCompany(companyList);
+        }
+    }
 
+    private List<Company> sortByDeleted(List<Company> companyList , boolean isDeleted) {
+        return companyList.stream().filter(company -> company.isDeleted() == isDeleted).collect(Collectors.toList());
+    }
+
+    private List<CompanyDto> convertToDtoListCompany(List<Company> companyList) {
         return companyList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void returnCompany(Long companyId) {
-        companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+    public void returnCompany(Long companyId ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("CREATE_COMPANY"))){ //TODO: изменить на RETURN_COMPANY сейчас нет в базе
+            companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+        }
     }
 
     @Override
@@ -554,6 +594,12 @@ public class CompanyServiceImpl implements CompanyService {
                 .orElseThrow(() -> new NoSuchElementException("Company not found: " + companyId));
         company.setDeleted(false);
         companyRepository.save(company);
+    }
+
+    @Override
+    public CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId) {
+        return allCompanies.stream().filter(companyDto -> companyDto.getId().equals(companyId)).
+                findFirst().orElseThrow(() -> new NoSuchElementException("У вас нет такой компании"));
     }
 
 }

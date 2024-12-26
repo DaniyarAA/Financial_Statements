@@ -63,4 +63,12 @@ public interface UserService {
     void resumeUser(Long id, Long roleId);
 
     List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users);
+
+    boolean canEdit(String name);
+
+    boolean canCreate(String name);
+
+    boolean canReturn(String name);
+
+    boolean canViewCompany(String name);
 }

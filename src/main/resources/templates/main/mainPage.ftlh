@@ -14,6 +14,9 @@
                                 <a href="#">
                                     <div class="report-header report-button">
                                         <p>СФОРМИРОВАТЬ ОТЧЕТ</p>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black" class="bi bi-lock report-icon" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 1a3 3 0 0 1 3 3v3h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1V4a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v3h4V4a2 2 0 0 0-2-2zM4 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H4z"/>
+                                        </svg>
                                     </div>
                                 </a>
                                 <button type="button" class="button btn type-btn reports-btn" data-bs-toggle="modal" data-bs-target="#monthlyReportModal">
@@ -47,20 +50,22 @@
                     </div>
                     <div class="col-6 company-calendar column">
                         <div class="companies col-6 main-content">
-                            <a href="/company/all?sort=actual&openModal=true">
-                                <div class="company-button">
-                                    <div class="button-text company-text">
+                            <#if canCreateCompany>
+                                <a href="/company/all?sort=actual&openModal=true">
+                                  <div class="company-button">
+                                      <div class="button-text company-text">
                                         <p>СОЗДАТЬ НОВЫЙ<br>ИП/ОСОО</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/company/all?sort=actual">
-                                <div class="company-button">
-                                     <div class="button-text company-text">
+                                      </div>
+                                  </div>
+                                </a>
+                            </#if>
+                                 <a href="/company/all?sort=actual">
+                                    <div class="company-button">
+                                        <div class="button-text company-text">
                                          <p>СПИСОК<br>КОМПАНИЙ</p>
-                                     </div>
-                                </div>
-                            </a>
+                                        </div>
+                                    </div>
+                                 </a>
                         </div>
                         <div class="calendars col-6 main-content">
                             <div class="calendar-header">
@@ -78,14 +83,23 @@
             <div class="col tasks">
                 <div class="tasks-header">
                     <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
-                    <a href="/tasks?openModal=true" class="btn type-btn add-task">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" font-weight="bold"
-                             fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                        </svg>
-                    </a>
+                    <div class="task-actions">
+                        <a href="#" class="btn type-btn help-task" onclick="openModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+                            </svg>
+                        </a>
+                        <a href="/tasks?openModal=true" class="btn type-btn add-task">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" font-weight="bold"
+                                 fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
+
 
                 <div class="task-list">
                     <div class="tasks-scroll">
@@ -134,19 +148,17 @@
                                                 <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
                                             </svg>
 
-                                            <div id="tag-modal-${task.id}" class="tag-select-modal" style="display: none;">
+                                            <div id="tag-modal-${task.id}" class="tag-select-modal">
                                                 <div class="tag-select-modal-content">
-                                                    <span class="tag-close-button"
-                                                          onclick="closeTagModal('select', ${task.id})">&times;</span>
-                                                    <h3>Выберите тег</h3>
-                                                    <select id="user-tags-select-${task.id}"
-                                                            onchange="applySelectedTag(${task.id}, this.value)">
+                                                    <span class="tag-close-button" onclick="closeTagModal('select', ${task.id})">&times;</span>
+                                                    <h3 class="tag-modal-title">Назначьте тег для задачи</h3>
+                                                    <select id="user-tags-select-${task.id}" class="tag-select-dropdown" onchange="applySelectedTag(${task.id}, this.value)">
                                                         <option value="" disabled selected>Выберите тег</option>
                                                     </select>
-                                                    <button onclick="openTagModal(${task.id})" class="tag-add-button">+
-                                                    </button>
+                                                    <button onclick="openTagModal(${task.id})" class="tag-add-button">+ Добавить тег</button>
                                                 </div>
                                             </div>
+
                                         </div>
 
                                         <div class="task-tag" data-task-id="${task.id}">
@@ -175,30 +187,28 @@
                                             </#if>
                                         </div>
 
-                                        <div id="tag-modal-create-${task.id}" class="tag-select-modal"
-                                             style="display: none;">
+                                        <div id="tag-modal-create-${task.id}" class="tag-select-modal">
                                             <div class="tag-select-modal-content">
-                                            <span class="tag-close-button"
-                                                  onclick="closeTagModal('create', ${task.id})">&times;</span>
+                                                <span class="tag-close-button" onclick="closeTagModal('create', ${task.id})">&times;</span>
                                                 <h3 class="tag-modal-title">Добавьте текст для тега</h3>
-                                                <input type="text" id="tag-input-${task.id}"
-                                                       placeholder="Введите текст тега">
+                                                <input type="text" id="tag-input-${task.id}" class="tag-input-field" placeholder="Введите текст тега">
                                                 <input type="hidden" id="task-id-${task.id}" value="${task.id}">
-                                                <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить
-                                                </button>
+                                                <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить</button>
                                             </div>
                                         </div>
 
-                                        <div class="task-priority-arrows" data-task-id="${task.id}">
-                                            <#if task.priorityId?has_content>
-                                                <img src="/images/${task.priorityId}-arrow.png" alt="priority">
-                                            <#else>
-                                                <span class="no-priority-message"></span>
-                                            </#if>
-                                        </div>
+
+                                        <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=priority"
+                                           style="text-decoration: none; color: inherit; display: inline;">
+                                            <div class="task-priority-arrows" data-task-id="${task.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-sort-numeric-down" viewBox="0 0 16 16">
+                                                    <path d="M12.438 1.668V7H11.39V2.684h-.051l-1.211.859v-.969l1.262-.906h1.046z"/>
+                                                    <path fill-rule="evenodd" d="M11.36 14.098c-1.137 0-1.708-.657-1.762-1.278h1.004c.058.223.343.45.773.45.824 0 1.164-.829 1.133-1.856h-.059c-.148.39-.57.742-1.261.742-.91 0-1.72-.613-1.72-1.758 0-1.148.848-1.835 1.973-1.835 1.09 0 2.063.636 2.063 2.687 0 1.867-.723 2.848-2.145 2.848zm.062-2.735c.504 0 .933-.336.933-.972 0-.633-.398-1.008-.94-1.008-.52 0-.927.375-.927 1 0 .64.418.98.934.98"/>
+                                                    <path d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"/>
+                                                </svg>
+                                            </div>
+                                        </a>
                                     </div>
-
-
 
                                     <div class="task-priority-bar" data-task-id="${task.id}"
                                          style="background-color: ${task.priorityColor};"></div>
@@ -416,7 +426,71 @@
         </div>
     </div>
 
+<div id="legendMapModal" class="legend-map-modal" style="display: none;">
+    <div class="modal-content-map">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Руководство по управлению задачами<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-raised-hand" viewBox="0 0 16 16" style="margin-left: 8px;">
+                <path d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207"/>
+                <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+            </svg></h2>
+        <p><strong>1. Сортировка по номеру задачи:</strong> Если нажать на номер задачи, вы можете отсортировать их по убыванию или возрастанию.</p>
+        <p><strong>2. Сортировка по дате:</strong> Аналогично, если нажать на дату, можно отсортировать задачи по возрастанию или убыванию дат.</p>
+        <p><strong>3. Сортировка по приоритету:</strong> Если нажать на иконку сортировки справа от тега, задачи будут отсортированы по приоритетам.</p>
+        <p><strong>4. Создание задачи:</strong> Нажмите на иконку с плюсом, чтобы перейти к созданию новой задачи.</p>
+        <p><strong>5. Добавление тега к задаче:</strong> Нажмите на иконку бирки, чтобы открыть окно для выбора тега. Также в окне сбоку будет находиться кнопка с плюсом для создания нового тега.</p>
+        <p><strong>6. Добавление приоритета к задаче:</strong> Нажмите на серый блок, чтобы открыть окно для выбора приоритета. Выберите нужный приоритет из предложенного списка.</p>
+    </div>
+</div>
+
+
     <style>
+        .legend-map-modal {
+            display: none;
+            position: fixed;
+            top: 1%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 100%;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(-50%) scale(0.9);
+        }
+
+        .legend-map-modal.show {
+            display: flex;
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .modal-content-map {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            width: 60%;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        #legendMapModal .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-weight: bold;
+        }
+
         .main-container {
             max-width: 1350px;
         }
@@ -457,9 +531,8 @@
             text-align: center;
             margin: 0;
             color: #000000;
-
+            position: relative;
             box-shadow: 0 5px 5px #a3a3a3;
-
         }
 
         .report-button p {
@@ -476,6 +549,18 @@
             margin-top: 8px;
             font-size: 15px;
             background-color: #EBEBEB;
+        }
+
+        .report-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            fill: black;
+            stroke: black;
+            stroke-width: 1.5px;
+            cursor: pointer;
         }
 
         .report-header-text {
@@ -656,17 +741,39 @@
         .tasks-header {
             background-color: #FFFFFF;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             font-size: 24px;
             text-align: center;
-            padding: 0;
             height: 53px;
+            position: relative;
         }
-        .tasks-header p {
-            margin: 0;
-            line-height: 1;
+
+        .tasks-header h3 {
+            margin: 0 auto;
+            position: absolute;
+            transform: translateX(-50%);
         }
+
+        .tasks-header .task-actions {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .tasks-header .help-task {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tasks-header .add-task {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
 
         .tasks-content {
             height: 500px;
@@ -712,8 +819,8 @@
 
         .task-priority-arrows {
             width: 25px;
-            height: 55px;
-            margin: 0;
+            height: 20px;
+            margin: 9px;
         }
 
         .task-div {
@@ -767,8 +874,8 @@
 
 
     </style>
-
+    <script src="/js/legendMap.js"></script>
     <script src="/js/tags.js"></script>
     <script src="/js/priority.js"></script>
-    <script src="/js/reports.js"></script>
+    <script src="/js/reports.js">
 </@layout.layout>

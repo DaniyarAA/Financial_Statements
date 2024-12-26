@@ -78,18 +78,39 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = convertToEntity(companyDto);
         company.setDeleted(Boolean.FALSE);
 
-        ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
-        company.setReportFrequency(frequency);
+        if (companyDto.getReportFrequency() != null && !companyDto.getReportFrequency().isBlank()) {
+            ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
+            company.setReportFrequency(frequency);
+        }
 
         Company companyCreated = companyRepository.save(company);
+        LocalDate currentDate = LocalDate.now();
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("CREATE_COMPANY"))){
 
-        assignUserToCompany(companyCreated, login); //TODO: Переделать логику
+            if (user.getCompanies() != null){
+                user.getCompanies().add(companyCreated);
+            }else {
+                List<Company> companies = new ArrayList<>();
+                companies.add(companyCreated);
+                user.setCompanies(companies);
+            }
 
-//        LocalDate currentDate = LocalDate.now();
-//        UserCompany userCompany = userCompanyService.findByCompany(companyCreated)
-//                .orElseThrow(() -> new RuntimeException("UserCompany not found"));
-//
-//        taskService.generateAutomaticTasks(userCompany, currentDate, frequency);
+            if (company.getUsers() != null){
+                companyCreated.getUsers().add(user);
+            }else {
+                List<User> users = new ArrayList<>();
+                users.add(user);
+                companyCreated.setUsers(users);
+            }
+        }
+
+        if (company.getReportFrequency() != null) {
+            taskService.generateAutomaticTasks(companyCreated, currentDate, company.getReportFrequency());
+        }
 
         return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }
@@ -159,8 +180,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public void deleteCompany(Long companyId) {
+    public void deleteCompany(Long companyId ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("DELETE_COMPANY"))){
         companyRepository.changeIsDeleted(companyId, Boolean.TRUE);
+        }
     }
 
     @Override
@@ -175,7 +202,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> editByOne(Map<String, String> data ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                noneMatch(a -> a.getAuthority().equals("EDIT_COMPANY"))){
+            return ResponseEntity.badRequest().body(Map.of("message", " У вас не доступа редактирования  !"));
+        }
         String companyIdStr = data.get("companyId");
         String fieldToEdit = data.get("field");
         String newValue = data.get("value");
@@ -209,7 +243,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 30) {
                     company.setPhone(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер номера телефона не может быть больше 30"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Длина номера телефона не должна превышать 30 символов"));
                 }
                 break;
             case "esf":
@@ -240,7 +274,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (!existsByCompanyName(newValue)) {
                     company.setName(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким именем уже существует , либо заорхивирована и можете восстановить !"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким именем уже существует либо архивирована. Вы можете восстановить её!"));
                 }
                 break;
             case "companyInn":
@@ -251,7 +285,7 @@ public class CompanyServiceImpl implements CompanyService {
                         return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН уже существует!"));
                     }
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Длина ИНН компании должна состоять из 12 символов"));
                 }
                 break;
             case "directorInn":
@@ -262,7 +296,7 @@ public class CompanyServiceImpl implements CompanyService {
                         return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН директором уже существует!"));
                     }
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Длина ИНН должна состоять из 12 символов"));
                 }
                 break;
             case "login":
@@ -292,14 +326,14 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 75) {
                     company.setTaxMode(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не может быть больше 75"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не должен превышать 75 символов"));
                 }
                 break;
             case "opf":
                 if (newValue.length() < 75) {
                     company.setOpf(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не может быть больше 75"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не должен превышать 75 символов"));
                 }
                 break;
             case "districtGns":
@@ -309,21 +343,21 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() == 12) {
                     company.setSocfundNumber(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен быть 12 из символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен состоять из 12 символов"));
                 }
                 break;
             case "registrationNumberMj":
                 if (newValue.length() < 50) {
                     company.setRegistrationNumberMj(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не может быть больше 50"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не должен превышать 50 символов"));
                 }
                 break;
             case "okpo":
                 if (newValue.length() == 8) {
                     company.setOkpo(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен быть из 8 символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен состоять из 8 символов"));
                 }
                 break;
             case "director":
@@ -333,17 +367,17 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 50) {
                     company.setKed(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не может быть больше 50"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не должен превышать 50 символов"));
                 }
                 break;
             default:
-                return ResponseEntity.badRequest().body(Map.of("message", "Неизвестное значение редактирования !"));
+                return ResponseEntity.badRequest().body(Map.of("message", "Неправильное значение для редактирования"));
         }
 
 
         companyRepository.save(company);
 
-        return ResponseEntity.ok(Map.of("message", "Компания Успешно отредактирована."));
+        return ResponseEntity.ok(Map.of("message", "Компания успешно отредактирована."));
     }
 
     @Override
@@ -428,26 +462,53 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> getAllCompaniesBySort(String sort) {
+    public List<CompanyDto> getAllCompaniesBySort(String sort,String login) {
         final String ARCHIVE = "archive";
         List<Company> companyList = Collections.emptyList();
-
-        if (sort != null) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("VIEW_COMPANY"))){
+            if (sort != null) {
+                if (sort.equalsIgnoreCase(ARCHIVE)) {
+                    companyList = companyRepository.findByIsDeleted(Boolean.TRUE);
+                } else {
+                    companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+                }
+            }
+            return convertToDtoListCompany(companyList);
+        }else {
+            if (sort != null) {
             if (sort.equalsIgnoreCase(ARCHIVE)) {
-                companyList = companyRepository.findByIsDeleted(Boolean.TRUE);
+                companyList = sortByDeleted(user.getCompanies(),Boolean.TRUE);
             } else {
-                companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+                companyList = sortByDeleted(user.getCompanies(),Boolean.FALSE);
             }
         }
+        return convertToDtoListCompany(companyList);
+        }
+    }
 
+    private List<Company> sortByDeleted(List<Company> companyList , boolean isDeleted) {
+        return companyList.stream().filter(company -> company.isDeleted() == isDeleted).collect(Collectors.toList());
+    }
+
+    private List<CompanyDto> convertToDtoListCompany(List<Company> companyList) {
         return companyList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void returnCompany(Long companyId) {
-        companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+    public void returnCompany(Long companyId ,String login) {
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("CREATE_COMPANY"))){ //TODO: изменить на RETURN_COMPANY сейчас нет в базе
+            companyRepository.changeIsDeleted(companyId, Boolean.FALSE);
+        }
     }
 
     @Override
@@ -534,6 +595,12 @@ public class CompanyServiceImpl implements CompanyService {
                 .orElseThrow(() -> new NoSuchElementException("Company not found: " + companyId));
         company.setDeleted(false);
         companyRepository.save(company);
+    }
+
+    @Override
+    public CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId) {
+        return allCompanies.stream().filter(companyDto -> companyDto.getId().equals(companyId)).
+                findFirst().orElseThrow(() -> new NoSuchElementException("У вас нет такой компании"));
     }
 
     @Override

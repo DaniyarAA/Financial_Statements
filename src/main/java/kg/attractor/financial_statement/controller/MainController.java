@@ -32,10 +32,15 @@ public class MainController {
     private final PriorityService priorityService;
     private final CompanyService companyService;
 
+    @ModelAttribute
+    public void addCommonAttributes(Model model) {
+        model.addAttribute("showLogoutButton", true);
+    }
+
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
                               @RequestParam(required = false, defaultValue = "endDate") String sortBy,
-                              Model model, HttpServletRequest request) {
+                              Model model, HttpServletRequest request , Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
         User userDto = userService.getUserByLogin(login);
@@ -50,7 +55,12 @@ public class MainController {
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         model.addAttribute("csrfToken", csrfToken);
+        boolean canCreateCompany = false;
 
+        if (principal != null) {
+            canCreateCompany = userService.canCreate(principal.getName());
+        }
+        model.addAttribute("canCreateCompany", canCreateCompany);
         model.addAttribute("companies", companyService.getAllCompanies());
         model.addAttribute("userDto", userDto);
         model.addAttribute("dateUtils", new DateUtils());

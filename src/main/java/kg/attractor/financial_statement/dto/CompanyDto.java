@@ -18,11 +18,11 @@ public class CompanyDto {
 //    @UniqueCompanyName
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(min = 12,max = 12, message = "Размер ИНН компании должен быть 12 символов")
+    @Size(min = 12,max = 12, message = "Длина ИНН компании должна состоять из 12 символов")
 //    @UniqueCompanyInn
     private String companyInn;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(min = 12,max = 12, message = "Размер ИНН директора должен быть 12 символов")
+    @Size(min = 12,max = 12, message = "Длина ИНН директора должна состоять из 12 символов")
 //    @UniqueCompanyDirectorInn
     private String directorInn;
     @NotBlank(message = "Обязательно для заполнения!")
@@ -38,30 +38,30 @@ public class CompanyDto {
     @NotBlank(message = "Обязательно для заполнения!")
     private String kabinetSalykPassword;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 75, message = "Размер налогооблажения не может быть больше 75")
+    @Size(max = 75, message = "Размер налогооблажения не должен превышать 75 символов")
     private String taxMode;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 75, message = "Размер ОПФ не может быть больше 75")
+    @Size(max = 75, message = "Размер ОПФ не должен превышать 75 символов")
     private String opf;
     @NotBlank(message = "Обязательно для заполнения!")
     private String districtGns;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(min = 12,max = 12, message = "Номер социального фонда должен быть 12 из символов")
+    @Size(min = 12,max = 12, message = "Номер социального фонда должен состоять из 12 символов")
     private String socfundNumber;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 50, message = "Размер регистрационного номера МЮ не может быть больше 50")
+    @Size(max = 50, message = "Размер регистрационного номера МЮ не должен превышать 50 символов")
     private String registrationNumberMj;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(min = 8,max = 8, message = "Код ОКПО должен быть 8 из символов")
+    @Size(min = 8,max = 8, message = "Код ОКПО должен состоять 8 из символов")
     private String okpo;
     @NotBlank(message = "Обязательно для заполнения!")
     private String director;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(max = 50, message = "Размер КЭД не может быть больше 50")
+    @Size(max = 50, message = "Размер КЭД не должен превышать 50 символов")
     private String ked;
     private String email;
     private String emailPassword;
-    @Size(max = 30, message = "Размер номера телефона не может быть больше 30")
+    @Size(max = 30, message = "Длина номера телефона не должна превышать 30 символов")
     private String phone;
     private String esf;
     private String esfPassword;

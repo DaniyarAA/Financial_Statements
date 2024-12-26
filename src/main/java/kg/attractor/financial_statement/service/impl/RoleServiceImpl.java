@@ -69,6 +69,7 @@ public class RoleServiceImpl implements RoleService {
                 -> new NotFoundRoleException("Can not find role with name " + name)));
     }
 
+    @Transactional
     public RoleDto convertToDto(Role role) {
         if (role == null) {
             throw new IllegalArgumentException("Role cannot be null");

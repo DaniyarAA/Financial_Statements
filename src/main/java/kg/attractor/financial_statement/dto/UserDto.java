@@ -1,8 +1,8 @@
 package kg.attractor.financial_statement.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-//import kg.attractor.financial_statement.validation.UniqueEmail;
-//import kg.attractor.financial_statement.validation.UniqueLogin;
+import kg.attractor.financial_statement.validation.UniqueEmail;
+import kg.attractor.financial_statement.validation.UniqueLogin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ public class UserDto {
     private String surname;
 
     @NotBlank(message = "Заполните логин сотрудника!")
-//    @UniqueLogin
+    @UniqueLogin
     private String login;
 
     @NotBlank(message = "Заполните пароль сотрудника!")
@@ -47,7 +47,7 @@ public class UserDto {
 
     @NotBlank(message = "Введите адрес электронной почты!")
     @Email(message = "Введите корректный адрес почты!")
-//    @UniqueEmail
+    @UniqueEmail
     private String email;
 
     private String notes;
@@ -55,4 +55,5 @@ public class UserDto {
     private int displayIndex;
     private List<CompanyDto> companies;
     private List<Long> companyIds;
+    private boolean credentialsUpdated;
 }

@@ -146,7 +146,7 @@
                                         <input
                                                 type="text"
                                                 id="company-search"
-                                                class="form-control"
+                                                class="form-control company-form"
                                                 placeholder="Поиск компании..."
                                                 readonly
                                                 onclick="openCompanyPopup()"
@@ -157,7 +157,6 @@
                                     <div id="company-modal" class="modal">
                                         <div class="modal-content">
                                             <span class="close" onclick="closeCompanyPopup()">&times;</span>
-                                            <h5>Выберите компанию</h5>
                                             <input
                                                     type="text"
                                                     id="company-modal-search"
@@ -173,7 +172,6 @@
                                         <div id="user-modal" class="modal">
                                             <div class="modal-content">
                                                 <span class="close" onclick="closeUserPopup()">&times;</span>
-                                                <h5>Выберите пользователя</h5>
                                                 <input
                                                         type="text"
                                                         id="user-modal-search"
@@ -956,33 +954,40 @@
             padding: 0;
         }
         .modal {
-            display: none; /* Hidden by default */
+            display: none;
             position: absolute;
-            left: 50%; /* Center alignment */
+            left: 50%;
             top: 20%;
             transform: translate(-50%, 0);
             z-index: 10;
             width: 300px;
             height: 600px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
             border-radius: 8px;
             overflow-y: auto;
-            padding: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            border: 1px solid #e0e0e0;
         }
 
         .modal-content {
             position: relative;
-            width: 100%;
-            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 10px;
+            border: none;
+            box-shadow: none;
+            outline: none;
         }
 
         .modal-content .close {
             position: absolute;
             top: 8px;
             right: 16px;
-            font-size: 24px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
             cursor: pointer;
         }
 
@@ -996,7 +1001,83 @@
             background: #fff;
             position: relative;
         }
+        .task-create-div input {
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
 
+        #company-modal-search {
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .modal-content .dropdown-menu{
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        #company-modal-search, #user-modal-search {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .dropdown-menu {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        /* Dropdown Items */
+        .dropdown-menu li {
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Dropdown Items - Hover State */
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Highlighted Selection (Optional) */
+        .dropdown-menu li.selected {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        /* Task Input Styles */
+        .task-create-div input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            background-color: #ffffff;
+        }
+
+        /* Label Styles */
+        .task-create-text {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
 
     </style>
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">

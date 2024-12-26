@@ -15,4 +15,8 @@ public interface DocumentTypeService {
     List<DocumentTypeDto> getFilteredDocumentTypes();
 
     List<DocumentType> getNonOptionalDocumentTypes();
+
+    List<DocumentTypeDto> getDefaultDocumentTypes();
+
+    List<DocumentTypeDto> getChangeableDocumentTypes();
 }

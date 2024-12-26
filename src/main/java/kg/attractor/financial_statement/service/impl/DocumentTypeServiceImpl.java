@@ -2,12 +2,14 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.DocumentTypeDto;
 import kg.attractor.financial_statement.entity.DocumentType;
+import kg.attractor.financial_statement.enums.Document;
 import kg.attractor.financial_statement.repository.DocumentTypeRepository;
 import kg.attractor.financial_statement.service.DocumentTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -51,6 +53,32 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     public List<DocumentType> getNonOptionalDocumentTypes() {
         return documentTypeRepository.findByIsOptionalFalse();
     }
+
+    @Override
+    public List<DocumentTypeDto> getDefaultDocumentTypes() {
+        List<String> defaultDocumentTypeNames = Arrays.stream(Document.values())
+                .map(Document::getTitle)
+                .toList();
+        List<DocumentType> allDocumentTypes = documentTypeRepository.findAll();
+        List<DocumentType> defaultDocumentTypes = allDocumentTypes.stream()
+                .filter(documentType -> defaultDocumentTypeNames.contains(documentType.getName()))
+                .collect(Collectors.toList());
+        return convertToDtoList(defaultDocumentTypes);
+    }
+
+
+    @Override
+    public List<DocumentTypeDto> getChangeableDocumentTypes() {
+        List<String> defaultDocumentTypeNames = Arrays.stream(Document.values())
+                .map(Document::getTitle)
+                .toList();
+        List<DocumentType> allDocumentTypes = documentTypeRepository.findAll();
+        List<DocumentType> changeableDocumentTypes = allDocumentTypes.stream()
+                .filter(documentType -> !defaultDocumentTypeNames.contains(documentType.getName()))
+                .collect(Collectors.toList());
+        return convertToDtoList(changeableDocumentTypes);
+    }
+
 
     private DocumentTypeDto convertToDto(DocumentType documentType) {
         return DocumentTypeDto.builder()

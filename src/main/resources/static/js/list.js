@@ -585,7 +585,6 @@ function openCompanyPopup() {
     const dropdown = document.getElementById("modal-company-dropdown");
     modal.style.display = "block";
 
-    // Populate all companies initially
     populateModalDropdown(companyDtos);
 }
 
@@ -625,21 +624,82 @@ function selectCompanyFromModal(company) {
     const searchInput = document.getElementById("company-search");
     const hiddenInput = document.getElementById("company-id");
 
-    // Set the name in the visible input
     searchInput.value = company.name;
-
-    // Set the id in the hidden input
     hiddenInput.value = company.id;
+
+    onCompanySelected(company.id);
 
     closeCompanyPopup();
 }
 
 
-// Close modal when clicking outside
 document.addEventListener("click", event => {
     const modal = document.getElementById("company-modal");
     if (event.target === modal) {
         closeCompanyPopup();
     }
 });
+
+let selectedCompanyUsers = [];
+
+// Open User Popup
+function openUserPopup() {
+    const modal = document.getElementById("user-modal");
+    modal.style.display = "block";
+
+    populateUserModalDropdown(selectedCompanyUsers);
+}
+
+// Close User Popup
+function closeUserPopup() {
+    const modal = document.getElementById("user-modal");
+    modal.style.display = "none";
+}
+
+// Populate User Dropdown
+function populateUserModalDropdown(users) {
+    const dropdown = document.getElementById("modal-user-dropdown");
+    dropdown.innerHTML = "";
+
+    users.forEach(user => {
+        const li = document.createElement("li");
+        li.textContent = `${user.surname} ${user.name}`;
+        li.className = "dropdown-item";
+        li.dataset.userId = user.id;
+
+        li.addEventListener("click", () => {
+            selectUserFromModal(user);
+        });
+
+        dropdown.appendChild(li);
+    });
+}
+
+// Update User Dropdown
+function updateUserModalDropdown() {
+    const searchValue = document.getElementById("user-modal-search").value.toLowerCase();
+    const filteredUsers = selectedCompanyUsers.filter(user =>
+        `${user.surname} ${user.name}`.toLowerCase().includes(searchValue)
+    );
+
+    populateUserModalDropdown(filteredUsers);
+}
+
+// Select User from Modal
+function selectUserFromModal(user) {
+    const searchInput = document.getElementById("user-search");
+    const hiddenInput = document.getElementById("user-id");
+
+    searchInput.value = `${user.surname} ${user.name}`;
+    hiddenInput.value = user.id;
+
+    closeUserPopup();
+}
+
+// Update Users based on Selected Company
+function onCompanySelected(companyId) {
+    const company = companyDtos.find(c => c.id === companyId);
+    selectedCompanyUsers = company ? company.users : [];
+}
+
 

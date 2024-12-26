@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.service;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
+import kg.attractor.financial_statement.dto.CompanyForTaskCreateDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
@@ -62,4 +63,6 @@ public interface CompanyService {
     List<CompanyDto> getAllDeletedCompanies();
 
     void resumeCompany(Long companyId);
+
+    List<CompanyForTaskCreateDto> getAllCompaniesForCreateTask();
 }

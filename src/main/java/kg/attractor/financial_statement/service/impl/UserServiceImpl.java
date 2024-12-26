@@ -458,4 +458,17 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users) {
+        return users.stream().map(this::convertToUserForCreateTaskDto).collect(Collectors.toList());
+    }
+
+    private UserForCreateTaskDto convertToUserForCreateTaskDto(User user) {
+        return UserForCreateTaskDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .build();
+    }
+
 }

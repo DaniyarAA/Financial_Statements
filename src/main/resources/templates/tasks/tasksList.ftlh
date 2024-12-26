@@ -170,16 +170,34 @@
                                     </div>
 
                                     <div class="task-create-div">
-                                        <label for="category" class="task-create-text">Назначить</label>
-                                        <select class="form-select" id="user" name="appointToUserId" required>
-                                            <#if userDtos??>
-                                                <#list userDtos as user>
-                                                    <option value="${user.id}">${user.surname} ${user.name}</option>
-                                                </#list>
-                                            <#else>
-                                                <option disabled>Нет доступных пользователей</option>
-                                            </#if>
-                                        </select>
+                                        <div id="user-modal" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close" onclick="closeUserPopup()">&times;</span>
+                                                <h5>Выберите пользователя</h5>
+                                                <input
+                                                        type="text"
+                                                        id="user-modal-search"
+                                                        class="form-control"
+                                                        placeholder="Поиск пользователя..."
+                                                        oninput="updateUserModalDropdown()"
+                                                />
+                                                <ul id="modal-user-dropdown" class="dropdown-menu"></ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="task-create-div">
+                                            <label for="user-search" class="task-create-text">Назначить</label>
+                                            <input
+                                                    type="text"
+                                                    id="user-search"
+                                                    class="form-control"
+                                                    placeholder="Выберите пользователя..."
+                                                    readonly
+                                                    onclick="openUserPopup()"
+                                            />
+                                            <input type="hidden" id="user-id" name="appointToUserId" />
+                                        </div>
+
                                     </div>
 
                                     <div class="task-create-div">
@@ -937,7 +955,6 @@
             margin: 0;
             padding: 0;
         }
-
         .modal {
             display: none; /* Hidden by default */
             position: absolute;
@@ -979,6 +996,7 @@
             background: #fff;
             position: relative;
         }
+
 
     </style>
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">

@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.PriorityDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.service.CompanyService;
-import kg.attractor.financial_statement.service.PriorityService;
-import kg.attractor.financial_statement.service.TaskService;
-import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +28,8 @@ public class MainController {
     private final TaskService taskService;
     private final PriorityService priorityService;
     private final CompanyService companyService;
+    private final DocumentTypeService documentTypeService;
+    private final TaskStatusService taskStatusService;
 
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
@@ -65,6 +64,10 @@ public class MainController {
         model.addAttribute("sort", sort);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("priorities", priorities);
+        model.addAttribute("defaultDocumentTypes",documentTypeService.getDefaultDocumentTypes());
+        model.addAttribute("changeableDocumentTypes", documentTypeService.getChangeableDocumentTypes());
+        model.addAttribute("defaultTaskStatuses",taskStatusService.getDefaultTaskStatuses());
+        model.addAttribute("changeableTaskStatuses",taskStatusService.getChangeableTaskStatuses());
 
         return "main/mainPage";
     }

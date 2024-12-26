@@ -32,6 +32,11 @@ public class MainController {
     private final PriorityService priorityService;
     private final CompanyService companyService;
 
+    @ModelAttribute
+    public void addCommonAttributes(Model model) {
+        model.addAttribute("showLogoutButton", true);
+    }
+
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
                               @RequestParam(required = false, defaultValue = "endDate") String sortBy,

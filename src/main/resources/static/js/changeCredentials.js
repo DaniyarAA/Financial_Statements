@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (newPassword.length < 8 || newPassword.length > 20 || confirmPassword.length > 20 || confirmPassword.length < 8) {
-            passwordErrorMessage.textContent = "длина пароли должно быть от 8 до 20 символов!"
+            passwordErrorMessage.textContent = "Длина пароля должна состоять от 8 до 20 символов!"
             if (newPassword === "") {
                 passwordErrorMessage.textContent = 'Заполните пароль!';
             }

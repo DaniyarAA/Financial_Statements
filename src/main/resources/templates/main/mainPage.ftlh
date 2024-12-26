@@ -50,20 +50,24 @@
                     </div>
                     <div class="col-6 company-calendar column">
                         <div class="companies col-6 main-content">
-                            <a href="/company/all?sort=actual&openModal=true">
-                                <div class="company-button">
-                                    <div class="button-text company-text">
+                            <#if canCreateCompany>
+                                <a href="/company/all?sort=actual&openModal=true">
+                                  <div class="company-button">
+                                      <div class="button-text company-text">
                                         <p>СОЗДАТЬ НОВЫЙ<br>ИП/ОСОО</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/company/all?sort=actual">
-                                <div class="company-button">
-                                     <div class="button-text company-text">
+                                      </div>
+                                  </div>
+                                </a>
+                            </#if>
+                            <#if canViewCompany>
+                                 <a href="/company/all?sort=actual">
+                                    <div class="company-button">
+                                        <div class="button-text company-text">
                                          <p>СПИСОК<br>КОМПАНИЙ</p>
-                                     </div>
-                                </div>
-                            </a>
+                                        </div>
+                                    </div>
+                                 </a>
+                            </#if>
                         </div>
                         <div class="calendars col-6 main-content">
                             <div class="calendar-header">

@@ -60,4 +60,12 @@ public interface UserService {
     List<UserDto> getDeletedUsers();
 
     void resumeUser(Long id, Long roleId);
+
+    boolean canEdit(String name);
+
+    boolean canCreate(String name);
+
+    boolean canReturn(String name);
+
+    boolean canViewCompany(String name);
 }

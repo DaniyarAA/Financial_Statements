@@ -85,6 +85,12 @@
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                         </svg>
                     </a>
+                        <#if canOpenDocumentTools>
+                            <button class="btn btn-light" title="Редактирование документов"><i class="bi bi-file-diff"></i></button>
+                        </#if>
+                        <#if canOpenTaskTools>
+                            <button class="btn btn-light" title="Редактирование статусов"><i class="bi bi-c-circle"></i></button>
+                        </#if>
                 </div>
 
                 <div class="task-list">

@@ -77,18 +77,39 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = convertToEntity(companyDto);
         company.setDeleted(Boolean.FALSE);
 
-        ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
-        company.setReportFrequency(frequency);
+        if (companyDto.getReportFrequency() != null && !companyDto.getReportFrequency().isBlank()) {
+            ReportFrequency frequency = ReportFrequency.valueOf(companyDto.getReportFrequency());
+            company.setReportFrequency(frequency);
+        }
 
         Company companyCreated = companyRepository.save(company);
+        LocalDate currentDate = LocalDate.now();
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().
+                getAuthorities().
+                stream().
+                anyMatch(a -> a.getAuthority().equals("CREATE_COMPANY"))){
 
-        assignUserToCompany(companyCreated, login); //TODO: Переделать логику
+            if (user.getCompanies() != null){
+                user.getCompanies().add(companyCreated);
+            }else {
+                List<Company> companies = new ArrayList<>();
+                companies.add(companyCreated);
+                user.setCompanies(companies);
+            }
 
-//        LocalDate currentDate = LocalDate.now();
-//        UserCompany userCompany = userCompanyService.findByCompany(companyCreated)
-//                .orElseThrow(() -> new RuntimeException("UserCompany not found"));
-//
-//        taskService.generateAutomaticTasks(userCompany, currentDate, frequency);
+            if (company.getUsers() != null){
+                companyCreated.getUsers().add(user);
+            }else {
+                List<User> users = new ArrayList<>();
+                users.add(user);
+                companyCreated.setUsers(users);
+            }
+        }
+
+        if (company.getReportFrequency() != null) {
+            taskService.generateAutomaticTasks(companyCreated, currentDate, company.getReportFrequency());
+        }
 
         return ResponseEntity.ok(Map.of("message", companyCreated.getName() + " компания создана успешно !"));
     }

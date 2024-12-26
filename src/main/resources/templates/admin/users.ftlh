@@ -18,16 +18,6 @@
                                 <i class="bi bi-plus-circle"></i>
                             </span>
                     </#if>
-                    <#if auth.authority=="EDIT_DOCUMENT">
-                        <span class="icon" onclick="window.location.href='#'" title="Редактирование документов">
-                                <i class="bi bi-file-diff"></i>
-                            </span>
-                    </#if>
-                    <#if auth.authority=="CREATE_STATUS">
-                        <span class="icon" onclick="window.location.href='#'" title="Редактирование статусов">
-                                <i class="bi bi-c-circle"></i>
-                            </span>
-                    </#if>
                 </#list>
             </div>
         </div>

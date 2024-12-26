@@ -86,10 +86,10 @@
                         </svg>
                     </a>
                         <#if canOpenDocumentTools>
-                            <button class="btn btn-light" title="Редактирование документов"><i class="bi bi-file-diff"></i></button>
+                            <button type="button" class="btn btn-light" title="Редактирование документов" data-bs-toggle="modal" data-bs-target="#documentTypeTools"><i class="bi bi-file-diff"></i></button>
                         </#if>
                         <#if canOpenTaskTools>
-                            <button class="btn btn-light" title="Редактирование статусов"><i class="bi bi-c-circle"></i></button>
+                            <button type="button" class="btn btn-light" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#statusTools"><i class="bi bi-c-circle"></i></button>
                         </#if>
                 </div>
 
@@ -421,6 +421,35 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="documentTypeTools" tabindex="-1" aria-labelledby="documentTypeToolsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="documentTypeToolsLabel">Настройка типов документов</h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="statusTools" tabindex="-1" aria-labelledby="statusToolsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusToolsLabel">Настройка статусов</h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <style>
         .main-container {

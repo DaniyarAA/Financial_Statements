@@ -229,7 +229,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 30) {
                     company.setPhone(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер номера телефона не может быть больше 30"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Длина номера телефона не должна превышать 30 символов"));
                 }
                 break;
             case "esf":
@@ -260,7 +260,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (!existsByCompanyName(newValue)) {
                     company.setName(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким именем уже существует , либо заорхивирована и можете восстановить !"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким именем уже существует либо архивирована. Вы можете восстановить её!"));
                 }
                 break;
             case "companyInn":
@@ -271,7 +271,7 @@ public class CompanyServiceImpl implements CompanyService {
                         return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН уже существует!"));
                     }
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Длина ИНН компании должна состоять из 12 символов"));
                 }
                 break;
             case "directorInn":
@@ -282,7 +282,7 @@ public class CompanyServiceImpl implements CompanyService {
                         return ResponseEntity.badRequest().body(Map.of("message", "Компания с таким ИНН директором уже существует!"));
                     }
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ИНН должен быть 12 символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Длина ИНН должна состоять из 12 символов"));
                 }
                 break;
             case "login":
@@ -312,14 +312,14 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 75) {
                     company.setTaxMode(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не может быть больше 75"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер налогооблажения не должен превышать 75 символов"));
                 }
                 break;
             case "opf":
                 if (newValue.length() < 75) {
                     company.setOpf(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не может быть больше 75"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОПФ не должен превышать 75 символов"));
                 }
                 break;
             case "districtGns":
@@ -329,21 +329,21 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() == 12) {
                     company.setSocfundNumber(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен быть 12 из символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Номер социального фонда должен состоять из 12 символов"));
                 }
                 break;
             case "registrationNumberMj":
                 if (newValue.length() < 50) {
                     company.setRegistrationNumberMj(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не может быть больше 50"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер регистрационного номера МЮ не должен превышать 50 символов"));
                 }
                 break;
             case "okpo":
                 if (newValue.length() == 8) {
                     company.setOkpo(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен быть из 8 символов"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер ОКПО должен состоять из 8 символов"));
                 }
                 break;
             case "director":
@@ -353,17 +353,17 @@ public class CompanyServiceImpl implements CompanyService {
                 if (newValue.length() < 50) {
                     company.setKed(newValue);
                 } else {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не может быть больше 50"));
+                    return ResponseEntity.badRequest().body(Map.of("message", "Размер КЭД не должен превышать 50 символов"));
                 }
                 break;
             default:
-                return ResponseEntity.badRequest().body(Map.of("message", "Неизвестное значение редактирования !"));
+                return ResponseEntity.badRequest().body(Map.of("message", "Неправильное значение для редактирования"));
         }
 
 
         companyRepository.save(company);
 
-        return ResponseEntity.ok(Map.of("message", "Компания Успешно отредактирована."));
+        return ResponseEntity.ok(Map.of("message", "Компания успешно отредактирована."));
     }
 
     @Override

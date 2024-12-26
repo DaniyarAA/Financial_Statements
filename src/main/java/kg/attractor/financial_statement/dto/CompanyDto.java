@@ -18,11 +18,11 @@ public class CompanyDto {
 //    @UniqueCompanyName
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(min = 12,max = 12, message = "Длина ИНН компании должен состоять из 12 символов")
+    @Size(min = 12,max = 12, message = "Длина ИНН компании должна состоять из 12 символов")
 //    @UniqueCompanyInn
     private String companyInn;
     @NotBlank(message = "Обязательно для заполнения!")
-    @Size(min = 12,max = 12, message = "Длина ИНН директора должен состоять из 12 символов")
+    @Size(min = 12,max = 12, message = "Длина ИНН директора должна состоять из 12 символов")
 //    @UniqueCompanyDirectorInn
     private String directorInn;
     @NotBlank(message = "Обязательно для заполнения!")

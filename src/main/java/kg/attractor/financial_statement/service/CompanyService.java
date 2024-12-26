@@ -35,7 +35,7 @@ public interface CompanyService {
 
     Company convertToEntity(CompanyDto companyDto);
 
-    List<CompanyDto> getAllCompaniesBySort(String sort);
+    List<CompanyDto> getAllCompaniesBySort(String sort,String login);
 
     void returnCompany(Long companyId,String login);
 
@@ -62,4 +62,6 @@ public interface CompanyService {
     List<CompanyDto> getAllDeletedCompanies();
 
     void resumeCompany(Long companyId);
+
+    CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId);
 }

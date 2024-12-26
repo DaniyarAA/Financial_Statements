@@ -39,11 +39,11 @@ public class CompanyController {
                          @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal,
                          Model model, Principal principal) {
 
-        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort);
+        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort,principal.getName());
         model.addAttribute("list", allCompanies);
 
         if (companyId != 0) {
-            model.addAttribute("company", companyService.findById(companyId));
+            model.addAttribute("company", companyService.findByIdInUserList(allCompanies,companyId));
             model.addAttribute("companyId", companyId);
         } else if (allCompanies.isEmpty()) {
             model.addAttribute("company", new CompanyDto());

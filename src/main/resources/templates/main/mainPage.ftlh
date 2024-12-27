@@ -436,8 +436,23 @@
                             <p>${documentType.name}</p>
                         </#list>
                         <#list changeableDocumentTypes as documentTypeChangeable>
-                            <p>${documentTypeChangeable.name}  <button type="button"><i class="bi bi-trash"></i></button>
-                                <button type="button"><i class="bi bi-pencil"></i></button></p>
+                                    <p id="documentType${documentTypeChangeable.id}" class="inline-block">
+                                        ${documentTypeChangeable.name}
+                                        <button type="button"><i class="bi bi-trash"></i></button>
+                                        <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
+                                                title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
+                                        </button>
+                                    </p>
+                                <div class="document-type-changeable-name-edit">
+                                      <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
+                                       value="${documentTypeChangeable.name!}">
+                                      <button id="cancelBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
+                                        onclick="cancelEditDocumentType('companyName')">&#10005;
+                                      </button>
+                                      <button id="saveBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
+                                         onclick="saveChangesDocumentType('documentType${documentTypeChangeable.id}', ${documentTypeChangeable.id})">&#10003;
+                                      </button>
+                                </div>
                         </#list>
                     </div>
                     <span id="documentTypeToolsError" class="text-danger"></span>
@@ -475,8 +490,24 @@
                             <p>${taskStatus.name}</p>
                         </#list>
                         <#list changeableTaskStatuses as taskStatusChangeable>
-                            <p>${taskStatusChangeable.name}  <button type="button"><i class="bi bi-trash"></i></button>
-                                <button type="button"><i class="bi bi-pencil"></i></button></p>
+                            <p id="taskStatus${taskStatusChangeable.id}" class="inline-block">
+                                ${taskStatusChangeable.name}
+                                <button type="button"><i class="bi bi-trash"></i></button>
+                                <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
+                                        title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i></button>
+                            </p>
+                            <div class="task-status-changeable-name-edit">
+                                <div>
+                                    <input type="text" id="editInputtaskStatus${taskStatusChangeable.id}" class="form-control d-none"
+                                           value="${taskStatusChangeable.name!}">
+                                    <button id="cancelBtntaskStatus${taskStatusChangeable.id}" class="btn btn-light d-none"
+                                            onclick="cancelEditTaskStatus('taskStatus${taskStatusChangeable.id}')">&#10005;
+                                    </button>
+                                    <button id="saveBtntaskStatus${taskStatusChangeable.id}" class="btn btn-light d-none"
+                                            onclick="saveChangesTaskStatus('taskStatus${taskStatusChangeable.id}', ${taskStatusChangeable.id})">&#10003;
+                                    </button>
+                                </div>
+                            </div>
                         </#list>
                     </div>
                     <span id="taskStatusToolsError" class="text-danger"></span>
@@ -498,7 +529,6 @@
             </div>
         </div>
     </div>
-
 
     <style>
         .main-container {

@@ -89,7 +89,7 @@
                             <button type="button" class="btn btn-light" title="Редактирование документов" data-bs-toggle="modal" data-bs-target="#documentTypeTools"><i class="bi bi-file-diff"></i></button>
                         </#if>
                         <#if canOpenTaskTools>
-                            <button type="button" class="btn btn-light" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#statusTools"><i class="bi bi-c-circle"></i></button>
+                            <button type="button" class="btn btn-light" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#taskStatusTools"><i class="bi bi-c-circle"></i></button>
                         </#if>
                 </div>
 
@@ -430,21 +430,70 @@
                     <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-
+                    <h5>Виды документов</h5>
+                    <div class="list-document-types-scroll" style="overflow: scroll; max-height: 300px">
+                        <#list defaultDocumentTypes as documentType>
+                            <p>${documentType.name}</p>
+                        </#list>
+                        <#list changeableDocumentTypes as documentTypeChangeable>
+                            <p>${documentTypeChangeable.name}  <button type="button"><i class="bi bi-trash"></i></button>
+                                <button type="button"><i class="bi bi-pencil"></i></button></p>
+                        </#list>
+                    </div>
+                    <span id="documentTypeToolsError" class="text-danger"></span>
+                    <form id="createDocumentTypeForm">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label for="createDocumentType">Создать новый вид документа</label>
+                            <input type="text" id="createDocumentType" name="name" class="form-control" required>
+                            <span id="documentTypeNameError" class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-success" onclick="createNewDocumentType()"><i class="bi bi-check2"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="statusTools" tabindex="-1" aria-labelledby="statusToolsLabel" aria-hidden="true">
+
+    <div class="modal fade" id="taskStatusTools" tabindex="-1" aria-labelledby="taskStatusToolsLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="statusToolsLabel">Настройка статусов</h5>
+                    <h5 class="modal-title" id="taskStatusToolsLabel">Настройка статусов</h5>
                     <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-
+                    <h5>Статусы Задач</h5>
+                    <div class="list-task-status-scroll" style="overflow: scroll; max-height: 300px">
+                        <#list defaultTaskStatuses as taskStatus>
+                            <p>${taskStatus.name}</p>
+                        </#list>
+                        <#list changeableTaskStatuses as taskStatusChangeable>
+                            <p>${taskStatusChangeable.name}  <button type="button"><i class="bi bi-trash"></i></button>
+                                <button type="button"><i class="bi bi-pencil"></i></button></p>
+                        </#list>
+                    </div>
+                    <span id="taskStatusToolsError" class="text-danger"></span>
+                    <form id="taskStatusForm">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
+                        <div class="form-group">
+                            <label for="createTaskStatus">Создать новый статуса для задач</label>
+                            <input type="text" id="createTaskStatus" name="name" class="form-control" required>
+                            <span id="taskStatusNameError" class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-success" onclick="createNewTaskStatus()"><i class="bi bi-check2"></i></button>
                 </div>
             </div>
         </div>

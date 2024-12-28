@@ -35,5 +35,55 @@ function cancelEditTaskStatus(elementId){
 }
 
 function saveChangesTaskStatus(elementId,taskStatusId){
+    const inputElement = document.getElementById(`editInput${elementId}`);
+    const nextText = inputElement.value.trim();
+
+    if (nextText !== '') {
+        document.getElementById(elementId).textContent = nextText;
+
+        const data = {
+            taskStatusId: taskStatusId,
+            field:'name',
+            value:nextText
+        };
+
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+        fetch('/status/edit',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response =>{
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error(errData.message || 'Ошибка при сохранений изменений!')
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                showResponseMessageInTaskStatusToolsError(data.message);
+                cancelEditTaskStatus(elementId);
+            })
+            .catch(error => {
+                showResponseMessageInTaskStatusToolsError(error.message,false);
+                console.log('Error',error);
+            });
+    }
+}
+
+function showResponseMessageInTaskStatusToolsError(message, isSuccess = true) {
+    const spanDocumentTypeError = document.getElementById(`taskStatusToolsError`);
+    spanDocumentTypeError.innerText = message;
+
+    if (isSuccess) {
+        spanDocumentTypeError.style.color = "#155724";
+    } else {
+        spanDocumentTypeError.style.color = "#721c24";
+    }
 
 }

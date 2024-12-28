@@ -2,15 +2,19 @@ package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.TaskStatusDto;
 import kg.attractor.financial_statement.entity.TaskStatus;
+import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.enums.Status;
 import kg.attractor.financial_statement.repository.TaskStatusRepository;
 import kg.attractor.financial_statement.service.TaskStatusService;
+import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TaskStatusServiceImpl implements TaskStatusService {
     private final TaskStatusRepository taskStatusRepository;
+    private final UserService userService;
 
     @Override
     public List<TaskStatusDto> getAllTaskStatuses() {
@@ -75,5 +80,33 @@ public class TaskStatusServiceImpl implements TaskStatusService {
                 filter(taskStatus -> !defaultTaskStatusNames.contains(taskStatus.getName())).
                 toList();
         return convertToDtoList(defaultTaskStatuses);
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> edit(Map<String, String> data, String login) {
+        String taskStatusIdStr = data.get("taskStatusId");
+        String fieldToEdit = data.get("field");
+        String newValue = data.get("value");
+
+        if (taskStatusIdStr == null || fieldToEdit == null || newValue == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Неправильные вводные данные !"));
+        }
+
+        long taskStatusId;
+        try {
+            taskStatusId = Long.parseLong(taskStatusIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID статуса !"));
+        }
+
+        TaskStatus taskStatus = getTaskStatusById(taskStatusId);
+
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("EDIT_STATUS"))){
+            return ResponseEntity.badRequest().body(Map.of("message", "У вас нет доступа редактирования!"));
+        }
+        taskStatus.setName(newValue);
+        taskStatusRepository.save(taskStatus);
+        return ResponseEntity.ok(Map.of("message", "Статус Успешно отредактирован."));
     }
 }

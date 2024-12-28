@@ -21,7 +21,17 @@ function editDocumentType(elementId){
 }
 
 function cancelEditDocumentType(elementId){
+    const textElement = document.getElementById(elementId);
+    const inputElement = document.getElementById(`editInput${elementId}`);
+    const saveBtn = document.getElementById(`saveBtn${elementId}`);
+    const cancelBtn = document.getElementById(`cancelBtn${elementId}`);
+    const editBtn = document.getElementById(`editBtn${elementId}`);
 
+    textElement.classList.remove('d-none');
+    inputElement.classList.add('d-none');
+    saveBtn.classList.add('d-none');
+    cancelBtn.classList.add('d-none');
+    editBtn.classList.remove('d-none');
 }
 
 function saveChangesDocumentType(elementId,documentTypeId ){

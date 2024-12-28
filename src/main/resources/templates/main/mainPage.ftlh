@@ -447,7 +447,7 @@
                                       <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
                                        value="${documentTypeChangeable.name!}">
                                       <button id="cancelBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
-                                        onclick="cancelEditDocumentType('companyName')">&#10005;
+                                        onclick="cancelEditDocumentType('documentType${documentTypeChangeable.id}')">&#10005;
                                       </button>
                                       <button id="saveBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
                                          onclick="saveChangesDocumentType('documentType${documentTypeChangeable.id}', ${documentTypeChangeable.id})">&#10003;

@@ -9,6 +9,7 @@ import kg.attractor.financial_statement.enums.ReportFrequency;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -43,7 +44,7 @@ public interface TaskService {
 
     Map<String, Object> getTaskListData(User user);
 
-    void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String name, Long id);
+    void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String login, Long id, MultipartFile file);
 
     boolean checkIsAuthor(String name, Long id);
 

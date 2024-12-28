@@ -2,6 +2,7 @@ package kg.attractor.financial_statement.service.impl;
 
 
 
+import jakarta.transaction.Transactional;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.entity.Task;
@@ -12,6 +13,7 @@ import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.*;
+import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -47,6 +50,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
     private final UserRepository userRepository;
+    private final FileUtils fileUtils;
 
     @Override
     public TaskDto getTaskById(Long id) {
@@ -400,8 +404,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String name, Long id) {
-        System.out.println("TaskEditDto: " + taskDto.getFrom() + " " + taskDto.getTo());
+    public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String login, Long id, MultipartFile file) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
@@ -425,9 +428,18 @@ public class TaskServiceImpl implements TaskService {
             LocalDate endDate = LocalDate.parse(taskDto.getTo(), formatter);
             newVersionOfTask.setEndDate(endDate);
         }
+        if (file != null) {
+            String filePath = saveFile(file, newVersionOfTask.getCompany().getName());
+            newVersionOfTask.setFilePath(filePath);
+        }
         newVersionOfTask.setId(id);
         taskRepository.save(newVersionOfTask);
 
+    }
+
+    @Transactional
+    protected String saveFile(MultipartFile file, String companyName) {
+        return fileUtils.saveUploadedFile(file, companyName);
     }
 
     @Override

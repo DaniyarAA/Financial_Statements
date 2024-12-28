@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -103,6 +104,7 @@ public class TaskController {
     @ResponseBody
     public ResponseEntity<?> updateTaskInListPage(
             @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
+            @RequestParam MultipartFile file,
             @PathVariable Long id,
             Authentication authentication
     ) {
@@ -116,7 +118,7 @@ public class TaskController {
                     .body(Map.of("error", "Выбраны неправильные даты!"));
         }
 
-        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id, file);
         return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
     }
 

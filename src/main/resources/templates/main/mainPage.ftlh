@@ -436,23 +436,25 @@
                             <p>${documentType.name}</p>
                         </#list>
                         <#list changeableDocumentTypes as documentTypeChangeable>
-                                    <p id="documentType${documentTypeChangeable.id}" class="inline-block">
-                                        ${documentTypeChangeable.name}
-                                        <button type="button"><i class="bi bi-trash"></i></button>
-                                        <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
-                                                title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
-                                        </button>
-                                    </p>
+                            <div class="document-type-item">
+                                <p id="documentType${documentTypeChangeable.id}" class="inline-block">
+                                    ${documentTypeChangeable.name}
+                                    <button type="button"><i class="bi bi-trash"></i></button>
+                                    <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
+                                            title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
+                                    </button>
+                                </p>
                                 <div class="document-type-changeable-name-edit">
-                                      <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
-                                       value="${documentTypeChangeable.name!}">
-                                      <button id="cancelBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
-                                        onclick="cancelEditDocumentType('documentType${documentTypeChangeable.id}')">&#10005;
-                                      </button>
-                                      <button id="saveBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
-                                         onclick="saveChangesDocumentType('documentType${documentTypeChangeable.id}', ${documentTypeChangeable.id})">&#10003;
-                                      </button>
+                                    <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
+                                           value="${documentTypeChangeable.name!}">
+                                    <button id="cancelBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
+                                            onclick="cancelEditDocumentType('documentType${documentTypeChangeable.id}')">&#10005;
+                                    </button>
+                                    <button id="saveBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
+                                            onclick="saveChangesDocumentType('documentType${documentTypeChangeable.id}', ${documentTypeChangeable.id})">&#10003;
+                                    </button>
                                 </div>
+                            </div>
                         </#list>
                     </div>
                     <span id="documentTypeToolsError" class="text-danger"></span>
@@ -464,7 +466,7 @@
                         <div class="form-group">
                             <label for="createDocumentType">Создать новый вид документа</label>
                             <input type="text" id="createDocumentType" name="name" class="form-control" required>
-                            <span id="documentTypeNameError" class="text-danger"></span>
+                            <span id="documentTypeNameError"></span>
                         </div>
                     </form>
                 </div>
@@ -519,7 +521,7 @@
                         <div class="form-group">
                             <label for="createTaskStatus">Создать новый статуса для задач</label>
                             <input type="text" id="createTaskStatus" name="name" class="form-control" required>
-                            <span id="taskStatusNameError" class="text-danger"></span>
+                            <span id="taskStatusNameError"></span>
                         </div>
                     </form>
                 </div>

@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.UserDetailsDto;
 import kg.attractor.financial_statement.dto.UserDto;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public interface UserService {
 
     UserDto getUserDtoByLogin(String login);
 
-    void editUser(Long id, UserDto userDto);
+    void editUser(Long id, UserDto userDto) throws MessagingException, UnsupportedEncodingException;
 
     void updateLoginAndPassword(Long userId, String newLogin, String newPassword);
 

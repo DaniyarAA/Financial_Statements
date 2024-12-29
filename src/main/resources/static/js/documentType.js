@@ -1,5 +1,20 @@
-function createNewDocumentType(){
+async function createNewDocumentType(event) {
+    event.preventDefault();
 
+    const formData = new FormData(event.target);
+    const response = await fetch(event.target.action, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        //const result = await response.json();
+        //showResponseMessageInDocumentTypeNameError(result.message, true);
+        location.reload();
+    } else {
+        const errors = await response.json();
+        showResponseMessageInDocumentTypeNameError(errors.message, false);
+    }
 }
 
 function editDocumentType(elementId) {
@@ -73,8 +88,9 @@ function saveChangesDocumentType(elementId,documentTypeId ){
                 return response.json();
             })
             .then(data => {
-                showResponseMessageInDocumentTypeNameError(data.message,true);
+                //showResponseMessageInDocumentTypeNameError(data.message,true);
                 cancelEditDocumentType(elementId);
+                location.reload();
             })
             .catch(error => {
                 showResponseMessageInDocumentTypeNameError(error.message,false);
@@ -114,7 +130,7 @@ function deleteDocumentType(documentTypeId){
             return response.json();
         })
         .then(data => {
-            showResponseMessageInDocumentTypeNameError(data.message,true);
+            //showResponseMessageInDocumentTypeNameError(data.message,true);
             location.reload();
         })
         .catch(error => {

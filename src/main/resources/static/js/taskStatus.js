@@ -1,5 +1,20 @@
-function createNewTaskStatus(){
+async function createNewTaskStatus(event){
+    event.preventDefault();
 
+    const formData = new FormData(event.target);
+    const response = await fetch(event.target.action, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        //const result = await response.json();
+        //showResponseMessageInTaskStatusToolsError(result.message,true);
+        location.reload();
+    } else {
+        const errors = await response.json();
+        showResponseMessageInTaskStatusToolsError(errors.message,true);
+    }
 }
 
 function editTaskStatus(elementId) {
@@ -66,8 +81,9 @@ function saveChangesTaskStatus(elementId,taskStatusId){
                 return response.json();
             })
             .then(data => {
-                showResponseMessageInTaskStatusToolsError(data.message);
+               //showResponseMessageInTaskStatusToolsError(data.message);
                 cancelEditTaskStatus(elementId);
+                location.reload();
             })
             .catch(error => {
                 showResponseMessageInTaskStatusToolsError(error.message,false);
@@ -107,7 +123,7 @@ function deleteTask(taskId) {
             return response.json();
         })
         .then(data => {
-            showResponseMessageInDocumentTypeNameError(data.message,true);
+            //showResponseMessageInDocumentTypeNameError(data.message,true);
            location.reload();
         })
         .catch(error => {

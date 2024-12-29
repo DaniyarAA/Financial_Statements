@@ -15,25 +15,25 @@ import lombok.NoArgsConstructor;
 public class CompanyDto {
     private Long id;
     @NotBlank(message = "Обязательно для заполнения!")
-//    @UniqueCompanyName
+    @UniqueCompanyName
     private String name;
     @NotBlank(message = "Обязательно для заполнения!")
     @Size(min = 12,max = 12, message = "Длина ИНН компании должна состоять из 12 символов")
-//    @UniqueCompanyInn
+    @UniqueCompanyInn
     private String companyInn;
     @NotBlank(message = "Обязательно для заполнения!")
     @Size(min = 12,max = 12, message = "Длина ИНН директора должна состоять из 12 символов")
-//    @UniqueCompanyDirectorInn
+    @UniqueCompanyDirectorInn
     private String directorInn;
     @NotBlank(message = "Обязательно для заполнения!")
-//    @UniqueCompanyLogin
+    @UniqueCompanyLogin
     private String login;
     @NotBlank(message = "Обязательно для заполнения!")
     private String password;
     @NotBlank(message = "Обязательно для заполнения!")
     private String ecp;
     @NotBlank(message = "Обязательно для заполнения!")
-//    @UniqueCompanySalykLogin
+    @UniqueCompanySalykLogin
     private String kabinetSalyk;
     @NotBlank(message = "Обязательно для заполнения!")
     private String kabinetSalykPassword;

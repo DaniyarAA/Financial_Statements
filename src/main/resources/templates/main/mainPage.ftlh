@@ -877,5 +877,5 @@
     <script src="/js/legendMap.js"></script>
     <script src="/js/tags.js"></script>
     <script src="/js/priority.js"></script>
-    <script src="/js/reports.js">
+    <script src="/js/reports.js"></script>
 </@layout.layout>

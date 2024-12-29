@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void editUser(Long id, UserDto userDto) {
+    public void editUser(Long id, UserDto userDto) throws MessagingException, UnsupportedEncodingException {
         User user = getUserById(id);
         if(!user.isEnabled()){
             throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void updateEmailIfChanged(String newEmail, User user) {
+    private void updateEmailIfChanged(String newEmail, User user) throws MessagingException, UnsupportedEncodingException {
         if(newEmail == null || newEmail.isEmpty()){
             throw new IllegalArgumentException("Заполните почту!");
         }
@@ -243,7 +243,9 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("Пользователь с такой почтой уже существует");
             }
             log.info("changed email for user");
+            String oldEmail = user.getEmail();
             user.setEmail(newEmail);
+            emailService.sendUpdatedEmail(oldEmail, newEmail, user.getName(), user.getSurname());
         }
     }
 

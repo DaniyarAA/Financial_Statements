@@ -5,10 +5,13 @@ import kg.attractor.financial_statement.entity.TaskStatus;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.enums.Status;
 import kg.attractor.financial_statement.repository.TaskStatusRepository;
+import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.TaskStatusService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,13 @@ import java.util.stream.Collectors;
 public class TaskStatusServiceImpl implements TaskStatusService {
     private final TaskStatusRepository taskStatusRepository;
     private final UserService userService;
+    private  TaskService taskService;
+
+    @Autowired
+    @Lazy
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @Override
     public List<TaskStatusDto> getAllTaskStatuses() {
@@ -108,5 +118,25 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         taskStatus.setName(newValue);
         taskStatusRepository.save(taskStatus);
         return ResponseEntity.ok(Map.of("message", "Статус Успешно отредактирован."));
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> delete(Map<String, String> data, String login) {
+        String taskStatusIdStr = data.get("id");
+        Long statusId;
+        try {
+            statusId = Long.parseLong(taskStatusIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID статуса !"));
+        }
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("DELETE_STATUS"))){
+            return ResponseEntity.badRequest().body(Map.of("message", "У вас нет доступа удаления статуса!"));
+        }
+        if (taskService.isTaskWithThisStatus(statusId)){
+            return ResponseEntity.badRequest().body(Map.of("message", "Невозможно удалить так как есть задача с этим статусом"));
+        }
+            taskStatusRepository.deleteById(statusId);
+        return ResponseEntity.ok(Map.of("message", "Статус Успешно Удален."));
     }
 }

@@ -6,9 +6,12 @@ import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.enums.Document;
 import kg.attractor.financial_statement.repository.DocumentTypeRepository;
 import kg.attractor.financial_statement.service.DocumentTypeService;
+import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,13 @@ import java.util.stream.Collectors;
 public class DocumentTypeServiceImpl implements DocumentTypeService {
     private final DocumentTypeRepository documentTypeRepository;
     private final UserService userService;
+    private  TaskService taskService;
+
+    @Autowired
+    @Lazy
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @Override
     public String getDocumentName(Long id) {
@@ -110,6 +120,26 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         documentType.setName(newValue);
         documentTypeRepository.save(documentType);
         return ResponseEntity.ok(Map.of("message", "Документ Успешно отредактирован."));
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> delete(Map<String, String> data, String login) {
+        String documentTypeIdStr = data.get("id");
+        Long documentId;
+        try {
+            documentId = Long.parseLong(documentTypeIdStr);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Нерабочая ID документа !"));
+        }
+        User user = userService.getUserByLogin(login);
+        if (user.getRole().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("DELETE_DOCUMENT"))){
+            return ResponseEntity.badRequest().body(Map.of("message", "У вас нет доступа удалению документа!"));
+        }
+        if (taskService.isTaskWithThisDocumentType(documentId)){
+            return ResponseEntity.badRequest().body(Map.of("message", "Невозможно удалить так как есть таск с этим типом документа!"));
+        }
+        documentTypeRepository.deleteById(documentId);
+        return ResponseEntity.ok(Map.of("message", "Документ Успешно Удален."));
     }
 
 

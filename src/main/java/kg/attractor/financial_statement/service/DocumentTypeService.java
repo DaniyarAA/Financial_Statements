@@ -23,4 +23,6 @@ public interface DocumentTypeService {
     List<DocumentTypeDto> getChangeableDocumentTypes();
 
     ResponseEntity<Map<String, String>> edit(Map<String, String> data, String login);
+
+    ResponseEntity<Map<String, String>> delete(Map<String, String> data, String name);
 }

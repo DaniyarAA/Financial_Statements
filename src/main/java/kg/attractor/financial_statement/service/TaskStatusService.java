@@ -21,4 +21,6 @@ public interface TaskStatusService {
     List<TaskStatusDto> getChangeableTaskStatuses();
 
     ResponseEntity<Map<String, String>> edit(Map<String, String> data,String login);
+
+    ResponseEntity<Map<String, String>> delete(Map<String, String> data, String name);
 }

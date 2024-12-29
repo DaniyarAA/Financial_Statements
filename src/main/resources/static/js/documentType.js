@@ -94,3 +94,31 @@ function showResponseMessageInDocumentTypeNameError(message, isSuccess) {
     }
 
 }
+
+function deleteDocumentType(documentTypeId){
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    fetch('/document/delete',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ id: documentTypeId }),
+    })
+        .then(response =>{
+            if (!response.ok) {
+                return response.json().then(errData => {
+                    throw new Error(errData.message || 'Ошибка при удалении!')
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            showResponseMessageInDocumentTypeNameError(data.message,true);
+            location.reload();
+        })
+        .catch(error => {
+            showResponseMessageInDocumentTypeNameError(error.message,false);
+            console.log('Error',error);
+        });
+}

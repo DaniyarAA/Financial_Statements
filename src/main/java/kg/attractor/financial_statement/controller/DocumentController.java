@@ -1,5 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
+import jakarta.validation.Valid;
+import kg.attractor.financial_statement.dto.DocumentTypeDto;
 import kg.attractor.financial_statement.service.DocumentTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +27,10 @@ public class DocumentController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> deleteDocument(@RequestBody Map<String, String> data, Principal principal) {
         return documentTypeService.delete(data, principal.getName());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Map<String,String>> create(@Valid DocumentTypeDto data,Principal principal) {
+        return documentTypeService.create(data,principal);
     }
 }

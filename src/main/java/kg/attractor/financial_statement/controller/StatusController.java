@@ -1,5 +1,7 @@
 package kg.attractor.financial_statement.controller;
 
+import jakarta.validation.Valid;
+import kg.attractor.financial_statement.dto.TaskStatusDto;
 import kg.attractor.financial_statement.service.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +30,10 @@ public class StatusController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> deleteStatus(@RequestBody Map<String, String> data, Principal principal) {
         return taskStatusService.delete(data,principal.getName());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Map<String, String>> createStatus(@Valid TaskStatusDto data, Principal principal) {
+        return taskStatusService.create(data,principal);
     }
 }

@@ -439,7 +439,7 @@
                             <div class="document-type-item">
                                 <p id="documentType${documentTypeChangeable.id}" class="inline-block">
                                     ${documentTypeChangeable.name}
-                                    <button type="button"><i class="bi bi-trash"></i></button>
+                                    <button type="button" onclick="deleteDocumentType('${documentTypeChangeable.id}')"><i class="bi bi-trash"></i></button>
                                     <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
                                             title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
                                     </button>
@@ -494,7 +494,7 @@
                         <#list changeableTaskStatuses as taskStatusChangeable>
                             <p id="taskStatus${taskStatusChangeable.id}" class="inline-block">
                                 ${taskStatusChangeable.name}
-                                <button type="button"><i class="bi bi-trash"></i></button>
+                                <button type="button" onclick="deleteTask('${taskStatusChangeable.id}')"><i class="bi bi-trash"></i></button>
                                 <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
                                         title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i></button>
                             </p>

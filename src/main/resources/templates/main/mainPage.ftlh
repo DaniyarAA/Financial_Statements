@@ -458,7 +458,7 @@
                         </#list>
                     </div>
                     <span id="documentTypeToolsError" class="text-danger"></span>
-                    <form id="createDocumentTypeForm">
+                    <form id="createDocumentTypeForm" action="/document/create" method="post" onsubmit="createNewDocumentType(event)">
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                    value="${(_csrf.token)!'csrf-token'}"/>
@@ -466,12 +466,16 @@
                         <div class="form-group">
                             <label for="createDocumentType">Создать новый вид документа</label>
                             <input type="text" id="createDocumentType" name="name" class="form-control" required>
-                            <span id="documentTypeNameError"></span>
+                            <input type="hidden" name="isOptional" value="false">
+                            <label>
+                                <input type="checkbox" name="isOptional" value="true">
+                                Будет автоматическим
+                            </label>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-center">
-                    <button type="button" class="btn btn-success" onclick="createNewDocumentType()"><i class="bi bi-check2"></i></button>
                 </div>
             </div>
         </div>
@@ -513,7 +517,7 @@
                         </#list>
                     </div>
                     <span id="taskStatusToolsError" class="text-danger"></span>
-                    <form id="taskStatusForm">
+                    <form id="taskStatusForm" action="/status/create" method="post" onsubmit="createNewTaskStatus(event)">
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                    value="${(_csrf.token)!'csrf-token'}"/>
@@ -521,12 +525,11 @@
                         <div class="form-group">
                             <label for="createTaskStatus">Создать новый статуса для задач</label>
                             <input type="text" id="createTaskStatus" name="name" class="form-control" required>
-                            <span id="taskStatusNameError"></span>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-center">
-                    <button type="button" class="btn btn-success" onclick="createNewTaskStatus()"><i class="bi bi-check2"></i></button>
                 </div>
             </div>
         </div>

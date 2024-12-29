@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -142,6 +143,26 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         return ResponseEntity.ok(Map.of("message", "Документ Успешно Удален."));
     }
 
+    @Override
+    public ResponseEntity<Map<String, String>> create(DocumentTypeDto data, Principal principal) {
+        User user = userService.getUserByLogin(principal.getName());
+        if (user.getRole().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("CREATE_DOCUMENT"))){
+            return ResponseEntity.badRequest().body(Map.of("message", "У вас нет доступа удалению документа!"));
+        }
+        if (documentTypeRepository.existsByName(data.getName())){
+            return ResponseEntity.badRequest().body(Map.of("message", "Такой вид документа уже существует введите другой !"));
+        }
+        documentTypeRepository.save(convertToEntity(data));
+        return ResponseEntity.ok(Map.of("message", "Документ Успешно создан."));
+    }
+
+    private DocumentType convertToEntity(DocumentTypeDto documentTypeDto) {
+        return DocumentType.builder()
+                .id(documentTypeDto.getId())
+                .name(documentTypeDto.getName())
+                .isOptional(documentTypeDto.isOptional())
+                .build();
+    }
 
     private DocumentTypeDto convertToDto(DocumentType documentType) {
         return DocumentTypeDto.builder()

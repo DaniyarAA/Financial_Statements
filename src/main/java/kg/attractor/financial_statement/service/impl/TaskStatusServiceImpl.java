@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,13 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         return TaskStatusDto.builder()
                 .id(taskStatus.getId())
                 .name(taskStatus.getName())
+                .build();
+    }
+
+    private TaskStatus convertToEntity (TaskStatusDto taskStatusDto) {
+        return TaskStatus.builder()
+                .id(taskStatusDto.getId())
+                .name(taskStatusDto.getName())
                 .build();
     }
 
@@ -138,5 +146,18 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         }
             taskStatusRepository.deleteById(statusId);
         return ResponseEntity.ok(Map.of("message", "Статус Успешно Удален."));
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> create(TaskStatusDto data, Principal principal) {
+        User user = userService.getUserByLogin(principal.getName());
+        if (user.getRole().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("CREATE_STATUS"))){
+            return ResponseEntity.badRequest().body(Map.of("message", "У вас нет доступа создания статуса!"));
+        }
+        if (taskStatusRepository.existsByName(data.getName())){
+            return ResponseEntity.badRequest().body(Map.of("message", "Такой статус уже есть введите другое значение"));
+        }
+        taskStatusRepository.save(convertToEntity(data));
+        return  ResponseEntity.ok(Map.of("message", "Статус Успешно создан."));
     }
 }

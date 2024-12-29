@@ -4,6 +4,7 @@ import kg.attractor.financial_statement.dto.TaskStatusDto;
 import kg.attractor.financial_statement.entity.TaskStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -23,4 +24,6 @@ public interface TaskStatusService {
     ResponseEntity<Map<String, String>> edit(Map<String, String> data,String login);
 
     ResponseEntity<Map<String, String>> delete(Map<String, String> data, String name);
+
+    ResponseEntity<Map<String, String>> create(TaskStatusDto data, Principal principal);
 }

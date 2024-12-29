@@ -23,4 +23,10 @@ public class StatusController {
     public ResponseEntity<Map<String, String>> editStatus(@RequestBody Map<String, String> data, Principal principal) {
         return taskStatusService.edit(data,principal.getName());
     }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> deleteStatus(@RequestBody Map<String, String> data, Principal principal) {
+        return taskStatusService.delete(data,principal.getName());
+    }
 }

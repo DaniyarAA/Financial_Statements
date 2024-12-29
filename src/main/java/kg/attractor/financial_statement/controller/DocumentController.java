@@ -20,4 +20,10 @@ public class DocumentController {
     public ResponseEntity<Map<String, String>> editDocument(@RequestBody Map<String, String> data, Principal principal) {
         return documentTypeService.edit(data, principal.getName());
     }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> deleteDocument(@RequestBody Map<String, String> data, Principal principal) {
+        return documentTypeService.delete(data, principal.getName());
+    }
 }

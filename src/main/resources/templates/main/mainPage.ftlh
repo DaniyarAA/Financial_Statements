@@ -474,11 +474,11 @@
                                 <div class="form-group">
                                     <label for="createDocumentType">Создать новый вид документа</label>
                                     <input type="text" id="createDocumentType" name="name" class="form-control" required>
-                                    <input type="hidden" name="isOptional" value="false">
-                                    <label>
-                                        <input type="checkbox" name="isOptional" value="true">
-                                        Будет автоматическим
-                                    </label>
+                                    <label for="idBool">Будет автоматическим</label>
+                                    <select id="idBool" name="idBool" class="form-control">
+                                        <option value="0">Нет</option>
+                                        <option value="1">Да</option>
+                                    </select>
                                 </div>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>

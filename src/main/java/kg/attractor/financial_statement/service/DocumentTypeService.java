@@ -27,5 +27,5 @@ public interface DocumentTypeService {
 
     ResponseEntity<Map<String, String>> delete(Map<String, String> data, String name);
 
-    ResponseEntity<Map<String, String>> create(DocumentTypeDto data, Principal principal);
+    ResponseEntity<Map<String, String>> create(DocumentTypeDto data, Principal principal,int idBool);
 }

@@ -30,7 +30,7 @@ public class DocumentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String,String>> create(@Valid DocumentTypeDto data,Principal principal) {
-        return documentTypeService.create(data,principal);
+    public ResponseEntity<Map<String,String>> create(@Valid DocumentTypeDto data,int idBool , Principal principal) {
+        return documentTypeService.create(data,principal,idBool);
     }
 }

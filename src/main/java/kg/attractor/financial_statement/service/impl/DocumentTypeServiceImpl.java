@@ -144,13 +144,18 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
-    public ResponseEntity<Map<String, String>> create(DocumentTypeDto data, Principal principal) {
+    public ResponseEntity<Map<String, String>> create(DocumentTypeDto data, Principal principal,int idBool) {
         User user = userService.getUserByLogin(principal.getName());
         if (user.getRole().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("CREATE_DOCUMENT"))){
             return ResponseEntity.badRequest().body(Map.of("message", "У вас нет доступа удалению документа!"));
         }
         if (documentTypeRepository.existsByName(data.getName())){
             return ResponseEntity.badRequest().body(Map.of("message", "Такой вид документа уже существует введите другой !"));
+        }
+        if (idBool == 1){
+            data.setOptional(Boolean.TRUE);
+        }else {
+            data.setOptional(Boolean.FALSE);
         }
         documentTypeRepository.save(convertToEntity(data));
         return ResponseEntity.ok(Map.of("message", "Документ Успешно создан."));

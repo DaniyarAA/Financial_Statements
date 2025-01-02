@@ -439,10 +439,16 @@
                             <div class="document-type-item">
                                 <p id="documentType${documentTypeChangeable.id}" class="inline-block">
                                     ${documentTypeChangeable.name}
-                                    <button type="button" onclick="deleteDocumentType('${documentTypeChangeable.id}')"><i class="bi bi-trash"></i></button>
-                                    <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
-                                            title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
-                                    </button>
+                                    <#list currentUser.roleDto.authorities as auth>
+                                        <#if auth.authority=="DELETE_DOCUMENT">
+                                            <button type="button" onclick="deleteDocumentType('${documentTypeChangeable.id}')"><i class="bi bi-trash"></i></button>
+                                        </#if>
+                                        <#if auth.authority=="EDIT_DOCUMENT">
+                                            <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
+                                                    title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
+                                            </button>
+                                        </#if>
+                                    </#list>
                                 </p>
                                 <div class="document-type-changeable-name-edit">
                                     <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
@@ -458,24 +464,28 @@
                         </#list>
                     </div>
                     <span id="documentTypeToolsError" class="text-danger"></span>
-                    <form id="createDocumentTypeForm" action="/document/create" method="post" onsubmit="createNewDocumentType(event)">
-                        <#if _csrf??>
-                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                   value="${(_csrf.token)!'csrf-token'}"/>
+                    <#list currentUser.roleDto.authorities as auth>
+                        <#if auth.authority=="CREATE_DOCUMENT">
+                            <form id="createDocumentTypeForm" action="/document/create" method="post" onsubmit="createNewDocumentType(event)">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                </#if>
+                                <div class="form-group">
+                                    <label for="createDocumentType">Создать новый вид документа</label>
+                                    <input type="text" id="createDocumentType" name="name" class="form-control" required>
+                                    <input type="hidden" name="isOptional" value="false">
+                                    <label>
+                                        <input type="checkbox" name="isOptional" value="true">
+                                        Будет автоматическим
+                                    </label>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
+                                </div>
+                            </form>
                         </#if>
-                        <div class="form-group">
-                            <label for="createDocumentType">Создать новый вид документа</label>
-                            <input type="text" id="createDocumentType" name="name" class="form-control" required>
-                            <input type="hidden" name="isOptional" value="false">
-                            <label>
-                                <input type="checkbox" name="isOptional" value="true">
-                                Будет автоматическим
-                            </label>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
-                        </div>
-                    </form>
+                    </#list>
                 </div>
             </div>
         </div>
@@ -498,9 +508,15 @@
                         <#list changeableTaskStatuses as taskStatusChangeable>
                             <p id="taskStatus${taskStatusChangeable.id}" class="inline-block">
                                 ${taskStatusChangeable.name}
-                                <button type="button" onclick="deleteTask('${taskStatusChangeable.id}')"><i class="bi bi-trash"></i></button>
-                                <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
-                                        title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i></button>
+                                <#list currentUser.roleDto.authorities as auth>
+                                    <#if auth.authority=="DELETE_STATUS">
+                                        <button type="button" onclick="deleteTask('${taskStatusChangeable.id}')"><i class="bi bi-trash"></i></button>
+                                    </#if>
+                                    <#if auth.authority=="EDIT_STATUS">
+                                        <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
+                                                title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i></button>
+                                    </#if>
+                                </#list>
                             </p>
                             <div class="task-status-changeable-name-edit">
                                 <div>
@@ -517,19 +533,23 @@
                         </#list>
                     </div>
                     <span id="taskStatusToolsError" class="text-danger"></span>
-                    <form id="taskStatusForm" action="/status/create" method="post" onsubmit="createNewTaskStatus(event)">
-                        <#if _csrf??>
-                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                   value="${(_csrf.token)!'csrf-token'}"/>
+                    <#list currentUser.roleDto.authorities as auth>
+                        <#if auth.authority=="CREATE_STATUS">
+                            <form id="taskStatusForm" action="/status/create" method="post" onsubmit="createNewTaskStatus(event)">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                </#if>
+                                <div class="form-group">
+                                    <label for="createTaskStatus">Создать новый статуса для задач</label>
+                                    <input type="text" id="createTaskStatus" name="name" class="form-control" required>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
+                                </div>
+                            </form>
                         </#if>
-                        <div class="form-group">
-                            <label for="createTaskStatus">Создать новый статуса для задач</label>
-                            <input type="text" id="createTaskStatus" name="name" class="form-control" required>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
-                        </div>
-                    </form>
+                    </#list>
                 </div>
             </div>
         </div>

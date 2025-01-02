@@ -68,6 +68,7 @@ public class MainController {
         model.addAttribute("changeableDocumentTypes", documentTypeService.getChangeableDocumentTypes());
         model.addAttribute("defaultTaskStatuses",taskStatusService.getDefaultTaskStatuses());
         model.addAttribute("changeableTaskStatuses",taskStatusService.getChangeableTaskStatuses());
+        model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
 
         return "main/mainPage";
     }

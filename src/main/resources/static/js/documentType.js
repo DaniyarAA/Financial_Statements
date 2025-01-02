@@ -8,8 +8,6 @@ async function createNewDocumentType(event) {
     });
 
     if (response.ok) {
-        //const result = await response.json();
-        //showResponseMessageInDocumentTypeNameError(result.message, true);
         location.reload();
     } else {
         const errors = await response.json();
@@ -88,8 +86,6 @@ function saveChangesDocumentType(elementId,documentTypeId ){
                 return response.json();
             })
             .then(data => {
-                //showResponseMessageInDocumentTypeNameError(data.message,true);
-                cancelEditDocumentType(elementId);
                 location.reload();
             })
             .catch(error => {
@@ -130,7 +126,6 @@ function deleteDocumentType(documentTypeId){
             return response.json();
         })
         .then(data => {
-            //showResponseMessageInDocumentTypeNameError(data.message,true);
             location.reload();
         })
         .catch(error => {

@@ -8,8 +8,6 @@ async function createNewTaskStatus(event){
     });
 
     if (response.ok) {
-        //const result = await response.json();
-        //showResponseMessageInTaskStatusToolsError(result.message,true);
         location.reload();
     } else {
         const errors = await response.json();
@@ -81,8 +79,6 @@ function saveChangesTaskStatus(elementId,taskStatusId){
                 return response.json();
             })
             .then(data => {
-               //showResponseMessageInTaskStatusToolsError(data.message);
-                cancelEditTaskStatus(elementId);
                 location.reload();
             })
             .catch(error => {
@@ -123,7 +119,6 @@ function deleteTask(taskId) {
             return response.json();
         })
         .then(data => {
-            //showResponseMessageInDocumentTypeNameError(data.message,true);
            location.reload();
         })
         .catch(error => {

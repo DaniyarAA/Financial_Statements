@@ -103,11 +103,12 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     window.closeTagModal = function (modalType, taskId) {
-        if (modalType === 'create') {
-            const modal = document.getElementById(`tag-modal-create-${taskId}`);
-            modal.style.display = "none";
-        } else {
-            const modal = document.getElementById(`tag-modal-${taskId}`);
+        const modal = document.getElementById(
+            modalType === "create"
+                ? `tag-modal-create-${taskId}`
+                : `tag-modal-${taskId}`
+        );
+        if (modal) {
             modal.style.display = "none";
         }
     };
@@ -149,15 +150,12 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     window.addEventListener("click", function (event) {
-        const modal = document.getElementById('tag-modal');
-        if (event.target === modal) {
-            closeTagModal('select');
-        }
-
-        const createModal = document.getElementById('tag-modal-create');
-        if (event.target === createModal) {
-            closeTagModal('create');
-        }
+        const modals = document.querySelectorAll(".tag-select-modal");
+        modals.forEach((modal) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
     });
 
     function updateTagTextAndTooltip(taskId, tagText) {

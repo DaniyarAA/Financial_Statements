@@ -4,7 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.PriorityDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.service.*;
+import kg.attractor.financial_statement.service.CompanyService;
+import kg.attractor.financial_statement.service.PriorityService;
+import kg.attractor.financial_statement.service.TaskService;
+import kg.attractor.financial_statement.service.UserService;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,11 @@ public class MainController {
     private final DocumentTypeService documentTypeService;
     private final TaskStatusService taskStatusService;
 
+    @ModelAttribute
+    public void addCommonAttributes(Model model) {
+        model.addAttribute("showLogoutButton", true);
+    }
+
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
                               @RequestParam(required = false, defaultValue = "endDate") String sortBy,
@@ -55,9 +63,14 @@ public class MainController {
             canOpenDocumentTools = userService.canOpenDocumentTools(principal.getName());
             canOpenTaskTools = userService.canOpenTaskTools(principal.getName());
         }
+        boolean canCreateCompany = false;
 
         model.addAttribute("canOpenDocumentTools", canOpenDocumentTools);
         model.addAttribute("canOpenTaskTools", canOpenTaskTools);
+        if (principal != null) {
+            canCreateCompany = userService.canCreate(principal.getName());
+        }
+        model.addAttribute("canCreateCompany", canCreateCompany);
         model.addAttribute("companies", companyService.getAllCompanies());
         model.addAttribute("userDto", userDto);
         model.addAttribute("dateUtils", new DateUtils());

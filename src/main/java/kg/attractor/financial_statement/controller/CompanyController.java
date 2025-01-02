@@ -39,11 +39,11 @@ public class CompanyController {
                          @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal,
                          Model model, Principal principal) {
 
-        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort);
+        List<CompanyDto> allCompanies = companyService.getAllCompaniesBySort(sort,principal.getName());
         model.addAttribute("list", allCompanies);
 
         if (companyId != 0) {
-            model.addAttribute("company", companyService.findById(companyId));
+            model.addAttribute("company", companyService.findByIdInUserList(allCompanies,companyId));
             model.addAttribute("companyId", companyId);
         } else if (allCompanies.isEmpty()) {
             model.addAttribute("company", new CompanyDto());
@@ -53,32 +53,40 @@ public class CompanyController {
             model.addAttribute("companyId", allCompanies.getFirst().getId());
         }
 
-        boolean isAdmin = false;
+        boolean canDelete = false;
+        boolean canEdit = false;
+        boolean canCreate = false;
+        boolean canReturn = false;
         if (principal != null) {
-            isAdmin = userService.isAdmin(principal.getName());
+            canDelete = userService.isAdmin(principal.getName());
+            canEdit = userService.canEdit(principal.getName());
+            canCreate = userService.canCreate(principal.getName());
+            canReturn = userService.canReturn(principal.getName());
         }
-        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("canDelete", canDelete);
         model.addAttribute("sort", sort);
         model.addAttribute("openModal", openModal);
-
+        model.addAttribute("canEdit", canEdit);
+        model.addAttribute("canCreate", canCreate);
+        model.addAttribute("canReturn", canReturn);
         return "company/companies";
     }
 
     @PostMapping("/edit")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data) {
-        return companyService.editByOne(data);
+    public ResponseEntity<Map<String, String>> update(@RequestBody Map<String, String> data ,Principal principal) {
+        return companyService.editByOne(data , principal.getName());
     }
 
     @PostMapping("/delete")
-    public String deleteById(@RequestParam Long companyId) {
-        companyService.deleteCompany(companyId);
+    public String deleteById(@RequestParam Long companyId , Principal principal) {
+        companyService.deleteCompany(companyId , principal.getName());
         return "redirect:/company/all?sort=actual";
     }
 
     @PostMapping("/return")
-    public String returnById(@RequestParam Long companyId) {
-        companyService.returnCompany(companyId);
+    public String returnById(@RequestParam Long companyId , Principal principal) {
+        companyService.returnCompany(companyId , principal.getName());
         taskService.tasksGenerator();
         return "redirect:/company/all?sort=actual";
     }

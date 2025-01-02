@@ -252,6 +252,6 @@
             <span class="text-center text-muted">Нет удаленных компаний</span>
         </#if>
     </div>
-</@layout.layout>
 
-<script src="/js/archive.js"></script>
+    <script src="/js/archive.js"></script>
+</@layout.layout>

@@ -3,8 +3,14 @@ package kg.attractor.financial_statement.config;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kg.attractor.financial_statement.entity.User;
+import kg.attractor.financial_statement.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +28,11 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
         response.addCookie(usernameCookie);
         var authorities = auth.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("SuperUser"))) {
-            response.sendRedirect("/admin/users");
+            if (auth.getDetails() instanceof UserDetails userDetails && !userDetails.isCredentialsNonExpired()) {
+                response.sendRedirect("/change-credentials");
+            } else {
+                response.sendRedirect("/admin/users");
+            }
         } else {
             response.sendRedirect("/");
         }

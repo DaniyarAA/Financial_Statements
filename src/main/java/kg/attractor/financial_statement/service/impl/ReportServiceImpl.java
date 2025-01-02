@@ -67,15 +67,15 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public byte[] generateReport(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String fileFormat) {
         if (fileFormat.equals("csv")) {
-            return generateReportCSV(companyIds, startDate, endDate, "Отчёт");
+            return generateReportCSV(companyIds, startDate, endDate);
         } else {
-            return generateReportPDF(companyIds, startDate, endDate, "Отчёт");
+            return generateReportPDF(companyIds, startDate, endDate);
         }
     }
 
 
 
-    private byte[] generateReportCSV(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String title) {
+    private byte[] generateReportCSV(List<Long> companyIds, LocalDate startDate, LocalDate endDate) {
         List<Company> companies = companyService.findAllById(companyIds);
         List<Task> tasksValidate = new ArrayList<>();
 
@@ -124,7 +124,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    private byte[] generateReportPDF(List<Long> companyIds, LocalDate startDate, LocalDate endDate, String reportTitle){
+    private byte[] generateReportPDF(List<Long> companyIds, LocalDate startDate, LocalDate endDate){
         List<Company> companies = companyService.findAllById(companyIds);
         List<Task> tasksValidate = new ArrayList<>();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -139,7 +139,7 @@ public class ReportServiceImpl implements ReportService {
             throw new ReportGenerationException("Ошибка загрузки шрифта: " + fontPath);
         }
 
-        Paragraph title = new Paragraph(reportTitle)
+        Paragraph title = new Paragraph("Отчёт")
                 .setFontSize(6);
         document.add(title);
         document.setFont(font);

@@ -1118,8 +1118,9 @@ h2 {
     color: #000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     text-align: left;
-    transform: translate(380%, 90%);
-    position: relative;
+    transform: translate(0%, 0%);
+    position: absolute;
+    z-index: 1001;
 }
 
 .priority-close-button {
@@ -1248,22 +1249,6 @@ h2 {
     opacity: 1;
 }
 
-.task-priority-arrows {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-left: 5px;
-    padding: 0;
-    width: auto;
-}
-
-.task-priority-arrows svg {
-    display: block;
-    margin-bottom: -5px;
-    margin-right: 40px;
-}
-
 .no-priority-message {
     margin-left: 59px;
 }
@@ -1297,13 +1282,6 @@ h2 {
     transition: transform 0.3s ease-in-out;
 }
 
-.tag-modal-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #333;
-}
-
 #tag-input {
     width: 100%;
     padding: 10px;
@@ -1313,36 +1291,12 @@ h2 {
     font-size: 16px;
 }
 
-.tag-close-button {
-    color: #999;
-    font-size: 24px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-}
-
-.tag-save-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.tag-save-button:hover {
-    background-color: #45a049;
-}
-
 .tag-modal.show {
     opacity: 1;
     transform: scale(1);
 }
 
+/* Общие стили для модального окна */
 .tag-select-modal {
     display: none;
     position: fixed;
@@ -1350,30 +1304,139 @@ h2 {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: transparent;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
 .tag-select-modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 350px;
     max-width: 90%;
-    transform: translate(130%, -50%);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tag-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.tag-modal-title {
+    margin-top: 0;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+}
+
+.tag-select-dropdown {
+    width: 100%;
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.tag-select-dropdown:focus {
+    border-color: #4CAF50;
+}
+
+.tag-add-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-add-button:hover {
+    background: #45a049;
+}
+
+.tag-input-field {
+    width: 100%;
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.tag-input-field:focus {
+    border-color: #4CAF50;
+}
+
+.tag-save-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-save-button:hover {
+    background: #45a049;
+}
+
+#user-tags-select-${task.id} {
+    width: 100%;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag-select-modal select {
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .tooltip {
     position: absolute;
-    bottom: 75%;
-    left: 88%;
+    top: -1%;
+    left: 82%;
     transform: translateX(-50%);
     background-color: #333;
     color: white;
-    padding: 5px 10px;
+    padding: 1px 10px;
     border-radius: 5px;
     font-size: 12px;
     white-space: normal;

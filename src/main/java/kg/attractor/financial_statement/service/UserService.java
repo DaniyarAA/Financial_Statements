@@ -23,6 +23,10 @@ public interface UserService {
 
     Long registerUser(UserDto user);
 
+    boolean canOpenDocumentTools(String name);
+
+    boolean canOpenTaskTools(String name);
+
     UserDto getUserDtoById(Long id);
 
     UserDetailsDto getUserDetailDto(Long userId);

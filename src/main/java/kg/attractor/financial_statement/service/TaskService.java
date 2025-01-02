@@ -67,4 +67,8 @@ public interface TaskService {
     void updateTaskStatus(Long taskId, Long newStatusId);
 
     boolean areValidDates(String from, String to);
+
+    boolean isTaskWithThisStatus(Long statusId);
+
+    boolean isTaskWithThisDocumentType(Long documentId);
 }

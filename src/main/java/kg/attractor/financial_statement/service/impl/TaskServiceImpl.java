@@ -15,6 +15,7 @@ import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.service.impl.DocumentTypeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,6 @@ import java.time.format.TextStyle;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
@@ -50,6 +50,22 @@ public class TaskServiceImpl implements TaskService {
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
     private final UserRepository userRepository;
+
+    public TaskServiceImpl(TaskRepository taskRepository,
+                           TaskPageableRepository taskPageableRepository,
+                           @Lazy DocumentTypeServiceImpl documentTypeService,
+                           UserService userService,
+                           TaskStatusService taskStatusService,
+                           CompanyService companyService,
+                           UserRepository userRepository) {
+        this.taskRepository = taskRepository;
+        this.taskPageableRepository = taskPageableRepository;
+        this.documentTypeService = documentTypeService;
+        this.userService = userService;
+        this.taskStatusService = taskStatusService;
+        this.companyService = companyService;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public TaskDto getTaskById(Long id) {
@@ -695,6 +711,18 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean isTaskWithThisStatus(Long taskId) {
+       List<Task> all = taskRepository.findAll();
+       return all.stream().anyMatch(task -> Objects.equals(task.getTaskStatus().getId(), taskId));
+    }
+
+    @Override
+    public boolean isTaskWithThisDocumentType(Long documentId) {
+        List<Task> all = taskRepository.findAll();
+        return all.stream().anyMatch(task -> Objects.equals(task.getDocumentType().getId(), documentId));
     }
 }
 

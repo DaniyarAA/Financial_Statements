@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> {
     List<DocumentType> findByIsOptionalFalse();
+    Boolean existsByName(String name);
 }

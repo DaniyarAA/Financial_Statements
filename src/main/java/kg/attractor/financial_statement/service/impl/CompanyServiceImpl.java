@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -567,7 +570,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> getDeletedCompaniesByUser(Long userId) {
+    public Page<CompanyDto> getDeletedCompaniesByUser(Long userId, Pageable pageable) {
         User user = userService.getUserById(userId);
         List<Company> deletedCompaniesByUser = new ArrayList<>();
         for(Company company : user.getCompanies()){
@@ -575,17 +578,19 @@ public class CompanyServiceImpl implements CompanyService {
                 deletedCompaniesByUser.add(company);
             }
         }
-        return deletedCompaniesByUser.stream()
+        var list =  deletedCompaniesByUser.stream()
                 .map(this::convertToDto)
                 .toList();
+        return new PageImpl<>(list, pageable, deletedCompaniesByUser.size());
     }
 
     @Override
-    public List<CompanyDto> getAllDeletedCompanies() {
-        return companyRepository.findAllByIsDeletedTrue()
-                .stream()
+    public Page<CompanyDto> getAllDeletedCompanies(Pageable pageable) {
+        Page<Company> companies = companyRepository.findAllByIsDeletedTrue(pageable);
+        var list = companies.get()
                 .map(this::convertToDto)
                 .toList();
+        return new PageImpl<>(list, pageable, companies.getTotalElements());
     }
 
     @Override

@@ -3,6 +3,8 @@ package kg.attractor.financial_statement.controller;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,32 +27,32 @@ public class ArchiveController {
     private final DocumentTypeService documentTypeService;
 
     @GetMapping("/all")
-    public String getFullArchive(Model model) {
+    public String getFullArchive(Model model, @PageableDefault(size = 7) Pageable pageable) {
         model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
         model.addAttribute("deletedUsers", userService.getDeletedUsers());
         model.addAttribute("finishedTasks", taskService.getAllFinishedTasks());
-        model.addAttribute("deletedCompanies", companyService.getAllDeletedCompanies());
+        model.addAttribute("deletedCompanies", companyService.getAllDeletedCompanies(pageable));
         model.addAttribute("roles", roleService.getAll());
         model.addAttribute("statuses", taskStatusService.getAllTaskStatuses());
         return "archive/all";
     }
 
     @GetMapping
-    public String getUserArchive(Model model) {
+    public String getUserArchive(Model model, @PageableDefault(size = 7) Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByLogin(authentication.getName());
         model.addAttribute("currentUser", user);
         model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
         model.addAttribute("userFinishedTasks", taskService.getFinishedTasksForUser(user.getId()));
-        model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(user.getId()));
+        model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(user.getId(),pageable));
         return "archive/forUser";
     }
 
     @GetMapping("/{userId}")
-    public String getUserArchiveForSuperUser(Model model, @PathVariable Long userId) {
+    public String getUserArchiveForSuperUser(Model model, @PageableDefault(size = 8) Pageable pageable, @PathVariable Long userId) {
         model.addAttribute("documentTypes", documentTypeService.getAllDocumentTypes());
         model.addAttribute("userFinishedTasks", taskService.getFinishedTasksForUser(userId));
-        model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(userId));
+        model.addAttribute("deletedCompaniesByUser", companyService.getDeletedCompaniesByUser(userId,pageable));
         return "archive/forUser";
     }
 

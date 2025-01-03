@@ -72,13 +72,6 @@ function showNotification(message, success) {
     }, 3000);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const activeTab = localStorage.getItem('activeTab');
-    if (activeTab) {
-        showTab(activeTab);
-    }
-});
-
 function resumeCompany(companyId) {
     const companyItem = document.getElementById(companyId + "-item");
     fetch('/archive/resume/company/' + companyId, {
@@ -170,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         order: [[4, "asc"]],
         searching: true,
         columnDefs: [
-            {orderable: true, targets: [1, 4, 5, 6]},
+            {orderable: true, targets: [1,3,4, 5]},
             {orderable: false, targets: "_all"},
             {searchable: true, targets: [0, 2]},
             {searchable: false, targets: "_all"}
@@ -215,11 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#users .styled-table').DataTable({
         paging: true,
-        pageLength: 10,
+        pageLength: 5,
         lengthMenu: [5, 10, 15, 100],
         searching: true,
         columnDefs: [
-            {targets: [0, 5], orderable: false}
+            {orderable: true, targets: [0,1,2,3,4]},
+            {orderable: false, targets: "_all"},
+            {searchable: true, targets: [0,1,2]},
+            {searchable: false, targets: "_all"}
         ],
         language: {
             search: "",

@@ -4,6 +4,8 @@ import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -57,9 +59,9 @@ public interface CompanyService {
 
     List<Company> findAll();
 
-    List<CompanyDto> getDeletedCompaniesByUser(Long userId);
+    Page<CompanyDto> getDeletedCompaniesByUser(Long userId, Pageable pageable);
 
-    List<CompanyDto> getAllDeletedCompanies();
+    Page<CompanyDto> getAllDeletedCompanies(Pageable pageable);
 
     void resumeCompany(Long companyId);
 

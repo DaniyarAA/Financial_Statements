@@ -59,7 +59,8 @@ function showTaskDetails(button) {
                 <p>ИНН:</p>
                 <p style="margin-top: 8px">Период:</p>
                 <p style="margin-top: 15px">Сумма:</p>
-                <p style="margin-top: 15px">Статус:</p>
+                <p style="margin-top: 20px">Файл:</p>
+                <p style="margin-top: 18px">Статус:</p>
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
@@ -93,14 +94,23 @@ function showTaskDetails(button) {
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                 </div>
                 
-                <div class="file-diplay">
-                    <p>${filePath}</p>
-                    <a href="api/files/download/${companyId}/${filePath}" class="btn btn-sm btn-outline-light">скачать</a>
-                
-                    <input type="file" class="form-control" id="file" name="file" required>
+                <div id="file-display" style="display: flex; flex-direction: row">
+                    <p>${filePath} <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                        ${filePath !== "Не задано" ? `
+                            <button type="button" class="btn btn-link">
+                                <a href="api/files/download/${companyId}/${filePath}">
+                                    <img src="/images/download.png" alt="Download icon" style="max-width: 20px; max-height: 20px;">
+                                </a>
+                            </button>
+                        ` : ''}
+                </div>
+                <div id="file-input" style="display: none; width: 300px; flex-direction: row">
+                    <input type="file" class="form-control" id="file" name="Файл">
+                    <p style="display: none;"></p>
                     <div class="invalid-feedback">
-                        Please choose a file to upload.
+                        Выберите файл
                     </div>
+                    <button type="button" class="btn btn-link" onclick="cancelEditFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                 </div>
                 
                 <div id="status-display" style="display: block">
@@ -165,6 +175,30 @@ function showTaskDetails(button) {
     }).on("change", function () {
         from.datepicker("option", "maxDate", getDate(this));
     });
+}
+
+function handleFileUpload(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+    const fileDisplay = document.querySelector('.file-display a');
+    const fileDisplayText = document.querySelector('.file-display p');
+
+    if (file) {
+        const fileName = file.name;
+
+        if (fileDisplay) {
+            fileDisplay.style.display = 'none';
+        }
+
+        if (!fileDisplayText) {
+            const newFileDisplayText = document.createElement('p');
+            newFileDisplayText.textContent = fileName;
+            newFileDisplayText.style.margin = '10px 0';
+            fileInput.parentElement.insertBefore(newFileDisplayText, fileInput);
+        } else {
+            fileDisplayText.textContent = fileName;
+        }
+    }
 }
 
 function formatDate(dateString) {
@@ -238,6 +272,16 @@ function editDate() {
 function cancelEditDate() {
     document.getElementById('date-display').style.display = 'block';
     document.getElementById('date-input').style.display = 'none';
+}
+
+function editFile() {
+    document.getElementById('file-display').style.display = 'none';
+    document.getElementById('file-input').style.display = 'flex';
+}
+
+function cancelEditFile() {
+    document.getElementById('file-display').style.display = 'flex';
+    document.getElementById('file-input').style.display = 'none';
 }
 
 document.addEventListener("DOMContentLoaded", function () {

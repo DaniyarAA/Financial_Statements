@@ -436,9 +436,9 @@
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 550px;
+            height: 700px;
             min-height: 550px;
-            max-height: 550px;
+            max-height: 700px;
         }
 
         .table-main {
@@ -1051,7 +1051,6 @@
             transition: background-color 0.2s ease;
         }
 
-        /* Dropdown Items - Hover State */
         .dropdown-menu li:hover {
             background-color: #f0f0f0;
         }
@@ -1061,7 +1060,6 @@
             font-weight: bold;
         }
 
-        /* Label Styles */
         .task-create-text {
             font-size: 14px;
             color: #333;

@@ -73,6 +73,7 @@ jobs:
       - name: Connect to SSH and pull Docker Image
         run: |
           ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          mkdir -p ${{ secrets.WORK_DIR }}
           cd ${{ secrets.WORK_DIR }}
           docker compose pull
           docker compose up -d

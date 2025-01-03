@@ -65,6 +65,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Upload docker-compose.yml
+        run: |
+            scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
       - name: Connect to SSH and pull Docker Image
         uses: webfactory/ssh-agent@v0.5.3
         with:

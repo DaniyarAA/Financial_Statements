@@ -2,7 +2,6 @@ package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,10 +24,38 @@ public class User {
     private String password;
     private boolean enabled;
     private LocalDate birthday;
+    private String avatar;
+    private LocalDate registerDate;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Collection<Role> roles = new ArrayList<>();
+    private String notes;
+    private boolean credentialsUpdated;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignedTo")
-    private List<Task> tasks;
+    private String email;
+
+    @ManyToOne
+    @PrimaryKeyJoinColumn(name = "role_id")
+    private Role role;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_tasks",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
+    private List<Task> tasks = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_companies",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "company_id")
+    )
+    private List<Company> companies;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags;
+
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsUpdated;
+    }
 }

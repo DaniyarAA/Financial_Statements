@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 031
+      author: Aktan
+      changes:
+        - dropColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: date
+              - column:
+                  name: time

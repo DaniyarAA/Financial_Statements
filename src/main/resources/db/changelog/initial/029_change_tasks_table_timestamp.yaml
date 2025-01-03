@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 029
+      author: Aktan
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: status_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_tasks_status
+                    references: task_statuses(id)
+              - column:
+                  name: start_datetime
+                  type: timestamp
+                  constraints:
+                    nullable: true
+              - column:
+                  name: end_datetime
+                  type: timestamp
+                  constraints:
+                    nullable: true

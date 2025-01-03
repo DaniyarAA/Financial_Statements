@@ -1,0 +1,74 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ffffff;
+}
+
+.navbar {
+    padding: 10px 20px;
+    color: #000;
+}
+
+.navbar-brand span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.navbar-nav .nav-link {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #000 !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #000 !important;
+}
+
+.btn-outline-light {
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+.btn-outline-light:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+main {
+    flex: 1;
+    margin-bottom: 100px;
+}
+
+nav .page-link, nav .pagination, nav .aria-hidden-1 {
+    color: #6DF800 !important;
+}
+
+.page-item.active .page-link {
+    background-color: #6DF800 !important;
+    border-color: #6DF800 !important;
+    color: black !important;
+}
+
+footer {
+    background-color: #000;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+

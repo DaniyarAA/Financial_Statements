@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 037
+      author: Adil
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: amount
+                  type: decimal
+                  constraints:
+                    nullable: true
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: true

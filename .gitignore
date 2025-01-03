@@ -33,3 +33,5 @@ build/
 .vscode/
 /db/
 /logs/
+/financialStatement.env
+/financialStatement.env/

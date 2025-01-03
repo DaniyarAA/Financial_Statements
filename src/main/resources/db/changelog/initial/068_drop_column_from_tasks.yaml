@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 068
+      author: Daniiar
+      changes:
+        - dropColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: user_company_id

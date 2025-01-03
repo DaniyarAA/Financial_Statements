@@ -1,21 +1,19 @@
 package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "reports")
-public class Report {
+@Table(name = "priorities")
+public class Priority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String filePath;
 
-    @ManyToOne
-    @JoinColumn(name = "task_id")
-    private Task task;
-
+    private String name;
 }

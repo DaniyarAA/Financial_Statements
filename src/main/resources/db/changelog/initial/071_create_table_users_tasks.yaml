@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 071
+      author: Daniiar
+      changes:
+        - createTable:
+            tableName: users_tasks
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_id_to_tasks
+                    references: users(id)
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_task_id_to_users
+                    references: tasks(id)

@@ -1,8 +1,10 @@
 package kg.attractor.financial_statement.entity;
 
 import jakarta.persistence.*;
+import kg.attractor.financial_statement.enums.ReportFrequency;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -39,13 +41,21 @@ public class Company {
     private String esfPassword;
     private String kkm;
     private String kkmPassword;
+
     @Column(name = "fresh_1c")
     private String fresh1c;
+
     @Column(name = "fresh_1c_password")
     private String fresh1cPassword;
     private String ettn;
     private String ettnPassword;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-    private List<Task> tasks;
+    private boolean isDeleted;
+
+    @Enumerated(EnumType.STRING)
+    private ReportFrequency reportFrequency;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "companies", cascade = CascadeType.ALL)
+    private List<User> users;
+
 }

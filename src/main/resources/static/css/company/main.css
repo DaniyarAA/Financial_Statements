@@ -4,6 +4,10 @@
     border-radius: 4px;
 }
 
+.company-create-errors{
+    color : red;
+}
+
 .arrow {
     font-size: 44px;
     color: #1E1E1E;
@@ -224,6 +228,10 @@ label.custom-search input[type="text"] {
 
 .custom-search:hover {
     background-color:#f8f9fa;
+}
+
+.required-asterisk{
+    color: red;
 }
 
 .custom-search .search-input:hover {

@@ -1,8 +1,10 @@
 package kg.attractor.financial_statement.config;
 
-import lombok.RequiredArgsConstructor;
+import kg.attractor.financial_statement.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,19 +13,30 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
+
     private final CustomAuthSuccessHandler authSuccessHandler;
+    private final UserService userService;
+
+    @Autowired
+    public SecurityConfig(CustomAuthSuccessHandler authSuccessHandler, @Lazy UserService userService) {
+        this.authSuccessHandler = authSuccessHandler;
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(new CredentialsFilter(userService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll())
                 .formLogin(form ->
                         form.loginPage("/login")
                                 .loginProcessingUrl("/login")
@@ -44,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/admin/users/edit/**").hasAuthority("VIEW_USER")
                         .requestMatchers("/admin/user/delete/**").hasAuthority("DELETE_USER")
                         .requestMatchers("/admin/users/change-password/**").hasAuthority("EDIT_USER")
-                        .requestMatchers("/company/all").hasAuthority("VIEW_COMPANY")
+                        .requestMatchers("/company/all").authenticated()
                         .requestMatchers("/company/create").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/add").hasAuthority("CREATE_COMPANY")
                         .requestMatchers("/company/edit/").hasAuthority("EDIT_COMPANY")
@@ -54,8 +67,8 @@ public class SecurityConfig {
                         .requestMatchers("/tasks/edit/").hasAuthority("EDIT_TASK")
                         .requestMatchers("/tasks/delete/").hasAuthority("DELETE_TASK")
                         .requestMatchers("/archive/all").hasAuthority("VIEW_ARCHIVE")
+                        .requestMatchers("/change-credentials").authenticated()
                         .requestMatchers("/").authenticated()
-
                         .anyRequest().permitAll());
         return http.build();
     }

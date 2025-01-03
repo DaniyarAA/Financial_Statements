@@ -51,10 +51,12 @@
                     </form>
                 </li>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-light plus-btn-over" id="createCompanyButton"
-                            data-bs-toggle="modal" data-bs-target="#createCompanyModal">
-                        <i class="bi bi-plus-circle plus-btn"></i>
-                    </button>
+                    <#if canCreate>
+                        <button type="button" class="btn btn-light plus-btn-over" id="createCompanyButton"
+                                data-bs-toggle="modal" data-bs-target="#createCompanyModal">
+                            <i class="bi bi-plus-circle plus-btn"></i>
+                        </button>
+                    </#if>
                 </li>
             </ul>
         </div>
@@ -97,10 +99,12 @@
                         <div class="h-company-info">
                             <h2 class="titleInfoCreate">
                                 <span id="companyName" class="inline-block">${company.name!}</span>
-                                <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
-                                        title="Редактировать" class="btn btn-link p-0">
-                                    <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                </button>
+                                <#if canEdit>
+                                    <button id="editBtncompanyName" onclick="editText('companyName', ${company.id})"
+                                            title="Редактировать" class="btn btn-link p-0">
+                                        <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                    </button>
+                                </#if>
                                 <button onclick="copyText('companyName')" title="Скопировать" class="btn btn-link p-0">
                                     <i class="bi bi-copy icon-custom"></i>
                                 </button>
@@ -118,46 +122,10 @@
                         </div>
 
                         <div class="company-info-buttons d-flex justify-content-end">
-                            <#if isAdmin>
-                                <#if company.deleted>
-                                    <button type="button" class="btn  btn-custom-delete"
-                                            data-bs-toggle="modal" data-bs-target="#returnModal">
-                                        <i class="bi bi-reply-all"></i>
-                                    </button>
+                            <#if canDelete>
 
-                                    <div class="modal fade" id="returnModal" tabindex="-1"
-                                         aria-labelledby="returnModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="returnModalLabel">Подтверждение
-                                                        восстановления</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Вы уверены, что хотите восстановить эту компанию?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Отмена
-                                                    </button>
-                                                    <form action="/company/return" method="post" id="returnForm">
-                                                        <#if _csrf??>
-                                                            <input type="hidden"
-                                                                   name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                                                   value="${(_csrf.token)!'csrf-token'}"/>
-                                                        </#if>
-                                                        <input type="hidden" name="companyId" value="${company.id}">
-                                                        <button type="submit" class="btn btn-danger"
-                                                                onclick="clearSortFilter()">Востановить
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <#else>
+                                <#if !company.deleted>
+
                                     <button type="button" class="btn  btn-custom-delete"
                                             data-bs-toggle="modal" data-bs-target="#deleteModal">
                                         <i class="bi bi-trash delete-icon fs-1" id="delete-user-icon"></i>
@@ -195,7 +163,55 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </#if>
+
+                            </#if>
+
+                            <#if canReturn>
+
+                                <#if company.deleted>
+
+                                    <button type="button" class="btn  btn-custom-delete"
+                                            data-bs-toggle="modal" data-bs-target="#returnModal">
+                                        <i class="bi bi-reply-all"></i>
+                                    </button>
+
+                                    <div class="modal fade" id="returnModal" tabindex="-1"
+                                         aria-labelledby="returnModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="returnModalLabel">Подтверждение
+                                                        восстановления</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Вы уверены, что хотите восстановить эту компанию?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Отмена
+                                                    </button>
+                                                    <form action="/company/return" method="post" id="returnForm">
+                                                        <#if _csrf??>
+                                                            <input type="hidden"
+                                                                   name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                                   value="${(_csrf.token)!'csrf-token'}"/>
+                                                        </#if>
+                                                        <input type="hidden" name="companyId" value="${company.id}">
+                                                        <button type="submit" class="btn btn-danger"
+                                                                onclick="clearSortFilter()">Востановить
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </#if>
+
                             </#if>
                         </div>
 
@@ -207,11 +223,13 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ИНН:</span>
                                         <strong id="companyInn">${company.companyInn!}</strong>
-                                        <button id="editBtncompanyInn"
-                                                onclick="editText('companyInn', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtncompanyInn"
+                                                    onclick="editText('companyInn', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('companyInn')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -231,11 +249,13 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ИНН руководителя:</span>
                                         <strong id="directorInn">${company.directorInn!}</strong>
-                                        <button id="editBtndirectorInn"
-                                                onclick="editText('directorInn', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtndirectorInn"
+                                                    onclick="editText('directorInn', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('directorInn')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -255,10 +275,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Логин:</span>
                                         <strong id="login">${company.login!}</strong>
-                                        <button id="editBtnlogin" onclick="editText('login', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnlogin" onclick="editText('login', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('login')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -279,10 +301,12 @@
                                         <span>Пароль:</span>
                                         <strong id="password"
                                               data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></strong>
-                                        <button id="editBtnpassword" onclick="editText('password', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnpassword" onclick="editText('password', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('password')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -305,10 +329,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭЦП:</span>
                                         <strong id="ecp">${company.ecp!}</strong>
-                                        <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnecp" onclick="editText('ecp', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('ecp')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -327,11 +353,13 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Salyk.kg логин:</span>
                                         <strong id="kabinetSalyk">${company.kabinetSalyk!}</strong>
-                                        <button id="editBtnkabinetSalyk"
-                                                onclick="editText('kabinetSalyk', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnkabinetSalyk"
+                                                    onclick="editText('kabinetSalyk', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('kabinetSalyk')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -352,11 +380,13 @@
                                         <span>Salyk.kg пароль:</span>
                                         <strong id="kabinetSalykPassword"
                                               data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></strong>
-                                        <button id="editBtnkabinetSalykPassword"
-                                                onclick="editText('kabinetSalykPassword', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnkabinetSalykPassword"
+                                                    onclick="editText('kabinetSalykPassword', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('kabinetSalykPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -380,10 +410,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Режим налогообложения:</span>
                                         <strong id="taxMode">${company.taxMode!}</strong>
-                                        <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtntaxMode" onclick="editText('taxMode', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('taxMode')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -403,10 +435,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ОПФ:</span>
                                         <strong id="opf">${company.opf!}</strong>
-                                        <button id="editBtnopf" onclick="editText('opf', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnopf" onclick="editText('opf', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('opf')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -425,11 +459,13 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Район ГНС:</span>
                                         <strong id="districtGns">${company.districtGns!}</strong>
-                                        <button id="editBtndistrictGns"
-                                                onclick="editText('districtGns', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtndistrictGns"
+                                                    onclick="editText('districtGns', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('districtGns')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -449,11 +485,13 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Номер социального фонда:</span>
                                         <strong id="socfundNumber">${company.socfundNumber!}</strong>
-                                        <button id="editBtnsocfundNumber"
-                                                onclick="editText('socfundNumber', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnsocfundNumber"
+                                                    onclick="editText('socfundNumber', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('socfundNumber')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -473,11 +511,13 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Регистрационный номер МЮ:</span>
                                         <strong id="registrationNumberMj">${company.registrationNumberMj!}</strong>
-                                        <button id="editBtnregistrationNumberMj"
-                                                onclick="editText('registrationNumberMj', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnregistrationNumberMj"
+                                                    onclick="editText('registrationNumberMj', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('registrationNumberMj')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -498,10 +538,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ОКПО:</span>
                                         <strong id="okpo">${company.okpo!}</strong>
-                                        <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnokpo" onclick="editText('okpo', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('okpo')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -520,10 +562,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ФИО руководителя:</span>
                                         <strong id="director">${company.director!}</strong>
-                                        <button id="editBtndirector" onclick="editText('director', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtndirector" onclick="editText('director', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('director')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -543,10 +587,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>КЭД:</span>
                                         <strong id="ked">${company.ked!}</strong>
-                                        <button id="editBtnked" onclick="editText('ked', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnked" onclick="editText('ked', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('ked')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -568,10 +614,12 @@
                                 <ul class="list-group">
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Почта:</span> <strong id="email">${company.email!}</strong>
-                                        <button id="editBtnemail" onclick="editText('email', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnemail" onclick="editText('email', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('email')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -590,12 +638,17 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Пароль от почты:</span> <strong id="emailPassword"
-                                                                                data-password="${company.emailPassword!}"><#list 1..(company.emailPassword!?length) as i>•</#list></strong>
-                                        <button id="editBtnemailPassword"
-                                                onclick="editText('emailPassword', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                                                                data-password="${company.emailPassword!}"><#if company.emailPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.emailPassword!?length) as i>•</#list>
+                                            </#if></strong>
+                                        <#if canEdit>
+                                            <button id="editBtnemailPassword"
+                                                    onclick="editText('emailPassword', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('emailPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -617,10 +670,12 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Телефон:</span> <strong id="phone">${company.phone!}</strong>
-                                        <button id="editBtnphone" onclick="editText('phone', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnphone" onclick="editText('phone', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('phone')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -639,10 +694,12 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ логин:</span> <strong id="esf">${company.esf!}</strong>
-                                        <button id="editBtnesf" onclick="editText('esf', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnesf" onclick="editText('esf', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('esf')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -660,12 +717,17 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ пароль:</span> <strong id="esfPassword"
-                                                                           data-password="${company.esfPassword!}"><#list 1..(company.esfPassword!?length) as i>•</#list></strong>
-                                        <button id="editBtnesfPassword"
-                                                onclick="editText('esfPassword', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                                                           data-password="${company.esfPassword!}"><#if company.esfPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.esfPassword!?length) as i>•</#list>
+                                            </#if></strong>
+                                        <#if canEdit>
+                                            <button id="editBtnesfPassword"
+                                                    onclick="editText('esfPassword', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('esfPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -687,10 +749,12 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ККМ логин:</span> <strong id="kkm">${company.kkm!}</strong>
-                                        <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnkkm" onclick="editText('kkm', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('kkm')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -708,12 +772,17 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ККМ пароль:</span> <strong id="kkmPassword"
-                                                                           data-password="${company.kkmPassword!}"><#list 1..(company.kkmPassword!?length) as i>•</#list></strong>
-                                        <button id="editBtnkkmPassword"
-                                                onclick="editText('kkmPassword', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                                                           data-password="${company.kkmPassword!}"> <#if company.kkmPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.kkmPassword!?length) as i>•</#list>
+                                            </#if></strong>
+                                        <#if canEdit>
+                                            <button id="editBtnkkmPassword"
+                                                    onclick="editText('kkmPassword', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('kkmPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -736,10 +805,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш логин:</span>
                                         <strong id="fresh1c">${company.fresh1c!}</strong>
-                                        <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnfresh1c" onclick="editText('fresh1c', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('fresh1c')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -758,12 +829,17 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш пароль:</span> <strong id="fresh1cPassword"
-                                                                               data-password="${company.fresh1cPassword!}"><#list 1..(company.fresh1cPassword!?length) as i>•</#list></strong>
-                                        <button id="editBtnfresh1cPassword"
-                                                onclick="editText('fresh1cPassword', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                                                               data-password="${company.fresh1cPassword!}"><#if company.fresh1cPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.fresh1cPassword!?length) as i>•</#list>
+                                            </#if></strong>
+                                        <#if canEdit>
+                                            <button id="editBtnfresh1cPassword"
+                                                    onclick="editText('fresh1cPassword', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('fresh1cPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -786,10 +862,12 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН логин:</span>
                                         <strong id="ettn">${company.ettn!}</strong>
-                                        <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                        <#if canEdit>
+                                            <button id="editBtnettn" onclick="editText('ettn', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('ettn')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -808,12 +886,17 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН пароль:</span>
                                         <strong id="ettnPassword"
-                                              data-password="${company.ettnPassword!}"><#list 1..(company.ettnPassword!?length) as i>•</#list></strong>
-                                        <button id="editBtnettnPassword"
-                                                onclick="editText('ettnPassword', ${company.id})"
-                                                title="Редактировать" class="btn btn-link p-0">
-                                            <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
-                                        </button>
+                                              data-password="${company.ettnPassword!}"><#if company.ettnPassword!?length == 0>
+                                            <#else>
+                                                <#list 1..(company.ettnPassword!?length) as i>•</#list>
+                                            </#if></strong>
+                                        <#if canEdit>
+                                            <button id="editBtnettnPassword"
+                                                    onclick="editText('ettnPassword', ${company.id})"
+                                                    title="Редактировать" class="btn btn-link p-0">
+                                                <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
+                                            </button>
+                                        </#if>
                                         <button onclick="copyText('ettnPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
@@ -869,177 +952,145 @@
                                                 <fieldset class="p-4 mb-4">
                                                     <div class="form-group row">
                                                         <label for="name" class="col-md-4 col-form-label">Название
-                                                            компании:</label>
+                                                            компании:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="name" name="name"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("name"))>
-                                                                <span class="text-danger">${errors.getFieldError("name").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="name-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="companyInn"
-                                                               class="col-md-4 col-form-label">ИНН:</label>
+                                                               class="col-md-4 col-form-label">ИНН:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="companyInn" name="companyInn"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("inn"))>
-                                                                <span class="text-danger">${errors.getFieldError("inn").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="companyInn-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="directorInn" class="col-md-4 col-form-label">ИНН
-                                                            руководителя:</label>
+                                                            руководителя:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="directorInn" name="directorInn"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("directorInn"))>
-                                                                <span class="text-danger">${errors.getFieldError("directorInn").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="directorInn-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="login"
-                                                               class="col-md-4 col-form-label">Логин:</label>
+                                                               class="col-md-4 col-form-label">Логин:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="login" name="login"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("login"))>
-                                                                <span class="text-danger">${errors.getFieldError("login").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="login-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="password"
-                                                               class="col-md-4 col-form-label">Пароль:</label>
+                                                               class="col-md-4 col-form-label">Пароль:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="password" id="password" name="password"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("password"))>
-                                                                <span class="text-danger">${errors.getFieldError("password").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="password-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="ecp" class="col-md-4 col-form-label">ЭЦП:</label>
+                                                        <label for="ecp" class="col-md-4 col-form-label">ЭЦП:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="ecp" name="ecp" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("ecp"))>
-                                                                <span class="text-danger">${errors.getFieldError("ecp").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="ecp-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="kabinetSalyk" class="col-md-4 col-form-label">Salyk.kg
-                                                            логин:</label>
+                                                            логин:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="kabinetSalyk" name="kabinetSalyk"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("kabinetSalyk"))>
-                                                                <span class="text-danger">${errors.getFieldError("kabinetSalyk").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="kabinetSalyk-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="kabinetSalykPassword"
-                                                               class="col-md-4 col-form-label">Salyk.kg пароль:</label>
+                                                               class="col-md-4 col-form-label">Salyk.kg пароль:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="password" id="kabinetSalykPassword"
                                                                    name="kabinetSalykPassword" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("kabinetSalykPassword"))>
-                                                                <span class="text-danger">${errors.getFieldError("kabinetSalykPassword").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="kabinetSalykPassword-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="taxMode" class="col-md-4 col-form-label">Режим
-                                                            налогооблажения:</label>
+                                                            налогооблажения:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="taxMode" name="taxMode"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("taxMode"))>
-                                                                <span class="text-danger">${errors.getFieldError("taxMode").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="taxMode-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="opf" class="col-md-4 col-form-label">ОПФ:</label>
+                                                        <label for="opf" class="col-md-4 col-form-label">ОПФ:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="opf" name="opf" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("opf"))>
-                                                                <span class="text-danger">${errors.getFieldError("opf").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="opf-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="districtGns" class="col-md-4 col-form-label">Район
-                                                            ГНС:</label>
+                                                            ГНС:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="districtGns" name="districtGns"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("districtGns"))>
-                                                                <span class="text-danger">${errors.getFieldError("districtGns").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="districtGns-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="socfundNumber" class="col-md-4 col-form-label">Номер
-                                                            соцфонда:</label>
+                                                            соцфонда:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="socfundNumber" name="socfundNumber"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("socfundNumber"))>
-                                                                <span class="text-danger">${errors.getFieldError("socfundNumber").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="socfundNumber-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="registrationNumberMj"
                                                                class="col-md-4 col-form-label">Регистрационный номер
-                                                            МЮ:</label>
+                                                            МЮ:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="registrationNumberMj"
                                                                    name="registrationNumberMj" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("registrationNumberMj"))>
-                                                                <span class="text-danger">${errors.getFieldError("registrationNumberMj").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="registrationNumberMj-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="okpo" class="col-md-4 col-form-label">ОКПО:</label>
+                                                        <label for="okpo" class="col-md-4 col-form-label">ОКПО:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="okpo" name="okpo"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("okpo"))>
-                                                                <span class="text-danger">${errors.getFieldError("okpo").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="okpo-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label for="director" class="col-md-4 col-form-label">ФИО
-                                                            руководителя:</label>
+                                                            руководителя:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="director" name="director"
                                                                    class="form-control" required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("director"))>
-                                                                <span class="text-danger">${errors.getFieldError("director").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="director-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="ked" class="col-md-4 col-form-label">КЭД:</label>
+                                                        <label for="ked" class="col-md-4 col-form-label">КЭД:<span class="required-asterisk">*</span></label>
                                                         <div class="col-md-8">
                                                             <input type="text" id="ked" name="ked" class="form-control"
                                                                    required>
-                                                            <#if (errors?has_content && errors.hasFieldErrors("ked"))>
-                                                                <span class="text-danger">${errors.getFieldError("ked").defaultMessage}</span>
-                                                            </#if>
+                                                            <span class="company-create-errors" id="ked-error"></span>
                                                         </div>
                                                     </div>
                                                 </fieldset>
@@ -1069,6 +1120,7 @@
                                                         <div class="col-md-8">
                                                             <input type="text" id="phone" name="phone"
                                                                    class="form-control">
+                                                            <span class="company-create-errors" id="phone-error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -1137,7 +1189,7 @@
                                                     <div class="form-group row">
                                                         <label for="reportFrequency" class="col-md-4 col-form-label">Выберите частоту отчета НСП:</label>
                                                         <div class="col-md-8">
-                                                            <select name="reportFrequency" id="reportFrequency" class="form-control" required>
+                                                            <select name="reportFrequency" id="reportFrequency" class="form-control">
                                                                 <option value="" disabled selected>Выбор частоты</option>
                                                                 <option value="MONTHLY">Ежемесячно</option>
                                                                 <option value="QUARTERLY">Ежеквартально</option>

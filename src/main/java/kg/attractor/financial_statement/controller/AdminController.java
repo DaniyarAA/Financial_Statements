@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.controller;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -116,11 +118,11 @@ public class AdminController {
                         ResponseEntity.badRequest().body(Map.of("message", "Неизвестная ошибка валидации", "errorCode", "UNKNOWN_VALIDATION_ERROR"));
             };
         }
-//        catch (Exception e) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("message", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-//        }
+        catch (MessagingException | UnsupportedEncodingException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @DeleteMapping("/user/delete/{id}")

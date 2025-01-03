@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void editUser(Long id, UserDto userDto) {
+    public void editUser(Long id, UserDto userDto) throws MessagingException, UnsupportedEncodingException {
         User user = getUserById(id);
         if(!user.isEnabled()){
             throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
@@ -220,16 +220,20 @@ public class UserServiceImpl implements UserService {
 
     private void updateLoginIfChanged(String newLogin, User user) {
         if (!Objects.equals(newLogin, user.getLogin())) {
+            log.info("Проверка уникальности логина: {}", newLogin);
             if (checkIfUserExistsByLogin(newLogin)) {
-                log.info("Пользователь с таким логином уже существует");
+                log.error("Пользователь с логином {} уже существует", newLogin);
                 throw new IllegalArgumentException("Пользователь с таким логином уже существует");
             }
-            log.info("changed login for user");
+            if (newLogin.isBlank()) {
+                throw new IllegalArgumentException("Заполните пожалуйста логин!");
+            }
+            log.info("Обновление логина для пользователя: {}", newLogin);
             user.setLogin(newLogin);
         }
     }
 
-    private void updateEmailIfChanged(String newEmail, User user) {
+    private void updateEmailIfChanged(String newEmail, User user) throws MessagingException, UnsupportedEncodingException {
         if(newEmail == null || newEmail.isEmpty()){
             throw new IllegalArgumentException("Заполните почту!");
         }
@@ -239,7 +243,9 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("Пользователь с такой почтой уже существует");
             }
             log.info("changed email for user");
+            String oldEmail = user.getEmail();
             user.setEmail(newEmail);
+            emailService.sendUpdatedEmail(oldEmail, newEmail, user.getName(), user.getSurname());
         }
     }
 
@@ -368,7 +374,8 @@ public class UserServiceImpl implements UserService {
                 try {
                     return getUserDtoByLogin(username);
                 } catch (UsernameNotFoundException e) {
-                    log.info("Пользователь с логином '{}' не найден", username);
+                    log.info("Пользователь с логином '{}' не найден, удаляем куку.", username);
+                    return null;
                 }
             }
         }
@@ -433,6 +440,7 @@ public class UserServiceImpl implements UserService {
                 .roleDto(roleDto)
                 .email(user.getEmail())
                 .companies(getCompaniesByUserId(user.getId()))
+                .credentialsUpdated(user.isCredentialsUpdated())
                 .build();
     }
 
@@ -456,6 +464,54 @@ public class UserServiceImpl implements UserService {
         user.setRole(roleService.getRoleById(roleId));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public boolean canEdit(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("EDIT_COMPANY"));
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canCreate(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("CREATE_COMPANY"));
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canReturn(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("CREATE_COMPANY"));//TODO: сделать на RETURN_COMPANY сейчас его нет
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canViewCompany(String name) {
+        if (!name.isBlank()) {
+            UserDto userDto = getUserDtoByLogin(name);
+            if (userDto != null && userDto.getRoleDto() != null) {
+                return userDto.getRoleDto().getAuthorities().stream()
+                        .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("VIEW_COMPANY"));
+            }
+        }
+        return false;
     }
 
 }

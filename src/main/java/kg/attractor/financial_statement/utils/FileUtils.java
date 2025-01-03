@@ -64,13 +64,9 @@ public class FileUtils {
         if (originalFileName == null) {
             throw new RuntimeException("File name is invalid.");
         }
+        String transliteratedCompanyName = convertCompanyNameToTransliteratedName(companyName);
 
-        Transliterator transliterator = Transliterator.getInstance("Russian-Latin/BGN");
-        String transliteratedName = transliterator.transliterate(companyName);
-
-        String sanitizedCompanyName = transliteratedName.replaceAll("[^a-zA-Z0-9-_]", "_");
-
-        String uploadDir = "data/" + sanitizedCompanyName;
+        String uploadDir = "data/files/" + transliteratedCompanyName;
         Path pathDir = Paths.get(uploadDir);
 
         try {
@@ -112,5 +108,18 @@ public class FileUtils {
         }
 
         return fileName;
+    }
+
+    private String convertCompanyNameToTransliteratedName (String companyName) {
+        Transliterator transliterator = Transliterator.getInstance("Russian-Latin/BGN");
+        String transliteratedName = transliterator.transliterate(companyName);
+
+        return transliteratedName.replaceAll("[^a-zA-Z0-9-_]", "_");
+    }
+
+
+    public Path getFilePath(String companyName, String fileName) {
+        String transliteratedName = convertCompanyNameToTransliteratedName(companyName);
+        return Paths.get("data", "files", transliteratedName, fileName);
     }
 }

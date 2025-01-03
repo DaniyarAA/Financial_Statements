@@ -63,6 +63,12 @@
                                                             data-end-date="${task.endDate}"
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
+                                                            data-company-id="${task.company.id}"
+                                                            <#if task.filePath??>
+                                                                data-file-path="${task.filePath}"
+                                                            <#else>
+                                                                data-file-path="Не задано"
+                                                            </#if>
                                                             <#if task.description??>
                                                                 data-description="${task.description}"
                                                             <#else>

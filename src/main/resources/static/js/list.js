@@ -5,12 +5,14 @@ function showTaskDetails(button) {
     const documentType = button.getAttribute("data-document-type");
     const startDate = button.getAttribute("data-start-date");
     const endDate = button.getAttribute("data-end-date");
+    const companyId = button.getAttribute("data-company-id");
     const companyName = button.getAttribute("data-company-name");
     const companyInn = button.getAttribute("data-company-inn");
     const description = button.getAttribute("data-description");
     const amount = button.getAttribute("data-amount");
     const status = button.getAttribute("data-status");
     const isCompleted = status === "Сдан";
+    const filePath = button.getAttribute("data-file-path");
 
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
@@ -91,8 +93,10 @@ function showTaskDetails(button) {
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                 </div>
                 
-                <div class="mb-3">
-                    <label for="file" class="form-label">Choose File</label>
+                <div class="file-diplay">
+                    <p>${filePath}</p>
+                    <a href="api/files/download/${companyId}/${filePath}" class="btn btn-sm btn-outline-light">скачать</a>
+                
                     <input type="file" class="form-control" id="file" name="file" required>
                     <div class="invalid-feedback">
                         Please choose a file to upload.

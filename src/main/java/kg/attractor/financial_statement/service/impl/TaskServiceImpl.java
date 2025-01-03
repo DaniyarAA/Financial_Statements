@@ -1,7 +1,5 @@
 package kg.attractor.financial_statement.service.impl;
 
-
-
 import jakarta.transaction.Transactional;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.*;
@@ -16,6 +14,8 @@ import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -510,6 +513,7 @@ public class TaskServiceImpl implements TaskService {
                 .priorityId(task.getPriorityId())
                 .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
                 .tag(task.getTag() != null ? task.getTag().getTag() : null)
+                .filePath(task.getFilePath() != null ? task.getFilePath() : null)
                 .build();
     }
 
@@ -690,6 +694,27 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public boolean createIsValid(TaskCreateDto taskCreateDto) {
         return taskCreateDto.getDocumentTypeId() != null && taskCreateDto.getCompanyId() != null && taskCreateDto.getTaskStatusId() != null;
+    }
+
+    @Override
+    public Resource loadFileAsResource(Path filePath) throws MalformedURLException {
+//        String filePath = fileUtils.getFilePathByCompanyNameAndFileName(companyName, fileName);
+        Resource resource = new UrlResource(filePath.toUri());
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            throw new MalformedURLException("Could not read the file: " + filePath);
+        }
+    }
+
+    @Override
+    public Optional<Path> getFilePath(String companyName, String fileName) {
+        Path filePath = fileUtils.getFilePath(companyName, fileName);
+
+        if (!Files.exists(filePath)) {
+            return Optional.empty();
+        }
+        return Optional.of(filePath);
     }
 }
 

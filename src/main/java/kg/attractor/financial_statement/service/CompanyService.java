@@ -67,4 +67,6 @@ public interface CompanyService {
     List<CompanyForTaskCreateDto> getAllCompaniesForCreateTask();
 
     CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId);
+
+    String getCompanyNameById(Long companyId);
 }

@@ -604,6 +604,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public String getCompanyNameById(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("Company not found: " + companyId));
+        return company.getName();
+    }
+
+    @Override
     public List<CompanyForTaskCreateDto> getAllCompaniesForCreateTask() {
         List<Company> companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
         return companyList.stream().map(this::convertToCreateTaskDto).collect(Collectors.toList());

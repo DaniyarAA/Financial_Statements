@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.actor }}/financial_statement_image:latest
+  IMAGE_NAME: daniyaraa/financial_statement_image:latest
 
 jobs:
   build:

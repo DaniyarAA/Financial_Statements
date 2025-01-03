@@ -46,13 +46,63 @@
 
                                     </div>
 
+
+                                    <div class="col-md-6 mb-4 pb-2">
+
+                                        <div data-mdb-input-init class="form-outline w-100">
+                                            <label for="email" class="form-label text">Электронная почта:</label>
+                                            <@spring.formInput "userDto.email" 'id="email" class="form-control form-control-lg login-input"' />
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <div class="row">
+
+
                                     <div class="col-md-6 mb-4 pb-2">
 
                                         <div data-mdb-input-init class="form-outline">
-                                            <label for="password" class="form-label text-dark">Пароль:</label>
-                                            <@spring.formPasswordInput "userDto.password" 'id="password" class="form-control form-control-lg login-input"' />
+                                            <label for="password" class="form-label text-dark">Введите
+                                                пароль:</label>
+
+                                            <div class="input-group">
+                                                <@spring.formPasswordInput "userDto.password" 'id="password" class="form-control form-control-lg login-input"' />
+
+                                                <button type="button" class="btn btn-outline-secondary toggle-password"
+                                                        data-target="#password">
+                                                    <i class="fa fa-eye-slash"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                         <@spring.showErrors "<br>" "error text-danger mb-3" />
+
+
+                                    </div>
+
+
+                                    <div class="col-md-6 mb-4 pb-2">
+
+
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="confirmPassword" class="form-label text-dark">Подтвердите
+                                                пароль:</label>
+
+                                            <div class="input-group">
+                                                <@spring.formPasswordInput "userDto.confirmPassword" 'id="confirmPassword" class="form-control form-control-lg login-input"' />
+
+                                                <button type="button" class="btn btn-outline-secondary toggle-password"
+                                                        data-target="#confirmPassword">
+                                                    <i class="fa fa-eye-slash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
+
 
 
                                     </div>
@@ -60,6 +110,8 @@
 
 
                                 <div class="row">
+
+
                                     <div class="col-md-6 mb-4 pb-2">
 
                                         <div data-mdb-input-init class="form-outline">
@@ -85,18 +137,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-4 pb-2">
-
-                                        <div data-mdb-input-init class="form-outline w-100">
-                                            <label for="email" class="form-label text">Электронная почта:</label>
-                                            <@spring.formInput "userDto.email" 'id="email" class="form-control form-control-lg login-input"' />
-                                        </div>
-                                        <@spring.showErrors "<br>" "error text-danger mb-3" />
-                                    </div>
-                                </div>
 
 
-                                <div class="row">
                                     <div class="col-md-6 mb-4">
 
                                         <div data-mdb-input-init class="form-outline">
@@ -131,6 +173,26 @@
             </div>
         </div>
     </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.toggle-password').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const targetInput = document.querySelector(this.getAttribute('data-target'));
+                    const icon = this.querySelector('i');
+                    if (targetInput.type === 'password') {
+                        targetInput.type = 'text';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    } else {
+                        targetInput.type = 'password';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    }
+                });
+            });
+        });
+    </script>
+
 
 
 </@layout.layout>

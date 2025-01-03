@@ -151,7 +151,6 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
         }
         validateUserDto(userDto);
-        updateEmailIfChanged(userDto.getEmail(), user);
         if(!user.getRole().getRoleName().equals("SuperUser")){
             Role role = roleService.getRoleById(userDto.getRoleDto().getId());
             user.setRole(role);
@@ -160,6 +159,7 @@ public class UserServiceImpl implements UserService {
         user.setNotes(userDto.getNotes());
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
+        updateEmailIfChanged(userDto.getEmail(), user);
         List<Company> selectedCompanies = companyService.findAllById(userDto.getCompanyIds());
         for(Company company : selectedCompanies){
             if(!user.getCompanies().contains(company)){
@@ -317,7 +317,6 @@ public class UserServiceImpl implements UserService {
                 company.getUsers().remove(user);
             }
             user.getCompanies().clear();
-//            userCompanyService.updateUserCompaniesOnUserDeletion(id);
             userRepository.save(user);
         }
     }

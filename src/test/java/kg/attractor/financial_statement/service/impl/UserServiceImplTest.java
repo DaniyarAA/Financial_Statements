@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
+import jakarta.mail.MessagingException;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.Company;
 import kg.attractor.financial_statement.entity.Role;
@@ -8,7 +9,6 @@ import kg.attractor.financial_statement.repository.UserPageableRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.RoleService;
-import kg.attractor.financial_statement.service.UserCompanyService;
 import kg.attractor.financial_statement.utils.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserCompanyService userCompanyService;
+    private EmailService emailService;
 
     @Mock
     private CompanyService companyService;
@@ -61,12 +62,10 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
 
     private User existingUser;
-    private UserCompany existingUserCompany;
+
 
     @BeforeEach
     void setUp() {
-        existingUserCompany = new UserCompany();
-        existingUserCompany.setCompany(new Company());
         existingUser = new User();
         existingUser.setId(1L);
         existingUser.setName("Шерлок");
@@ -77,8 +76,7 @@ public class UserServiceImplTest {
         existingUser.setBirthday(LocalDate.of(1990, 1, 1));
         existingUser.setRegisterDate(LocalDate.now());
         existingUser.setAvatar("user.png");
-        existingUser.setUserCompanies(new ArrayList<>());
-        existingUser.getUserCompanies().add(existingUserCompany);
+        existingUser.setEmail("sherlock@gmail.com");
         Role userRole = new Role();
         userRole.setId(1L);
         userRole.setRoleName("User");
@@ -418,18 +416,39 @@ public class UserServiceImplTest {
 
     @Test
     void testDeleteUser_Success() {
-        when(userRepository.findById(12L)).thenReturn(Optional.of(existingUser));
-        existingUser.setRole(new Role());
-        existingUser.getRole().setId(1L);
-        existingUser.getRole().setRoleName("Test");
+        Long userId = 1L;
 
-        userService.deleteUser(12L);
+        existingUser.setEnabled(true);
+        Role role = new Role();
+        role.setRoleName("User");
+        existingUser.setRole(role);
+
+        Company company1 = new Company();
+        company1.setId(1L);
+        company1.setName("Company1");
+
+        Company company2 = new Company();
+        company2.setId(2L);
+        company2.setName("Company2");
+
+        existingUser.setCompanies(new ArrayList<>(List.of(company1, company2)));
+        company1.setUsers(new ArrayList<>(List.of(existingUser)));
+        company2.setUsers(new ArrayList<>(List.of(existingUser)));
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+
+        userService.deleteUser(userId);
 
         assertNull(existingUser.getRole());
+
         assertFalse(existingUser.isEnabled());
+
+        assertTrue(existingUser.getCompanies().isEmpty());
+        assertFalse(company1.getUsers().contains(existingUser));
+        assertFalse(company2.getUsers().contains(existingUser));
+
         verify(userRepository).save(existingUser);
     }
-
     @Test
     void testDeleteUser_CannotDeleteSuperUser() {
         existingUser.setRole(new Role());
@@ -524,9 +543,8 @@ public class UserServiceImplTest {
 
 
     @Test
-    void testEditUser_Success() {
+    void testEditUser_Success() throws MessagingException, UnsupportedEncodingException {
         Long userId = 1L;
-
         UserDto userDto = new UserDto();
         userDto.setName("Updated Name");
         userDto.setSurname("Updated Surname");
@@ -534,21 +552,24 @@ public class UserServiceImplTest {
         userDto.setEmail("updated@gmail.com");
         userDto.setNotes("Updated notes");
         userDto.setRoleDto(RoleDto.builder().id(2L).roleName("TEST").build());
-
+        userDto.setCompanyIds(List.of(1L));
 
         Role role = new Role();
         role.setId(2L);
         role.setRoleName("TEST");
 
-        CompanyDto companyDto = CompanyDto.builder().id(1L).name("NEW COMPANY").build();
-        userDto.setCompanies(List.of(companyDto));
         Company company = new Company();
         company.setId(1L);
+        company.setName("NEW COMPANY");
+        company.setUsers(new ArrayList<>());
+
+        existingUser.setCompanies(new ArrayList<>());
 
         doReturn(existingUser).when(userService).getUserById(userId);
-        doReturn(company).when(companyService).getCompanyById(1L);
-        doReturn(role).when(roleService).getRoleById(2L);
-
+        when(companyService.findAllById(userDto.getCompanyIds())).thenReturn(List.of(company));
+        when(roleService.getRoleById(2L)).thenReturn(role);
+        when(userRepository.findByEmail("updated@gmail.com")).thenReturn(Optional.empty());
+        doNothing().when(emailService).sendUpdatedEmail(anyString(), anyString(), anyString(), anyString());
 
         userService.editUser(userId, userDto);
 
@@ -558,9 +579,22 @@ public class UserServiceImplTest {
         assertEquals("updated@gmail.com", existingUser.getEmail());
         assertEquals("Updated notes", existingUser.getNotes());
         assertEquals(role, existingUser.getRole());
-        verify(userCompanyService).updateUserCompanies(existingUser, List.of(company));
+
+        assertTrue(existingUser.getCompanies().contains(company));
+        assertTrue(company.getUsers().contains(existingUser));
+
+        assertEquals(1, existingUser.getCompanies().size());
+
+        verify(emailService).sendUpdatedEmail(
+                eq("sherlock@gmail.com"),
+                eq("updated@gmail.com"),
+                eq("Updated Name"),
+                eq("Updated Surname")
+        );
+
         verify(userRepository).save(existingUser);
     }
+
 
 
 

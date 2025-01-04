@@ -178,7 +178,6 @@ userModal.addEventListener("show.bs.modal", function (event) {
             const birthday = user.birthday;
             const [year, month, day] = birthday.split('-');
             document.getElementById("user-birthday").innerText = `${month}.${day}.${year}`;
-            document.getElementById("user-status").innerText = user.enabled ? "Активен" : "Неактивен";
             document.getElementById("notesInput").value = user.notes;
             document.getElementById("userNameInput").value = user.name;
             document.getElementById("birthday-input").value = birthday;
@@ -266,8 +265,6 @@ archiveLink.addEventListener("click", function (event) {
 function resumeUser(userId) {
     const displayRole = document.getElementById("roleDisplay");
     const userStatus = document.getElementById("user-status");
-    const userStatusOnList = document.getElementById(`${userId}-list-status`);
-    const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
     const companyDropdown = document.getElementById('companyDropdown');
     const notesInput = document.getElementById('notesInput');
     const userViewOnTile = document.getElementById(`${userId}-tile`);
@@ -327,8 +324,6 @@ function resumeUser(userId) {
                 userViewOnList.classList.remove("deleted-row-user-style");
                 userViewOnTile.classList.remove("deleted-tile-user-style");
 
-                userStatusOnList.innerText = "Active";
-                userStatusOnTile.innerText = "Active";
                 updateEditButtonToSave(editUserInfoButton, editUserBtnIcon, userId);
 
                 showNotification('Пользователь успешно восстановлен!', "green");
@@ -614,8 +609,6 @@ function deleteUser() {
     const userStatus = document.getElementById("user-status");
     const userId = deleteUserIcon.getAttribute("data-user-id");
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    const userStatusOnList = document.getElementById(`${userId}-list-status`);
-    const userStatusOnTile = document.getElementById(`${userId}-tile-status`);
     const companyDropdown = document.getElementById('companyDropdown');
     const notesInput = document.getElementById('notesInput');
     const editUserInfoButton = document.getElementById('edit-user-info-button');
@@ -661,8 +654,7 @@ function deleteUser() {
                     userViewOnList.classList.add("deleted-row-user-style");
                     userViewOnTile.classList.add("deleted-tile-user-style");
 
-                    userStatusOnList.innerText = "Disabled";
-                    userStatusOnTile.innerText = "Disabled";
+
 
 
                     const emptyOption = document.createElement("option");

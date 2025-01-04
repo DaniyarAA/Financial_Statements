@@ -579,7 +579,7 @@ thead td {
 
 .user-tile-info {
     display: grid;
-    grid-template-columns: 310px 200px 120px 180px 0;
+    grid-template-columns: 310px 250px 120px 180px 0;
     align-items: center;
     text-align: start;
 }
@@ -1639,7 +1639,7 @@ h2 {
     }
 
     .user-tile-info {
-        grid-template-columns: 300px 135px 100px 100px 0;
+        grid-template-columns: 320px 215px 100px  0;
     }
 
     /* ВИД СПИСКА*/
@@ -1711,7 +1711,7 @@ h2 {
     }
 
     .user-tile-info {
-        grid-template-columns: 245px 115px 70px 84px 0;
+        grid-template-columns: 250px 150px 110px 0;
     }
 
 

@@ -110,6 +110,43 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public boolean canOpenDocumentTools(String name) {
+        if (name == null || name.isEmpty()){
+            return false;
+        }
+
+        UserDto userDto = getUserDtoByLogin(name);
+        if (userDto == null || userDto.getRoleDto() == null){
+            return false;
+        }
+
+        Set<String> documentAuthorities = Set.of("EDIT_DOCUMENT", "CREATE_DOCUMENT", "DELETE_DOCUMENT", "VIEW_DOCUMENT");
+        return userDto.getRoleDto().
+                getAuthorities().
+                stream().
+                anyMatch(authority -> documentAuthorities.
+                        contains(authority.getAuthority().toUpperCase()));
+    }
+
+    @Override
+    public boolean canOpenTaskTools(String name) {
+        if (name == null || name.isEmpty()){
+            return false;
+        }
+
+        UserDto userDto = getUserDtoByLogin(name);
+        if(userDto == null || userDto.getRoleDto() == null){
+            return false;
+        }
+        Set<String> statusAuthorities = Set.of("CREATE_STATUS", "EDIT_STATUS", "DELETE_STATUS", "VIEW_STATUS");
+        return userDto.getRoleDto().
+                getAuthorities().
+                stream().
+                anyMatch(authority -> statusAuthorities.
+                        contains(authority.getAuthority().toUpperCase()));
+    }
+
 
     @Override
     public UserDto getUserDtoById(Long id) {

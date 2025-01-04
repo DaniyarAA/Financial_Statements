@@ -45,6 +45,8 @@ spring:
 
 logging:
   level:
+    com.zaxxer.hikari: debug
+    org.hibernate.SQL: debug
     root: info
     org:
       springframework:

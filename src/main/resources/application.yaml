@@ -8,9 +8,9 @@ spring:
 
   # ------------- DataBases
   datasource:
-    url: ${POSTGRES_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: qwe
 
 
     driver-class-name: org.postgresql.Driver

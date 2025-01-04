@@ -16,4 +16,8 @@ public interface TagService {
     TagDto getTagForTask(Long taskId);
 
     void updateTagForTask(Long taskId, Long tagId);
+
+    long countByUserId(Long userId);
+
+    boolean isTagUnique(Long userId, String tagName);
 }

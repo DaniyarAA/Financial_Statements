@@ -255,7 +255,12 @@
                         <td>${task.startDate}</td>
                         <td>${task.endDate}</td>
                         <td>${task.amount}</td>
-                        <td>Здесь должен быть прикрепленный файл</td>
+                        <td>
+                            <a href="/api/files/download/${task.filePath}">
+                                скачать файл
+                            </a>
+                        </td>
+
                         <td>
                             <select class="status-dropdown"
                                     data-original-status="${task.statusId}"

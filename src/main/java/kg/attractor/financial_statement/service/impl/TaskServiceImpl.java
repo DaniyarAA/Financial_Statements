@@ -674,6 +674,7 @@ public class TaskServiceImpl implements TaskService {
                 .company(companyService.getCompanyForTaskDto(task.getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
+                .filePath(task.getFilePath())
                 .build();
     }
 

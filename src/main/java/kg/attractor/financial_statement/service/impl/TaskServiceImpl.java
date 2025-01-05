@@ -709,5 +709,12 @@ public class TaskServiceImpl implements TaskService {
         System.out.println("Tasks size: " + tasks.size());
         return tasks.stream().map(this::convertToDto).toList();
     }
+
+    @Override
+    public List<TaskDto> getTasksForUser(Long userId) {
+        User user = userService.getUserById(userId);
+        List<Task> tasks = user.getTasks();
+        return tasks.stream().map(this::convertToDto).toList();
+    }
 }
 

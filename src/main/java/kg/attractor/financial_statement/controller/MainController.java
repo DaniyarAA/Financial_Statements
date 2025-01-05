@@ -83,7 +83,7 @@ public class MainController {
         } else if (companyId != null) {
             return taskService.getTasksByCompanyId(companyId);
         } else if (userId != null) {
-            return taskService.getAllTaskDtosForUser(userService.getUserById(userId));
+            return taskService.getTasksForUser(userId);
         } else {
             return taskService.getAllTasks();
         }

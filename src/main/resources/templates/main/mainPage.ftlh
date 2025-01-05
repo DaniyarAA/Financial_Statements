@@ -193,9 +193,12 @@
                                                 <h3 class="tag-modal-title">Добавьте текст для тега</h3>
                                                 <input type="text" id="tag-input-${task.id}" class="tag-input-field" placeholder="Введите текст тега">
                                                 <input type="hidden" id="task-id-${task.id}" value="${task.id}">
+                                                <div id="tag-error-${task.id}" class="tag-error-message"></div> <!-- Контейнер для ошибки -->
+
                                                 <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить</button>
                                             </div>
                                         </div>
+
 
 
                                         <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=priority"
@@ -444,6 +447,13 @@
 
 
     <style>
+        .tag-error-message {
+            color: red;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+
         .legend-map-modal {
             display: none;
             position: fixed;

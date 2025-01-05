@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.display = "flex";
 
         document.getElementById(`tag-input-${taskId}`).value = '';
+        document.getElementById(`tag-error-${taskId}`).textContent = '';
     };
 
     window.closeTagModal = function (modalType, taskId) {
@@ -115,10 +116,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.saveTag = function (taskId) {
         const tagInput = document.getElementById(`tag-input-${taskId}`).value;
+        const errorContainer = document.getElementById(`tag-error-${taskId}`);
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
+        errorContainer.textContent = '';
+
         if (tagInput.trim() === '') {
-            showErrorNotification('Тег не может быть пустым');
+            errorContainer.textContent = 'Тег не может быть пустым';
             return;
         }
 
@@ -131,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(tagCount => {
                 if (tagCount >= 10) {
-                    showErrorNotification('Лимит на теги достигнут');
+                    errorContainer.textContent = 'Лимит на теги достигнут';
                     return;
                 }
 
@@ -143,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                     .then(response => {
                         if (!response.ok) {
-                            showErrorNotification('Тег с таким названием уже есть');
+                            errorContainer.textContent = 'Тег с таким названием уже есть';
                             return;
                         }
 
@@ -164,21 +168,22 @@ document.addEventListener("DOMContentLoaded", function () {
                                     updateTagTextAndTooltip(taskId, tagInput);
                                     closeTagModal('create', taskId);
                                 } else {
-                                    showErrorNotification('Ошибка при сохранении тега');
+                                    errorContainer.textContent = 'Ошибка при сохранении тега';
                                 }
                             })
                             .catch(() => {
-                                showErrorNotification('Ошибка соединения с сервером');
+                                errorContainer.textContent = 'Ошибка соединения с сервером';
                             });
                     })
                     .catch(() => {
-                        showErrorNotification('Ошибка при проверке уникальности тега');
+                        errorContainer.textContent = 'Ошибка при проверке уникальности тега';
                     });
             })
             .catch(() => {
-                showErrorNotification('Ошибка при проверке количества тегов');
+                errorContainer.textContent = 'Ошибка при проверке количества тегов';
             });
     };
+
 
     window.addEventListener("click", function (event) {
         const modals = document.querySelectorAll(".tag-select-modal");

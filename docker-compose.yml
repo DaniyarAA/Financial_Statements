@@ -1,9 +1,8 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: financial_statement_app
+    container_name: financial_statement_container
+    image: financial_statement_image
+    restart: always
     ports:
       - "8081:8081"
     environment:

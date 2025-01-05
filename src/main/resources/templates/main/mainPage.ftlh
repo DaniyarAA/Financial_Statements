@@ -143,10 +143,12 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                  fill="currentColor"
                                                  class="bi bi-tag" viewBox="0 0 16 16"
-                                                 onclick="toggleTagSelect(${task.id})">
+                                                 data-task-id="${task.id}"
+                                                 onclick="(${task.id})">
                                                 <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
                                                 <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
                                             </svg>
+
 
                                             <div id="tag-modal-${task.id}" class="tag-select-modal">
                                                 <div class="tag-select-modal-content">
@@ -193,7 +195,7 @@
                                                 <h3 class="tag-modal-title">Добавьте текст для тега</h3>
                                                 <input type="text" id="tag-input-${task.id}" class="tag-input-field" placeholder="Введите текст тега">
                                                 <input type="hidden" id="task-id-${task.id}" value="${task.id}">
-                                                <div id="tag-error-${task.id}" class="tag-error-message"></div> <!-- Контейнер для ошибки -->
+                                                <div id="tag-error-${task.id}" class="tag-error-message"></div>
 
                                                 <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить</button>
                                             </div>

@@ -25,11 +25,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    window.toggleTagSelect = function (taskId) {
-        const modal = document.getElementById(`tag-modal-${taskId}`);
-        modal.style.display = "flex";
-        loadUserTags(taskId);
-    };
+    document.querySelectorAll(".bi-tag").forEach(function (icon) {
+        icon.addEventListener("click", function (event) {
+            const taskId = icon.dataset.taskId;
+            const modal = document.getElementById(`tag-modal-${taskId}`);
+            const rect = icon.getBoundingClientRect();
+            const modalWidth = modal.offsetWidth;
+            const modalHeight = modal.offsetHeight;
+
+            modal.style.left = `${rect.left + window.scrollX - (modalWidth / 2) + (rect.width / 2) - 750}px`;
+            modal.style.top = `${rect.top + window.scrollY - modalHeight - 252}px`;
+
+            modal.style.display = "flex";
+            loadUserTags(taskId);
+        });
+    });
 
     window.loadUserTags = function (taskId) {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
@@ -96,8 +106,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const tagSelectModal = document.getElementById(`tag-modal-${taskId}`);
         tagSelectModal.style.display = "none";
 
-        const modal = document.getElementById(`tag-modal-create-${taskId}`);
-        modal.style.display = "flex";
+        const modalCreate = document.getElementById(`tag-modal-create-${taskId}`);
+        const icon = document.querySelector(`[data-task-id="${taskId}"]`);
+        const rect = icon.getBoundingClientRect();
+
+        const modalWidth = modalCreate.offsetWidth;
+        const modalHeight = modalCreate.offsetHeight;
+
+        modalCreate.style.left = `${rect.left + window.scrollX - (modalWidth / 2) + (rect.width / 2) - 750}px`;
+        modalCreate.style.top = `${rect.top + window.scrollY - modalHeight - 250}px`;
+
+        modalCreate.style.display = "flex";
 
         document.getElementById(`tag-input-${taskId}`).value = '';
         document.getElementById(`tag-error-${taskId}`).textContent = '';

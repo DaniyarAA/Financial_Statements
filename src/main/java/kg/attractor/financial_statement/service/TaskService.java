@@ -68,9 +68,11 @@ public interface TaskService {
 
     boolean areValidDates(String from, String to);
 
-    List <TaskDto> getTasksByCompanyId(Long id);
+    List <TaskDto> getTasksByCompanyIdSorted(Long id, String sortDirection, String sortBy);
 
     List<TaskDto> getTasksByUsers_IdAndCompany_Id(Long userId, Long companyId);
 
     List<TaskDto> getTasksForUser(Long userId);
+
+    List<TaskDto> getAllTasksSorted(String sortBy, String sort);
 }

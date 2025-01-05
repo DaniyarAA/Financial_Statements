@@ -698,9 +698,32 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getTasksByCompanyId(Long id) {
-        return taskRepository.findAllByCompany_Id(id)
-                .stream().map(this::convertToDto).toList();
+    public List<TaskDto> getTasksByCompanyIdSorted(Long companyId, String sortDirection, String sortBy) {
+        List<Task> tasks;
+        if ("id".equals(sortDirection)) {
+            if ("asc".equalsIgnoreCase(sortBy)) {
+                tasks = taskRepository.findByCompanyIdOrderByIdAsc(companyId);
+            } else {
+                tasks = taskRepository.findByCompanyIdOrderByIdDesc(companyId);
+            }
+        } else if ("endDate".equals(sortDirection)) {
+            if ("asc".equalsIgnoreCase(sortBy)) {
+                tasks = taskRepository.findByCompanyIdOrderByEndDateAsc(companyId);
+            } else {
+                tasks = taskRepository.findByCompanyIdOrderByEndDateDesc(companyId);
+            }
+        } else if ("priority".equals(sortDirection)) {
+            if ("asc".equalsIgnoreCase(sortBy)) {
+                tasks = taskRepository.findByCompanyIdOrderByPriorityIdAsc(companyId);
+            } else {
+                tasks = taskRepository.findByCompanyIdOrderByPriorityIdDesc(companyId);
+            }
+        } else {
+            tasks = taskRepository.findByCompanyIdOrderByEndDateAsc(companyId);
+        }
+
+        return convertToDtoList(tasks);
+
     }
 
     @Override
@@ -715,6 +738,35 @@ public class TaskServiceImpl implements TaskService {
         User user = userService.getUserById(userId);
         List<Task> tasks = user.getTasks();
         return tasks.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public List<TaskDto> getAllTasksSorted(String sortBy, String sort) {
+        List<Task> tasks;
+        if ("id".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findAllByOrderByIdAsc();
+            } else {
+                tasks = taskRepository.findAllByOrderByIdDesc();
+            }
+        } else if ("endDate".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findAllByOrderByEndDateAsc();
+            } else {
+                tasks = taskRepository.findAllByOrderByEndDateDesc();
+            }
+        } else if ("priority".equals(sortBy)) {
+            if ("asc".equalsIgnoreCase(sort)) {
+                tasks = taskRepository.findAllByOrderByPriorityIdAsc();
+            } else {
+                tasks = taskRepository.findAllByOrderByPriorityIdDesc();
+            }
+        } else {
+            tasks = taskRepository.findAllByOrderByEndDateAsc();
+        }
+
+        return convertToDtoList(tasks);
+
     }
 }
 

@@ -55,11 +55,11 @@ public class MainController {
         if (companyId != null && userId != null) {
             sortedTasks = taskService.getTasksByUsers_IdAndCompany_Id(userId, companyId);
         } else if (companyId != null) {
-            sortedTasks = taskService.getTasksByCompanyId(companyId);
+            sortedTasks = taskService.getTasksByCompanyIdSorted(companyId, sortBy, sort);
         } else if (userId != null) {
-            sortedTasks = taskService.getTasksForUser(userId);
+            sortedTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
         } else {
-            sortedTasks = taskService.getAllTasks();
+            sortedTasks = taskService.getAllTasksSorted(sortBy, sort);
         }
 
         List<TaskDto> userTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
@@ -88,20 +88,6 @@ public class MainController {
         return "main/mainPage";
     }
 
-    @GetMapping("/filterTasks")
-    @ResponseBody
-    public List<TaskDto> filterTasks(@RequestParam(required = false) Long companyId,
-                                     @RequestParam(required = false) Long userId) {
-        if (companyId != null && userId != null) {
-            return taskService.getTasksByUsers_IdAndCompany_Id(userId, companyId);
-        } else if (companyId != null) {
-            return taskService.getTasksByCompanyId(companyId);
-        } else if (userId != null) {
-            return taskService.getTasksForUser(userId);
-        } else {
-            return taskService.getAllTasks();
-        }
-    }
 
 
     @PostMapping("/calendar")

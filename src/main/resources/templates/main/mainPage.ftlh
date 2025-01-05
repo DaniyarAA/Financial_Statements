@@ -89,16 +89,17 @@
 
             <div class="col tasks">
                 <div class="tasks-header">
+                    <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
                     <#if userDto.getRole().roleName =='SuperUser'>
                         <div class="select-for-task">
-                            <select class="form-select w-50%" id="companySelect" onchange="filterTasks()">
+                            <select class="form-select w-50% fs-6" id="companySelect" onchange="filterTasks()">
                                 <option value="">Выберите компанию</option>
                                 <#list companies as company>
                                     <option value="${company.id}">${company.name}</option>
                                 </#list>
                             </select>
 
-                            <select class="form-select w-50%" id="userSelect" onchange="filterTasks()">
+                            <select class="form-select w-50% fs-6" id="userSelect" onchange="filterTasks()">
                                 <option value="">Выберите пользователя</option>
                                 <#list users as user>
                                     <option value="${user.id}">${user.name}</option>
@@ -106,7 +107,6 @@
                             </select>
                         </div>
                     </#if>
-                    <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
                     <div class="task-actions">
                         <a href="#" class="btn type-btn help-task" onclick="openModal()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
@@ -978,18 +978,18 @@
             text-align: center;
             height: 53px;
             position: relative;
+            padding: 10px 20px;
         }
 
-        .tasks-header h3 {
-            margin: 0 auto;
-            position: absolute;
-            transform: translateX(-50%);
+        .tasks-title {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
         }
 
         .tasks-header .task-actions {
             display: flex;
             align-items: center;
-            margin-left: auto;
         }
 
         .tasks-header .help-task {
@@ -1003,6 +1003,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .select-for-task {
+            display: flex;
+            gap: 10px;
+        }
+
+        .select-for-task select {
+            width: 200px;
         }
 
 

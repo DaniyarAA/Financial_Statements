@@ -79,7 +79,27 @@
                                                             <#else>
                                                                 data-amount="Не задано"
                                                             </#if>
-                                                            data-status="${task.statusId}">
+
+                                                            data-status="${task.statusId}"
+                                                            <#if task.users??>
+                                                                <#if task.users?size == 0>
+                                                                    data-users="[]"
+                                                                <#else>
+                                                                    data-users="[
+                                                                        <#list task.users as user>
+                                                                            {&quot;id&quot;: ${user.id}, &quot;name&quot;: &quot;${user.name}&quot;, &quot;surname&quot;: &quot;${user.surname}&quot;}
+                                                                            <#if user_has_next>,</#if>
+                                                                        </#list>
+                                                                        ]"
+                                                                </#if>
+                                                            <#else>
+                                                                data-users="[]"
+                                                            </#if>
+
+                                                    >
+
+
+
                                                         ${task.documentTypeName}
                                                         <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>"></div>
                                                     </button>
@@ -373,6 +393,7 @@
     </script>
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 
     <style>
@@ -1042,7 +1063,6 @@
             border-radius: 4px;
         }
 
-        /* Dropdown Items */
         .dropdown-menu li {
             padding: 10px 16px;
             font-size: 14px;
@@ -1067,5 +1087,4 @@
         }
 
     </style>
-    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 </@layout.layout>

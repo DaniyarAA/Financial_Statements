@@ -444,6 +444,7 @@ public class UserServiceImpl implements UserService {
 
     private UserForTaskDto convertToUserForTaskDto(User user) {
         return UserForTaskDto.builder()
+                .id(user.getId())
                 .login(user.getLogin())
                 .name(user.getName())
                 .surname(user.getSurname())

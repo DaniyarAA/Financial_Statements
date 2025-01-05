@@ -18,6 +18,11 @@ function showTaskDetails(button) {
     const formattedEndDate = formatDate(endDate);
     const formattedAmount = formatAmount(amount);
 
+    const users = button.getAttribute("data-users");
+    const parsedUsers = users ? JSON.parse(users) : [];
+
+    console.log(parsedUsers);
+
     const taskDetails = document.getElementById('task-details');
     if (taskDetails) {
         taskDetails.style.width = '30%';
@@ -34,7 +39,7 @@ function showTaskDetails(button) {
 
     document.getElementById('task-details').style.display = 'block';
     document.getElementById('task-content').innerHTML = `
-<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 610px">
+<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 710px">
     <div class="status-indicator-task-details" style="
             position: absolute;
             top: 0;
@@ -61,6 +66,8 @@ function showTaskDetails(button) {
                 <p style="margin-top: 15px">Сумма:</p>
                 <p style="margin-top: 20px">Файл:</p>
                 <p style="margin-top: 18px">Статус:</p>
+                <p style="margin-top: 18px">Назначено:</p>
+
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
@@ -105,7 +112,7 @@ function showTaskDetails(button) {
                         ` : ''}
                 </div>
                 <div id="file-input" style="display: none; width: 300px; flex-direction: row">
-                    <input type="file" class="form-control" id="file" name="Файл">
+                    <input type="file" class="form-control" id="file" name="file">
                     <p style="display: none;"></p>
                     <div class="invalid-feedback">
                         Выберите файл
@@ -130,7 +137,10 @@ function showTaskDetails(button) {
                         <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
                     </button>
                     </div>
-                </div>
+                </div id="file-input" style="display: none; width: 300px; flex-direction: row">
+                    
+                <div id="users-display"></div>
+
             </div>
         </div>
 
@@ -156,6 +166,23 @@ function showTaskDetails(button) {
     </form>
 </div>
     `;
+    const usersDisplay = document.getElementById('users-display');
+    if (usersDisplay) {
+        if (parsedUsers.length > 0) {
+            usersDisplay.innerHTML = `
+        <div>
+            ${parsedUsers
+                .map(user => `<p>${user.surname.charAt(0)}. ${user.name}</p>`)
+                .join('')}
+        </div>
+        `;
+        } else {
+            usersDisplay.innerHTML = '<p>Не задано</p>';
+        }
+    } else {
+        console.error('Element with id "users-display" not found in the DOM.');
+    }
+
 
     var dateFormat = "dd.mm.yy";
     var from = $("#from").datepicker({
@@ -566,7 +593,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch(actionUrl, {
             method: "POST",
-            body: formData
+            body: formData,
+            csrfToken: csrfToken
+
         })
             .then(response => {
                 if (!response.ok) {

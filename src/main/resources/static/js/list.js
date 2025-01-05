@@ -64,80 +64,86 @@ function showTaskDetails(button) {
                 <p>ИНН:</p>
                 <p style="margin-top: 8px">Период:</p>
                 <p style="margin-top: 15px">Сумма:</p>
-                <p style="margin-top: 20px">Файл:</p>
-                <p style="margin-top: 13px">Статус:</p>
+                <p style="margin-top: 16px">Файл:</p>
+                <p style="margin-top: 17px">Статус:</p>
                 <p style="margin-top: 13px">Назначено:</p>
-
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
                 <p class="truncate-text">${companyName}</p>
                 <p>${companyInn}</p>
-                <div id="date-display" style="display: block;">
-                    <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-                </div>
-                <div id="date-input" style="display: none; height: 34px; align-items: center;">
-                    <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
-                    <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
-                    <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
-                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
-                    </button>
-                </div>
                 
-
-                <div id="amount-display" style="display: block;">
-                    <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-
-                </div>
-                <div id="amount-input" style="display: none;">
-                    <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
-                        width: 100px;
-                        height: 32px;
-                        border: 1px solid #ccc;
-                        border-radius: 4px;
-                        font-size: 14px;
-                        margin: 0;
-                    ">
-                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
-                </div>
-                
-                <div id="file-display" style="display: flex; flex-direction: row; margin-top: 9px">
-                    <p class="truncate-text">${filePath}</p>
-                        <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
-                        ${filePath !== "Не задано" ? `
-                            <button type="button" class="btn btn-link">
-                                <a href="api/files/download/${companyId}/${filePath}">
-                                    <img src="/images/download.png" alt="Download icon" style="max-width: 20px; max-height: 20px;">
-                                </a>
-                            </button>
-                        ` : ''}
-                </div>
-                <div id="file-input" style="display: none; width: 300px; flex-direction: row">
-                    <input type="file" class="form-control" id="file" name="file">
-                    <p style="display: none;"></p>
-                    <div class="invalid-feedback">
-                        Выберите файл
+                <div style="display: inline; height: 34px">
+                    <div id="date-display" style="display: block;">
+                        <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                     </div>
-                    <button type="button" class="btn btn-link" onclick="cancelEditFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
+                    <div id="date-input" style="display: none; height: 34px; align-items: center; margin-top: 5px; margin-bottom: 5px">
+                        <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
+                        <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
+                        <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
+                            <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                        </button>
+                    </div>
                 </div>
                 
-                <div id="status-display" style="display: block">
-                    <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-                </div>
-                <div id="status-input" style="display: none; align-items: center;">
-                    <div style="display: flex; flex-direction: row">
-                    <div>
-                        <select class="form-select" id="taskStatus" name="statusId" style="
-                        width: 200px; height: 38px;
+                <div style="display: inline; height: 34px">
+                    <div id="amount-display" style="display: block;">
+                        <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+    
+                    </div>
+                    <div id="amount-input" style="display: none; height: 34px; margin-top: 5px; margin-bottom: 5px">
+                        <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
+                            width: 100px;
+                            height: 34px;
+                            border: 1px solid #ccc;
+                            font-size: 14px;
+                            margin-bottom: 0;
                         ">
-                            ${statusOptions}
-                        </select>
+                        <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                     </div>
-      
-                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
-                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
-                    </button>
+                </div>
+                
+                <div style="display: inline; height: 38px">
+                    <div id="file-display" style="display: flex; flex-direction: row; height: 38px">
+                        <p class="truncate-text">${filePath}</p>
+                            <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
+                            ${filePath !== "Не задано" ? `
+                                <button type="button" class="btn btn-link">
+                                    <a href="api/files/download/${companyId}/${filePath}">
+                                        <img src="/images/download.png" alt="Download icon" style="max-width: 20px; max-height: 20px;">
+                                    </a>
+                                </button>
+                            ` : ''}
                     </div>
+                    <div id="file-input" style="display: none; width: 300px; flex-direction: row">
+                        <input type="file" class="form-control" id="file" name="file">
+                        <p style="display: none;"></p>
+                        <div class="invalid-feedback">
+                            Выберите файл
+                        </div>
+                        <button type="button" class="btn btn-link" onclick="cancelEditFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
+                    </div>
+                </div>
+                
+                <div style="display: inline; height: 34px">
+                    <div id="status-display" style="display: block">
+                        <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                    </div>
+                    <div id="status-input" style="display: none; align-items: center;">
+                        <div style="display: flex; flex-direction: row">
+                        <div>
+                            <select class="form-select" id="taskStatus" name="statusId" style="
+                            width: 200px; height: 38px;
+                            ">
+                                ${statusOptions}
+                            </select>
+                        </div>
+          
+                        <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
+                            <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                        </button>
+                        </div>
+                </div>    
                 </div id="file-input" style="display: none; width: 300px; flex-direction: row">
                     
                 <div id="users-display"></div>

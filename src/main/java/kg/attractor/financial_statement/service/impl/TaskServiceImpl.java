@@ -696,5 +696,18 @@ public class TaskServiceImpl implements TaskService {
 
         return true;
     }
+
+    @Override
+    public List<TaskDto> getTasksByCompanyId(Long id) {
+        return taskRepository.findAllByCompany_Id(id)
+                .stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public List<TaskDto> getTasksByUsers_IdAndCompany_Id(Long userId, Long companyId) {
+        List<Task> tasks = taskRepository.findAllByUsers_IdAndCompany_Id(userId, companyId);
+        System.out.println("Tasks size: " + tasks.size());
+        return tasks.stream().map(this::convertToDto).toList();
+    }
 }
 

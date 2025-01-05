@@ -513,4 +513,10 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public List<UserDto> getAllAccountant() {
+        return userRepository.findAllByRole_RoleNameAndEnabledTrue("Бухгалтер")
+                .stream().map(this::convertToUserDto).toList();
+    }
+
 }

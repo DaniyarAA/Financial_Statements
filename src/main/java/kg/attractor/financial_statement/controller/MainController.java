@@ -67,9 +67,28 @@ public class MainController {
         model.addAttribute("sort", sort);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("priorities", priorities);
+        model.addAttribute("userTasks", userTasks);
+        model.addAttribute("users", userService.getAllAccountant());
+        model.addAttribute("tasks", taskService.getAllTasks());
 
         return "main/mainPage";
     }
+
+    @GetMapping("/filterTasks")
+    @ResponseBody
+    public List<TaskDto> filterTasks(@RequestParam(required = false) Long companyId,
+                                     @RequestParam(required = false) Long userId) {
+        if (companyId != null && userId != null) {
+            return taskService.getTasksByUsers_IdAndCompany_Id(userId, companyId);
+        } else if (companyId != null) {
+            return taskService.getTasksByCompanyId(companyId);
+        } else if (userId != null) {
+            return taskService.getAllTaskDtosForUser(userService.getUserById(userId));
+        } else {
+            return taskService.getAllTasks();
+        }
+    }
+
 
     @PostMapping("/calendar")
     public ResponseEntity<Map<LocalDate, Long>> getTaskCounts(@RequestBody Map<String, Integer> yearMonth, Principal principal) {

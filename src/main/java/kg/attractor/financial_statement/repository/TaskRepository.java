@@ -1,5 +1,6 @@
 package kg.attractor.financial_statement.repository;
 
+import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +28,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUsersIdOrderByPriorityIdDesc(Long userId);
     List<Task> findByCompanyIdAndEndDateBetween(Long companyId, LocalDate startDate, LocalDate endDate);
     List<Task> findAllByUsersAndTaskStatus(List<User> users, TaskStatus taskStatus);
+    List<Task> findAllByCompany_Id(Long companyId);
+
+    List<Task> findAllByUsers_IdAndCompany_Id(Long userId, Long companyId);
 }

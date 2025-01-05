@@ -92,14 +92,15 @@
                     <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
                     <#if userDto.getRole().roleName =='SuperUser'>
                         <div class="select-for-task">
-                            <select class="form-select w-50% fs-6" id="companySelect" onchange="filterTasks()">
+                            <select class="form-select w-50%" name="companyId" onchange="window.location.href='/?companyId=' + this.value">
                                 <option value="">Выберите компанию</option>
                                 <#list companies as company>
                                     <option value="${company.id}">${company.name}</option>
                                 </#list>
                             </select>
 
-                            <select class="form-select w-50% fs-6" id="userSelect" onchange="filterTasks()">
+
+                            <select class="form-select w-50%" name="userId" onchange="window.location.href='/?userId='+ this.value">
                                 <option value="">Выберите пользователя</option>
                                 <#list users as user>
                                     <option value="${user.id}">${user.name}</option>

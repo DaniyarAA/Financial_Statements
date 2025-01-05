@@ -40,6 +40,8 @@ public class MainController {
     @GetMapping
     public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
                               @RequestParam(required = false, defaultValue = "endDate") String sortBy,
+                              @RequestParam(required = false) Long companyId,
+                              @RequestParam(required = false) Long userId,
                               Model model, HttpServletRequest request , Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
@@ -48,6 +50,18 @@ public class MainController {
         if (userDto == null) {
             return "redirect:/login";
         }
+
+        List<TaskDto> sortedTasks;
+        if (companyId != null && userId != null) {
+            sortedTasks = taskService.getTasksByUsers_IdAndCompany_Id(userId, companyId);
+        } else if (companyId != null) {
+            sortedTasks = taskService.getTasksByCompanyId(companyId);
+        } else if (userId != null) {
+            sortedTasks = taskService.getTasksForUser(userId);
+        } else {
+            sortedTasks = taskService.getAllTasks();
+        }
+
         List<TaskDto> userTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
         List<PriorityDto> priorities = priorityService.getAllPriorities();
 
@@ -69,7 +83,7 @@ public class MainController {
         model.addAttribute("priorities", priorities);
         model.addAttribute("userTasks", userTasks);
         model.addAttribute("users", userService.getAllAccountant());
-        model.addAttribute("tasks", taskService.getAllTasks());
+        model.addAttribute("tasks", sortedTasks);
 
         return "main/mainPage";
     }

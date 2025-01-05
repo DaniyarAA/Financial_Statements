@@ -114,11 +114,11 @@ public class FileUtils {
         return fileName;
     }
 
-    private String convertToTransliteratedName(String companyName) {
+    private String convertToTransliteratedName(String inputName) {
         Transliterator transliterator = Transliterator.getInstance("Russian-Latin/BGN");
-        String transliteratedName = transliterator.transliterate(companyName);
+        String transliteratedName = transliterator.transliterate(inputName);
 
-        return transliteratedName.replaceAll("[^a-zA-Z0-9-_]", "_");
+        return transliteratedName.replaceAll("[^a-zA-Z0-9-_.]", "_");
     }
 
 

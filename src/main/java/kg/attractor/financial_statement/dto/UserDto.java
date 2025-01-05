@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import kg.attractor.financial_statement.validation.PasswordMatch;
 import kg.attractor.financial_statement.validation.UniqueEmail;
 import kg.attractor.financial_statement.validation.UniqueLogin;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@PasswordMatch
 public class UserDto {
     private Long id;
 
@@ -33,6 +35,8 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$",
             message = "Пароль должен содержать минимум 1 символ верхнего регистра, 1 символ нижнего регистра и минимум 1 символ")
     private String password;
+
+    private String confirmPassword;
 
     private LocalDate registerDate;
 

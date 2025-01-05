@@ -73,6 +73,10 @@ public interface TaskService {
 
     boolean areValidDates(String from, String to);
 
+    boolean isTaskWithThisStatus(Long statusId);
+
+    boolean isTaskWithThisDocumentType(Long documentId);
+
     boolean createIsValid(TaskCreateDto taskCreateDto);
 
     Resource loadFileAsResource(Path filePath) throws MalformedURLException;

@@ -21,6 +21,8 @@
               integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
               crossorigin="anonymous">
         <script src="/js/calendar.js"></script>
+        <script src="/js/documentType.js"></script>
+        <script src="/js/taskStatus.js"></script>
         <title>Financial Statement</title>
         <link rel="stylesheet" href="/css/styles.css">
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">

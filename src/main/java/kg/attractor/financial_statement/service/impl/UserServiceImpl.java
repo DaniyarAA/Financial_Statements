@@ -110,6 +110,43 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public boolean canOpenDocumentTools(String name) {
+        if (name == null || name.isEmpty()){
+            return false;
+        }
+
+        UserDto userDto = getUserDtoByLogin(name);
+        if (userDto == null || userDto.getRoleDto() == null){
+            return false;
+        }
+
+        Set<String> documentAuthorities = Set.of("EDIT_DOCUMENT", "CREATE_DOCUMENT", "DELETE_DOCUMENT", "VIEW_DOCUMENT");
+        return userDto.getRoleDto().
+                getAuthorities().
+                stream().
+                anyMatch(authority -> documentAuthorities.
+                        contains(authority.getAuthority().toUpperCase()));
+    }
+
+    @Override
+    public boolean canOpenTaskTools(String name) {
+        if (name == null || name.isEmpty()){
+            return false;
+        }
+
+        UserDto userDto = getUserDtoByLogin(name);
+        if(userDto == null || userDto.getRoleDto() == null){
+            return false;
+        }
+        Set<String> statusAuthorities = Set.of("CREATE_STATUS", "EDIT_STATUS", "DELETE_STATUS", "VIEW_STATUS");
+        return userDto.getRoleDto().
+                getAuthorities().
+                stream().
+                anyMatch(authority -> statusAuthorities.
+                        contains(authority.getAuthority().toUpperCase()));
+    }
+
 
     @Override
     public UserDto getUserDtoById(Long id) {
@@ -145,13 +182,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void editUser(Long id, UserDto userDto) {
+    public void editUser(Long id, UserDto userDto) throws MessagingException, UnsupportedEncodingException {
         User user = getUserById(id);
         if(!user.isEnabled()){
             throw new IllegalArgumentException("Удаленного пользователя нельзя редактировать!");
         }
         validateUserDto(userDto);
-        updateEmailIfChanged(userDto.getEmail(), user);
         if(!user.getRole().getRoleName().equals("SuperUser")){
             Role role = roleService.getRoleById(userDto.getRoleDto().getId());
             user.setRole(role);
@@ -160,6 +196,7 @@ public class UserServiceImpl implements UserService {
         user.setNotes(userDto.getNotes());
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
+        updateEmailIfChanged(userDto.getEmail(), user);
         List<Company> selectedCompanies = companyService.findAllById(userDto.getCompanyIds());
         for(Company company : selectedCompanies){
             if(!user.getCompanies().contains(company)){
@@ -233,7 +270,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void updateEmailIfChanged(String newEmail, User user) {
+    private void updateEmailIfChanged(String newEmail, User user) throws MessagingException, UnsupportedEncodingException {
         if(newEmail == null || newEmail.isEmpty()){
             throw new IllegalArgumentException("Заполните почту!");
         }
@@ -243,7 +280,9 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("Пользователь с такой почтой уже существует");
             }
             log.info("changed email for user");
+            String oldEmail = user.getEmail();
             user.setEmail(newEmail);
+            emailService.sendUpdatedEmail(oldEmail, newEmail, user.getName(), user.getSurname());
         }
     }
 
@@ -315,7 +354,6 @@ public class UserServiceImpl implements UserService {
                 company.getUsers().remove(user);
             }
             user.getCompanies().clear();
-//            userCompanyService.updateUserCompaniesOnUserDeletion(id);
             userRepository.save(user);
         }
     }

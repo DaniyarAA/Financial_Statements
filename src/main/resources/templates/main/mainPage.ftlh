@@ -83,6 +83,19 @@
             <div class="col tasks">
                 <div class="tasks-header">
                     <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
+                    <a href="/tasks?openModal=true" class="btn type-btn add-task">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" font-weight="bold"
+                             fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                        </svg>
+                    </a>
+                        <#if canOpenDocumentTools>
+                            <button type="button" class="btn btn-light" title="Редактирование документов" data-bs-toggle="modal" data-bs-target="#documentTypeTools"><i class="bi bi-file-diff"></i></button>
+                        </#if>
+                        <#if canOpenTaskTools>
+                            <button type="button" class="btn btn-light" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#taskStatusTools"><i class="bi bi-c-circle"></i></button>
+                        </#if>
                     <div class="task-actions">
                         <a href="#" class="btn type-btn help-task" onclick="openModal()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
@@ -421,6 +434,139 @@
                             <button type="submit" class="btn btn-light create-report-btn mt-1" id="downloadYearlyCsvButton"><i class="bi bi-check2 fs-1"></i></button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="documentTypeTools" tabindex="-1" aria-labelledby="documentTypeToolsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="documentTypeToolsLabel">Настройка типов документов</h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Виды документов</h5>
+                    <div class="list-document-types-scroll" style="overflow: scroll; max-height: 300px">
+                        <#list defaultDocumentTypes as documentType>
+                            <p>${documentType.name}</p>
+                        </#list>
+                        <#list changeableDocumentTypes as documentTypeChangeable>
+                            <div class="document-type-item">
+                                <p id="documentType${documentTypeChangeable.id}" class="inline-block">
+                                    ${documentTypeChangeable.name}
+                                    <#list currentUser.roleDto.authorities as auth>
+                                        <#if auth.authority=="DELETE_DOCUMENT">
+                                            <button type="button" onclick="deleteDocumentType('${documentTypeChangeable.id}')"><i class="bi bi-trash"></i></button>
+                                        </#if>
+                                        <#if auth.authority=="EDIT_DOCUMENT">
+                                            <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
+                                                    title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
+                                            </button>
+                                        </#if>
+                                    </#list>
+                                </p>
+                                <div class="document-type-changeable-name-edit">
+                                    <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
+                                           value="${documentTypeChangeable.name!}">
+                                    <button id="cancelBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
+                                            onclick="cancelEditDocumentType('documentType${documentTypeChangeable.id}')">&#10005;
+                                    </button>
+                                    <button id="saveBtndocumentType${documentTypeChangeable.id}" class="btn btn-light d-none"
+                                            onclick="saveChangesDocumentType('documentType${documentTypeChangeable.id}', ${documentTypeChangeable.id})">&#10003;
+                                    </button>
+                                </div>
+                            </div>
+                        </#list>
+                    </div>
+                    <span id="documentTypeToolsError" class="text-danger"></span>
+                    <#list currentUser.roleDto.authorities as auth>
+                        <#if auth.authority=="CREATE_DOCUMENT">
+                            <form id="createDocumentTypeForm" action="/document/create" method="post" onsubmit="createNewDocumentType(event)">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                </#if>
+                                <div class="form-group">
+                                    <label for="createDocumentType">Создать новый вид документа</label>
+                                    <input type="text" id="createDocumentType" name="name" class="form-control" required>
+                                    <label for="idBool">Будет автоматическим</label>
+                                    <select id="idBool" name="idBool" class="form-control">
+                                        <option value="0">Нет</option>
+                                        <option value="1">Да</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
+                                </div>
+                            </form>
+                        </#if>
+                    </#list>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="taskStatusTools" tabindex="-1" aria-labelledby="taskStatusToolsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskStatusToolsLabel">Настройка статусов</h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Статусы Задач</h5>
+                    <div class="list-task-status-scroll" style="overflow: scroll; max-height: 300px">
+                        <#list defaultTaskStatuses as taskStatus>
+                            <p>${taskStatus.name}</p>
+                        </#list>
+                        <#list changeableTaskStatuses as taskStatusChangeable>
+                            <p id="taskStatus${taskStatusChangeable.id}" class="inline-block">
+                                ${taskStatusChangeable.name}
+                                <#list currentUser.roleDto.authorities as auth>
+                                    <#if auth.authority=="DELETE_STATUS">
+                                        <button type="button" onclick="deleteTask('${taskStatusChangeable.id}')"><i class="bi bi-trash"></i></button>
+                                    </#if>
+                                    <#if auth.authority=="EDIT_STATUS">
+                                        <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
+                                                title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i></button>
+                                    </#if>
+                                </#list>
+                            </p>
+                            <div class="task-status-changeable-name-edit">
+                                <div>
+                                    <input type="text" id="editInputtaskStatus${taskStatusChangeable.id}" class="form-control d-none"
+                                           value="${taskStatusChangeable.name!}">
+                                    <button id="cancelBtntaskStatus${taskStatusChangeable.id}" class="btn btn-light d-none"
+                                            onclick="cancelEditTaskStatus('taskStatus${taskStatusChangeable.id}')">&#10005;
+                                    </button>
+                                    <button id="saveBtntaskStatus${taskStatusChangeable.id}" class="btn btn-light d-none"
+                                            onclick="saveChangesTaskStatus('taskStatus${taskStatusChangeable.id}', ${taskStatusChangeable.id})">&#10003;
+                                    </button>
+                                </div>
+                            </div>
+                        </#list>
+                    </div>
+                    <span id="taskStatusToolsError" class="text-danger"></span>
+                    <#list currentUser.roleDto.authorities as auth>
+                        <#if auth.authority=="CREATE_STATUS">
+                            <form id="taskStatusForm" action="/status/create" method="post" onsubmit="createNewTaskStatus(event)">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                </#if>
+                                <div class="form-group">
+                                    <label for="createTaskStatus">Создать новый статуса для задач</label>
+                                    <input type="text" id="createTaskStatus" name="name" class="form-control" required>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
+                                </div>
+                            </form>
+                        </#if>
+                    </#list>
                 </div>
             </div>
         </div>
@@ -877,5 +1023,5 @@
     <script src="/js/legendMap.js"></script>
     <script src="/js/tags.js"></script>
     <script src="/js/priority.js"></script>
-    <script src="/js/reports.js">
+    <script src="/js/reports.js"></script>
 </@layout.layout>

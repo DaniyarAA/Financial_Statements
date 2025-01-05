@@ -64,7 +64,10 @@ public class FileUtils {
         if (originalFileName == null) {
             throw new RuntimeException("File name is invalid.");
         }
-        String transliteratedCompanyName = convertCompanyNameToTransliteratedName(companyName);
+
+        String transliteratedCompanyName = convertToTransliteratedName(companyName);
+
+        String transliteratedFileName = convertToTransliteratedName(originalFileName);
 
         String uploadDir = "data/files/" + transliteratedCompanyName;
         Path pathDir = Paths.get(uploadDir);
@@ -75,18 +78,19 @@ public class FileUtils {
             throw new RuntimeException("Failed to create directory: " + uploadDir, e);
         }
 
-        String fileName = resolveFileName(pathDir, originalFileName);
+        String resolvedFileName = resolveFileName(pathDir, transliteratedFileName);
 
-        Path filePath = Paths.get(uploadDir + "/" + fileName);
+        Path filePath = Paths.get(uploadDir + "/" + resolvedFileName);
 
         try (OutputStream os = Files.newOutputStream(filePath)) {
             os.write(file.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save file: " + fileName, e);
+            throw new RuntimeException("Failed to save file: " + resolvedFileName, e);
         }
 
-        return fileName;
+        return resolvedFileName;
     }
+
 
     private String resolveFileName(Path directory, String fileName) {
         String baseName = fileName;
@@ -110,7 +114,7 @@ public class FileUtils {
         return fileName;
     }
 
-    private String convertCompanyNameToTransliteratedName (String companyName) {
+    private String convertToTransliteratedName(String companyName) {
         Transliterator transliterator = Transliterator.getInstance("Russian-Latin/BGN");
         String transliteratedName = transliterator.transliterate(companyName);
 
@@ -119,7 +123,7 @@ public class FileUtils {
 
 
     public Path getFilePath(String companyName, String fileName) {
-        String transliteratedName = convertCompanyNameToTransliteratedName(companyName);
+        String transliteratedName = convertToTransliteratedName(companyName);
         return Paths.get("data", "files", transliteratedName, fileName);
     }
 }

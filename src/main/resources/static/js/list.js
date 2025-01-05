@@ -65,8 +65,8 @@ function showTaskDetails(button) {
                 <p style="margin-top: 8px">Период:</p>
                 <p style="margin-top: 15px">Сумма:</p>
                 <p style="margin-top: 20px">Файл:</p>
-                <p style="margin-top: 18px">Статус:</p>
-                <p style="margin-top: 18px">Назначено:</p>
+                <p style="margin-top: 13px">Статус:</p>
+                <p style="margin-top: 13px">Назначено:</p>
 
             </div>
         
@@ -76,7 +76,7 @@ function showTaskDetails(button) {
                 <div id="date-display" style="display: block;">
                     <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
                 </div>
-                <div id="date-input" style="display: none; height: 36px; align-items: center;">
+                <div id="date-input" style="display: none; height: 34px; align-items: center;">
                     <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
                     <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
                     <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
@@ -92,7 +92,7 @@ function showTaskDetails(button) {
                 <div id="amount-input" style="display: none;">
                     <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
                         width: 100px;
-                        height: 33px;
+                        height: 32px;
                         border: 1px solid #ccc;
                         border-radius: 4px;
                         font-size: 14px;
@@ -101,8 +101,9 @@ function showTaskDetails(button) {
                     <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                 </div>
                 
-                <div id="file-display" style="display: flex; flex-direction: row">
-                    <p>${filePath} <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                <div id="file-display" style="display: flex; flex-direction: row; margin-top: 9px">
+                    <p class="truncate-text">${filePath}</p>
+                        <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                         ${filePath !== "Не задано" ? `
                             <button type="button" class="btn btn-link">
                                 <a href="api/files/download/${companyId}/${filePath}">

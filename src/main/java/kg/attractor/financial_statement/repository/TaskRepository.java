@@ -15,8 +15,8 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllByTaskStatus(TaskStatus taskStatus);
-    @Query("SELECT t FROM Task t WHERE t.company IN :companies AND YEAR(t.startDate) = :year AND MONTH(t.startDate) = :month")
-    List<Task> findByCompanyInAndStartDateYearAndStartDateMonth(@Param("companies") List<Company> companies, @Param("year") int year, @Param("month") int month);
+    @Query("SELECT t FROM Task t WHERE t.company IN :companies AND YEAR(t.endDate) = :year AND MONTH(t.endDate) = :month")
+    List<Task> findByCompanyInAndEndDateYearAndEndDateMonth(@Param("companies") List<Company> companies, @Param("year") int year, @Param("month") int month);
     List<Task> findByCompanyId(Long company_id);
     List<Task> findByCompanyId(Long company_id, Sort sort);
     List<Task> findByUsersIdOrderByIdAsc(Long userId);

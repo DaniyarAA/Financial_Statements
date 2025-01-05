@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -30,30 +31,6 @@ public class TaskController {
     private final CompanyService companyService;
     private final TagService tagService;
 
-    @PostMapping("create")
-    public String createTask(
-            @Valid TaskCreateDto taskCreateDto,
-            BindingResult bindingResult,
-            Model model,
-            Authentication authentication
-    ) {
-        if (bindingResult.hasErrors() ) {
-            List<DocumentTypeDto> documentTypeDtos = documentTypeService.getAllDocumentTypes();
-            model.addAttribute("documentTypeDtos", documentTypeDtos);
-            model.addAttribute("taskCreateDto", taskCreateDto);
-
-            return "tasks/create";
-        }
-        if (taskCreateDto.getEndDate() == null || taskCreateDto.getStartDate() == null) {
-            return "redirect:/tasks";
-        }
-
-        Long id = taskService.createTask(taskCreateDto, authentication.getName());
-        return "redirect:/tasks";
-
-    }
-
-
     @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
@@ -64,11 +41,8 @@ public class TaskController {
     public String getTaskListPage(
             Model model,
             Authentication authentication,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "8") int size,
-            @RequestParam(required = false, defaultValue = "") String yearMonth,
             @RequestParam(value = "openModal", required = false, defaultValue = "false") boolean openModal
-            ) throws JsonProcessingException {
+    ) throws JsonProcessingException {
         if (authentication == null) {
             return "redirect:/login";
         }
@@ -76,51 +50,61 @@ public class TaskController {
         String userLogin = authentication.getName();
         User user = userService.getUserByLogin(userLogin);
 
-        Map<String, Object> taskListData = taskService.getTaskListData(user, page, size, yearMonth);
+        Map<String, Object> taskListData = taskService.getTaskListData(user);
         List<CompanyForTaskDto> companiesList = (List<CompanyForTaskDto>) taskListData.get("companyDtos");
         if (companiesList == null || companiesList.isEmpty()) {
             model.addAttribute("errorMsg", "У вас нет компаний");
         }
-        List<String> availableYearMonths = taskService.getAllYearMonths(authentication.getName());
-
 
         List<TaskStatusDto> taskStatusDtos = taskStatusService.getAllTaskStatuses();
         ObjectMapper objectMapper = new ObjectMapper();
         String taskStatusDtosJson = objectMapper.writeValueAsString(taskStatusDtos);
 
-        String availableYearMonthsJson = objectMapper.writeValueAsString(availableYearMonths);
-
         List<DocumentTypeDto> documentTypeDtos = documentTypeService.getFilteredDocumentTypes();
         List<UserDto> userDtos = userService.getAllUsers();
-        List<CompanyDto> companyDtos = companyService.getAllCompanies();
+        List<CompanyForTaskCreateDto> companyDtos = companyService.getAllCompaniesForCreateTask();
+
+        String companyDtosJson = objectMapper.writeValueAsString(companyDtos);
 
         model.addAllAttributes(taskListData);
 
-        model.addAttribute("availableYearMonthsJson", availableYearMonthsJson);
         model.addAttribute("taskStatusDtosJson", taskStatusDtosJson);
         model.addAttribute("dateUtils", new DateUtils());
-
         model.addAttribute("userDtos", userDtos);
         model.addAttribute("companies", companyDtos);
+        model.addAttribute("companyDtosJson", companyDtosJson);
         model.addAttribute("taskStatusDtos", taskStatusDtos);
         model.addAttribute("documentTypeDtos", documentTypeDtos);
         model.addAttribute("taskCreateDto", new TaskCreateDto());
+        model.addAttribute("openModal", openModal);
 
-        System.out.println("availableYearMonths: " + availableYearMonths);
         System.out.println("taskListData: " + taskListData);
 
         System.out.println("Json task statuses: " + taskStatusDtosJson);
-        System.out.println("Json year month: " + availableYearMonths);
-
-        model.addAttribute("openModal", openModal);
 
         return "tasks/tasksList";
+    }
+
+    @PostMapping("create")
+    @ResponseBody
+    public ResponseEntity<?> createTaskInListPage(
+            @Valid TaskCreateDto taskCreateDto,
+            Model model,
+            Authentication authentication
+    ) {
+        if (!taskService.createIsValid(taskCreateDto)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Выбраны неправильные даты!"));
+        }
+        Long id = taskService.createTask(taskCreateDto, authentication.getName());
+        return ResponseEntity.ok(Map.of("success", "Создано"));
     }
 
     @PostMapping("/edit/{id}")
     @ResponseBody
     public ResponseEntity<?> updateTaskInListPage(
             @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
+            @RequestParam MultipartFile file,
             @PathVariable Long id,
             Authentication authentication
     ) {
@@ -134,7 +118,7 @@ public class TaskController {
                     .body(Map.of("error", "Выбраны неправильные даты!"));
         }
 
-        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id);
+        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id, file);
         return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
     }
 

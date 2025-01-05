@@ -1,6 +1,7 @@
 package kg.attractor.financial_statement.service.impl;
 
 import kg.attractor.financial_statement.dto.CompanyDto;
+import kg.attractor.financial_statement.dto.CompanyForTaskCreateDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
 import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.enums.ReportFrequency;
@@ -605,6 +606,29 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId) {
         return allCompanies.stream().filter(companyDto -> companyDto.getId().equals(companyId)).
                 findFirst().orElseThrow(() -> new NoSuchElementException("У вас нет такой компании"));
+    }
+
+    @Override
+    public String getCompanyNameById(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("Company not found: " + companyId));
+        return company.getName();
+    }
+
+    @Override
+    public List<CompanyForTaskCreateDto> getAllCompaniesForCreateTask() {
+        List<Company> companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
+        return companyList.stream().map(this::convertToCreateTaskDto).collect(Collectors.toList());
+    }
+
+    private CompanyForTaskCreateDto convertToCreateTaskDto(Company company) {
+        return CompanyForTaskCreateDto.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .users(company.getUsers() == null
+                        ? Collections.emptyList()
+                        : userService.convertToListUserForCreateTaskDto(company.getUsers()))
+                .build();
     }
 
 }

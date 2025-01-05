@@ -1,7 +1,6 @@
 package kg.attractor.financial_statement.service.impl;
 
-
-
+import jakarta.transaction.Transactional;
 import kg.attractor.financial_statement.dto.*;
 import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.entity.Task;
@@ -12,21 +11,24 @@ import kg.attractor.financial_statement.repository.TaskPageableRepository;
 import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.*;
-import kg.attractor.financial_statement.service.impl.DocumentTypeServiceImpl;
-import lombok.RequiredArgsConstructor;
+import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -50,6 +52,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskStatusService taskStatusService;
     private final CompanyService companyService;
     private final UserRepository userRepository;
+    private final FileUtils fileUtils;
 
     public TaskServiceImpl(TaskRepository taskRepository,
                            TaskPageableRepository taskPageableRepository,
@@ -57,7 +60,8 @@ public class TaskServiceImpl implements TaskService {
                            UserService userService,
                            TaskStatusService taskStatusService,
                            CompanyService companyService,
-                           UserRepository userRepository) {
+                           UserRepository userRepository,
+                           FileUtils fileUtils) {
         this.taskRepository = taskRepository;
         this.taskPageableRepository = taskPageableRepository;
         this.documentTypeService = documentTypeService;
@@ -65,6 +69,7 @@ public class TaskServiceImpl implements TaskService {
         this.taskStatusService = taskStatusService;
         this.companyService = companyService;
         this.userRepository = userRepository;
+        this.fileUtils = fileUtils;
     }
 
     @Override
@@ -209,7 +214,7 @@ public class TaskServiceImpl implements TaskService {
 //        List<Company> companies = companyService.findByUser(user);
         List<Company> companies = user.getCompanies();
 
-        List<Task> tasks = taskRepository.findByCompanyInAndStartDateYearAndStartDateMonth(
+        List<Task> tasks = taskRepository.findByCompanyInAndEndDateYearAndEndDateMonth(
                 companies,
                 selectedMonthYear.getYear(),
                 selectedMonthYear.getMonthValue()
@@ -342,7 +347,7 @@ public class TaskServiceImpl implements TaskService {
         User user = userService.getUserByLogin(login);
         List<Task> tasks = getAllTasksForUser(user);
         List<String> yearMonths = tasks.stream()
-                .map(Task::getStartDate)
+                .map(Task::getEndDate)
                 .map(date -> date.format(DateTimeFormatter.ofPattern("MM.yyyy")))
                 .distinct()
                 .sorted(Comparator.comparing(
@@ -394,18 +399,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth) {
-        YearMonth filterYearMonth = getFilterYearMonth(paramYearMonth);
-        YearMonth nextYearMonth = filterYearMonth.plusMonths(1);
+    public Map<String, Object> getTaskListData(User user) {
 
         List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
         List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
 
-        List<TaskDto> filteredTasks = filterTasksByYearMonth(taskDtos, filterYearMonth, nextYearMonth);
-        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(filteredTasks, paramYearMonth);
+        Map<String, String> monthsMap = mapYearMonthsToReadableFormat(taskDtos);
 
         Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany = groupTasksByYearMonthAndCompany(
-                filteredTasks, companyDtos);
+                taskDtos, companyDtos);
 
         List<String> availableYearMonths = new ArrayList<>(tasksByYearMonthAndCompany.keySet());
 
@@ -415,15 +417,14 @@ public class TaskServiceImpl implements TaskService {
 
         System.out.println("Month map: " + monthsMap);
 
-        Map<String, Object> response = buildResponse(page, size, companyDtos, monthsMap, tasksByYearMonthAndCompany);
+        Map<String, Object> response = buildResponse(companyDtos, monthsMap, tasksByYearMonthAndCompany);
         response.put("availableYearMonths", availableYearMonths);
         return response;
     }
 
 
     @Override
-    public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String name, Long id) {
-        System.out.println("TaskEditDto: " + taskDto.getFrom() + " " + taskDto.getTo());
+    public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String login, Long id, MultipartFile file) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
@@ -447,9 +448,18 @@ public class TaskServiceImpl implements TaskService {
             LocalDate endDate = LocalDate.parse(taskDto.getTo(), formatter);
             newVersionOfTask.setEndDate(endDate);
         }
+        if (file != null) {
+            String filePath = saveFile(file, newVersionOfTask.getCompany().getName());
+            newVersionOfTask.setFilePath(filePath);
+        }
         newVersionOfTask.setId(id);
         taskRepository.save(newVersionOfTask);
 
+    }
+
+    @Transactional
+    protected String saveFile(MultipartFile file, String companyName) {
+        return fileUtils.saveUploadedFile(file, companyName);
     }
 
     @Override
@@ -520,6 +530,7 @@ public class TaskServiceImpl implements TaskService {
                 .priorityId(task.getPriorityId())
                 .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
                 .tag(task.getTag() != null ? task.getTag().getTag() : null)
+                .filePath(task.getFilePath() != null ? task.getFilePath() : null)
                 .build();
     }
 
@@ -550,17 +561,17 @@ public class TaskServiceImpl implements TaskService {
     private List<TaskDto> filterTasksByYearMonth(List<TaskDto> tasks, YearMonth filterYearMonth, YearMonth nextYearMonth) {
         return tasks.stream()
                 .filter(task -> {
-                    YearMonth taskYearMonth = YearMonth.from(task.getStartDate());
+                    YearMonth taskYearMonth = YearMonth.from(task.getEndDate());
                     return taskYearMonth.equals(filterYearMonth) || taskYearMonth.equals(nextYearMonth);
                 })
                 .collect(Collectors.toList());
     }
 
-    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks, String paramYearMonth) {
+    private Map<String, String> mapYearMonthsToReadableFormat(List<TaskDto> tasks) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
         Map<String, String> monthsMap = tasks.stream()
-                .sorted(Comparator.comparing(task -> YearMonth.from(task.getStartDate())))
-                .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
+                .sorted(Comparator.comparing(task -> YearMonth.from(task.getEndDate())))
+                .map(task -> YearMonth.from(task.getEndDate()).format(formatter))
                 .distinct()
                 .collect(Collectors.toMap(
                         ym -> ym,
@@ -572,17 +583,6 @@ public class TaskServiceImpl implements TaskService {
                         LinkedHashMap::new
                 ));
 
-        if (paramYearMonth == null || paramYearMonth.trim().isEmpty()) {
-            String currentYearMonth = YearMonth.now().format(formatter);
-            if (!monthsMap.containsKey(currentYearMonth)) {
-                YearMonth currentYM = YearMonth.now();
-                monthsMap.put(
-                        currentYearMonth,
-                        currentYM.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru")) + " " + currentYM.getYear()
-                );
-            }
-        }
-
         return monthsMap;
     }
 
@@ -591,7 +591,7 @@ public class TaskServiceImpl implements TaskService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.yyyy");
 
         List<String> sortedYearMonths = tasks.stream()
-                .map(task -> YearMonth.from(task.getStartDate()).format(formatter))
+                .map(task -> YearMonth.from(task.getEndDate()).format(formatter))
                 .distinct()
                 .sorted(Comparator.comparing(yearMonth -> YearMonth.parse(yearMonth, formatter)))
                 .toList();
@@ -601,7 +601,7 @@ public class TaskServiceImpl implements TaskService {
             Map<String, List<TaskDto>> tasksForCompanies = new HashMap<>();
             for (CompanyForTaskDto company : companies) {
                 List<TaskDto> tasksForCompanyAndMonth = tasks.stream()
-                        .filter(task -> YearMonth.from(task.getStartDate()).format(formatter).equals(yearMonth)
+                        .filter(task -> YearMonth.from(task.getEndDate()).format(formatter).equals(yearMonth)
                                 && task.getCompany().getId().equals(company.getId()))
                         .collect(Collectors.toList());
                 tasksForCompanies.put(company.getId().toString(), tasksForCompanyAndMonth);
@@ -611,18 +611,13 @@ public class TaskServiceImpl implements TaskService {
         return tasksByYearMonthAndCompany;
     }
 
-    private Map<String, Object> buildResponse(int page, int size, List<CompanyForTaskDto> companyDtos,
+    private Map<String, Object> buildResponse(List<CompanyForTaskDto> companyDtos,
                                               Map<String, String> monthsMap,
                                               Map<String, Map<String, List<TaskDto>>> tasksByYearMonthAndCompany) {
         int totalCompanies = companyDtos.size();
-        int start = page * size;
-        int end = Math.min(start + size, totalCompanies);
-        List<CompanyForTaskDto> paginatedCompanies = companyDtos.subList(start, end);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("currentPage", page);
-        response.put("totalPages", (int) Math.ceil((double) totalCompanies / size));
-        response.put("list", paginatedCompanies);
+        response.put("list", companyDtos);
         response.put("monthsMap", monthsMap);
         response.put("companyDtos", companyDtos);
         response.put("tasksByYearMonthAndCompany", tasksByYearMonthAndCompany);
@@ -723,6 +718,32 @@ public class TaskServiceImpl implements TaskService {
     public boolean isTaskWithThisDocumentType(Long documentId) {
         List<Task> all = taskRepository.findAll();
         return all.stream().anyMatch(task -> Objects.equals(task.getDocumentType().getId(), documentId));
+    }
+
+    @Override
+    public boolean createIsValid(TaskCreateDto taskCreateDto) {
+        return taskCreateDto.getDocumentTypeId() != null && taskCreateDto.getCompanyId() != null && taskCreateDto.getTaskStatusId() != null;
+    }
+
+    @Override
+    public Resource loadFileAsResource(Path filePath) throws MalformedURLException {
+//        String filePath = fileUtils.getFilePathByCompanyNameAndFileName(companyName, fileName);
+        Resource resource = new UrlResource(filePath.toUri());
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            throw new MalformedURLException("Could not read the file: " + filePath);
+        }
+    }
+
+    @Override
+    public Optional<Path> getFilePath(String companyName, String fileName) {
+        Path filePath = fileUtils.getFilePath(companyName, fileName);
+
+        if (!Files.exists(filePath)) {
+            return Optional.empty();
+        }
+        return Optional.of(filePath);
     }
 }
 

@@ -21,6 +21,5 @@ public class TaskCreateDto {
     private Long taskStatusId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private BigDecimal amount;
     private String description;
 }

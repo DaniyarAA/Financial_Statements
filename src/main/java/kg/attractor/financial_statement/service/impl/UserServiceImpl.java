@@ -482,6 +482,7 @@ public class UserServiceImpl implements UserService {
 
     private UserForTaskDto convertToUserForTaskDto(User user) {
         return UserForTaskDto.builder()
+                .id(user.getId())
                 .login(user.getLogin())
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -548,6 +549,19 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users) {
+        return users.stream().map(this::convertToUserForCreateTaskDto).collect(Collectors.toList());
+    }
+
+    private UserForCreateTaskDto convertToUserForCreateTaskDto(User user) {
+        return UserForCreateTaskDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .build();
     }
 
 }

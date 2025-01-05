@@ -115,7 +115,7 @@ function showTaskDetails(button) {
                                 </button>
                             ` : ''}
                     </div>
-                    <div id="file-input" style="display: none; width: 300px; flex-direction: row">
+                    <div id="file-input" style="display: none; width: 250px; flex-direction: row">
                         <input type="file" class="form-control" id="file" name="file">
                         <p style="display: none;"></p>
                         <div class="invalid-feedback">
@@ -144,7 +144,7 @@ function showTaskDetails(button) {
                         </button>
                         </div>
                 </div>    
-                </div id="file-input" style="display: none; width: 300px; flex-direction: row">
+                </div>
                     
                 <div id="users-display"></div>
 

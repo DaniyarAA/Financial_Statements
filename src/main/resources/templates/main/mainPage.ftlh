@@ -89,7 +89,7 @@
 
             <div class="col tasks">
                 <div class="tasks-header">
-                    <h3><a href="/tasks" class="btn type-submit ms-5">ЗАДАЧИ</a></h3>
+                    <h3><a href="/tasks" class="btn type-submit">ЗАДАЧИ</a></h3>
                     <#if userDto.getRole().roleName =='SuperUser'>
                         <div class="select-for-task">
                             <select class="form-select w-50%" name="companyId" onchange="window.location.href='/?companyId=' + this.value">

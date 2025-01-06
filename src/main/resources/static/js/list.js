@@ -167,7 +167,7 @@ function showTaskDetails(button) {
             </div>
         </div>
 
-        <label for="description" style="margin-top: 10px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
+        <label for="description" style="margin-top: 60px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
         <textarea id="description" name="description" style="width: 95%; margin-left: 10px;
     height: 112px;
     background-color: #d9d9d9;

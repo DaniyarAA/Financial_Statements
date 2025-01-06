@@ -19,61 +19,6 @@ function closeModal() {
     setTimeout(() => modal.style.display = 'none', 300);
 }
 
-async function filterTasks() {
-    const companyId = document.getElementById('companySelect').value;
-    const userId = document.getElementById('userSelect').value;
-
-    const queryParams = new URLSearchParams({
-        companyId: companyId || '',
-        userId: userId || ''
-    });
-
-    try {
-        const response = await fetch(`/filterTasks?${queryParams.toString()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
-            }
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch tasks');
-        const tasks = await response.json();
-        updateTaskList(tasks);
-    } catch (error) {
-        console.error(error);
-        alert('Ошибка при загрузке задач');
-    }
-}
-
-function updateTaskList(tasks) {
-    const taskList = document.getElementById('taskList');
-    taskList.innerHTML = '';
-
-    if (tasks.length === 0) {
-        taskList.innerHTML = '<span class="ms-3">Список задач пуст</span>';
-        return;
-    }
-
-    tasks.forEach(task => {
-        const taskItem = `
-            <div class="task-item task-div">
-                <div class="task-company-document">
-                    <div class="task-id"><span>#${task.id}.</span></div>
-                    <div class="company-name-document-type">
-                        <div class="task-name">${task.company?.name || ''}</div>
-                        <div class="task-document">${task.documentTypeName || ''}</div>
-                    </div>
-                </div>
-                <div class="task-details">
-                    <span class="task-date">${task.endDate || ''}</span>
-                </div>
-            </div>
-         
-        `;
-        taskList.innerHTML += taskItem;
-    });
-}
 
 
 
@@ -123,5 +68,95 @@ function updateQueryParam(param, value) {
     } else {
         urlParams.set(param, value);
     }
-    window.location.href = `${window.location.pathname}?${urlParams}`;
+    const queryString = urlParams.toString();
+    window.location.href = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+}
+
+function highlightSelected() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedCompanyId = urlParams.get('companyId');
+    const selectedUserId = urlParams.get('userId');
+    const companyListItems = document.querySelectorAll('#companiesListOnTasks li');
+    const userListItems = document.querySelectorAll('#usersListOnTasks li');
+    const companySearch = document.getElementById("companySearch");
+    const userSearch = document.getElementById("userSearch");
+    if(companyListItems){
+        let selectedCompanyName = "Поиск компаний";
+        companyListItems.forEach((item) => {
+            item.classList.remove('selected');
+            if (item.getAttribute('data-value') === selectedCompanyId) {
+                item.classList.add('selected');
+                selectedCompanyName = item.textContent.trim();
+            }
+        });
+        companySearch.placeholder = selectedCompanyName;
+    }
+    if(userListItems){
+        let selectedUserName = "Поиск пользователей";
+        userListItems.forEach((item) => {
+            item.classList.remove('selected');
+            if (item.getAttribute('data-value') === selectedUserId) {
+                item.classList.add('selected');
+                selectedUserName = item.textContent.trim();
+            }
+        });
+        userSearch.placeholder = selectedUserName;
+    }
+}
+window.addEventListener('DOMContentLoaded', highlightSelected);
+
+
+function searchCompanies(searchInputId) {
+    const searchInput = document.getElementById(searchInputId).value.toLowerCase();
+    const dropdown = document.getElementById('companiesListOnTasks');
+    const listItems = dropdown.getElementsByTagName('li');
+    dropdown.style.display = 'block';
+
+    for (const item of listItems) {
+        const text = item.textContent || item.innerText;
+        item.style.display = text.toLowerCase().includes(searchInput) ? "" : "none";
+    }
+}
+
+
+document.addEventListener('click', function (event) {
+    const companiesSearchInput = document.getElementById('companySearch');
+    const usersSearchInput = document.getElementById('userSearch');
+    const companiesDropdown = document.getElementById('companiesListOnTasks');
+    const usersDropdown = document.getElementById('usersListOnTasks');
+
+
+    if (!companiesDropdown.contains(event.target) && event.target !== companiesSearchInput) {
+        companiesDropdown.style.display = 'none';
+    }
+    if (!usersDropdown.contains(event.target) && event.target !== usersSearchInput) {
+        usersDropdown.style.display = 'none';
+    }
+});
+
+
+function openCompanyDropdownOnTasks(){
+    const dropdown = document.getElementById('companiesListOnTasks');
+    dropdown.style.display = 'block';
+
+}
+
+function openUserDropdownOnTasks(){
+    const dropdown = document.getElementById('usersListOnTasks');
+    dropdown.style.display = 'block';
+}
+
+
+
+function searchUsers() {
+    const searchInput = document.getElementById('userSearch').value.toLowerCase();
+    const dropdown = document.getElementById('usersListOnTasks');
+    const listItems = dropdown.getElementsByTagName('li');
+
+    dropdown.style.display = 'block';
+
+    for (const item of listItems) {
+        const text = item.textContent || item.innerText;
+        item.style.display = text.toLowerCase().includes(searchInput) ? "" : "none";
+    }
 }

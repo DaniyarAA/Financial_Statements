@@ -98,28 +98,29 @@
                         </a></h3>
                     <#if userDto.getRole().roleName =='SuperUser'>
                         <div class="select-for-task">
-                            <select class="form-select w-50%" name="companyId" onchange="updateQueryParam('companyId', this.value)">
-                                <option value="">Все компании</option>
-                                <#list companies as company>
-                                    <option value="${company.id}"
-                                            <#if companyId?? && company.id?string == companyId?string>
-                                                selected
-                                            </#if>
-                                    >${company.name}</option>
-                                </#list>
-                            </select>
+                            <div class="search-select" onclick="openCompanyDropdownOnTasks()">
+                                <input type="text" id="companySearch" placeholder="Поиск компании" class="form-control" oninput="searchCompanies('companySearch')" />
+                                <ul id="companiesListOnTasks" class="dropdown-menu dropdown-on-tasks">
+                                    <li onclick="updateQueryParam('companyId', '', this)">Все компании</li>
+                                    <#list companies as company>
+                                        <li data-value="${company.id}" onclick="updateQueryParam('companyId', '${company.id}', this)">${company.name}</li>
+                                    </#list>
+                                </ul>
+                            </div>
 
 
-                            <select class="form-select w-50%" name="userId" onchange="updateQueryParam('userId', this.value)">
-                                <option value="">Все пользователи</option>
-                                <#list users as user>
-                                    <option value="${user.id}"
-                                            <#if userId?? && user.id?string == userId?string>
-                                                selected
-                                            </#if>
-                                    >${user.name}</option>
-                                </#list>
-                            </select>
+                            <div class="search-select" onclick="openUserDropdownOnTasks()">
+                                <input type="text" id="userSearch" placeholder="Поиск пользователя" class="form-control" oninput="searchUsers()" />
+                                <ul id="usersListOnTasks" class="dropdown-menu dropdown-on-tasks">
+                                    <li data-value="" onclick="updateQueryParam('userId', '')">Все пользователи</li>
+                                    <#list users as user>
+                                        <li data-value="${user.id}" onclick="updateQueryParam('userId', '${user.id}')">
+                                            ${user.name}
+                                        </li>
+                                    </#list>
+                                </ul>
+                            </div>
+
                         </div>
                     </#if>
                     <div class="task-actions">
@@ -690,6 +691,36 @@
 
 
     <style>
+
+        .dropdown-menu li.selected {
+            background-color: #3693f6;
+            color: white;
+            font-weight: bold;
+        }
+        .dropdown-on-tasks {
+            overflow-y: auto;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 40%;
+            display: none;
+        }
+
+        .dropdown-on-tasks li {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-on-tasks li:hover {
+            background-color: #f0f0f0;
+            color: #212529;
+        }
+
+
+
         .legend-map-modal {
             display: none;
             position: fixed;

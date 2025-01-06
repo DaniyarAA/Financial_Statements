@@ -193,12 +193,45 @@ function showTaskDetails(button) {
     if (usersDisplay) {
         if (parsedUsers.length > 0) {
             usersDisplay.innerHTML = `
-        <div>
-            ${parsedUsers
-                .map(user => `<p>${user.surname.charAt(0)}. ${user.name}</p>`)
+            <div>
+                ${parsedUsers
+                .map(
+                    (user, index) => `
+                        <div style="display: inline-flex; align-items: center; margin-bottom: 5px; position: relative;">
+                            <p style="margin: 0; font-size: 14px;">${user.surname.charAt(0)}. ${user.name}</p>
+                            <button type="button" class="btn btn-link" data-index="${index}" style="padding: 0; margin-left: 8px; vertical-align: middle;">
+                                <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px; vertical-align: middle;">
+                            </button>
+                            <div class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);">
+                                <ul style="list-style: none; margin: 0; padding: 5px 10px;">
+                                    <li>
+                                        <label>
+                                            <input type="checkbox" name="option1"> Lorem ipsum.
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label>
+                                            <input type="checkbox" name="option2"> Lorem ipsum dolor.
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label>
+                                            <input type="checkbox" name="option3"> Lorem ipsum dolor sit.
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        `
+                )
                 .join('')}
-        </div>
+            </div>
         `;
+            document.querySelectorAll('.btn.btn-link').forEach(button => {
+                button.addEventListener('click', function () {
+                    toggleDropdown(button);
+                });
+            });
         } else {
             usersDisplay.innerHTML = '<p>Не задано</p>';
         }
@@ -206,6 +239,14 @@ function showTaskDetails(button) {
         console.error('Element with id "users-display" not found in the DOM.');
     }
 
+    function toggleDropdown(button) {
+        const dropdown = button.nextElementSibling;
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+            dropdown.style.display = 'block';
+        } else {
+            dropdown.style.display = 'none';
+        }
+    }
 
     var dateFormat = "dd.mm.yy";
     var from = $("#from").datepicker({

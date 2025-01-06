@@ -173,6 +173,12 @@ userModal.addEventListener("show.bs.modal", function (event) {
             document.getElementById("surnameNameInput").value = user.surname;
             document.getElementById("user-email").innerText = user.email;
             document.getElementById("user-email").title = user.email;
+            if (user.enabled){
+                document.getElementById("user-status").innerText = "Активен"
+            } else {
+                document.getElementById("user-status").innerText = "Неактивен"
+
+            }
 
             document.getElementById("emailInput").value = user.email;
             const birthday = user.birthday;

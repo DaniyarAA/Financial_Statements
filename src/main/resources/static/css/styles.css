@@ -1569,6 +1569,96 @@ h2 {
     box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+.create-document-type{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.create-document-type-icon{
+    font-size: 25px;
+}
+
+.create-status-button{
+    text-align: center;
+    font-size: 25px;
+    width: 160px;
+    border-radius: 14px;
+    border: none;
+    color: black;
+    background: #96FF9D;
+    box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.create-status-button-icon{
+    font-size: 25px;
+}
+
+.document-type-changeable-name-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.document-type-changeable-name-edit .form-control {
+    flex: 1;
+    min-width: 150px;
+}
+
+.document-type-changeable-name-edit .btn {
+    flex-shrink: 0;
+}
+
+.task-status-changeable-name-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.task-status-changeable-name-edit .form-control {
+    flex: 1;
+    min-width: 150px;
+}
+
+.task-status-changeable-name-edit .btn {
+    flex-shrink: 0;
+}
+
+.task-status-container {
+    display: flex;
+    align-items: center;
+}
+
+.task-status-container .task-status-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+.task-status-container .btn {
+    padding: 0;
+}
+
+.document-type-container {
+    display: flex;
+    align-items: center;
+}
+
+.document-type-container .document-type-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+.document-type-container .btn {
+    padding: 0;
+}
+
 .edit-role-button {
     background-color: rgba(236, 230, 240, 1);
 }

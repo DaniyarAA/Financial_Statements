@@ -72,6 +72,14 @@
                                     </div>
                                 </div>
                             </a>
+                            <div>
+                               <#if canOpenDocumentTools>
+                                   <button type="button" class="btn btn-light" title="Редактирование документов" data-bs-toggle="modal" data-bs-target="#documentTypeTools"><i class="bi bi-file-diff"></i></button>
+                               </#if>
+                               <#if canOpenTaskTools>
+                                   <button type="button" class="btn btn-light" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#taskStatusTools"><i class="bi bi-c-circle"></i></button>
+                               </#if>
+                            </div>
                         </div>
                         <div class="calendars col-6 main-content">
                             <div class="calendar-header">
@@ -696,18 +704,23 @@
                         </#list>
                         <#list changeableDocumentTypes as documentTypeChangeable>
                             <div class="document-type-item">
-                                <p id="documentType${documentTypeChangeable.id}" class="inline-block">
-                                    ${documentTypeChangeable.name}
-                                    <#list currentUser.roleDto.authorities as auth>
-                                        <#if auth.authority=="DELETE_DOCUMENT">
-                                            <button type="button" onclick="deleteDocumentType('${documentTypeChangeable.id}')"><i class="bi bi-trash"></i></button>
-                                        </#if>
-                                        <#if auth.authority=="EDIT_DOCUMENT">
-                                            <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
-                                                    title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i>
-                                            </button>
-                                        </#if>
-                                    </#list>
+                                <p id="documentType${documentTypeChangeable.id}" class="document-type-container">
+                                    <span>${documentTypeChangeable.name}</span>
+                                    <span class="document-type-actions">
+                                      <#list currentUser.roleDto.authorities as auth>
+                                      <#if auth.authority=="DELETE_DOCUMENT">
+                                      <button type="button" onclick="deleteDocumentType('${documentTypeChangeable.id}')"  title="Удалить" class="btn p-0">
+                                      <i class="bi bi-trash"></i>
+                                      </button>
+                                      </#if>
+                                      <#if auth.authority=="EDIT_DOCUMENT">
+                                      <button type="button" id="editBtndocumentType${documentTypeChangeable.id}" onclick="editDocumentType('documentType${documentTypeChangeable.id}')"
+                                      title="Редактировать" class="btn p-0">
+                                      <i class="bi bi-pencil"></i>
+                                      </button>
+                                      </#if>
+                                      </#list>
+                                      </span>
                                 </p>
                                 <div class="document-type-changeable-name-edit">
                                     <input type="text" id="editInputdocumentType${documentTypeChangeable.id}" class="form-control d-none"
@@ -739,8 +752,8 @@
                                         <option value="1">Да</option>
                                     </select>
                                 </div>
-                                <div class="d-flex justify-content-center align-items-center">
-                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
+                                <div class="d-flex justify-content-center align-items-center mt-4">
+                                    <button type="submit" class="btn btn-success create-document-type"><i class="bi bi-check2 create-document-type-icon"></i></button>
                                 </div>
                             </form>
                         </#if>
@@ -765,20 +778,24 @@
                             <p>${taskStatus.name}</p>
                         </#list>
                         <#list changeableTaskStatuses as taskStatusChangeable>
-                            <p id="taskStatus${taskStatusChangeable.id}" class="inline-block">
-                                ${taskStatusChangeable.name}
+                            <p id="taskStatus${taskStatusChangeable.id}" class="task-status-container">
+                                <span>${taskStatusChangeable.name}</span>
+                                <span class="task-status-actions">
                                 <#list currentUser.roleDto.authorities as auth>
                                     <#if auth.authority=="DELETE_STATUS">
-                                        <button type="button" onclick="deleteTask('${taskStatusChangeable.id}')"><i class="bi bi-trash"></i></button>
+                                    <button type="button" onclick="deleteTask('${taskStatusChangeable.id}')"  title="Удалить" class="btn p-0">
+                                     <i class="bi bi-trash"></i>
+                                    </button>
                                     </#if>
                                     <#if auth.authority=="EDIT_STATUS">
-                                        <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
-                                                title="Редактировать" class="btn btn-link p-0"><i class="bi bi-pencil"></i></button>
-                                    </#if>
-                                </#list>
+                                   <button type="button" id="editBtntaskStatus${taskStatusChangeable.id}" onclick="editTaskStatus('taskStatus${taskStatusChangeable.id}')"
+                                     title="Редактировать" class="btn p-0"><i class="bi bi-pencil"></i>
+                                   </button>
+                                  </#if>
+                                 </#list>
+                                </span>
                             </p>
                             <div class="task-status-changeable-name-edit">
-                                <div>
                                     <input type="text" id="editInputtaskStatus${taskStatusChangeable.id}" class="form-control d-none"
                                            value="${taskStatusChangeable.name!}">
                                     <button id="cancelBtntaskStatus${taskStatusChangeable.id}" class="btn btn-light d-none"
@@ -787,7 +804,6 @@
                                     <button id="saveBtntaskStatus${taskStatusChangeable.id}" class="btn btn-light d-none"
                                             onclick="saveChangesTaskStatus('taskStatus${taskStatusChangeable.id}', ${taskStatusChangeable.id})">&#10003;
                                     </button>
-                                </div>
                             </div>
                         </#list>
                     </div>
@@ -803,8 +819,8 @@
                                     <label for="createTaskStatus">Создать новый статуса для задач</label>
                                     <input type="text" id="createTaskStatus" name="name" class="form-control" required>
                                 </div>
-                                <div class="d-flex justify-content-center align-items-center">
-                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i></button>
+                                <div class="d-flex justify-content-center align-items-center mt-4">
+                                    <button type="submit" class="btn btn-success create-status-button"><i class="bi bi-check2 create-status-button-icon"></i></button>
                                 </div>
                             </form>
                         </#if>

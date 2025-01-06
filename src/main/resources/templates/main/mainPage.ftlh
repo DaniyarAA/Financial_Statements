@@ -72,13 +72,27 @@
                                     </div>
                                 </div>
                             </a>
-                            <div>
-                               <#if canOpenDocumentTools>
-                                   <button type="button" class="btn btn-light" title="Редактирование документов" data-bs-toggle="modal" data-bs-target="#documentTypeTools"><i class="bi bi-file-diff"></i></button>
-                               </#if>
-                               <#if canOpenTaskTools>
-                                   <button type="button" class="btn btn-light" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#taskStatusTools"><i class="bi bi-c-circle"></i></button>
-                               </#if>
+                            <div class="company-button">
+                                <#if canOpenDocumentTools>
+                                    <button type="button" class="btn btn-light py-2" title="Редактирование документов" data-bs-toggle="modal" data-bs-target="#documentTypeTools">
+                                        Редактирование <br> Документов
+                                    </button>
+                                <#else>
+                                    <button type="button" class="btn btn-light py-2" title="Нет доступа" disabled>
+                                        Редактирование <br> Документов
+                                    </button>
+                                </#if>
+                            </div>
+                            <div class="company-button">
+                                <#if canOpenTaskTools>
+                                    <button type="button" class="btn btn-light py-2" title="Редактирование статусов" data-bs-toggle="modal" data-bs-target="#taskStatusTools">
+                                        Редактирование <br> Статусов
+                                    </button>
+                                <#else>
+                                    <button type="button" class="btn btn-light py-2" title="Нет доступа" disabled>
+                                        Редактирование <br> Статусов
+                                    </button>
+                                </#if>
                             </div>
                         </div>
                         <div class="calendars col-6 main-content">
@@ -972,6 +986,13 @@
             transform: translateX(-50%) scale(1);
         }
 
+        .company-button .btn-light{
+            outline: none; /* Для синий ободки */
+            border: 0;
+            background: transparent;
+            border-color: transparent !important;
+        }
+
         .modal-content-map {
             background-color: #fff;
             padding: 40px;
@@ -1139,7 +1160,6 @@
             background-color: #d9d9d9;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
             align-items: center;
             gap: 20px;
             padding: 20px 0;
@@ -1147,15 +1167,14 @@
 
         .company-button {
             background-color: #FFFFFF;
-            height: 60px;
+            height: 50px;
             width: 270px;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
             color: #000000;
-            font-size: 24px;
-
+            font-size: 15px;
             box-shadow: 0 5px 5px #a3a3a3;
         }
 

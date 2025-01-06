@@ -49,7 +49,7 @@ public class ReportServiceImpl implements ReportService {
                 startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         String extension = fileFormat.equalsIgnoreCase("pdf") ? "pdf" : "csv";
-        String filename = String.format("%s_отчёт_%s.%s", reportType, dateRange, extension);
+        String filename = String.format("%s_отчёт_%s.%s", dateRange, extension);
         String encodedFilename;
         try {
             encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");

@@ -15,4 +15,5 @@ public class TaskForTaskListEditDto {
     private String description;
     private String from;
     private String to;
+    private String fileName;
 }

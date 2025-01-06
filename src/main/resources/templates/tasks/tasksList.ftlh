@@ -7,11 +7,6 @@
             <p>На вас нет зарегестрированных компаний!</p>
         </div>
     </#if>
-
-    <div id="responseMessage" style="display: none;">
-
-    </div>
-
     <div class="container p-3">
         <div class="main-content">
             <div class="table-container company-table" id="company-table" style="display: block">
@@ -35,27 +30,6 @@
                         </tbody>
                     </table>
                 </div>
-
-<#--                <div class="pagination-container">-->
-<#--                    <#if currentPage == 0 && currentPage == totalPages - 1>-->
-
-<#--                    </#if>-->
-<#--                    <#if currentPage != 0>-->
-<#--                        <a href="javascript:void(0)" id="prevPage" class="pagination-link" data-page="${currentPage - 1}">-->
-<#--                            <div class="button-container">-->
-<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px; rotate: 180deg">-->
-<#--                            </div>-->
-<#--                        </a>-->
-<#--                    </#if>-->
-<#--                    <#if currentPage < totalPages - 1>-->
-<#--                        <a href="javascript:void(0)" id="nextPage" class="pagination-link" data-page="${currentPage + 1}">-->
-<#--                            <div class="button-container">-->
-<#--                                <img alt="Arrow" src="/images/arrow-down.png" style="max-width: 70px; max-height: 70px;">-->
-<#--                            </div>-->
-<#--                        </a>-->
-<#--                    </#if>-->
-<#--                </div>-->
-
             </div>
 
             <div class="table-container tasks-table">
@@ -89,6 +63,12 @@
                                                             data-end-date="${task.endDate}"
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
+                                                            data-company-id="${task.company.id}"
+                                                            <#if task.filePath??>
+                                                                data-file-path="${task.filePath}"
+                                                            <#else>
+                                                                data-file-path="Не задано"
+                                                            </#if>
                                                             <#if task.description??>
                                                                 data-description="${task.description}"
                                                             <#else>
@@ -99,7 +79,27 @@
                                                             <#else>
                                                                 data-amount="Не задано"
                                                             </#if>
-                                                            data-status="${task.statusId}">
+
+                                                            data-status="${task.statusId}"
+                                                            <#if task.users??>
+                                                                <#if task.users?size == 0>
+                                                                    data-users="[]"
+                                                                <#else>
+                                                                    data-users="[
+                                                                        <#list task.users as user>
+                                                                            {&quot;id&quot;: ${user.id}, &quot;name&quot;: &quot;${user.name}&quot;, &quot;surname&quot;: &quot;${user.surname}&quot;}
+                                                                            <#if user_has_next>,</#if>
+                                                                        </#list>
+                                                                        ]"
+                                                                </#if>
+                                                            <#else>
+                                                                data-users="[]"
+                                                            </#if>
+
+                                                    >
+
+
+
                                                         ${task.documentTypeName}
                                                         <div class="status-indicator <#if task.isCompleted>completed<#else>pending</#if>"></div>
                                                     </button>
@@ -120,6 +120,9 @@
                 <input type="hidden" id="csrfToken" value="${(_csrf.token)!'csrf-token'}"/>
                 <div class="task-details-header">
                     <h5>Подробнее</h5>
+                    <div id="responseMessage" style="display: none;">
+
+                    </div>
                 </div>
 
                 <div id="task-content">
@@ -136,7 +139,7 @@
                     <div class="task-create-container">
 
                         <div class="task-create-indicator"></div>
-                        <form action="/tasks/create" method="post">
+                        <form action="/tasks/create" method="post" id="form-create">
                             <#if _csrf??>
                                 <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                        value="${(_csrf.token)!'csrf-token'}"/>
@@ -163,30 +166,62 @@
 
                             <div class="create-task-info">
                                 <div id="formPage1" class="form-page">
+
                                     <div class="task-create-div">
-                                        <label for="category" class="task-create-text">Назначить</label>
-                                        <select class="form-select" id="user" name="appointToUserId" required>
-                                            <#if userDtos??>
-                                                <#list userDtos as user>
-                                                    <option value="${user.id}">${user.surname} ${user.name}</option>
-                                                </#list>
-                                            <#else>
-                                                <option disabled>Нет доступных пользователей</option>
-                                            </#if>
-                                        </select>
+                                        <label for="company-search" class="task-create-text">Компания</label>
+                                        <input
+                                                type="text"
+                                                id="company-search"
+                                                class="form-control company-form"
+                                                placeholder="Поиск компании..."
+                                                readonly
+                                                onclick="openCompanyPopup()"
+                                        />
+                                        <input type="hidden" id="company-id" name="companyId" />
+                                    </div>
+
+                                    <div id="company-modal" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close" onclick="closeCompanyPopup()">&times;</span>
+                                            <input
+                                                    type="text"
+                                                    id="company-modal-search"
+                                                    class="form-control"
+                                                    placeholder="Поиск компании..."
+                                                    oninput="updateModalDropdown()"
+                                            />
+                                            <ul id="modal-company-dropdown" class="dropdown-menu"></ul>
+                                        </div>
                                     </div>
 
                                     <div class="task-create-div">
-                                        <label for="category" class="task-create-text">Компания</label>
-                                        <select class="form-select" id="company" name="companyId" required>
-                                            <#if companies??>
-                                                <#list companies as company>
-                                                    <option value="${company.id}">${company.name}</option>
-                                                </#list>
-                                            <#else>
-                                                <option disabled>Нет доступных компаний</option>
-                                            </#if>
-                                        </select>
+                                        <div id="user-modal" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close" onclick="closeUserPopup()">&times;</span>
+                                                <input
+                                                        type="text"
+                                                        id="user-modal-search"
+                                                        class="form-control"
+                                                        placeholder="Поиск пользователя..."
+                                                        oninput="updateUserModalDropdown()"
+                                                />
+                                                <ul id="modal-user-dropdown" class="dropdown-menu"></ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="task-create-div">
+                                            <label for="user-search" class="task-create-text">Назначить</label>
+                                            <input
+                                                    type="text"
+                                                    id="user-search"
+                                                    class="form-control"
+                                                    placeholder="Выберите пользователя..."
+                                                    readonly
+                                                    onclick="openUserPopup()"
+                                            />
+                                            <input type="hidden" id="user-id" name="appointToUserId" />
+                                        </div>
+
                                     </div>
 
                                     <div class="task-create-div">
@@ -322,7 +357,7 @@
                                             <input type="hidden" id="endDate" name="endDate">
                                         </div>
                                     </div>
-                                    <div style="display: flex; justify-content: center; margin-top: 50px">
+                                    <div style="display:  flex; align-item: center; justify-content: center; margin-top: 57px">
                                         <button
                                                 class="button-save-create-task"
                                                 style="cursor: not-allowed; opacity: 0.5;"
@@ -331,14 +366,15 @@
                                                 <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m.5 4v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0"/>
                                             </svg>
                                         </button>
+                                        <button type="button" class="btn btn-secondary" id="prevPageCreateTask" onclick="showFirstPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                                <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                                            </svg>
+                                        </button>
                                     </div>
 
 
 
-                                    <button type="button" class="btn btn-secondary" id="prevPageCreateTask" onclick="showFirstPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-                                            <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
-                                        </svg>
-                                    </button>
+
 
                                 </div>
                             </div>
@@ -354,10 +390,11 @@
         const taskStatusDtos = ${taskStatusDtosJson?no_esc};
     </script>
     <script>
-        const availableYearMonths = ${availableYearMonthsJson?no_esc};
+        const companyDtos = ${companyDtosJson?no_esc};
     </script>
     <script src="/js/list.js"></script>
     <script src="/js/taskDateLogic.js"></script>
+    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
     <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 
     <style>
@@ -397,7 +434,6 @@
             margin-right: 10px;
             margin-top: 26px;
             box-sizing: border-box;
-
         }
         .tasks-table::-webkit-scrollbar {
             display: none;
@@ -405,29 +441,26 @@
         .year-month-column {
             background-color: #ffffff;
             height: 35px;
-
         }
 
         .year-month-th {
             padding: 5px;
-
         }
 
-        .year-month-th.first-th {
-            background-color: #d9d9d9;
-        }
-
-        .year-month-th.second-th {
-            background-color: #ededed;
-            border-right: 2px solid #c8c8c8;
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ccc;
         }
 
         .table-wrapper {
             width: 100%;
             margin-bottom: 1rem;
-            height: 550px;
+            height: 700px;
             min-height: 550px;
-            max-height: 550px;
+            max-height: 700px;
         }
 
         .table-main {
@@ -448,16 +481,14 @@
         }
         .table-main {
             background-color: #d9d9d9;
-
         }
 
         .company-columns {
             text-align: center;
-            height: 52px;
+            height: 56px;
         }
         .task-columns {
-            height: 52px;
-
+            height: 56px;
         }
 
         .table-striped-row:nth-child(odd) {
@@ -470,8 +501,10 @@
 
         .task-buttons {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 5px;
+            margin: 3px 20px 3px 20px;
         }
 
         .task-button {
@@ -564,7 +597,7 @@
             position: relative;
             overflow: hidden;
 
-            height: 610px;
+            height: 710px;
         }
 
         .task-create-indicator {
@@ -611,7 +644,9 @@
         }
 
         .task-create-div {
-            margin-bottom: 10px;
+            margin-bottom: 23px;
+            position: relative;
+
         }
 
         .task-create-week-decade-month-selection {
@@ -636,13 +671,13 @@
 
         #nextPageCreateTask {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+           margin-top: 35px;
+            right: 20px;;
         }
 
         #prevPageCreateTask {
+            display: flex;
             position: absolute;
-            bottom: 10px;
             left: 10px;
         }
 
@@ -834,6 +869,14 @@
             height: 100%;
         }
 
+        .year-month-th:nth-child(odd) {
+            background-color: #d9d9d9;
+        }
+
+        .year-month-th:nth-child(even) {
+            background-color: #ededed;
+        }
+
         .year-month-label {
             padding: 0 20px;
             white-space: nowrap;
@@ -852,18 +895,6 @@
             font-size: 14px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-        }
-
-        .year-month-navigation button:hover {
-            background-color: #0056b3;
-        }
-
-        .year-month-navigation .btn-nav:first-of-type {
-            margin-right: auto;
-        }
-
-        .year-month-navigation .btn-nav:last-of-type {
-            margin-left: auto;
         }
 
         .btn-nav {
@@ -950,8 +981,111 @@
             margin: 0;
             padding: 0;
         }
+        .modal {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 20%;
+            transform: translate(-50%, 0);
+            z-index: 10;
+            width: 300px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow-y: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            border: 1px solid #e0e0e0;
+        }
 
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 10px;
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .modal-content .close {
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 8px 0 0;
+            list-style: none;
+            border: 1px solid #ccc;
+            background: #fff;
+            position: relative;
+        }
+
+
+        #company-modal-search {
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .modal-content .dropdown-menu{
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        #company-modal-search, #user-modal-search {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .dropdown-menu {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .dropdown-menu li {
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-menu li.selected {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        .task-create-text {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
 
     </style>
-    <input type="hidden" id="openModal" value="${openModal?string('true', 'false')}">
 </@layout.layout>

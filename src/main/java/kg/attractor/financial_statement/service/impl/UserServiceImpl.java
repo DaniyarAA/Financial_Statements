@@ -110,6 +110,43 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public boolean canOpenDocumentTools(String name) {
+        if (name == null || name.isEmpty()){
+            return false;
+        }
+
+        UserDto userDto = getUserDtoByLogin(name);
+        if (userDto == null || userDto.getRoleDto() == null){
+            return false;
+        }
+
+        Set<String> documentAuthorities = Set.of("EDIT_DOCUMENT", "CREATE_DOCUMENT", "DELETE_DOCUMENT", "VIEW_DOCUMENT");
+        return userDto.getRoleDto().
+                getAuthorities().
+                stream().
+                anyMatch(authority -> documentAuthorities.
+                        contains(authority.getAuthority().toUpperCase()));
+    }
+
+    @Override
+    public boolean canOpenTaskTools(String name) {
+        if (name == null || name.isEmpty()){
+            return false;
+        }
+
+        UserDto userDto = getUserDtoByLogin(name);
+        if(userDto == null || userDto.getRoleDto() == null){
+            return false;
+        }
+        Set<String> statusAuthorities = Set.of("CREATE_STATUS", "EDIT_STATUS", "DELETE_STATUS", "VIEW_STATUS");
+        return userDto.getRoleDto().
+                getAuthorities().
+                stream().
+                anyMatch(authority -> statusAuthorities.
+                        contains(authority.getAuthority().toUpperCase()));
+    }
+
 
     @Override
     public UserDto getUserDtoById(Long id) {
@@ -445,6 +482,7 @@ public class UserServiceImpl implements UserService {
 
     private UserForTaskDto convertToUserForTaskDto(User user) {
         return UserForTaskDto.builder()
+                .id(user.getId())
                 .login(user.getLogin())
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -511,6 +549,25 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users) {
+        return users.stream().map(this::convertToUserForCreateTaskDto).collect(Collectors.toList());
+    }
+
+    private UserForCreateTaskDto convertToUserForCreateTaskDto(User user) {
+        return UserForCreateTaskDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .build();
+    }
+
+    @Override
+    public List<UserDto> getAllAccountant() {
+        return userRepository.findAllByRole_RoleNameAndEnabledTrue("Бухгалтер")
+                .stream().map(this::convertToUserDto).toList();
     }
 
 }

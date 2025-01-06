@@ -202,23 +202,19 @@ function showTaskDetails(button) {
                             <button type="button" class="btn btn-link" data-index="${index}" style="padding: 0; margin-left: 8px; vertical-align: middle;">
                                 <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px; vertical-align: middle;">
                             </button>
-                            <div class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);">
+                            <div class="dropdown-menu" style="display: none; width: 250px; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);">
                                 <ul style="list-style: none; margin: 0; padding: 5px 10px;">
                                     <li>
                                         <label>
-                                            <input type="checkbox" name="option1"> Lorem ipsum.
+                                            <input type="checkbox" name="option1">    Ольга Соколова
                                         </label>
                                     </li>
                                     <li>
                                         <label>
-                                            <input type="checkbox" name="option2"> Lorem ipsum dolor.
+                                            <input type="checkbox" name="option2">    Дмитрий Попов
                                         </label>
                                     </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox" name="option3"> Lorem ipsum dolor sit.
-                                        </label>
-                                    </li>
+                                  
                                 </ul>
                             </div>
                         </div>

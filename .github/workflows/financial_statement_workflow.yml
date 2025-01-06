@@ -1,16 +1,15 @@
 name: Financial Statement Deployment
 
 on:
-  workflow_dispatch
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.actor }}/financial_statement_image:latest
+  IMAGE_NAME: daniyaraa/financial_statement_image:latest
 
 jobs:
   build:
@@ -73,6 +72,7 @@ jobs:
       - name: Connect to SSH and pull Docker Image
         run: |
           ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          mkdir -p ${{ secrets.WORK_DIR }}
           cd ${{ secrets.WORK_DIR }}
           docker compose pull
           docker compose up -d

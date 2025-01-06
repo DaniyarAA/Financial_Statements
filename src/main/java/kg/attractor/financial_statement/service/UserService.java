@@ -77,4 +77,6 @@ public interface UserService {
     boolean canReturn(String name);
 
     boolean canViewCompany(String name);
+
+    List<UserDto> getAllAccountant();
 }

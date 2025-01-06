@@ -12,6 +12,10 @@ import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.FileUtils;
+import kg.attractor.financial_statement.service.impl.DocumentTypeServiceImpl;
+import kg.attractor.financial_statement.utils.FileUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
@@ -25,7 +29,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -157,34 +164,6 @@ public class TaskServiceImpl implements TaskService {
                 List<Task> tasks1 = taskRepository.findByCompanyId(company.getId());
                 tasks.addAll(tasks1);
             }
-        }
-
-        return convertToDtoList(tasks);
-    }
-
-    @Override
-    public List<TaskDto> getAllTasksForUserSorted(User user, String sortBy, String sort) {
-        List<Task> tasks;
-        if ("id".equals(sortBy)) {
-            if ("asc".equalsIgnoreCase(sort)) {
-                tasks = taskRepository.findByUsersIdOrderByIdAsc(user.getId());
-            } else {
-                tasks = taskRepository.findByUsersIdOrderByIdDesc(user.getId());
-            }
-        } else if ("endDate".equals(sortBy)) {
-            if ("asc".equalsIgnoreCase(sort)) {
-                tasks = taskRepository.findByUsersIdOrderByEndDateAsc(user.getId());
-            } else {
-                tasks = taskRepository.findByUsersIdOrderByEndDateDesc(user.getId());
-            }
-        } else if ("priority".equals(sortBy)) {
-            if ("asc".equalsIgnoreCase(sort)) {
-                tasks = taskRepository.findByUsersIdOrderByPriorityIdAsc(user.getId());
-            } else {
-                tasks = taskRepository.findByUsersIdOrderByPriorityIdDesc(user.getId());
-            }
-        } else {
-            tasks = taskRepository.findByUsersIdOrderByEndDateAsc(user.getId());
         }
 
         return convertToDtoList(tasks);
@@ -530,7 +509,7 @@ public class TaskServiceImpl implements TaskService {
                 .priorityId(task.getPriorityId())
                 .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
                 .tag(task.getTag() != null ? task.getTag().getTag() : null)
-                .filePath(task.getFilePath() != null ? task.getFilePath() : null)
+                .filePath(task.getFilePath() != null ? FileUtils.getOriginalFilename(task.getFilePath()) : null)
                 .build();
     }
 
@@ -650,8 +629,9 @@ public class TaskServiceImpl implements TaskService {
                 .toList();
     }
 
+
     @Override
-    public List<TaskDto> getFinishedTasksForUser(Long userId) {
+    public List<TaskDto> getFinishedTasksForUser(Long userId)  {
         TaskStatus taskStatus = taskStatusService.getStatusDone();
         User user = userService.getUserById(userId);
         List<User> users = new ArrayList<>();
@@ -674,8 +654,12 @@ public class TaskServiceImpl implements TaskService {
                 .company(companyService.getCompanyForTaskDto(task.getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
+                .filePath(FileUtils.getOriginalFilename(task.getFilePath()))
+                .encodedFilePath(URLEncoder.encode(task.getFilePath(), StandardCharsets.UTF_8))
                 .build();
     }
+
+
 
     @Override
     public void updateTaskStatus(Long taskId, Long newStatusId) {
@@ -745,5 +729,29 @@ public class TaskServiceImpl implements TaskService {
         }
         return Optional.of(filePath);
     }
+
+    @Override
+    public List<TaskDto> getTasksByCompanyId(Long companyId) {
+        Company company = companyService.getCompanyById(companyId);
+        List<Task> tasks = company.getTasks();
+
+        return convertToDtoList(tasks);
+
+    }
+
+    @Override
+    public List<TaskDto> getTasksByUsers_IdAndCompany_Id(Long userId, Long companyId) {
+        List<Task> tasks = taskRepository.findAllByUsers_IdAndCompany_Id(userId, companyId);
+        System.out.println("Tasks size: " + tasks.size());
+        return tasks.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public List<TaskDto> getTasksForUser(Long userId) {
+        User user = userService.getUserById(userId);
+        List<Task> tasks = user.getTasks();
+        return tasks.stream().map(this::convertToDto).toList();
+    }
+
 }
 

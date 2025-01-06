@@ -15,6 +15,8 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
@@ -43,14 +45,17 @@ public class FileController {
             String companyName = companyService.getCompanyNameById(companyId);
 
             Optional<Path> filePathOptional = taskService.getFilePath(companyName, fileName);
+            String originalFilename = FileUtils.getOriginalFilename(fileName);
 
+            String encodedFilename = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8)
+                    .replace("+", "%20");
             if (filePathOptional.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             Path filePath = filePathOptional.get();
             Resource resource = taskService.loadFileAsResource(filePath);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFilename)
                     .body(resource);
         } catch (MalformedURLException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

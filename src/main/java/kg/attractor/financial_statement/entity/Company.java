@@ -58,4 +58,7 @@ public class Company {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "companies", cascade = CascadeType.ALL)
     private List<User> users;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
+    private List<Task> tasks;
+
 }

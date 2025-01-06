@@ -37,9 +37,9 @@ public class MainController {
     }
 
     @GetMapping
-    public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
-                              @RequestParam(required = false, defaultValue = "endDate") String sortBy,
-                              Model model, HttpServletRequest request,Principal principal) {
+    public String getMainPage(@RequestParam(required = false) Long companyId,
+                              @RequestParam(required = false) Long userId,
+                              Model model, HttpServletRequest request , Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
         User userDto = userService.getUserByLogin(login);
@@ -47,10 +47,23 @@ public class MainController {
         if (userDto == null) {
             return "redirect:/login";
         }
-        List<TaskDto> userTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
+
+        List<TaskDto> sortedTasks;
+        if (companyId != null && userId != null) {
+            sortedTasks = taskService.getTasksByUsers_IdAndCompany_Id(userId, companyId);
+        } else if (companyId != null) {
+            sortedTasks = taskService.getTasksByCompanyId(companyId);
+        } else if (userId != null) {
+            System.out.println("Зашел в 3 иф");
+            sortedTasks = taskService.getTasksForUser(userId);
+            System.out.println(sortedTasks);
+        } else {
+            sortedTasks = taskService.getAllTasks();
+        }
+
+        List<TaskDto> userTasks = taskService.getTasksForUser(userDto.getId());
         List<PriorityDto> priorities = priorityService.getAllPriorities();
 
-        model.addAttribute("userTasks", userTasks);
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         model.addAttribute("csrfToken", csrfToken);
@@ -67,12 +80,14 @@ public class MainController {
         if (principal != null) {
             canCreateCompany = userService.canCreate(principal.getName());
         }
+        model.addAttribute("userTasks", userTasks);
+        model.addAttribute("csrfToken", csrfToken);
         model.addAttribute("canCreateCompany", canCreateCompany);
         model.addAttribute("companies", companyService.getAllCompanies());
         model.addAttribute("userDto", userDto);
         model.addAttribute("dateUtils", new DateUtils());
-        model.addAttribute("sort", sort);
-        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("userId", userId);
+        model.addAttribute("companyId", companyId);
         model.addAttribute("priorities", priorities);
         model.addAttribute("defaultDocumentTypes",documentTypeService.getDefaultDocumentTypes());
         model.addAttribute("changeableDocumentTypes", documentTypeService.getChangeableDocumentTypes());
@@ -80,8 +95,13 @@ public class MainController {
         model.addAttribute("changeableTaskStatuses",taskStatusService.getChangeableTaskStatuses());
         model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
 
+        model.addAttribute("userTasks", userTasks);
+        model.addAttribute("users", userService.getAllAccountant());
+        model.addAttribute("tasks", sortedTasks);
         return "main/mainPage";
     }
+
+
 
     @PostMapping("/calendar")
     public ResponseEntity<Map<LocalDate, Long>> getTaskCounts(@RequestBody Map<String, Integer> yearMonth, Principal principal) {

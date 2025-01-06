@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,11 +27,14 @@ public class FileUtils {
 
     public static ResponseEntity<?> downloadFile(String filename) {
         try {
+            String originalFilename = getOriginalFilename(filename);
             Path filePath = Paths.get(UPLOAD_DIR + filename);
             if (Files.exists(filePath)) {
                 Resource resource = new ByteArrayResource(Files.readAllBytes(filePath));
+                String encodedFilename = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8)
+                        .replace("+", "%20");
                 return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFilename)
                         .contentLength(resource.contentLength())
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .body(resource);
@@ -40,6 +45,14 @@ public class FileUtils {
             log.error("Ошибка при скачивании файла: {}", filename, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    public static String getOriginalFilename(String filename) {
+        int firstSpaceIndex = filename.indexOf("_");
+        if (firstSpaceIndex != -1) {
+            return filename.substring(firstSpaceIndex + 1);
+        }
+        return filename;
     }
 
 
@@ -78,17 +91,27 @@ public class FileUtils {
             throw new RuntimeException("Failed to create directory: " + uploadDir, e);
         }
 
-        String resolvedFileName = resolveFileName(pathDir, transliteratedFileName);
+        String uuidFile = UUID.randomUUID().toString();
+        String resultFilename = uuidFile + "_" + originalFileName;
 
-        Path filePath = Paths.get(uploadDir + "/" + resolvedFileName);
+//        Path uploadPath = Paths.get(UPLOAD_DIR);
+//        Files.createDirectories(uploadPath);
 
-        try (OutputStream os = Files.newOutputStream(filePath)) {
+//        Path filePath = uploadPath.resolve(resultFilename);
+
+
+//        String resolvedFileName = resolveFileName(pathDir, originalFileName);
+
+        Path filePath = Paths.get(uploadDir);
+        Path fileUploadPath = filePath.resolve(resultFilename);
+
+        try (OutputStream os = Files.newOutputStream(fileUploadPath)) {
             os.write(file.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save file: " + resolvedFileName, e);
+            throw new RuntimeException("Failed to save file: " + originalFileName, e);
         }
 
-        return resolvedFileName;
+        return resultFilename;
     }
 
 

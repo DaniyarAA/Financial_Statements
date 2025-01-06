@@ -2,11 +2,11 @@ var Cal = function(divId) {
     this.divId = divId;
 
     this.DaysOfWeek = [
-        'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'
+        'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'
     ];
 
     this.Months = [
-        'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
     ];
 
     var d = new Date();

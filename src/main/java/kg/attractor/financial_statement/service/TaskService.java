@@ -40,7 +40,6 @@ public interface TaskService {
 
     List<TaskDto> getAllTaskDtosForUser(User user);
 
-    List<TaskDto> getAllTasksForUserSorted(User user, String sortDirection, String sortBy);
 
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
 
@@ -82,4 +81,11 @@ public interface TaskService {
     Resource loadFileAsResource(Path filePath) throws MalformedURLException;
 
     Optional<Path> getFilePath(String companyName, String fileName);
+
+    List <TaskDto> getTasksByCompanyId(Long companyId);
+
+    List<TaskDto> getTasksByUsers_IdAndCompany_Id(Long userId, Long companyId);
+
+    List<TaskDto> getTasksForUser(Long userId);
+
 }

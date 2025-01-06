@@ -31,4 +31,5 @@ public class TaskDto {
     private Long priorityId;
     private String tag;
     private String filePath;
+    private String encodedFilePath;
 }

@@ -1,25 +1,27 @@
-// if (window.history.replaceState) {
-//     const urlWithoutParams = window.location.origin + window.location.pathname;
-//     window.history.replaceState(null, null, urlWithoutParams);
-// }
 function showTaskDetails(button) {
-    console.log(taskStatusDtos);
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 
     const taskId = button.getAttribute("data-task-id");
     const documentType = button.getAttribute("data-document-type");
     const startDate = button.getAttribute("data-start-date");
     const endDate = button.getAttribute("data-end-date");
+    const companyId = button.getAttribute("data-company-id");
     const companyName = button.getAttribute("data-company-name");
     const companyInn = button.getAttribute("data-company-inn");
     const description = button.getAttribute("data-description");
     const amount = button.getAttribute("data-amount");
     const status = button.getAttribute("data-status");
     const isCompleted = status === "Сдан";
+    const filePath = button.getAttribute("data-file-path");
 
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
     const formattedAmount = formatAmount(amount);
+
+    const users = button.getAttribute("data-users");
+    const parsedUsers = users ? JSON.parse(users) : [];
+
+    console.log(parsedUsers);
 
     const taskDetails = document.getElementById('task-details');
     if (taskDetails) {
@@ -37,7 +39,7 @@ function showTaskDetails(button) {
 
     document.getElementById('task-details').style.display = 'block';
     document.getElementById('task-content').innerHTML = `
-<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 610px">
+<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 710px">
     <div class="status-indicator-task-details" style="
             position: absolute;
             top: 0;
@@ -62,61 +64,94 @@ function showTaskDetails(button) {
                 <p>ИНН:</p>
                 <p style="margin-top: 8px">Период:</p>
                 <p style="margin-top: 15px">Сумма:</p>
-                <p style="margin-top: 15px">Статус:</p>
+                <p style="margin-top: 16px">Файл:</p>
+                <p style="margin-top: 17px">Статус:</p>
+                <p style="margin-top: 13px">Назначено:</p>
             </div>
         
             <div class="values" style="font-size: 20px; display: inline">
                 <p class="truncate-text">${companyName}</p>
                 <p>${companyInn}</p>
-                <div id="date-display" style="display: block;">
-                    <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-                </div>
-                <div id="date-input" style="display: none; height: 36px; align-items: center;">
-                    <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
-                    <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
-                    <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
-                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
-                    </button>
+                
+                <div style="display: inline; height: 34px">
+                    <div id="date-display" style="display: block;">
+                        <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                    </div>
+                    <div id="date-input" style="display: none; height: 34px; align-items: center; margin-top: 5px; margin-bottom: 5px">
+                        <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
+                        <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
+                        <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
+                            <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                        </button>
+                    </div>
                 </div>
                 
-
-                <div id="amount-display" style="display: block;">
-                    <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-
-                </div>
-                <div id="amount-input" style="display: none;">
-                    <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
-                        width: 100px;
-                        height: 33px;
-                        border: 1px solid #ccc;
-                        border-radius: 4px;
-                        font-size: 14px;
-                        margin: 0;
-                    ">
-                    <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
-                </div>
-                <div id="status-display" style="display: block">
-                    <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-                </div>
-                <div id="status-input" style="display: none; align-items: center;">
-                    <div style="display: flex; flex-direction: row">
-                    <div>
-                        <select class="form-select" id="taskStatus" name="statusId" style="
-                        width: 200px; height: 38px;
+                <div style="display: inline; height: 34px">
+                    <div id="amount-display" style="display: block;">
+                        <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+    
+                    </div>
+                    <div id="amount-input" style="display: none; height: 34px; margin-top: 5px; margin-bottom: 5px">
+                        <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
+                            width: 100px;
+                            height: 34px;
+                            border: 1px solid #ccc;
+                            font-size: 14px;
+                            margin-bottom: 0;
                         ">
-                            ${statusOptions}
-                        </select>
-                    </div>
-      
-                    <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
-                        <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
-                    </button>
+                        <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
                     </div>
                 </div>
+                
+                <div style="display: inline; height: 38px">
+                    <div id="file-display" style="display: flex; flex-direction: row; height: 38px">
+                        <p class="truncate-text">${filePath}</p>
+                            <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
+                            ${filePath !== "Не задано" ? `
+                                <button type="button" class="btn btn-link">
+                                    <a href="api/files/download/${companyId}/${filePath}">
+                                        <img src="/images/download.png" alt="Download icon" style="max-width: 20px; max-height: 20px;">
+                                    </a>
+                                </button>
+                            ` : ''}
+                    </div>
+                    <div id="file-input" style="display: none; width: 250px; flex-direction: row">
+                        <input type="file" class="form-control" id="file" name="file">
+                        <p style="display: none;"></p>
+                        <div class="invalid-feedback">
+                            Выберите файл
+                        </div>
+                        <button type="button" class="btn btn-link" onclick="cancelEditFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
+                    </div>
+                </div>
+                
+                <div style="display: inline; height: 34px">
+                    <div id="status-display" style="display: block">
+                        <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
+                    </div>
+                    <div id="status-input" style="display: none; align-items: center;">
+                        <div style="display: flex; flex-direction: row">
+                        <div>
+                            <select class="form-select" id="taskStatus" name="statusId" style="
+                            width: 200px; height: 38px;
+                            ">
+                                ${statusOptions}
+                            </select>
+                        </div>
+          
+                        <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
+                            <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
+                        </button>
+                        </div>
+                </div>    
+                </div>
+                    
+                <div id="users-display"></div>
+
             </div>
         </div>
 
-  <label for="description" style="margin-top: 55px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
+        <label for="description" style="margin-top: 10px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
         <textarea id="description" name="description" style="width: 95%; margin-left: 10px;
     height: 112px;
     background-color: #d9d9d9;
@@ -131,13 +166,30 @@ function showTaskDetails(button) {
     overflow-y: auto;">${description}</textarea>
         <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
 
-        <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.3),
-            0px 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
+        <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0 2px rgba(0, 0, 0, 0.3),
+            0 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
     </div>
 
     </form>
 </div>
     `;
+    const usersDisplay = document.getElementById('users-display');
+    if (usersDisplay) {
+        if (parsedUsers.length > 0) {
+            usersDisplay.innerHTML = `
+        <div>
+            ${parsedUsers
+                .map(user => `<p>${user.surname.charAt(0)}. ${user.name}</p>`)
+                .join('')}
+        </div>
+        `;
+        } else {
+            usersDisplay.innerHTML = '<p>Не задано</p>';
+        }
+    } else {
+        console.error('Element with id "users-display" not found in the DOM.');
+    }
+
 
     var dateFormat = "dd.mm.yy";
     var from = $("#from").datepicker({
@@ -157,6 +209,30 @@ function showTaskDetails(button) {
     }).on("change", function () {
         from.datepicker("option", "maxDate", getDate(this));
     });
+}
+
+function handleFileUpload(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+    const fileDisplay = document.querySelector('.file-display a');
+    const fileDisplayText = document.querySelector('.file-display p');
+
+    if (file) {
+        const fileName = file.name;
+
+        if (fileDisplay) {
+            fileDisplay.style.display = 'none';
+        }
+
+        if (!fileDisplayText) {
+            const newFileDisplayText = document.createElement('p');
+            newFileDisplayText.textContent = fileName;
+            newFileDisplayText.style.margin = '10px 0';
+            fileInput.parentElement.insertBefore(newFileDisplayText, fileInput);
+        } else {
+            fileDisplayText.textContent = fileName;
+        }
+    }
 }
 
 function formatDate(dateString) {
@@ -230,6 +306,16 @@ function editDate() {
 function cancelEditDate() {
     document.getElementById('date-display').style.display = 'block';
     document.getElementById('date-input').style.display = 'none';
+}
+
+function editFile() {
+    document.getElementById('file-display').style.display = 'none';
+    document.getElementById('file-input').style.display = 'flex';
+}
+
+function cancelEditFile() {
+    document.getElementById('file-display').style.display = 'flex';
+    document.getElementById('file-input').style.display = 'none';
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -352,60 +438,6 @@ function getDate(element) {
     }
     return date;
 }
-
-function setupCompanyToggleButton() {
-    const companyHeader = document.querySelector(".company-column-th .company-header");
-
-    if (!companyHeader) return;
-
-    if (!document.querySelector(".btn-nav-img-toggle")) {
-        const toggleButtonImage = document.createElement("img");
-        toggleButtonImage.src = "/images/company-arrow.png";
-        toggleButtonImage.alt = "Toggle Company Table";
-        toggleButtonImage.classList.add("btn-nav-img", "btn-nav-img-toggle");
-
-        toggleButtonImage.style.position = "fixed";
-        toggleButtonImage.style.top = "85px";
-        toggleButtonImage.style.left = "240px";
-        toggleButtonImage.style.transform = "rotate(0deg)";
-        toggleButtonImage.style.transition = "left 0.3s ease, transform 0.3s ease";
-        toggleButtonImage.style.cursor = "pointer";
-        toggleButtonImage.style.width = "24px";
-        toggleButtonImage.style.height = "24px";
-
-        toggleButtonImage.addEventListener("click", () => {
-            toggleCompanyTable(toggleButtonImage);
-        });
-
-        document.body.appendChild(toggleButtonImage);
-    }
-}
-
-function toggleCompanyTable(toggleButtonImage) {
-    const companyTable = document.getElementById("company-table");
-    const isHidden = companyTable.style.width === "0px" || companyTable.style.display === "none";
-
-    if (isHidden) {
-        companyTable.style.width = "244px";
-        companyTable.style.marginLeft = "0";
-        companyTable.style.transition = "width 0.3s ease, padding 0.3s ease";
-
-        toggleButtonImage.style.left = "240px";
-        toggleButtonImage.style.transform = "rotate(0deg)";
-    } else {
-        companyTable.style.width = "0";
-        companyTable.style.marginLeft = "0";
-        companyTable.style.transition = "width 0.3s ease, padding 0.3s ease";
-
-        toggleButtonImage.style.left = "20px";
-        toggleButtonImage.style.transform = "rotate(180deg)";
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    setupCompanyToggleButton();
-});
-
 
 function addCollapseButtonToTaskDetails() {
     const taskDetailsHeader = document.querySelector('.task-details-header');
@@ -568,7 +600,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch(actionUrl, {
             method: "POST",
-            body: formData
+            body: formData,
+            csrfToken: csrfToken
+
         })
             .then(response => {
                 if (!response.ok) {
@@ -577,10 +611,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-                showAlert(data.success || "Task updated successfully!", "success");
+                showAlert(data.success || "Задача успешно обновлена!", "success");
             })
             .catch(error => {
-                showAlert(error.error || "An unexpected error occurred.", "error");
+                showAlert(error.error || "Возникла ошибка.", "error");
             });
     });
 
@@ -632,7 +666,191 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error('Ошибка синхронизации скролла');
     }
-
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const createTaskForm = document.getElementById("form-create");
+
+    if (createTaskForm) {
+        createTaskForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(createTaskForm);
+            const actionUrl = createTaskForm.getAttribute("action");
+
+            const existingAlert = document.getElementById("alertMessage");
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            fetch(actionUrl, {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        return response.json().then((err) => Promise.reject(err));
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    showAlert(data.success || "Задача успешно создана!", "success");
+                })
+                .catch((error) => {
+                    showAlert(error.error || "Возникла ошибка при создании задачи.", "error");
+                });
+        });
+    }
+
+    function showAlert(message, type) {
+        const alertDiv = document.createElement("div");
+        alertDiv.id = "alertMessage";
+        alertDiv.textContent = message;
+        alertDiv.style.position = "absolute";
+        alertDiv.style.top = "20px";
+        alertDiv.style.right = "20px";
+        alertDiv.style.padding = "15px 20px";
+        alertDiv.style.borderRadius = "8px";
+        alertDiv.style.color = "#fff";
+        alertDiv.style.fontSize = "14px";
+        alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+        alertDiv.style.zIndex = "1000";
+
+        if (type === "success") {
+            alertDiv.style.backgroundColor = "#28a745";
+        } else {
+            alertDiv.style.backgroundColor = "#dc3545";
+        }
+
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+            if (type === "success") {
+                window.location.reload();
+            }
+        }, 2000);
+    }
+});
+
+
+function openCompanyPopup() {
+    const modal = document.getElementById("company-modal");
+    const dropdown = document.getElementById("modal-company-dropdown");
+    modal.style.display = "block";
+
+    populateModalDropdown(companyDtos);
+}
+
+function closeCompanyPopup() {
+    const modal = document.getElementById("company-modal");
+    modal.style.display = "none";
+}
+
+function populateModalDropdown(companies) {
+    const dropdown = document.getElementById("modal-company-dropdown");
+    dropdown.innerHTML = "";
+
+    companies.forEach(company => {
+        const li = document.createElement("li");
+        li.textContent = company.name;
+        li.className = "dropdown-item";
+        li.dataset.companyId = company.id;
+
+        li.addEventListener("click", () => {
+            selectCompanyFromModal(company);
+        });
+
+        dropdown.appendChild(li);
+    });
+}
+
+function updateModalDropdown() {
+    const searchValue = document.getElementById("company-modal-search").value.toLowerCase();
+    const filteredCompanies = companyDtos.filter(company =>
+        company.name.toLowerCase().includes(searchValue)
+    );
+
+    populateModalDropdown(filteredCompanies);
+}
+
+function selectCompanyFromModal(company) {
+    const searchInput = document.getElementById("company-search");
+    const hiddenInput = document.getElementById("company-id");
+
+    searchInput.value = company.name;
+    hiddenInput.value = company.id;
+
+    onCompanySelected(company.id);
+
+    closeCompanyPopup();
+}
+
+
+document.addEventListener("click", event => {
+    const modal = document.getElementById("company-modal");
+    if (event.target === modal) {
+        closeCompanyPopup();
+    }
+});
+
+let selectedCompanyUsers = [];
+
+function openUserPopup() {
+    const modal = document.getElementById("user-modal");
+    modal.style.display = "block";
+
+    populateUserModalDropdown(selectedCompanyUsers);
+}
+
+// Close User Popup
+function closeUserPopup() {
+    const modal = document.getElementById("user-modal");
+    modal.style.display = "none";
+}
+
+// Populate User Dropdown
+function populateUserModalDropdown(users) {
+    const dropdown = document.getElementById("modal-user-dropdown");
+    dropdown.innerHTML = "";
+
+    users.forEach(user => {
+        const li = document.createElement("li");
+        li.textContent = `${user.surname} ${user.name}`;
+        li.className = "dropdown-item";
+        li.dataset.userId = user.id;
+
+        li.addEventListener("click", () => {
+            selectUserFromModal(user);
+        });
+
+        dropdown.appendChild(li);
+    });
+}
+
+function updateUserModalDropdown() {
+    const searchValue = document.getElementById("user-modal-search").value.toLowerCase();
+    const filteredUsers = selectedCompanyUsers.filter(user =>
+        `${user.surname} ${user.name}`.toLowerCase().includes(searchValue)
+    );
+
+    populateUserModalDropdown(filteredUsers);
+}
+
+function selectUserFromModal(user) {
+    const searchInput = document.getElementById("user-search");
+    const hiddenInput = document.getElementById("user-id");
+
+    searchInput.value = `${user.surname} ${user.name}`;
+    hiddenInput.value = user.id;
+
+    closeUserPopup();
+}
+
+function onCompanySelected(companyId) {
+    const company = companyDtos.find(c => c.id === companyId);
+    selectedCompanyUsers = company ? company.users : [];
+}
+
 
 

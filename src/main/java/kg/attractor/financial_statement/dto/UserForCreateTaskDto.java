@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserForTaskDto {
+@AllArgsConstructor
+public class UserForCreateTaskDto {
     private Long id;
     private String name;
     private String surname;
-    private String login;
 }

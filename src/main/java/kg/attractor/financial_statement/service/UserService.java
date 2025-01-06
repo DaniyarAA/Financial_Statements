@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.UserDetailsDto;
 import kg.attractor.financial_statement.dto.UserDto;
+import kg.attractor.financial_statement.dto.UserForCreateTaskDto;
 import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.User;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,10 @@ public interface UserService {
     Map<String, Object> sendMessageToUser(HttpServletRequest request);
 
     Long registerUser(UserDto user);
+
+    boolean canOpenDocumentTools(String name);
+
+    boolean canOpenTaskTools(String name);
 
     UserDto getUserDtoById(Long id);
 
@@ -62,6 +67,8 @@ public interface UserService {
     List<UserDto> getDeletedUsers();
 
     void resumeUser(Long id, Long roleId);
+
+    List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users);
 
     boolean canEdit(String name);
 

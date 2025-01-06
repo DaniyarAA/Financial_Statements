@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.financial_statement.dto.PriorityDto;
 import kg.attractor.financial_statement.dto.TaskDto;
 import kg.attractor.financial_statement.entity.User;
-import kg.attractor.financial_statement.service.CompanyService;
-import kg.attractor.financial_statement.service.PriorityService;
-import kg.attractor.financial_statement.service.TaskService;
-import kg.attractor.financial_statement.service.UserService;
+import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +28,8 @@ public class MainController {
     private final TaskService taskService;
     private final PriorityService priorityService;
     private final CompanyService companyService;
+    private final DocumentTypeService documentTypeService;
+    private final TaskStatusService taskStatusService;
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
@@ -67,8 +66,17 @@ public class MainController {
 
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        model.addAttribute("csrfToken", csrfToken);
+        boolean canOpenDocumentTools = false;
+        boolean canOpenTaskTools = false;
+        if (principal != null) {
+            canOpenDocumentTools = userService.canOpenDocumentTools(principal.getName());
+            canOpenTaskTools = userService.canOpenTaskTools(principal.getName());
+        }
         boolean canCreateCompany = false;
 
+        model.addAttribute("canOpenDocumentTools", canOpenDocumentTools);
+        model.addAttribute("canOpenTaskTools", canOpenTaskTools);
         if (principal != null) {
             canCreateCompany = userService.canCreate(principal.getName());
         }
@@ -81,6 +89,12 @@ public class MainController {
         model.addAttribute("userId", userId);
         model.addAttribute("companyId", companyId);
         model.addAttribute("priorities", priorities);
+        model.addAttribute("defaultDocumentTypes",documentTypeService.getDefaultDocumentTypes());
+        model.addAttribute("changeableDocumentTypes", documentTypeService.getChangeableDocumentTypes());
+        model.addAttribute("defaultTaskStatuses",taskStatusService.getDefaultTaskStatuses());
+        model.addAttribute("changeableTaskStatuses",taskStatusService.getChangeableTaskStatuses());
+        model.addAttribute("currentUser", userService.getUserDtoByLogin(principal.getName()));
+
         model.addAttribute("userTasks", userTasks);
         model.addAttribute("users", userService.getAllAccountant());
         model.addAttribute("tasks", sortedTasks);

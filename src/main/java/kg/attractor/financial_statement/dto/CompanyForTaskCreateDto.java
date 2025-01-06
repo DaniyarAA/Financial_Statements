@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserForTaskDto {
+@AllArgsConstructor
+public class CompanyForTaskCreateDto {
     private Long id;
     private String name;
-    private String surname;
-    private String login;
+    List<UserForCreateTaskDto> users;
 }

@@ -6,15 +6,20 @@ import kg.attractor.financial_statement.entity.Tag;
 import kg.attractor.financial_statement.entity.Task;
 import kg.attractor.financial_statement.entity.User;
 import kg.attractor.financial_statement.enums.ReportFrequency;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface TaskService {
     TaskDto getTaskById(Long id);
@@ -40,9 +45,9 @@ public interface TaskService {
 
     TaskDto getTaskDtoById(Long taskId);
 
-    Map<String, Object> getTaskListData(User user, int page, int size, String paramYearMonth);
+    Map<String, Object> getTaskListData(User user);
 
-    void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String name, Long id);
+    void editTaskFromTasksList(TaskForTaskListEditDto taskEditDto, String login, Long id, MultipartFile file);
 
     boolean checkIsAuthor(String name, Long id);
 
@@ -66,6 +71,16 @@ public interface TaskService {
     void updateTaskStatus(Long taskId, Long newStatusId);
 
     boolean areValidDates(String from, String to);
+
+    boolean isTaskWithThisStatus(Long statusId);
+
+    boolean isTaskWithThisDocumentType(Long documentId);
+
+    boolean createIsValid(TaskCreateDto taskCreateDto);
+
+    Resource loadFileAsResource(Path filePath) throws MalformedURLException;
+
+    Optional<Path> getFilePath(String companyName, String fileName);
 
     List <TaskDto> getTasksByCompanyId(Long companyId);
 

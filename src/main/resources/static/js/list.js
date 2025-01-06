@@ -1,3 +1,19 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskId = urlParams.get('id');
+    if (taskId) {
+        window.history.replaceState({}, '', window.location.pathname);
+        const taskButton = document.querySelector(`[data-task-id="${taskId}"]`);
+        if (taskButton) {
+            showTaskDetails(taskButton);
+        } else {
+            console.error("Кнопка с указанным ID не найдена.");
+        }
+    }
+});
+
+
+
 function showTaskDetails(button) {
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
 

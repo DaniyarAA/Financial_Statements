@@ -13,7 +13,9 @@ import kg.attractor.financial_statement.repository.TaskRepository;
 import kg.attractor.financial_statement.repository.UserRepository;
 import kg.attractor.financial_statement.service.*;
 import kg.attractor.financial_statement.service.impl.DocumentTypeServiceImpl;
+import kg.attractor.financial_statement.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +27,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -611,8 +616,9 @@ public class TaskServiceImpl implements TaskService {
                 .toList();
     }
 
+
     @Override
-    public List<TaskDto> getFinishedTasksForUser(Long userId) {
+    public List<TaskDto> getFinishedTasksForUser(Long userId)  {
         TaskStatus taskStatus = taskStatusService.getStatusDone();
         User user = userService.getUserById(userId);
         List<User> users = new ArrayList<>();
@@ -635,8 +641,12 @@ public class TaskServiceImpl implements TaskService {
                 .company(companyService.getCompanyForTaskDto(task.getCompany().getId()))
                 .amount(task.getAmount())
                 .description(task.getDescription())
+                .filePath(FileUtils.getOriginalFilename(task.getFilePath()))
+                .encodedFilePath(URLEncoder.encode(task.getFilePath(), StandardCharsets.UTF_8))
                 .build();
     }
+
+
 
     @Override
     public void updateTaskStatus(Long taskId, Long newStatusId) {

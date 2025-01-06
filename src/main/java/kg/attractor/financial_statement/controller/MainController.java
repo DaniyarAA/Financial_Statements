@@ -43,6 +43,10 @@ public class MainController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
         User userDto = userService.getUserByLogin(login);
+        if (userDto.getRole().getAuthorities().stream()
+                .noneMatch(authority -> "VIEW_COMPANY".equals(authority.getAuthority()))) {
+            model.addAttribute("companiesForUser", userDto.getCompanies());
+        }
 
         if (userDto == null) {
             return "redirect:/login";
@@ -54,7 +58,6 @@ public class MainController {
         } else if (companyId != null) {
             sortedTasks = taskService.getTasksByCompanyId(companyId);
         } else if (userId != null) {
-            System.out.println("Зашел в 3 иф");
             sortedTasks = taskService.getTasksForUser(userId);
             System.out.println(sortedTasks);
         } else {

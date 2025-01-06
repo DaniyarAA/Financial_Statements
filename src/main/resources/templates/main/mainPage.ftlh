@@ -181,10 +181,11 @@
                                             </div>
                                             <div class="company-name-document-type">
                                                 <div class="task-name">
-                                                    <span>${task.company.name}</span>
+                                                    <a href="/company/all?companyId=${task.company.id}&sort=actual" style="color: black"><span>${task.company.name}</span></a>
                                                 </div>
                                                 <div class="task-document">
-                                                    <span>${task.documentTypeName}</span>
+                                                    <a href="/tasks?id=${task.id}" style="color: black;"><span>${task.documentTypeName}</span></a>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -322,10 +323,10 @@
                                             </div>
                                             <div class="company-name-document-type">
                                                 <div class="task-name">
-                                                    <span>${task.company.name}</span>
+                                                    <a href="/company/all?companyId=${task.company.id}&sort=actual" style="color: black"><span>${task.company.name}</span></a>
                                                 </div>
                                                 <div class="task-document">
-                                                    <span>${task.documentTypeName}</span>
+                                                    <a href="/tasks?id=${task.id}" style="color: black"><span>${task.documentTypeName}</span></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -494,14 +495,34 @@
 
                                 <div id="companyCheckboxesMonthly" class="dropdown-menu p-3"
                                      style="border: 1px solid #ccc; width: 94%">
-                                    <#list companies as company>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="companyIds"
-                                                   id="company_${company.id}" value="${company.id}">
-                                            <label class="form-check-label"
-                                                   for="company_${company.id}">${company.name}</label>
-                                        </div>
-                                    </#list>
+                                    <#if companiesForUser??>
+                                        <#if companiesForUser?size gt 0>
+                                            <#list companiesForUser as company>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="companyIds"
+                                                           id="company_${company.id}" value="${company.id}">
+                                                    <label class="form-check-label"
+                                                           for="company_${company.id}">${company.name}</label>
+                                                </div>
+                                            </#list>
+
+                                        <#else >
+
+                                            <div class="text-center">
+                                                <p>Отсутствуют назначенные компании</p>
+                                            </div>
+                                        </#if>
+                                    <#else>
+                                        <#list companies as company>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="companyIds"
+                                                       id="company_${company.id}" value="${company.id}">
+                                                <label class="form-check-label"
+                                                       for="company_${company.id}">${company.name}</label>
+                                            </div>
+                                        </#list>
+                                    </#if>
+
                                 </div>
                             </div>
                         </div>
@@ -568,14 +589,33 @@
 
                                 <div id="companyCheckboxesQuarterly" class="dropdown-menu p-3"
                                      style="border: 1px solid #ccc; width: 94%">
-                                    <#list companies as company>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="companyIds"
-                                                   id="company_${company.id}" value="${company.id}">
-                                            <label class="form-check-label"
-                                                   for="company_${company.id}">${company.name}</label>
-                                        </div>
-                                    </#list>
+                                    <#if companiesForUser??>
+                                        <#if companiesForUser?size gt 0>
+                                            <#list companiesForUser as company>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="companyIds"
+                                                           id="company_${company.id}" value="${company.id}">
+                                                    <label class="form-check-label"
+                                                           for="company_${company.id}">${company.name}</label>
+                                                </div>
+                                            </#list>
+
+                                        <#else >
+
+                                            <div class="text-center">
+                                                <p>Отсутствуют назначенные компании</p>
+                                            </div>
+                                        </#if>
+                                    <#else>
+                                        <#list companies as company>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="companyIds"
+                                                       id="company_${company.id}" value="${company.id}">
+                                                <label class="form-check-label"
+                                                       for="company_${company.id}">${company.name}</label>
+                                            </div>
+                                        </#list>
+                                    </#if>
                                 </div>
                             </div>
                         </div>
@@ -641,20 +681,39 @@
 
                                 <div id="companyCheckboxesYearly" class="dropdown-menu p-3"
                                      style="border: 1px solid #ccc; width: 94%">
-                                    <#list companies as company>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="companyIds"
-                                                   id="company_${company.id}" value="${company.id}">
-                                            <label class="form-check-label"
-                                                   for="company_${company.id}">${company.name}</label>
-                                        </div>
-                                    </#list>
+                                        <#if companiesForUser??>
+                                            <#if companiesForUser?size gt 0>
+                                                <#list companiesForUser as company>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="companyIds"
+                                                               id="company_${company.id}" value="${company.id}">
+                                                        <label class="form-check-label"
+                                                               for="company_${company.id}">${company.name}</label>
+                                                    </div>
+                                                </#list>
+
+                                                <#else >
+
+                                                    <div class="text-center">
+                                                        <p>Отсутствуют назначенные компании</p>
+                                                    </div>
+                                             </#if>
+                                        <#else>
+                                        <#list companies as company>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="companyIds"
+                                                       id="company_${company.id}" value="${company.id}">
+                                                <label class="form-check-label"
+                                                       for="company_${company.id}">${company.name}</label>
+                                            </div>
+                                        </#list>
+                                    </#if>
                                 </div>
                             </div>
                         </div>
 
 
-                        <div class="form-group mt-4">
+                        <div class="form-group">
                             <div class="d-flex align-items-center justify-content-center"
                                  style="margin-top: 230px; margin-bottom: 10px">
                                 <div class="date-picker-container">

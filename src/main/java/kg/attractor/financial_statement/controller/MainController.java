@@ -38,9 +38,7 @@ public class MainController {
     }
 
     @GetMapping
-    public String getMainPage(@RequestParam(required = false, defaultValue = "desc") String sort,
-                              @RequestParam(required = false, defaultValue = "endDate") String sortBy,
-                              @RequestParam(required = false) Long companyId,
+    public String getMainPage(@RequestParam(required = false) Long companyId,
                               @RequestParam(required = false) Long userId,
                               Model model, HttpServletRequest request , Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -55,36 +53,37 @@ public class MainController {
         if (companyId != null && userId != null) {
             sortedTasks = taskService.getTasksByUsers_IdAndCompany_Id(userId, companyId);
         } else if (companyId != null) {
-            sortedTasks = taskService.getTasksByCompanyIdSorted(companyId, sortBy, sort);
+            sortedTasks = taskService.getTasksByCompanyId(companyId);
         } else if (userId != null) {
-            sortedTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
+            System.out.println("Зашел в 3 иф");
+            sortedTasks = taskService.getTasksForUser(userId);
+            System.out.println(sortedTasks);
         } else {
-            sortedTasks = taskService.getAllTasksSorted(sortBy, sort);
+            sortedTasks = taskService.getAllTasks();
         }
 
-        List<TaskDto> userTasks = taskService.getAllTasksForUserSorted(userDto, sortBy, sort);
+        List<TaskDto> userTasks = taskService.getTasksForUser(userDto.getId());
         List<PriorityDto> priorities = priorityService.getAllPriorities();
 
-        model.addAttribute("userTasks", userTasks);
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        model.addAttribute("csrfToken", csrfToken);
         boolean canCreateCompany = false;
 
         if (principal != null) {
             canCreateCompany = userService.canCreate(principal.getName());
         }
+        model.addAttribute("userTasks", userTasks);
+        model.addAttribute("csrfToken", csrfToken);
         model.addAttribute("canCreateCompany", canCreateCompany);
         model.addAttribute("companies", companyService.getAllCompanies());
         model.addAttribute("userDto", userDto);
         model.addAttribute("dateUtils", new DateUtils());
-        model.addAttribute("sort", sort);
-        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("userId", userId);
+        model.addAttribute("companyId", companyId);
         model.addAttribute("priorities", priorities);
         model.addAttribute("userTasks", userTasks);
         model.addAttribute("users", userService.getAllAccountant());
         model.addAttribute("tasks", sortedTasks);
-
         return "main/mainPage";
     }
 

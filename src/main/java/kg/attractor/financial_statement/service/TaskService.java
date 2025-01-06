@@ -35,7 +35,6 @@ public interface TaskService {
 
     List<TaskDto> getAllTaskDtosForUser(User user);
 
-    List<TaskDto> getAllTasksForUserSorted(User user, String sortDirection, String sortBy);
 
     List<TaskDto> getTaskDtosForUserAndYearMonth(User user, YearMonth selectedMonthYear);
 
@@ -68,11 +67,10 @@ public interface TaskService {
 
     boolean areValidDates(String from, String to);
 
-    List <TaskDto> getTasksByCompanyIdSorted(Long id, String sortDirection, String sortBy);
+    List <TaskDto> getTasksByCompanyId(Long companyId);
 
     List<TaskDto> getTasksByUsers_IdAndCompany_Id(Long userId, Long companyId);
 
     List<TaskDto> getTasksForUser(Long userId);
 
-    List<TaskDto> getAllTasksSorted(String sortBy, String sort);
 }

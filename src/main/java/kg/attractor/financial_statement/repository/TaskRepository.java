@@ -19,38 +19,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t.company IN :companies AND YEAR(t.startDate) = :year AND MONTH(t.startDate) = :month")
     List<Task> findByCompanyInAndStartDateYearAndStartDateMonth(@Param("companies") List<Company> companies, @Param("year") int year, @Param("month") int month);
     List<Task> findByCompanyId(Long company_id);
-    List<Task> findByCompanyId(Long company_id, Sort sort);
-
-
-    List<Task> findByUsersIdOrderByIdAsc(Long userId);
-    List<Task> findByUsersIdOrderByIdDesc(Long userId);
-    List<Task> findByUsersIdOrderByEndDateAsc(Long userId);
-    List<Task> findByUsersIdOrderByEndDateDesc(Long userId);
-    List<Task> findByUsersIdOrderByPriorityIdAsc(Long userId);
-    List<Task> findByUsersIdOrderByPriorityIdDesc(Long userId);
-
-
-    List<Task> findByCompanyIdOrderByIdAsc(Long companyId);
-    List<Task> findByCompanyIdOrderByIdDesc(Long companyId);
-    List<Task> findByCompanyIdOrderByEndDateAsc(Long companyId);
-    List<Task> findByCompanyIdOrderByEndDateDesc(Long companyId);
-    List<Task> findByCompanyIdOrderByPriorityIdAsc(Long companyId);
-    List<Task> findByCompanyIdOrderByPriorityIdDesc(Long companyId);
-
-
-    List<Task> findAllByOrderByIdAsc();
-    List<Task> findAllByOrderByIdDesc();
-    List<Task> findAllByOrderByEndDateAsc();
-    List<Task> findAllByOrderByEndDateDesc();
-    List<Task> findAllByOrderByPriorityIdAsc();
-    List<Task> findAllByOrderByPriorityIdDesc();
-
-
-
-
     List<Task> findByCompanyIdAndEndDateBetween(Long companyId, LocalDate startDate, LocalDate endDate);
     List<Task> findAllByUsersAndTaskStatus(List<User> users, TaskStatus taskStatus);
-    List<Task> findAllByCompany_Id(Long companyId);
-
     List<Task> findAllByUsers_IdAndCompany_Id(Long userId, Long companyId);
 }

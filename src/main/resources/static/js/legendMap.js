@@ -74,3 +74,54 @@ function updateTaskList(tasks) {
         taskList.innerHTML += taskItem;
     });
 }
+
+
+
+const sortState = {
+    id: 'asc',
+    endDate: 'asc',
+    priority: 'asc'
+};
+
+function sortTasks(sortBy) {
+    const currentOrder = sortState[sortBy];
+    const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    sortState[sortBy] = newOrder;
+    const taskScroll = document.getElementById("taskScroll");
+    const tasks = Array.from(taskScroll.querySelectorAll(".task-item"));
+
+    tasks.sort((a, b) => {
+        let valA = a.dataset[sortBy];
+        let valB = b.dataset[sortBy];
+
+        if (sortBy === "priority") {
+            valA = valA ? parseInt(valA, 10) : 0;
+            valB = valB ? parseInt(valB, 10) : 0;
+        }
+        if (sortBy === "id") {
+            valA = parseInt(valA, 10);
+            valB = parseInt(valB, 10);
+        }
+
+        if (sortBy === "endDate") {
+            valA = new Date(valA);
+            valB = new Date(valB);
+        }
+
+        if (valA < valB) return newOrder === "asc" ? -1 : 1;
+        if (valA > valB) return newOrder === "asc" ? 1 : -1;
+        return 0;
+    });
+
+    tasks.forEach((task) => taskScroll.appendChild(task));
+}
+
+function updateQueryParam(param, value) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (value === "") {
+        urlParams.delete(param);
+    } else {
+        urlParams.set(param, value);
+    }
+    window.location.href = `${window.location.pathname}?${urlParams}`;
+}

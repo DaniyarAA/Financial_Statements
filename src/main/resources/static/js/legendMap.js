@@ -89,7 +89,11 @@ function highlightSelected() {
                 selectedCompanyName = item.textContent.trim();
             }
         });
-        companySearch.placeholder = selectedCompanyName;
+
+        if (companySearch){
+            companySearch.placeholder = selectedCompanyName;
+
+        }
     }
     if(userListItems){
         let selectedUserName = "Поиск пользователей";
@@ -100,7 +104,10 @@ function highlightSelected() {
                 selectedUserName = item.textContent.trim();
             }
         });
-        userSearch.placeholder = selectedUserName;
+        if (userSearch){
+            userSearch.placeholder = selectedUserName;
+
+        }
     }
 }
 window.addEventListener('DOMContentLoaded', highlightSelected);
@@ -125,13 +132,16 @@ document.addEventListener('click', function (event) {
     const companiesDropdown = document.getElementById('companiesListOnTasks');
     const usersDropdown = document.getElementById('usersListOnTasks');
 
+    if (companiesDropdown && usersDropdown){
+        if (!companiesDropdown.contains(event.target) && event.target !== companiesSearchInput) {
+            companiesDropdown.style.display = 'none';
+        }
+        if (!usersDropdown.contains(event.target) && event.target !== usersSearchInput) {
+            usersDropdown.style.display = 'none';
+        }
+    }
 
-    if (!companiesDropdown.contains(event.target) && event.target !== companiesSearchInput) {
-        companiesDropdown.style.display = 'none';
-    }
-    if (!usersDropdown.contains(event.target) && event.target !== usersSearchInput) {
-        usersDropdown.style.display = 'none';
-    }
+
 });
 
 

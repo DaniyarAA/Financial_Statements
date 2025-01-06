@@ -354,30 +354,27 @@
                                             <div class="task-details-right">
                                                 <span class="task-date">${dateUtils.formatDateTime(task.endDate, "dd.MM.yyyy")}</span>
 
-                                                <div class="tag-container">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                         fill="currentColor"
-                                                         class="bi bi-tag" viewBox="0 0 16 16"
-                                                         onclick="toggleTagSelect(${task.id})">
-                                                        <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
-                                                        <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
-                                                    </svg>
+                                        <div class="tag-container">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                 fill="currentColor"
+                                                 class="bi bi-tag" viewBox="0 0 16 16"
+                                                 data-task-id="${task.id}"
+                                                 onclick="(${task.id})">
+                                                <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
+                                                <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
+                                            </svg>
 
-                                                    <div id="tag-modal-${task.id}" class="tag-select-modal">
-                                                        <div class="tag-select-modal-content">
-                                                            <span class="tag-close-button"
-                                                                  onclick="closeTagModal('select', ${task.id})">&times;</span>
-                                                            <h3 class="tag-modal-title">Назначьте тег для задачи</h3>
-                                                            <select id="user-tags-select-${task.id}"
-                                                                    class="tag-select-dropdown"
-                                                                    onchange="applySelectedTag(${task.id}, this.value)">
-                                                                <option value="" disabled selected>Выберите тег</option>
-                                                            </select>
-                                                            <button onclick="openTagModal(${task.id})"
-                                                                    class="tag-add-button">+ Добавить тег
-                                                            </button>
-                                                        </div>
-                                                    </div>
+
+                                            <div id="tag-modal-${task.id}" class="tag-select-modal">
+                                                <div class="tag-select-modal-content">
+                                                    <span class="tag-close-button" onclick="closeTagModal('select', ${task.id})">&times;</span>
+                                                    <h3 class="tag-modal-title">Назначьте тег для задачи</h3>
+                                                    <select id="user-tags-select-${task.id}" class="tag-select-dropdown" onchange="applySelectedTag(${task.id}, this.value)">
+                                                        <option value="" disabled selected>Выберите тег</option>
+                                                    </select>
+                                                    <button onclick="openTagModal(${task.id})" class="tag-add-button">+ Добавить тег</button>
+                                                </div>
+                                            </div>
 
                                                 </div>
 
@@ -408,35 +405,31 @@
                                                     </#if>
                                                 </div>
 
-                                                <div id="tag-modal-create-${task.id}" class="tag-select-modal">
-                                                    <div class="tag-select-modal-content">
-                                                        <span class="tag-close-button"
-                                                              onclick="closeTagModal('create', ${task.id})">&times;</span>
-                                                        <h3 class="tag-modal-title">Добавьте текст для тега</h3>
-                                                        <input type="text" id="tag-input-${task.id}"
-                                                               class="tag-input-field" placeholder="Введите текст тега">
-                                                        <input type="hidden" id="task-id-${task.id}" value="${task.id}">
-                                                        <button onclick="saveTag(${task.id})" class="tag-save-button">
-                                                            Сохранить
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                        <div id="tag-modal-create-${task.id}" class="tag-select-modal">
+                                            <div class="tag-select-modal-content">
+                                                <span class="tag-close-button" onclick="closeTagModal('create', ${task.id})">&times;</span>
+                                                <h3 class="tag-modal-title">Добавьте текст для тега</h3>
+                                                <input type="text" id="tag-input-${task.id}" class="tag-input-field" placeholder="Введите текст тега">
+                                                <input type="hidden" id="task-id-${task.id}" value="${task.id}">
+                                                <div id="tag-error-${task.id}" class="tag-error-message"></div>
 
-
-                                                <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=priority"
-                                                   style="text-decoration: none; color: inherit; display: inline;">
-                                                    <div class="task-priority-arrows" data-task-id="${task.id}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
-                                                             fill="currentColor" class="bi bi-sort-numeric-down"
-                                                             viewBox="0 0 16 16">
-                                                            <path d="M12.438 1.668V7H11.39V2.684h-.051l-1.211.859v-.969l1.262-.906h1.046z"/>
-                                                            <path fill-rule="evenodd"
-                                                                  d="M11.36 14.098c-1.137 0-1.708-.657-1.762-1.278h1.004c.058.223.343.45.773.45.824 0 1.164-.829 1.133-1.856h-.059c-.148.39-.57.742-1.261.742-.91 0-1.72-.613-1.72-1.758 0-1.148.848-1.835 1.973-1.835 1.09 0 2.063.636 2.063 2.687 0 1.867-.723 2.848-2.145 2.848zm.062-2.735c.504 0 .933-.336.933-.972 0-.633-.398-1.008-.94-1.008-.52 0-.927.375-.927 1 0 .64.418.98.934.98"/>
-                                                            <path d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"/>
-                                                        </svg>
-                                                    </div>
-                                                </a>
+                                                <button onclick="saveTag(${task.id})" class="tag-save-button">Сохранить</button>
                                             </div>
+                                        </div>
+
+
+
+                                        <a href="?sort=<#if sort == 'desc'>asc<#else>desc</#if>&sortBy=priority"
+                                           style="text-decoration: none; color: inherit; display: inline;">
+                                            <div class="task-priority-arrows" data-task-id="${task.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-sort-numeric-down" viewBox="0 0 16 16">
+                                                    <path d="M12.438 1.668V7H11.39V2.684h-.051l-1.211.859v-.969l1.262-.906h1.046z"/>
+                                                    <path fill-rule="evenodd" d="M11.36 14.098c-1.137 0-1.708-.657-1.762-1.278h1.004c.058.223.343.45.773.45.824 0 1.164-.829 1.133-1.856h-.059c-.148.39-.57.742-1.261.742-.91 0-1.72-.613-1.72-1.758 0-1.148.848-1.835 1.973-1.835 1.09 0 2.063.636 2.063 2.687 0 1.867-.723 2.848-2.145 2.848zm.062-2.735c.504 0 .933-.336.933-.972 0-.633-.398-1.008-.94-1.008-.52 0-.927.375-.927 1 0 .64.418.98.934.98"/>
+                                                    <path d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"/>
+                                                </svg>
+                                            </div>
+                                        </a>
+                                    </div>
 
                                             <div class="task-priority-bar" data-task-id="${task.id}"
                                                  style="background-color: ${task.priorityColor};"></div>
@@ -916,6 +909,13 @@
 
 
     <style>
+        .tag-error-message {
+            color: red;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+
 
         .dropdown-menu li.selected {
             background-color: #3693f6;

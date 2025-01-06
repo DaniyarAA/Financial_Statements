@@ -70,7 +70,15 @@ public class TagServiceImpl implements TagService {
         taskService.updateTaskTag(taskId, tag);
     }
 
-    //todo тег применяется только к первой задаче, скрытый тег появляется только после обновления страницы, добавить проверку на то что тег не должен быть меньше трех символов(а именно лучше сделать проверку на любое количество символов, но если привышает больше трех то уже укороченный вариант, сделать ограничение на больше 10 тегов и выборка с админом
+    @Override
+    public long countByUserId(Long userId) {
+        return tagRepository.countByUserId(userId);
+    }
+
+    @Override
+    public boolean isTagUnique(Long userId, String tagName) {
+        return tagRepository.findByUserIdAndTag(userId, tagName) == null;
+    }
 
     private TagDto convertToDto(Tag tag) {
         return TagDto.builder()

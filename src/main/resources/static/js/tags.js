@@ -25,11 +25,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    window.toggleTagSelect = function (taskId) {
-        const modal = document.getElementById(`tag-modal-${taskId}`);
-        modal.style.display = "flex";
-        loadUserTags(taskId);
-    };
+    document.querySelectorAll(".bi-tag").forEach(function (icon) {
+        icon.addEventListener("click", function (event) {
+            const taskId = icon.dataset.taskId;
+            const modal = document.getElementById(`tag-modal-${taskId}`);
+            const rect = icon.getBoundingClientRect();
+            const modalWidth = modal.offsetWidth;
+            const modalHeight = modal.offsetHeight;
+
+            modal.style.left = `${rect.left + window.scrollX - (modalWidth / 2) + (rect.width / 2) - 750}px`;
+            modal.style.top = `${rect.top + window.scrollY - modalHeight - 252}px`;
+
+            modal.style.display = "flex";
+            loadUserTags(taskId);
+        });
+    });
 
     window.loadUserTags = function (taskId) {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
@@ -96,10 +106,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const tagSelectModal = document.getElementById(`tag-modal-${taskId}`);
         tagSelectModal.style.display = "none";
 
-        const modal = document.getElementById(`tag-modal-create-${taskId}`);
-        modal.style.display = "flex";
+        const modalCreate = document.getElementById(`tag-modal-create-${taskId}`);
+        const icon = document.querySelector(`[data-task-id="${taskId}"]`);
+        const rect = icon.getBoundingClientRect();
+
+        const modalWidth = modalCreate.offsetWidth;
+        const modalHeight = modalCreate.offsetHeight;
+
+        modalCreate.style.left = `${rect.left + window.scrollX - (modalWidth / 2) + (rect.width / 2) - 750}px`;
+        modalCreate.style.top = `${rect.top + window.scrollY - modalHeight - 250}px`;
+
+        modalCreate.style.display = "flex";
 
         document.getElementById(`tag-input-${taskId}`).value = '';
+        document.getElementById(`tag-error-${taskId}`).textContent = '';
     };
 
     window.closeTagModal = function (modalType, taskId) {
@@ -115,39 +135,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.saveTag = function (taskId) {
         const tagInput = document.getElementById(`tag-input-${taskId}`).value;
+        const errorContainer = document.getElementById(`tag-error-${taskId}`);
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
+        errorContainer.textContent = '';
+
         if (tagInput.trim() === '') {
-            showErrorNotification('Тег не может быть пустым');
+            errorContainer.textContent = 'Тег не может быть пустым';
             return;
         }
 
-        fetch('/tasks/tag', {
-            method: 'POST',
+        fetch('/tasks/tags/count', {
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json",
                 "X-CSRF-TOKEN": csrfToken
-            },
-            body: JSON.stringify({
-                tag: tagInput,
-                taskId: taskId
-            })
+            }
         })
-            .then(response => {
-                if (response.ok) {
-                    showSuccessNotification('Тег успешно создан');
-
-                    updateTagTextAndTooltip(taskId, tagInput);
-
-                    closeTagModal('create', taskId);
-                } else {
-                    showErrorNotification('Ошибка при сохранении тега');
+            .then(response => response.json())
+            .then(tagCount => {
+                if (tagCount >= 10) {
+                    errorContainer.textContent = 'Лимит на теги достигнут';
+                    return;
                 }
+
+                fetch(`/tasks/tags/unique?tag=${tagInput}`, {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            errorContainer.textContent = 'Тег с таким названием уже есть';
+                            return;
+                        }
+
+                        fetch('/tasks/tag', {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": csrfToken
+                            },
+                            body: JSON.stringify({
+                                tag: tagInput,
+                                taskId: taskId
+                            })
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    showSuccessNotification('Тег успешно создан');
+                                    updateTagTextAndTooltip(taskId, tagInput);
+                                    closeTagModal('create', taskId);
+                                } else {
+                                    errorContainer.textContent = 'Ошибка при сохранении тега';
+                                }
+                            })
+                            .catch(() => {
+                                errorContainer.textContent = 'Ошибка соединения с сервером';
+                            });
+                    })
+                    .catch(() => {
+                        errorContainer.textContent = 'Ошибка при проверке уникальности тега';
+                    });
             })
             .catch(() => {
-                showErrorNotification('Ошибка соединения с сервером');
+                errorContainer.textContent = 'Ошибка при проверке количества тегов';
             });
     };
+
 
     window.addEventListener("click", function (event) {
         const modals = document.querySelectorAll(".tag-select-modal");

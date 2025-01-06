@@ -91,17 +91,27 @@ public class FileUtils {
             throw new RuntimeException("Failed to create directory: " + uploadDir, e);
         }
 
-        String resolvedFileName = resolveFileName(pathDir, transliteratedFileName);
+        String uuidFile = UUID.randomUUID().toString();
+        String resultFilename = uuidFile + "_" + originalFileName;
 
-        Path filePath = Paths.get(uploadDir + "/" + resolvedFileName);
+//        Path uploadPath = Paths.get(UPLOAD_DIR);
+//        Files.createDirectories(uploadPath);
 
-        try (OutputStream os = Files.newOutputStream(filePath)) {
+//        Path filePath = uploadPath.resolve(resultFilename);
+
+
+//        String resolvedFileName = resolveFileName(pathDir, originalFileName);
+
+        Path filePath = Paths.get(uploadDir);
+        Path fileUploadPath = filePath.resolve(resultFilename);
+
+        try (OutputStream os = Files.newOutputStream(fileUploadPath)) {
             os.write(file.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save file: " + resolvedFileName, e);
+            throw new RuntimeException("Failed to save file: " + originalFileName, e);
         }
 
-        return resolvedFileName;
+        return resultFilename;
     }
 
 

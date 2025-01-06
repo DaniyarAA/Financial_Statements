@@ -509,7 +509,7 @@ public class TaskServiceImpl implements TaskService {
                 .priorityId(task.getPriorityId())
                 .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
                 .tag(task.getTag() != null ? task.getTag().getTag() : null)
-                .filePath(task.getFilePath() != null ? task.getFilePath() : null)
+                .filePath(task.getFilePath() != null ? FileUtils.getOriginalFilename(task.getFilePath()) : null)
                 .build();
     }
 

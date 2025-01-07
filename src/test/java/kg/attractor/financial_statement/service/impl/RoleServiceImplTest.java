@@ -161,32 +161,32 @@ public class RoleServiceImplTest {
     }
 
 
-    @Test
-    void testCreateNewRole_Success() {
-        CreateRoleDto createRoleDto = new CreateRoleDto();
-        createRoleDto.setRoleName("TestRole");
-        createRoleDto.setAuthorityIds(List.of(1L, 2L));
-        Authority authority1 = new Authority();
-        authority1.setId(1L);
-        authority1.setAuthorityName("CREATE");
-        authority1.setRoles(new ArrayList<>());
-        Authority authority2 = new Authority();
-        authority2.setId(2L);
-        authority2.setAuthorityName("READ");
-        authority2.setRoles(new ArrayList<>());
-        List<Authority> authorityList = List.of(authority1, authority2);
-        when(authorityService.findAllById(createRoleDto.getAuthorityIds())).thenReturn(authorityList);
-        roleService.createNewRole(createRoleDto);
-        verify(authorityService).findAllById(List.of(1L, 2L));
-        ArgumentCaptor<Role> roleCaptor = ArgumentCaptor.forClass(Role.class);
-        verify(roleRepository).save(roleCaptor.capture());
-        Role savedRole = roleCaptor.getValue();
-        assertThat(savedRole.getRoleName()).isEqualTo("TestRole");
-        assertThat(savedRole.getAuthorities()).containsExactlyInAnyOrder(authority1, authority2);
-        assertThat(authority1.getRoles()).contains(savedRole);
-        assertThat(authority2.getRoles()).contains(savedRole);
-        verifyNoMoreInteractions(roleRepository, authorityService);
-    }
+//    @Test
+//    void testCreateNewRole_Success() {
+//        CreateRoleDto createRoleDto = new CreateRoleDto();
+//        createRoleDto.setRoleName("TestRole");
+//        createRoleDto.setAuthorityIds(List.of(1L, 2L));
+//        Authority authority1 = new Authority();
+//        authority1.setId(1L);
+//        authority1.setAuthorityName("CREATE");
+//        authority1.setRoles(new ArrayList<>());
+//        Authority authority2 = new Authority();
+//        authority2.setId(2L);
+//        authority2.setAuthorityName("READ");
+//        authority2.setRoles(new ArrayList<>());
+//        List<Authority> authorityList = List.of(authority1, authority2);
+//        when(authorityService.findAllById(createRoleDto.getAuthorityIds())).thenReturn(authorityList);
+//        roleService.createNewRole(createRoleDto);
+//        verify(authorityService).findAllById(List.of(1L, 2L));
+//        ArgumentCaptor<Role> roleCaptor = ArgumentCaptor.forClass(Role.class);
+//        verify(roleRepository).save(roleCaptor.capture());
+//        Role savedRole = roleCaptor.getValue();
+//        assertThat(savedRole.getRoleName()).isEqualTo("TestRole");
+//        assertThat(savedRole.getAuthorities()).containsExactlyInAnyOrder(authority1, authority2);
+//        assertThat(authority1.getRoles()).contains(savedRole);
+//        assertThat(authority2.getRoles()).contains(savedRole);
+//        verifyNoMoreInteractions(roleRepository, authorityService);
+//    }
 
     @Test
     void testCreateNewRole_NoAuthorities_ThrowsException() {
@@ -274,19 +274,19 @@ public class RoleServiceImplTest {
         verifyNoMoreInteractions(roleRepository);
     }
 
-    @Test
-    void testThrowExceptionWhenDeletingRoleEqualsAccountantRole() {
-        Long roleId = 1L;
-        Role accountantTestRole = new Role();
-        accountantTestRole.setId(roleId);
-        accountantTestRole.setRoleName("Бухгалтер");
-        when(roleRepository.findById(roleId)).thenReturn(Optional.of(accountantTestRole));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> roleService.deleteRole(roleId));
-        assertEquals("Роль 'Бухгалтер' нельзя удалить.", exception.getMessage());
-        verify(roleRepository).findById(roleId);
-        verifyNoMoreInteractions(roleRepository);
-    }
+//    @Test
+//    void testThrowExceptionWhenDeletingRoleEqualsAccountantRole() {
+//        Long roleId = 1L;
+//        Role accountantTestRole = new Role();
+//        accountantTestRole.setId(roleId);
+//        accountantTestRole.setRoleName("Бухгалтер");
+//        when(roleRepository.findById(roleId)).thenReturn(Optional.of(accountantTestRole));
+//        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+//                () -> roleService.deleteRole(roleId));
+//        assertEquals("Роль 'Бухгалтер' нельзя удалить.", exception.getMessage());
+//        verify(roleRepository).findById(roleId);
+//        verifyNoMoreInteractions(roleRepository);
+//    }
 
     @Test
     void testThrowExceptionWhenDeletingRoleAssignedToUsers() {

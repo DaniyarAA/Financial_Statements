@@ -127,6 +127,128 @@
 
                 <div id="task-content">
 
+
+
+
+
+                    <div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 710px">
+                        <div class="status-indicator-task-details" id="status-indicator" style="
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 8px;
+                                background-color: green;  <#--${statusIndicatorColor}-->
+                                pointer-events: none;
+                                z-index: 0;"></div>
+
+                        <div style="position: relative; z-index: 1;">
+                            <div style="display: flex; justify-content: center">
+                                <p style="font-size: 24px" id="document-type"></p>  <#--${documentType}-->
+                            </div>
+                        </div>
+
+                        <div class="task-info">
+                            <div class="task-info-item">
+                                <p class="task-info-label">Компания:</p>
+                                <p id="company-name" class="task-info-value"></p>
+                            </div>
+
+                            <div class="task-info-item">
+                                <p class="task-info-label">ИНН:</p>
+                                <p id="company-inn" class="task-info-value"></p>
+                            </div>
+
+                            <div class="task-info-item">
+                                <p class="task-info-label">Период:</p>
+                                <div class="task-info-value">
+                                    <input type="date" id="date-range-start-input" class="user-value" style="display: inline; width: 40%; border: none">
+                                    -
+                                    <input type="date" id="date-range-end-input" class="user-value" style="display: inline; width: 40%; border: none">
+<#--                                    <span id="date-range"></span>-->
+<#--                                    <i class="bi bi-pencil ms-2"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="task-info-item">
+                                <p class="task-info-label">Сумма:</p>
+                                <div class="task-info-value">
+                                    <input type="text" id="amount-input" name="amount" style="
+                                    display: none;
+                                    width: 100px;
+                                    height: 34px;
+                                    border: 1px solid #ccc;
+                                    font-size: 18px;
+                                    margin-bottom: 0;">
+                                    <span id="amount"></span>
+                                    <i class="bi bi-pencil ms-2"></i>
+                                </div>
+
+                            </div>
+
+                            <div class="task-info-item">
+                                <p class="task-info-label">Файл:</p>
+                                <div class="task-info-value">
+                                    <span id="filePath"></span>
+                                    <i class="bi bi-box-arrow-in-down ms 2"></i>
+                                    <i class="bi bi-pencil ms-2"></i>
+                                </div>
+                            </div>
+
+                            <div class="task-info-item">
+                                <p class="task-info-label">Статус:</p>
+                                <div class="task-info-value">
+                                    <span id="status"></span>
+                                    <select id="roleSelect" class="form-select" style="width: 65%; display: none">
+
+                                    </select>
+                                    <i class="bi bi-pencil ms-2"></i>
+                                </div>
+                            </div>
+                            <div class="task-info-item">
+                                <p class="task-info-label">Назначено:</p>
+                                <div class="task-info-value" style="align-self: flex-start">
+<#--                                    <span id="users-display"></span>-->
+                                    <div id="assigned-users-dropdown" style="display: block; width: 85%">
+                                        <input type="text" id="assigned-users-search" placeholder="Поиск пользователей..."
+                                               class="form-control mb-2">
+                                        <div id="users-checkboxes" class="dropdown-menu p-3">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="bi bi-pencil ms-2"></i>
+                            </div>
+                        </div>
+                        <label for="description" style="margin-top: 25px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
+                        <textarea id="description" name="description" style="width: 95%; margin-left: 10px;
+        height: 112px;
+        background-color: #d9d9d9;
+        color: #333;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+        outline: none;
+        font-size: 16px;
+        resize: none;
+        overflow-y: auto;"></textarea>
+                        <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
+
+                            <button class="btn-save-task" type="button" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0 2px rgba(0, 0, 0, 0.3),
+            0 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+
                 </div>
             </div>
 
@@ -837,8 +959,33 @@
 
         .task-info {
             display: flex;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 20px;
         }
+
+        .task-info-item{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 16px;
+            height: 35px;
+            align-items: center
+        }
+        .task-info-label{
+            font-style: italic;
+            color: #555;
+            font-size: 13px;
+            width: 32%;
+            text-align: right
+
+        }
+        .task-info-value{
+            text-align: left;
+            font-size: 18px;
+            width: 67%;
+        }
+
 
         .labels {
             text-align: right;

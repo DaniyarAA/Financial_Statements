@@ -12,232 +12,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
-
 function showTaskDetails(button) {
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    document.getElementById('task-details').style.display = 'block';
 
-    const taskId = button.getAttribute("data-task-id");
-    const documentType = button.getAttribute("data-document-type");
-    const startDate = button.getAttribute("data-start-date");
-    const endDate = button.getAttribute("data-end-date");
-    const companyId = button.getAttribute("data-company-id");
-    const companyName = button.getAttribute("data-company-name");
-    const companyInn = button.getAttribute("data-company-inn");
-    const description = button.getAttribute("data-description");
-    const amount = button.getAttribute("data-amount");
-    const status = button.getAttribute("data-status");
-    const isCompleted = status === "Сдан";
-    const filePath = button.getAttribute("data-file-path");
+    document.getElementById('document-type').textContent = button.getAttribute("data-document-type");
+    document.getElementById('company-name').textContent = button.getAttribute("data-company-name");
+    document.getElementById('company-inn').textContent = button.getAttribute("data-company-inn");
+    // document.getElementById('date-range').textContent = `${button.getAttribute("data-start-date")} - ${button.getAttribute("data-end-date")}`;
+    document.getElementById('amount').textContent = button.getAttribute("data-amount") + ' сом';
+    document.getElementById('amount-input').value = button.getAttribute("data-amount");
 
-    const formattedStartDate = formatDate(startDate);
-    const formattedEndDate = formatDate(endDate);
-    const formattedAmount = formatAmount(amount);
+    document.getElementById('filePath').textContent = button.getAttribute("data-file-path");
+    document.getElementById('status').textContent = button.getAttribute("data-status");
+    document.getElementById('description').value = button.getAttribute("data-description");
+    document.getElementById('date-range-start-input').value = button.getAttribute("data-start-date");
+    document.getElementById('date-range-end-input').value = button.getAttribute("data-end-date");
 
-    const users = button.getAttribute("data-users");
-    const parsedUsers = users ? JSON.parse(users) : [];
-
-    console.log(parsedUsers);
-
+    const statusIndicator = document.getElementById('status-indicator');
+    statusIndicator.style.backgroundColor = button.getAttribute("data-status") === "Сдан" ? '#15C24E' : '#C20B18';
+    document.getElementById('task-details').style.display = 'block';
     const taskDetails = document.getElementById('task-details');
     if (taskDetails) {
-        taskDetails.style.width = '30%';
+        taskDetails.style.width = '33%';
         taskDetails.border = '1px solid #dee2e6'
     }
 
-    let statusOptions = '';
-    taskStatusDtos.forEach((statusDto) => {
-        const isSelected = statusDto.id == status ? 'selected' : '';
-        statusOptions += `<option value="${statusDto.id}" ${isSelected}>${statusDto.name}</option>`;
-    });
+    // const usersDisplay = document.getElementById('users-display');
+    const users = button.getAttribute("data-users");
+    const parsedUsers = users ? JSON.parse(users) : [];
 
-    const statusIndicatorColor = isCompleted ? '#15C24E' : '#C20B18';
+    // usersDisplay.innerHTML = parsedUsers.length > 0
+    //     ? parsedUsers.map(user => `${user.surname.charAt(0)}. ${user.name} `).join('')
+    //     : 'Не задано';
 
-    document.getElementById('task-details').style.display = 'block';
-    document.getElementById('task-content').innerHTML = `
-<div style="background-color: #ffffff; padding: 20px; border-radius: 4px; position: relative; overflow: hidden; height: 710px">
-    <div class="status-indicator-task-details" style="
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background-color: ${statusIndicatorColor};
-            pointer-events: none;
-            z-index: 0;"></div>
-
-    <div style="position: relative; z-index: 1;">
-        <div style="display: flex; justify-content: center">
-
-        <p style="font-size: 24px">${documentType}</p>
-        </div>
-    </div>
-    <form id="task-edit-form" action="/tasks/edit/${taskId}" method="post" style="position: relative; z-index: 1;">
-        <input type="hidden" name="_csrf" value="${csrfToken}">
-        <div class="task-info">
-            <div class="labels" style="font-size: 14px; font-style: italic; font-weight: 100; display: inline">
-                <p>Компания:</p>
-                <p>ИНН:</p>
-                <p style="margin-top: 8px">Период:</p>
-                <p style="margin-top: 15px">Сумма:</p>
-                <p style="margin-top: 16px">Файл:</p>
-                <p style="margin-top: 17px">Статус:</p>
-                <p style="margin-top: 13px">Назначено:</p>
-            </div>
-        
-            <div class="values" style="font-size: 20px; display: inline">
-                <p class="truncate-text">${companyName}</p>
-                <p>${companyInn}</p>
-                
-                <div style="display: inline; height: 34px">
-                    <div id="date-display" style="display: block;">
-                        <p>${formattedStartDate} - ${formattedEndDate} <button type="button" class="btn btn-link" onclick="editDate()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-                    </div>
-                    <div id="date-input" style="display: none; height: 34px; align-items: center; margin-top: 5px; margin-bottom: 5px">
-                        <input type="text" id="from" name="from" style="width: 100px; height: 30px;" value="${formattedStartDate}">
-                        <input type="text" id="to" name="to" style="width: 100px; height: 30px;" value="${formattedEndDate}">
-                        <button type="button" class="btn btn-link" onclick="cancelEditDate()" style="padding: 0; margin-left: 10px;">
-                            <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
-                        </button>
-                    </div>
-                </div>
-                
-                <div style="display: inline; height: 34px">
-                    <div id="amount-display" style="display: block;">
-                        <p>${formattedAmount !== "Не задано" ? formattedAmount + ' сом' : formattedAmount}<button type="button" class="btn btn-link" onclick="editAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-    
-                    </div>
-                    <div id="amount-input" style="display: none; height: 34px; margin-top: 5px; margin-bottom: 5px">
-                        <input type="text" id="amount" name="amount" value="${formattedAmount !== "Не задано" ? formattedAmount : 0}" style="
-                            width: 100px;
-                            height: 34px;
-                            border: 1px solid #ccc;
-                            font-size: 14px;
-                            margin-bottom: 0;
-                        ">
-                        <button type="button" class="btn btn-link" onclick="cancelEditAmount()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
-                    </div>
-                </div>
-                
-                <div style="display: inline; height: 38px">
-                    <div id="file-display" style="display: flex; flex-direction: row; height: 38px">
-                        <p class="truncate-text">${filePath}</p>
-                            <button type="button" class="btn btn-link" onclick="editFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
-                            ${filePath !== "Не задано" ? `
-                                <button type="button" class="btn btn-link">
-                                    <a href="api/files/download/${companyId}/${filePath}">
-                                        <img src="/images/download.png" alt="Download icon" style="max-width: 20px; max-height: 20px;">
-                                    </a>
-                                </button>
-                            ` : ''}
-                    </div>
-                    <div id="file-input" style="display: none; width: 250px; flex-direction: row">
-                        <input type="file" class="form-control" id="file" name="file">
-                        <p style="display: none;"></p>
-                        <div class="invalid-feedback">
-                            Выберите файл
-                        </div>
-                        <button type="button" class="btn btn-link" onclick="cancelEditFile()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button>
-                    </div>
-                </div>
-                
-                <div style="display: inline; height: 34px">
-                    <div id="status-display" style="display: block">
-                        <p>${status} <button type="button" class="btn btn-link" onclick="editStatus()"><img alt="Edit pen" src="/images/edit-pen.png" style="max-width: 20px; max-height: 20px;"></button></p>
-                    </div>
-                    <div id="status-input" style="display: none; align-items: center;">
-                        <div style="display: flex; flex-direction: row">
-                        <div>
-                            <select class="form-select" id="taskStatus" name="statusId" style="
-                            width: 200px; height: 38px;
-                            ">
-                                ${statusOptions}
-                            </select>
-                        </div>
-          
-                        <button type="button" class="btn btn-link" onclick="cancelEditStatus()" style="padding: 0; margin-left: 10px;">
-                            <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px;">
-                        </button>
-                        </div>
-                </div>    
-                </div>
-                    
-                <div id="users-display"></div>
-
-            </div>
-        </div>
-
-        <label for="description" style="margin-top: 60px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
-        <textarea id="description" name="description" style="width: 95%; margin-left: 10px;
-    height: 112px;
-    background-color: #d9d9d9;
-    color: #333;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
-    outline: none;
-    font-size: 16px;
-    resize: none;
-    overflow-y: auto;">${description}</textarea>
-        <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
-
-        <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0 2px rgba(0, 0, 0, 0.3),
-            0 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
-    </div>
-
-    </form>
-</div>
-    `;
-    const usersDisplay = document.getElementById('users-display');
-    if (usersDisplay) {
-        if (parsedUsers.length > 0) {
-            usersDisplay.innerHTML = `
-            <div>
-                ${parsedUsers
-                .map(
-                    (user, index) => `
-                        <div style="display: inline-flex; align-items: center; margin-bottom: 5px; position: relative;">
-                            <p style="margin: 0; font-size: 14px;">${user.surname.charAt(0)}. ${user.name}</p>
-                            <button type="button" class="btn btn-link" data-index="${index}" style="padding: 0; margin-left: 8px; vertical-align: middle;">
-                                <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px; vertical-align: middle;">
-                            </button>
-                            <div class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);">
-                                <ul style="list-style: none; margin: 0; padding: 5px 10px;">
-                                    <li>
-                                        <label>
-                                            <input type="checkbox" name="option1"> Lorem ipsum.
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox" name="option2"> Lorem ipsum dolor.
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox" name="option3"> Lorem ipsum dolor sit.
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        `
-                )
-                .join('')}
-            </div>
-        `;
-            document.querySelectorAll('.btn.btn-link').forEach(button => {
-                button.addEventListener('click', function () {
-                    toggleDropdown(button);
-                });
-            });
-        } else {
-            usersDisplay.innerHTML = '<p>Не задано</p>';
-        }
-    } else {
-        console.error('Element with id "users-display" not found in the DOM.');
-    }
 
     function toggleDropdown(button) {
         const dropdown = button.nextElementSibling;
@@ -267,6 +75,135 @@ function showTaskDetails(button) {
         from.datepicker("option", "maxDate", getDate(this));
     });
 }
+
+// function showTaskDetails(button) {
+//     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+//
+//     const taskId = button.getAttribute("data-task-id");
+//     const documentType = button.getAttribute("data-document-type");
+//     const startDate = button.getAttribute("data-start-date");
+//     const endDate = button.getAttribute("data-end-date");
+//     const companyId = button.getAttribute("data-company-id");
+//     const companyName = button.getAttribute("data-company-name");
+//     const companyInn = button.getAttribute("data-company-inn");
+//     const description = button.getAttribute("data-description");
+//     const amount = button.getAttribute("data-amount");
+//     const status = button.getAttribute("data-status");
+//     const isCompleted = status === "Сдан";
+//     const filePath = button.getAttribute("data-file-path");
+//
+//     const formattedStartDate = formatDate(startDate);
+//     const formattedEndDate = formatDate(endDate);
+//     const formattedAmount = formatAmount(amount);
+//
+//     const users = button.getAttribute("data-users");
+//     const parsedUsers = users ? JSON.parse(users) : [];
+//
+//     console.log(parsedUsers);
+//
+//     const taskDetails = document.getElementById('task-details');
+//     if (taskDetails) {
+//         taskDetails.style.width = '30%';
+//         taskDetails.border = '1px solid #dee2e6'
+//     }
+//
+//     let statusOptions = '';
+//     taskStatusDtos.forEach((statusDto) => {
+//         const isSelected = statusDto.id == status ? 'selected' : '';
+//         statusOptions += `<option value="${statusDto.id}" ${isSelected}>${statusDto.name}</option>`;
+//     });
+//
+//     const statusIndicatorColor = isCompleted ? '#15C24E' : '#C20B18';
+//
+//     document.getElementById('task-details').style.display = 'block';
+//
+//
+//
+//     // Удалил модалку редактирования задачи
+//     document.getElementById('task-content').innerHTML = `    `;
+//
+//
+//
+//
+//
+//     const usersDisplay = document.getElementById('users-display');
+//     if (usersDisplay) {
+//         if (parsedUsers.length > 0) {
+//             usersDisplay.innerHTML = `
+//             <div>
+//                 ${parsedUsers
+//                 .map(
+//                     (user, index) => `
+//                         <div style="display: inline-flex; align-items: center; margin-bottom: 5px; position: relative;">
+//                             <p style="margin: 0; font-size: 14px;">${user.surname.charAt(0)}. ${user.name}</p>
+//                             <button type="button" class="btn btn-link" data-index="${index}" style="padding: 0; margin-left: 8px; vertical-align: middle;">
+//                                 <img alt="Edit pen" src="/images/edit-pen.png" style="width: 20px; height: 20px; vertical-align: middle;">
+//                             </button>
+//                             <div class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);">
+//                                 <ul style="list-style: none; margin: 0; padding: 5px 10px;">
+//                                     <li>
+//                                         <label>
+//                                             <input type="checkbox" name="option1"> Lorem ipsum.
+//                                         </label>
+//                                     </li>
+//                                     <li>
+//                                         <label>
+//                                             <input type="checkbox" name="option2"> Lorem ipsum dolor.
+//                                         </label>
+//                                     </li>
+//                                     <li>
+//                                         <label>
+//                                             <input type="checkbox" name="option3"> Lorem ipsum dolor sit.
+//                                         </label>
+//                                     </li>
+//                                 </ul>
+//                             </div>
+//                         </div>
+//                         `
+//                 )
+//                 .join('')}
+//             </div>
+//         `;
+//             document.querySelectorAll('.btn.btn-link').forEach(button => {
+//                 button.addEventListener('click', function () {
+//                     toggleDropdown(button);
+//                 });
+//             });
+//         } else {
+//             usersDisplay.innerHTML = '<p>Не задано</p>';
+//         }
+//     } else {
+//         console.error('Element with id "users-display" not found in the DOM.');
+//     }
+//
+//     function toggleDropdown(button) {
+//         const dropdown = button.nextElementSibling;
+//         if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+//             dropdown.style.display = 'block';
+//         } else {
+//             dropdown.style.display = 'none';
+//         }
+//     }
+//
+//     var dateFormat = "dd.mm.yy";
+//     var from = $("#from").datepicker({
+//         defaultDate: "+1w",
+//         changeMonth: true,
+//         numberOfMonths: 1,
+//         dateFormat: dateFormat
+//     }).on("change", function () {
+//         to.datepicker("option", "minDate", getDate(this));
+//     });
+//
+//     var to = $("#to").datepicker({
+//         defaultDate: "+1w",
+//         changeMonth: true,
+//         numberOfMonths: 1,
+//         dateFormat: dateFormat
+//     }).on("change", function () {
+//         from.datepicker("option", "maxDate", getDate(this));
+//     });
+// }
 
 function handleFileUpload(event) {
     const fileInput = event.target;

@@ -3,6 +3,7 @@ package kg.attractor.financial_statement.service.impl;
 import kg.attractor.financial_statement.dto.CompanyDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskCreateDto;
 import kg.attractor.financial_statement.dto.CompanyForTaskDto;
+import kg.attractor.financial_statement.dto.UserForTaskDto;
 import kg.attractor.financial_statement.entity.*;
 import kg.attractor.financial_statement.enums.ReportFrequency;
 import kg.attractor.financial_statement.repository.CompanyRepository;
@@ -548,10 +549,15 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private CompanyForTaskDto convertToCompanyForTaskDto(Company company) {
+        List<UserForTaskDto> users = company.getUsers().stream()
+                .map(userService::convertToUserForTaskDto)
+                .toList();
+        System.out.println(users);
         return CompanyForTaskDto.builder()
                 .id(company.getId())
                 .name(company.getName())
                 .inn(company.getInn())
+                .users(users)
                 .build();
     }
 

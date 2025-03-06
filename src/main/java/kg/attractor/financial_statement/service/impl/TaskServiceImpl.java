@@ -420,12 +420,30 @@ public class TaskServiceImpl implements TaskService {
             newVersionOfTask.setDescription(taskDto.getDescription());
         }
         if (taskDto.getFrom() != null) {
-            LocalDate startDate = LocalDate.parse(taskDto.getFrom(), formatter);
+            LocalDate startDate = taskDto.getFrom();
             newVersionOfTask.setStartDate(startDate);
         }
         if (taskDto.getTo() != null) {
-            LocalDate endDate = LocalDate.parse(taskDto.getTo(), formatter);
+            LocalDate endDate = taskDto.getTo();
             newVersionOfTask.setEndDate(endDate);
+        }
+        if (taskDto.getUserIds() != null) {
+            List<User> selectedUsers = userService.findAllById(taskDto.getUserIds());
+            for(User user : selectedUsers){
+                if(!newVersionOfTask.getUsers().contains(user)){
+                    newVersionOfTask.getUsers().add(user);
+                    user.getTasks().add(newVersionOfTask);
+                }
+            }
+            Iterator<User> iterator = newVersionOfTask.getUsers().iterator();
+            while (iterator.hasNext()) {
+                User user = iterator.next();
+                if (!selectedUsers.contains(user)) {
+                    iterator.remove();
+                    user.getTasks().remove(newVersionOfTask);
+                }
+            }
+
         }
         if (file != null) {
             String filePath = saveFile(file, newVersionOfTask.getCompany().getName());

@@ -64,6 +64,7 @@
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
                                                             data-company-id="${task.company.id}"
+
                                                             <#if task.filePath??>
                                                                 data-file-path="${task.filePath}"
                                                             <#else>
@@ -87,6 +88,20 @@
                                                                 <#else>
                                                                     data-users="[
                                                                         <#list task.users as user>
+                                                                            {&quot;id&quot;: ${user.id}, &quot;name&quot;: &quot;${user.name}&quot;, &quot;surname&quot;: &quot;${user.surname}&quot;}
+                                                                            <#if user_has_next>,</#if>
+                                                                        </#list>
+                                                                        ]"
+                                                                </#if>
+                                                            <#else>
+                                                                data-users="[]"
+                                                            </#if>
+                                                            <#if task.company.users??>
+                                                                <#if task.company.users?size == 0>
+                                                                    data-company-users="[]"
+                                                                <#else>
+                                                                    data-company-users="[
+                                                                        <#list task.company.users as user>
                                                                             {&quot;id&quot;: ${user.id}, &quot;name&quot;: &quot;${user.name}&quot;, &quot;surname&quot;: &quot;${user.surname}&quot;}
                                                                             <#if user_has_next>,</#if>
                                                                         </#list>
@@ -147,97 +162,98 @@
                                 <p style="font-size: 24px" id="document-type"></p>  <#--${documentType}-->
                             </div>
                         </div>
-
-                        <div class="task-info">
-                            <div class="task-info-item">
-                                <p class="task-info-label">Компания:</p>
-                                <p id="company-name" class="task-info-value"></p>
-                            </div>
-
-                            <div class="task-info-item">
-                                <p class="task-info-label">ИНН:</p>
-                                <p id="company-inn" class="task-info-value"></p>
-                            </div>
-
-                            <div class="task-info-item">
-                                <p class="task-info-label">Период:</p>
-                                <div class="task-info-value">
-                                    <input type="date" id="date-range-start-input" class="user-value" style="display: inline; width: 40%; border: none">
-                                    -
-                                    <input type="date" id="date-range-end-input" class="user-value" style="display: inline; width: 40%; border: none">
-<#--                                    <span id="date-range"></span>-->
-<#--                                    <i class="bi bi-pencil ms-2"></i>-->
+                        <form id="task-edit-form" method="post">
+                            <!-- CSRF -->
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                       value="${(_csrf.token)!'csrf-token'}"/>
+                            </#if>
+                            <div class="task-info">
+                                <div class="task-info-item">
+                                    <p class="task-info-label">Компания:</p>
+                                    <p id="company-name" class="task-info-value"></p>
                                 </div>
-                            </div>
 
-                            <div class="task-info-item">
-                                <p class="task-info-label">Сумма:</p>
-                                <div class="task-info-value">
-                                    <input type="text" id="amount-input" name="amount" style="
-                                    display: none;
+                                <div class="task-info-item">
+                                    <p class="task-info-label">ИНН:</p>
+                                    <p id="company-inn" class="task-info-value"></p>
+                                </div>
+
+
+                                <div class="task-info-item">
+                                    <p class="task-info-label">Период:</p>
+                                    <div class="task-info-value">
+                                        <input type="date" id="date-range-start-input" name="from" class="user-value" style="display: inline; width: 40%; border: none">
+                                        -
+                                        <input type="date" id="date-range-end-input" name="to" class="user-value" style="display: inline; width: 40%; border: none">
+                                        <#--                                    <span id="date-range"></span>-->
+                                        <#--                                    <i class="bi bi-pencil ms-2"></i>-->
+                                    </div>
+                                </div>
+
+                                <div class="task-info-item">
+                                    <p class="task-info-label">Сумма:</p>
+                                    <div class="task-info-value">
+                                        <input type="text" id="amount-input" name="amount" style="
+                                    display: inline;
                                     width: 100px;
                                     height: 34px;
                                     border: 1px solid #ccc;
                                     font-size: 18px;
                                     margin-bottom: 0;">
-                                    <span id="amount"></span>
-                                    <i class="bi bi-pencil ms-2"></i>
+                                        <span id="amount" style="display: none"></span>
+                                        <i class="bi bi-pencil ms-2" onclick="toggleAmountEdit()"></i>
+                                    </div>
+
                                 </div>
 
-                            </div>
-
-                            <div class="task-info-item">
-                                <p class="task-info-label">Файл:</p>
-                                <div class="task-info-value">
-                                    <span id="filePath"></span>
-                                    <i class="bi bi-box-arrow-in-down ms 2"></i>
-                                    <i class="bi bi-pencil ms-2"></i>
-                                </div>
-                            </div>
-
-                            <div class="task-info-item">
-                                <p class="task-info-label">Статус:</p>
-                                <div class="task-info-value">
-                                    <span id="status"></span>
-                                    <select id="roleSelect" class="form-select" style="width: 65%; display: none">
-
-                                    </select>
-                                    <i class="bi bi-pencil ms-2"></i>
-                                </div>
-                            </div>
-                            <div class="task-info-item">
-                                <p class="task-info-label">Назначено:</p>
-                                <div class="task-info-value" style="align-self: flex-start">
-<#--                                    <span id="users-display"></span>-->
-                                    <div id="assigned-users-dropdown" style="display: block; width: 85%">
-                                        <input type="text" id="assigned-users-search" placeholder="Поиск пользователей..."
-                                               class="form-control mb-2">
-                                        <div id="users-checkboxes" class="dropdown-menu p-3">
-
-                                        </div>
+                                <div class="task-info-item">
+                                    <p class="task-info-label">Файл:</p>
+                                    <div class="task-info-value">
+                                        <span id="filePath" style="display: none"></span>
+                                        <input type="file" class="form-control" id="file" name="file" style="width: 81%; display: inline">
+                                        <i class="bi bi-box-arrow-in-down ms 2"></i>
+                                        <i class="bi bi-pencil ms-2"></i>
                                     </div>
                                 </div>
-                                <i class="bi bi-pencil ms-2"></i>
-                            </div>
-                        </div>
-                        <label for="description" style="margin-top: 25px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
-                        <textarea id="description" name="description" style="width: 95%; margin-left: 10px;
-        height: 112px;
-        background-color: #d9d9d9;
-        color: #333;
-        padding: 10px;
-        border: none;
-        border-radius: 8px;
-        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
-        outline: none;
-        font-size: 16px;
-        resize: none;
-        overflow-y: auto;"></textarea>
-                        <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
 
-                            <button class="btn-save-task" type="button" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0 2px rgba(0, 0, 0, 0.3),
+                                <div class="task-info-item">
+                                    <p class="task-info-label">Статус:</p>
+                                    <div class="task-info-value">
+                                        <span id="status" style="display: none"></span>
+                                        <select id="status-select" name="statusId" class="form-select" style="width: 65%; display: inline">
+
+                                        </select>
+                                        <i class="bi bi-pencil ms-2"></i>
+                                    </div>
+                                </div>
+                                <div class="task-info-item">
+                                    <p class="task-info-label">Назначено:</p>
+                                    <div class="task-info-value" style="align-self: flex-start">
+                                        <span id="users-display" style="display: none"></span>
+                                        <div id="assigned-users-dropdown" style="display: inline; width: 80%">
+                                            <input type="text" id="assigned-users-search" placeholder="Поиск пользователей..."
+                                                   class="form-control mb-2" style="width: 80%">
+                                            <div id="users-checkboxes" class="dropdown-menu p-3" style="width: 80%">
+
+                                            </div>
+                                        </div>
+                                        <i class="bi bi-pencil ms-2"></i>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <label for="description" style="margin-top: 25px; font-size: 14px; font-style: italic; margin-left: 10px; margin-bottom: 8px; font-weight: 100">Описание:</label>
+                            <textarea id="description" name="description" class="task-edit-description">
+                            </textarea>
+                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px">
+
+                                <button class="btn-save-task" type="submit" style="background-color: #ECE6F0; height: 51px; width: 219px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: -1px 0 2px rgba(0, 0, 0, 0.3),
             0 2px 5px rgba(0, 0, 0, 0.4);"><img alt="Edit pen" src="/images/save-edit-pen.png" style="max-width: 50px; max-height: 50px;"></button>
-                        </div>
+                            </div>
+                        </form>
+
+
 
 
                     </div>
@@ -506,6 +522,7 @@
             </div>
         </div>
     </div>
+    <div id="notification" class="notification"></div>
 
 
     <script>
@@ -685,6 +702,21 @@
             text-align: center;
             color: #333;
             justify-content: center;
+        }
+
+        .task-edit-description{
+            width: 95%; margin-left: 10px;
+            height: 112px;
+            background-color: #d9d9d9;
+            color: #333;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+            outline: none;
+            font-size: 16px;
+            resize: none;
+            overflow-y: auto;
         }
 
         .no-tasks {
@@ -920,11 +952,11 @@
         }
 
 
-        #task-edit-form p {
-            font-size: 16px;
-            margin: 5px 0;
-            color: #333;
-        }
+        /*#task-edit-form p {*/
+        /*    font-size: 16px;*/
+        /*    margin: 5px 0;*/
+        /*    color: #333;*/
+        /*}*/
 
         #task-edit-form strong {
             color: #666;

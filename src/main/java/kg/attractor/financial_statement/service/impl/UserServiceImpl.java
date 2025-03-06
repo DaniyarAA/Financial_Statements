@@ -480,13 +480,20 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private UserForTaskDto convertToUserForTaskDto(User user) {
+    @Override
+    public UserForTaskDto convertToUserForTaskDto(User user) {
         return UserForTaskDto.builder()
                 .id(user.getId())
                 .login(user.getLogin())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .build();
+    }
+
+
+    @Override
+    public List<User> findAllById(List<Long> userIds){
+        return userRepository.findAllById(userIds);
     }
 
     @Override

@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,7 +16,8 @@ public class TaskForTaskListEditDto {
     private Long statusId;
     private String amount;
     private String description;
-    private String from;
-    private String to;
+    private LocalDate from;
+    private LocalDate to;
     private String fileName;
+    private List<Long> userIds;
 }

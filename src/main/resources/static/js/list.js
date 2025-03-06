@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function showTaskDetails(button) {
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     document.getElementById('task-details').style.display = 'block';
 
     document.getElementById('document-type').textContent = button.getAttribute("data-document-type");
@@ -21,7 +22,12 @@ function showTaskDetails(button) {
     document.getElementById('company-inn').textContent = button.getAttribute("data-company-inn");
     // document.getElementById('date-range').textContent = `${button.getAttribute("data-start-date")} - ${button.getAttribute("data-end-date")}`;
     document.getElementById('amount').textContent = button.getAttribute("data-amount") + ' сом';
-    document.getElementById('amount-input').value = button.getAttribute("data-amount");
+    const amountInput = document.getElementById('amount-input');
+    amountInput.value = button.getAttribute("data-amount")
+    amountInput.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
 
     document.getElementById('filePath').textContent = button.getAttribute("data-file-path");
     document.getElementById('status').textContent = button.getAttribute("data-status");
@@ -29,7 +35,9 @@ function showTaskDetails(button) {
     document.getElementById('date-range-start-input').value = button.getAttribute("data-start-date");
     document.getElementById('date-range-end-input').value = button.getAttribute("data-end-date");
 
+
     const statusIndicator = document.getElementById('status-indicator');
+    const statusSelect = document.getElementById('status-select');
     statusIndicator.style.backgroundColor = button.getAttribute("data-status") === "Сдан" ? '#15C24E' : '#C20B18';
     document.getElementById('task-details').style.display = 'block';
     const taskDetails = document.getElementById('task-details');
@@ -38,13 +46,118 @@ function showTaskDetails(button) {
         taskDetails.border = '1px solid #dee2e6'
     }
 
-    // const usersDisplay = document.getElementById('users-display');
+    const usersDisplay = document.getElementById('users-display');
     const users = button.getAttribute("data-users");
     const parsedUsers = users ? JSON.parse(users) : [];
+    const companyUsers = button.getAttribute("data-company-users");
+    console.log(companyUsers)
+    const parsedCompanyUsers = companyUsers ? JSON.parse(companyUsers) : [];
+    const currentStatus = button.getAttribute("data-status");
+    statusSelect.innerHTML = "";
 
-    // usersDisplay.innerHTML = parsedUsers.length > 0
-    //     ? parsedUsers.map(user => `${user.surname.charAt(0)}. ${user.name} `).join('')
-    //     : 'Не задано';
+    taskStatusDtos.forEach(status => {
+        const option = document.createElement("option");
+        option.value = status.id;
+        option.textContent = status.name;
+        console.log(status.id)
+        console.log(currentStatus)
+        if (status.name === currentStatus) {
+            option.selected = true;
+        }
+        statusSelect.append(option);
+    });
+
+    usersDisplay.innerHTML = parsedUsers.length > 0
+        ? parsedUsers.map(user => `${user.surname.charAt(0)}. ${user.name} `).join('')
+        : 'Не задано';
+
+
+
+
+    const userCheckboxes = document.getElementById("users-checkboxes");
+    userCheckboxes.innerHTML = "";
+    const sortedUsers = parsedCompanyUsers.sort((a, b) => {
+        const aChecked = parsedUsers.some(userTask => userTask.id === a.id);
+        const bChecked = parsedUsers.some(userTask => userTask.id === b.id);
+        return bChecked - aChecked;
+    });
+    console.log(sortedUsers)
+    console.log(parsedUsers)
+    console.log(parsedCompanyUsers)
+
+    sortedUsers.forEach((user, index) => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = user.id;
+        checkbox.id = `user_${user.id}`;
+        checkbox.name = "userIds";
+        checkbox.checked = parsedUsers.some(userTask => userTask.id === user.id);
+
+        const label = document.createElement("label");
+        label.setAttribute("for", `user_${user.id}`);
+        label.textContent = `${index + 1}) ${user.name} ${user.surname}`;
+
+        const div = document.createElement("div");
+        div.style.display = "flex";
+        div.style.justifyContent = "space-between";
+        div.style.alignItems = "center";
+
+        div.append(label);
+        div.append(checkbox);
+
+        userCheckboxes.append(div);
+    });
+
+
+    document.getElementById("task-edit-form").addEventListener("submit", function (event){
+        event.preventDefault();
+
+        console.log("Форма отправляется");
+
+        const form = event.target;
+        const taskId = button.getAttribute("data-task-id");
+
+        form.action = `tasks/edit/${taskId}`;
+        const formData = new FormData(form);
+
+        fetch(form.action,{
+            method:form.method,
+            body:formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                showNotification("Успешно обновлено!", "green")
+                document.querySelector('.btn-collapse-task-details').click();
+                window.location.reload()
+                console.log("Успешно:", data);
+            })
+            .catch(error => console.error("Ошибка:", error))
+
+
+    });
+
+
+    function showNotification(message, color) {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.style.display = "block";
+        notification.style.opacity = "1";
+        notification.style.backgroundColor = color;
+
+        setTimeout(() => {
+            notification.style.opacity = "0";
+            setTimeout(() => {
+                notification.style.display = "none";
+            }, 500);
+        }, 3000);
+    }
+
+
+
+
+
+
+
 
 
     function toggleDropdown(button) {
@@ -75,6 +188,7 @@ function showTaskDetails(button) {
         from.datepicker("option", "maxDate", getDate(this));
     });
 }
+
 
 // function showTaskDetails(button) {
 //     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
@@ -578,69 +692,69 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("task-details");
+    // const form = document.getElementById("task-details");
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
+    // form.addEventListener("submit", function (e) {
+    //     e.preventDefault();
+    //
+    //     const editForm = document.getElementById("task-edit-form");
+    //     const formData = new FormData(editForm);
+    //     const actionUrl = editForm.getAttribute("action");
+    //
+    //     const existingAlert = document.getElementById("alertMessage");
+    //     if (existingAlert) {
+    //         existingAlert.remove();
+    //     }
+    //
+    //     fetch(actionUrl, {
+    //         method: "POST",
+    //         body: formData,
+    //         csrfToken: csrfToken
+    //
+    //     })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 return response.json().then(err => Promise.reject(err));
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             showAlert(data.success || "Задача успешно обновлена!", "success");
+    //         })
+    //         .catch(error => {
+    //             showAlert(error.error || "Возникла ошибка.", "error");
+    //         });
+    // });
 
-        const editForm = document.getElementById("task-edit-form");
-        const formData = new FormData(editForm);
-        const actionUrl = editForm.getAttribute("action");
-
-        const existingAlert = document.getElementById("alertMessage");
-        if (existingAlert) {
-            existingAlert.remove();
-        }
-
-        fetch(actionUrl, {
-            method: "POST",
-            body: formData,
-            csrfToken: csrfToken
-
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => Promise.reject(err));
-                }
-                return response.json();
-            })
-            .then(data => {
-                showAlert(data.success || "Задача успешно обновлена!", "success");
-            })
-            .catch(error => {
-                showAlert(error.error || "Возникла ошибка.", "error");
-            });
-    });
-
-    function showAlert(message, type) {
-        const alertDiv = document.createElement("div");
-        alertDiv.id = "alertMessage";
-        alertDiv.textContent = message;
-        alertDiv.style.position = "absolute";
-        alertDiv.style.top = "20px";
-        alertDiv.style.right = "20px";
-        alertDiv.style.padding = "15px 20px";
-        alertDiv.style.borderRadius = "8px";
-        alertDiv.style.color = "#fff";
-        alertDiv.style.fontSize = "14px";
-        alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
-        alertDiv.style.zIndex = "1000";
-
-        if (type === "success") {
-            alertDiv.style.backgroundColor = "#28a745";
-        } else {
-            alertDiv.style.backgroundColor = "#dc3545";
-        }
-
-        document.body.appendChild(alertDiv);
-
-        setTimeout(() => {
-            alertDiv.remove();
-            if (type === "success") {
-                window.location.reload();
-            }
-        }, 2000);
-    }
+    // function showAlert(message, type) {
+    //     const alertDiv = document.createElement("div");
+    //     alertDiv.id = "alertMessage";
+    //     alertDiv.textContent = message;
+    //     alertDiv.style.position = "absolute";
+    //     alertDiv.style.top = "20px";
+    //     alertDiv.style.right = "20px";
+    //     alertDiv.style.padding = "15px 20px";
+    //     alertDiv.style.borderRadius = "8px";
+    //     alertDiv.style.color = "#fff";
+    //     alertDiv.style.fontSize = "14px";
+    //     alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+    //     alertDiv.style.zIndex = "1000";
+    //
+    //     if (type === "success") {
+    //         alertDiv.style.backgroundColor = "#28a745";
+    //     } else {
+    //         alertDiv.style.backgroundColor = "#dc3545";
+    //     }
+    //
+    //     document.body.appendChild(alertDiv);
+    //
+    //     setTimeout(() => {
+    //         alertDiv.remove();
+    //         if (type === "success") {
+    //             window.location.reload();
+    //         }
+    //     }, 2000);
+    // }
     const sidebar = document.querySelector('.company-table');
     const taskListWrapper = document.querySelector('.tasks-table');
     if (!taskListWrapper){
@@ -844,6 +958,23 @@ function selectUserFromModal(user) {
 function onCompanySelected(companyId) {
     const company = companyDtos.find(c => c.id === companyId);
     selectedCompanyUsers = company ? company.users : [];
+}
+
+function toggleAmountEdit() {
+    const amountDisplay = document.getElementById('amount');
+    const amountInput = document.getElementById('amount-input');
+
+    if (amountInput.style.display === 'inline') {
+        const inputValue = amountInput.value.trim();
+        amountDisplay.innerText = inputValue ? inputValue + " сом" : "Не задано";
+        amountDisplay.dataset.value = inputValue;
+    } else {
+        amountInput.value = amountDisplay.dataset.value || "";
+        amountInput.focus();
+    }
+
+    amountInput.style.display = amountInput.style.display === 'inline' ? 'none' : 'inline';
+    amountDisplay.style.display = amountDisplay.style.display === 'inline' ? 'none' : 'inline';
 }
 
 

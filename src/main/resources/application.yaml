@@ -1,6 +1,9 @@
 server:
   port: 8081
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
   application:
     name: FinancialStatement
   freemarker:
@@ -45,7 +48,7 @@ spring:
 logging:
   level:
     com.zaxxer.hikari: debug
-    org.hibernate.SQL: debug
+#    org.hibernate.SQL: debug
     root: info
     org:
       springframework:

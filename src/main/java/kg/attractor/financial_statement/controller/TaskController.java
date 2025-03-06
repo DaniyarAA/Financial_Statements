@@ -103,7 +103,7 @@ public class TaskController {
     @PostMapping("/edit/{id}")
     @ResponseBody
     public ResponseEntity<?> updateTaskInListPage(
-            @Valid @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
+            @ModelAttribute("taskDto") TaskForTaskListEditDto taskDto,
             @RequestParam MultipartFile file,
             @PathVariable Long id,
             Authentication authentication
@@ -113,10 +113,10 @@ public class TaskController {
                     .body(Map.of("error", "Вы не имеете прав редактировать эту задачу!"));
         }
 
-        if (!taskService.areValidDates(taskDto.getFrom(), taskDto.getTo())) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Выбраны неправильные даты!"));
-        }
+//        if (!taskService.areValidDates(taskDto.getFrom(), taskDto.getTo())) {
+//            return ResponseEntity.badRequest()
+//                    .body(Map.of("error", "Выбраны неправильные даты!"));
+//        }
 
         taskService.editTaskFromTasksList(taskDto, authentication.getName(), id, file);
         return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));

@@ -64,6 +64,10 @@ public interface UserService {
 
     Boolean isAdmin(String name);
 
+    UserForTaskDto convertToUserForTaskDto(User user);
+
+    List<User> findAllById(List<Long> userIds);
+
     List<UserDto> getDeletedUsers();
 
     void resumeUser(Long id, Long roleId);

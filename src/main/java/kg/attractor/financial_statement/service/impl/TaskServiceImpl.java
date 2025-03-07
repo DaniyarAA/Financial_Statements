@@ -445,7 +445,8 @@ public class TaskServiceImpl implements TaskService {
             }
 
         }
-        if (file != null) {
+        if (file != null && !file.isEmpty()) {
+            System.out.println( "ЗЗДЕЕСЬ" + file.getOriginalFilename());
             String filePath = saveFile(file, newVersionOfTask.getCompany().getName());
             newVersionOfTask.setFilePath(filePath);
         }

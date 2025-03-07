@@ -17,15 +17,21 @@ function showTaskDetails(button) {
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     document.getElementById('task-details').style.display = 'block';
 
+
     document.getElementById('document-type').textContent = button.getAttribute("data-document-type");
     document.getElementById('company-name').textContent = button.getAttribute("data-company-name");
     document.getElementById('company-inn').textContent = button.getAttribute("data-company-inn");
     // document.getElementById('date-range').textContent = `${button.getAttribute("data-start-date")} - ${button.getAttribute("data-end-date")}`;
     document.getElementById('amount').textContent = button.getAttribute("data-amount") + ' сом';
+    const amount = button.getAttribute("data-amount");
     const amountInput = document.getElementById('amount-input');
-    amountInput.value = button.getAttribute("data-amount")
+    amountInput.value = formatAmount(amount);
+    document.getElementById('amount').textContent = formatAmount(amount);
     amountInput.addEventListener('input', function () {
-        this.value = this.value.replace(/[^0-9]/g, '');
+        this.value = this.value.replace(/[^0-9.]/g, '');
+        if ((this.value.match(/\./g) || []).length > 1) {
+            this.value = this.value.slice(0, -1);
+        }
     });
 
 
@@ -59,9 +65,10 @@ function showTaskDetails(button) {
         const option = document.createElement("option");
         option.value = status.id;
         option.textContent = status.name;
-        console.log(status.id)
+        console.log(status.name)
         console.log(currentStatus)
         if (status.name === currentStatus) {
+            console.log("Зашел сюда")
             option.selected = true;
         }
         statusSelect.append(option);
@@ -108,49 +115,39 @@ function showTaskDetails(button) {
         userCheckboxes.append(div);
     });
 
+    const form = document.getElementById("task-edit-form");
+    form.setAttribute("data-task-id", button.getAttribute("data-task-id"));
+    form.removeEventListener("submit", handleFormSubmit);
+    form.addEventListener("submit", handleFormSubmit);
 
-    document.getElementById("task-edit-form").addEventListener("submit", function (event){
-        event.preventDefault();
-
-        console.log("Форма отправляется");
-
-        const form = event.target;
-        const taskId = button.getAttribute("data-task-id");
-
-        form.action = `tasks/edit/${taskId}`;
-        const formData = new FormData(form);
-
-        fetch(form.action,{
-            method:form.method,
-            body:formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                showNotification("Успешно обновлено!", "green")
-                document.querySelector('.btn-collapse-task-details').click();
-                window.location.reload()
-                console.log("Успешно:", data);
-            })
-            .catch(error => console.error("Ошибка:", error))
+    console.log(document.getElementById("file").value)
 
 
-    });
+    // function handleFormSubmit (event){
+    //     event.preventDefault();
+    //
+    //     console.log("Форма отправляется");
+    //
+    //     const taskId = button.getAttribute("data-task-id");
+    //     form.action = `tasks/edit/${taskId}`;
+    //     const formData = new FormData(form);
+    //
+    //     fetch(form.action, {
+    //         method: form.method,
+    //         body: formData,
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             showNotification("Успешно обновлено!", "green");
+    //
+    //             window.location.reload();
+    //             console.log("Успешно:", data);
+    //         })
+    //         .catch(error => console.error("Ошибка:", error));
+    // }
 
 
-    function showNotification(message, color) {
-        const notification = document.getElementById("notification");
-        notification.textContent = message;
-        notification.style.display = "block";
-        notification.style.opacity = "1";
-        notification.style.backgroundColor = color;
 
-        setTimeout(() => {
-            notification.style.opacity = "0";
-            setTimeout(() => {
-                notification.style.display = "none";
-            }, 500);
-        }, 3000);
-    }
 
 
 
@@ -189,6 +186,42 @@ function showTaskDetails(button) {
     });
 }
 
+
+function showNotification(message, color) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.style.display = "block";
+    notification.style.opacity = "1";
+    notification.style.backgroundColor = color;
+
+    setTimeout(() => {
+        notification.style.opacity = "0";
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 500);
+    }, 3000);
+}
+
+function handleFormSubmit(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const taskId = form.getAttribute("data-task-id");
+    form.action = `tasks/edit/${taskId}`;
+    const formData = new FormData(form);
+
+
+    fetch(form.action, {
+        method: form.method,
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            showNotification("Успешно обновлено!", "green");
+            window.location.reload();
+        })
+        .catch(error => console.error("Ошибка:", error));
+}
 
 // function showTaskDetails(button) {
 //     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
@@ -318,647 +351,647 @@ function showTaskDetails(button) {
 //         from.datepicker("option", "maxDate", getDate(this));
 //     });
 // }
-
-function handleFileUpload(event) {
-    const fileInput = event.target;
-    const file = fileInput.files[0];
-    const fileDisplay = document.querySelector('.file-display a');
-    const fileDisplayText = document.querySelector('.file-display p');
-
-    if (file) {
-        const fileName = file.name;
-
-        if (fileDisplay) {
-            fileDisplay.style.display = 'none';
-        }
-
-        if (!fileDisplayText) {
-            const newFileDisplayText = document.createElement('p');
-            newFileDisplayText.textContent = fileName;
-            newFileDisplayText.style.margin = '10px 0';
-            fileInput.parentElement.insertBefore(newFileDisplayText, fileInput);
-        } else {
-            fileDisplayText.textContent = fileName;
-        }
-    }
-}
-
-function formatDate(dateString) {
-    const [year, month, day] = dateString.split("-");
-    return `${day}.${month}.${year}`;
-}
-
+//
+// function handleFileUpload(event) {
+//     const fileInput = event.target;
+//     const file = fileInput.files[0];
+//     const fileDisplay = document.querySelector('.file-display a');
+//     const fileDisplayText = document.querySelector('.file-display p');
+//
+//     if (file) {
+//         const fileName = file.name;
+//
+//         if (fileDisplay) {
+//             fileDisplay.style.display = 'none';
+//         }
+//
+//         if (!fileDisplayText) {
+//             const newFileDisplayText = document.createElement('p');
+//             newFileDisplayText.textContent = fileName;
+//             newFileDisplayText.style.margin = '10px 0';
+//             fileInput.parentElement.insertBefore(newFileDisplayText, fileInput);
+//         } else {
+//             fileDisplayText.textContent = fileName;
+//         }
+//     }
+// }
+//
+// function formatDate(dateString) {
+//     const [year, month, day] = dateString.split("-");
+//     return `${day}.${month}.${year}`;
+// }
+//
 function formatAmount(amount) {
     if (!amount || amount === "Не задано") {
         return "Не задано";
     }
     return parseFloat(amount.replace(/,/g, '')).toFixed(2);
 }
-
-function editAmount() {
-    document.getElementById('amount-display').style.display = 'none';
-    document.getElementById('amount-input').style.display = 'block';
-
-    const amountInput = document.getElementById('amount');
-    const form = document.getElementById('task-edit-form');
-
-    amountInput.addEventListener('input', validateAmount);
-
-    function validateAmount() {
-        const errorMessage = document.getElementById('amount-error');
-        const value = amountInput.value.trim();
-
-        if (!value || isNaN(value) || Number(value) <= 0) {
-            if (!errorMessage) {
-                const error = document.createElement('p');
-                error.id = 'amount-error';
-                error.textContent = 'Введите положительное число.';
-                error.style.color = 'red';
-                error.style.fontSize = '14px';
-                error.style.marginTop = '5px';
-                amountInput.parentNode.appendChild(error);
-            }
-            form.querySelector('button[type="submit"]').disabled = true;
-        } else {
-            if (errorMessage) errorMessage.remove();
-            form.querySelector('button[type="submit"]').disabled = false;
-        }
-    }
-}
-
-function cancelEditAmount() {
-    document.getElementById('amount-display').style.display = 'block';
-    document.getElementById('amount-input').style.display = 'none';
-
-    const errorMessage = document.getElementById('amount-error');
-    if (errorMessage) errorMessage.remove();
-    const form = document.getElementById('task-edit-form');
-    form.querySelector('button[type="submit"]').disabled = false;
-}
-
-function editStatus() {
-    document.getElementById('status-display').style.display = 'none';
-    document.getElementById('status-input').style.display = 'block';
-}
-
-function cancelEditStatus() {
-    document.getElementById('status-display').style.display = 'block';
-    document.getElementById('status-input').style.display = 'none';
-}
-
-function editDate() {
-    document.getElementById('date-display').style.display = 'none';
-    document.getElementById('date-input').style.display = 'block';
-}
-
-function cancelEditDate() {
-    document.getElementById('date-display').style.display = 'block';
-    document.getElementById('date-input').style.display = 'none';
-}
-
-function editFile() {
-    document.getElementById('file-display').style.display = 'none';
-    document.getElementById('file-input').style.display = 'flex';
-}
-
-function cancelEditFile() {
-    document.getElementById('file-display').style.display = 'flex';
-    document.getElementById('file-input').style.display = 'none';
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const paginationContainer = document.querySelector('.pagination-container');
-
-    if (paginationContainer) {
-        paginationContainer.addEventListener('click', function (event) {
-            const target = event.target.closest('.pagination-link');
-            if (target) {
-                const page = target.getAttribute('data-page');
-                if (page !== null) {
-                    navigateToPage(page);
-                }
-            }
-        });
-    }
-
-    function navigateToPage(page) {
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set("page", page);
-        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
-    }
-});
-function setupNavigationButtons() {
-    const yearMonthColumns = document.querySelectorAll(".year-month-th");
-
-    if (yearMonthColumns.length >= 1) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
-
-        const firstColumn = yearMonthColumns[0];
-        if (!firstColumn.querySelector(".btn-nav-img-prev")) {
-            const prevButtonImage = document.createElement("img");
-            prevButtonImage.src = "/images/prev-month.png";
-            prevButtonImage.alt = "Previous Month";
-            prevButtonImage.classList.add("btn-nav-img", "btn-nav-img-prev");
-            prevButtonImage.style.position = "absolute";
-            prevButtonImage.style.left = "5px";
-            prevButtonImage.style.top = "0px";
-            prevButtonImage.style.cursor = "pointer";
-            prevButtonImage.style.width = "35px";
-            prevButtonImage.style.height = "35px";
-
-            const previousYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, -1);
-            if (!previousYearMonth) {
-                prevButtonImage.style.filter = "grayscale(100%)";
-                prevButtonImage.style.cursor = "not-allowed";
-                prevButtonImage.classList.add("disabled");
-            } else {
-                prevButtonImage.addEventListener("click", () => {
-                    window.location.href = updateURLParameter("yearMonth", previousYearMonth);
-                });
-            }
-
-            firstColumn.style.position = "relative";
-            firstColumn.appendChild(prevButtonImage);
-        }
-
-        const lastColumn = yearMonthColumns[yearMonthColumns.length - 1];
-        if (!lastColumn.querySelector(".btn-nav-img-next")) {
-            const nextButtonImage = document.createElement("img");
-            nextButtonImage.src = "/images/next-month.png";
-            nextButtonImage.alt = "Next Month";
-            nextButtonImage.classList.add("btn-nav-img", "btn-nav-img-next");
-            nextButtonImage.style.position = "absolute";
-            nextButtonImage.style.right = "5px";
-            nextButtonImage.style.top = "0px";
-            nextButtonImage.style.cursor = "pointer";
-            nextButtonImage.style.width = "35px";
-            nextButtonImage.style.height = "35px";
-
-            const nextYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, 1);
-            if (!nextYearMonth) {
-                nextButtonImage.style.filter = "grayscale(100%)";
-                nextButtonImage.style.cursor = "not-allowed";
-                nextButtonImage.classList.add("disabled");
-            } else {
-                nextButtonImage.addEventListener("click", () => {
-                    window.location.href = updateURLParameter("yearMonth", nextYearMonth);
-                });
-            }
-
-            lastColumn.style.position = "relative";
-            lastColumn.appendChild(nextButtonImage);
-        }
-    }
-
-    function getAdjacentYearMonth(current, yearMonths, delta) {
-        const currentIndex = yearMonths.indexOf(current);
-        const newIndex = currentIndex + delta;
-
-        if (newIndex >= 0 && newIndex < yearMonths.length) {
-            return yearMonths[newIndex];
-        }
-
-        return null;
-    }
-
-    function updateURLParameter(key, value) {
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set(key, value);
-        return `${window.location.pathname}?${searchParams.toString()}`;
-    }
-
-    function getCurrentMonth() {
-        const date = new Date();
-        return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
-    }
-}
-
-document.addEventListener("DOMContentLoaded", setupNavigationButtons);
-
-
-function getDate(element) {
-    var date;
-    try {
-        date = $.datepicker.parseDate(dateFormat, element.value);
-    } catch (error) {
-        date = null;
-    }
-    return date;
-}
-
-function addCollapseButtonToTaskDetails() {
-    const taskDetailsHeader = document.querySelector('.task-details-header');
-
-    if (!taskDetailsHeader.querySelector('.btn-collapse-task-details')) {
-        const collapseButton = document.createElement('button');
-        collapseButton.type = 'button';
-        collapseButton.className = 'btn-collapse-task-details';
-        collapseButton.style.cssText = `
-            background: none;
-            border: none;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        `;
-
-        collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
-
-        collapseButton.addEventListener('click', () => {
-            const taskDetails = document.getElementById('task-details');
-            if (taskDetails) {
-                taskDetails.style.width = '0';
-                taskDetails.overflow = 'hidden';
-                taskDetails.padding = '0';
-                taskDetails.transition = 'width 0.3s ease, padding 0.3s ease';
-            }
-        });
-
-        taskDetailsHeader.appendChild(collapseButton);
-    }
-}
-document.addEventListener('DOMContentLoaded', () => {
-    addCollapseButtonToTaskDetails();
-});
-
-function addCollapseButtonToCreateTask() {
-    const taskCreateHeader = document.querySelector('.task-create-header');
-
-    if (!taskCreateHeader.querySelector('.btn-collapse-task-create')) {
-        const collapseButton = document.createElement('button');
-        collapseButton.type = 'button';
-        collapseButton.className = 'btn-collapse-task-create';
-        collapseButton.style.cssText = `
-            background: none;
-            border: none;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        `;
-
-        collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
-
-        collapseButton.addEventListener('click', () => {
-            const taskCreate = document.getElementById('task-create');
-            if (taskCreate) {
-                taskCreate.style.width = '0';
-                taskCreate.overflow = 'hidden';
-                taskCreate.padding = '0';
-                taskCreate.transition = 'width 0.3s ease, padding 0.3s ease';
-            }
-        });
-
-        taskCreateHeader.appendChild(collapseButton);
-    }
-}
-document.addEventListener('DOMContentLoaded', () => {
-    addCollapseButtonToCreateTask();
-});
-
-function addCreateTaskButton() {
-    const addTaskButton = document.createElement('button');
-    addTaskButton.className = 'btn-create-task';
-    addTaskButton.style.cssText = `
-        background: none;
-            border: none;
-            position: absolute;
-            top: 2px;
-            right: 34px;
-            cursor: pointer;
-    `;
-
-    addTaskButton.innerHTML = `<img src="/images/add.png" alt="Collapse" style="width: 40px; height: 40px;">`;
-
-    addTaskButton.addEventListener('click', () => {
-        toggleCreateTaskForm();
-    });
-
-    document.body.appendChild(addTaskButton);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    addCreateTaskButton();
-});
-
-
-function toggleCreateTaskForm() {
-    const createTaskForm = document.getElementById('task-create');
-    createTaskForm.style.width = '30%';
-    createTaskForm.style.transition = 'width 0.3s ease, padding 0.3s ease';
-}
-
-function showSecondPage() {
-    const formPage1 = document.getElementById('formPage1');
-    const formPage2 = document.getElementById('formPage2');
-
-    formPage1.classList.add('slide-out-left');
-    formPage1.addEventListener('animationend', () => {
-        formPage1.style.display = 'none';
-        formPage1.classList.remove('slide-out-left');
-
-        formPage2.style.display = 'block';
-        formPage2.classList.add('slide-in-right');
-        formPage2.addEventListener('animationend', () => {
-            formPage2.classList.remove('slide-in-right');
-        }, { once: true });
-    }, { once: true });
-}
-
-function showFirstPage() {
-    const formPage1 = document.getElementById('formPage1');
-    const formPage2 = document.getElementById('formPage2');
-
-    formPage2.classList.add('slide-out-right');
-    formPage2.addEventListener('animationend', () => {
-        formPage2.style.display = 'none';
-        formPage2.classList.remove('slide-out-right');
-
-        formPage1.style.display = 'block';
-        formPage1.classList.add('slide-in-left');
-        formPage1.addEventListener('animationend', () => {
-            formPage1.classList.remove('slide-in-left');
-        }, { once: true });
-    }, { once: true });
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    const openModal = document.getElementById('openModal').value;
-    if (openModal === 'true') {
-        toggleCreateTaskForm()
-    }
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    // const form = document.getElementById("task-details");
-
-    // form.addEventListener("submit", function (e) {
-    //     e.preventDefault();
-    //
-    //     const editForm = document.getElementById("task-edit-form");
-    //     const formData = new FormData(editForm);
-    //     const actionUrl = editForm.getAttribute("action");
-    //
-    //     const existingAlert = document.getElementById("alertMessage");
-    //     if (existingAlert) {
-    //         existingAlert.remove();
-    //     }
-    //
-    //     fetch(actionUrl, {
-    //         method: "POST",
-    //         body: formData,
-    //         csrfToken: csrfToken
-    //
-    //     })
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 return response.json().then(err => Promise.reject(err));
-    //             }
-    //             return response.json();
-    //         })
-    //         .then(data => {
-    //             showAlert(data.success || "Задача успешно обновлена!", "success");
-    //         })
-    //         .catch(error => {
-    //             showAlert(error.error || "Возникла ошибка.", "error");
-    //         });
-    // });
-
-    // function showAlert(message, type) {
-    //     const alertDiv = document.createElement("div");
-    //     alertDiv.id = "alertMessage";
-    //     alertDiv.textContent = message;
-    //     alertDiv.style.position = "absolute";
-    //     alertDiv.style.top = "20px";
-    //     alertDiv.style.right = "20px";
-    //     alertDiv.style.padding = "15px 20px";
-    //     alertDiv.style.borderRadius = "8px";
-    //     alertDiv.style.color = "#fff";
-    //     alertDiv.style.fontSize = "14px";
-    //     alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
-    //     alertDiv.style.zIndex = "1000";
-    //
-    //     if (type === "success") {
-    //         alertDiv.style.backgroundColor = "#28a745";
-    //     } else {
-    //         alertDiv.style.backgroundColor = "#dc3545";
-    //     }
-    //
-    //     document.body.appendChild(alertDiv);
-    //
-    //     setTimeout(() => {
-    //         alertDiv.remove();
-    //         if (type === "success") {
-    //             window.location.reload();
-    //         }
-    //     }, 2000);
-    // }
-    const sidebar = document.querySelector('.company-table');
-    const taskListWrapper = document.querySelector('.tasks-table');
-    if (!taskListWrapper){
-        console.log("Не нашел")
-    }
-
-    if (sidebar && taskListWrapper) {
-        sidebar.addEventListener('scroll', () => {
-            taskListWrapper.scrollTop = sidebar.scrollTop;
-            console.log("HHHH")
-        });
-
-        taskListWrapper.addEventListener('scroll', () => {
-            console.log("hhh")
-            sidebar.scrollTop = taskListWrapper.scrollTop;
-        });
-    } else {
-        console.error('Ошибка синхронизации скролла');
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const createTaskForm = document.getElementById("form-create");
-
-    if (createTaskForm) {
-        createTaskForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const formData = new FormData(createTaskForm);
-            const actionUrl = createTaskForm.getAttribute("action");
-
-            const existingAlert = document.getElementById("alertMessage");
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-
-            fetch(actionUrl, {
-                method: "POST",
-                body: formData,
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        return response.json().then((err) => Promise.reject(err));
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    showAlert(data.success || "Задача успешно создана!", "success");
-                })
-                .catch((error) => {
-                    showAlert(error.error || "Возникла ошибка при создании задачи.", "error");
-                });
-        });
-    }
-
-    function showAlert(message, type) {
-        const alertDiv = document.createElement("div");
-        alertDiv.id = "alertMessage";
-        alertDiv.textContent = message;
-        alertDiv.style.position = "absolute";
-        alertDiv.style.top = "20px";
-        alertDiv.style.right = "20px";
-        alertDiv.style.padding = "15px 20px";
-        alertDiv.style.borderRadius = "8px";
-        alertDiv.style.color = "#fff";
-        alertDiv.style.fontSize = "14px";
-        alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
-        alertDiv.style.zIndex = "1000";
-
-        if (type === "success") {
-            alertDiv.style.backgroundColor = "#28a745";
-        } else {
-            alertDiv.style.backgroundColor = "#dc3545";
-        }
-
-        document.body.appendChild(alertDiv);
-
-        setTimeout(() => {
-            alertDiv.remove();
-            if (type === "success") {
-                window.location.reload();
-            }
-        }, 2000);
-    }
-});
-
-
-function openCompanyPopup() {
-    const modal = document.getElementById("company-modal");
-    const dropdown = document.getElementById("modal-company-dropdown");
-    modal.style.display = "block";
-
-    populateModalDropdown(companyDtos);
-}
-
-function closeCompanyPopup() {
-    const modal = document.getElementById("company-modal");
-    modal.style.display = "none";
-}
-
-function populateModalDropdown(companies) {
-    const dropdown = document.getElementById("modal-company-dropdown");
-    dropdown.innerHTML = "";
-
-    companies.forEach(company => {
-        const li = document.createElement("li");
-        li.textContent = company.name;
-        li.className = "dropdown-item";
-        li.dataset.companyId = company.id;
-
-        li.addEventListener("click", () => {
-            selectCompanyFromModal(company);
-        });
-
-        dropdown.appendChild(li);
-    });
-}
-
-function updateModalDropdown() {
-    const searchValue = document.getElementById("company-modal-search").value.toLowerCase();
-    const filteredCompanies = companyDtos.filter(company =>
-        company.name.toLowerCase().includes(searchValue)
-    );
-
-    populateModalDropdown(filteredCompanies);
-}
-
-function selectCompanyFromModal(company) {
-    const searchInput = document.getElementById("company-search");
-    const hiddenInput = document.getElementById("company-id");
-
-    searchInput.value = company.name;
-    hiddenInput.value = company.id;
-
-    onCompanySelected(company.id);
-
-    closeCompanyPopup();
-}
-
-
-document.addEventListener("click", event => {
-    const modal = document.getElementById("company-modal");
-    if (event.target === modal) {
-        closeCompanyPopup();
-    }
-});
-
-let selectedCompanyUsers = [];
-
-function openUserPopup() {
-    const modal = document.getElementById("user-modal");
-    modal.style.display = "block";
-
-    populateUserModalDropdown(selectedCompanyUsers);
-}
-
-// Close User Popup
-function closeUserPopup() {
-    const modal = document.getElementById("user-modal");
-    modal.style.display = "none";
-}
-
-// Populate User Dropdown
-function populateUserModalDropdown(users) {
-    const dropdown = document.getElementById("modal-user-dropdown");
-    dropdown.innerHTML = "";
-
-    users.forEach(user => {
-        const li = document.createElement("li");
-        li.textContent = `${user.surname} ${user.name}`;
-        li.className = "dropdown-item";
-        li.dataset.userId = user.id;
-
-        li.addEventListener("click", () => {
-            selectUserFromModal(user);
-        });
-
-        dropdown.appendChild(li);
-    });
-}
-
-function updateUserModalDropdown() {
-    const searchValue = document.getElementById("user-modal-search").value.toLowerCase();
-    const filteredUsers = selectedCompanyUsers.filter(user =>
-        `${user.surname} ${user.name}`.toLowerCase().includes(searchValue)
-    );
-
-    populateUserModalDropdown(filteredUsers);
-}
-
-function selectUserFromModal(user) {
-    const searchInput = document.getElementById("user-search");
-    const hiddenInput = document.getElementById("user-id");
-
-    searchInput.value = `${user.surname} ${user.name}`;
-    hiddenInput.value = user.id;
-
-    closeUserPopup();
-}
-
-function onCompanySelected(companyId) {
-    const company = companyDtos.find(c => c.id === companyId);
-    selectedCompanyUsers = company ? company.users : [];
-}
+//
+// function editAmount() {
+//     document.getElementById('amount-display').style.display = 'none';
+//     document.getElementById('amount-input').style.display = 'block';
+//
+//     const amountInput = document.getElementById('amount');
+//     const form = document.getElementById('task-edit-form');
+//
+//     amountInput.addEventListener('input', validateAmount);
+//
+//     function validateAmount() {
+//         const errorMessage = document.getElementById('amount-error');
+//         const value = amountInput.value.trim();
+//
+//         if (!value || isNaN(value) || Number(value) <= 0) {
+//             if (!errorMessage) {
+//                 const error = document.createElement('p');
+//                 error.id = 'amount-error';
+//                 error.textContent = 'Введите положительное число.';
+//                 error.style.color = 'red';
+//                 error.style.fontSize = '14px';
+//                 error.style.marginTop = '5px';
+//                 amountInput.parentNode.appendChild(error);
+//             }
+//             form.querySelector('button[type="submit"]').disabled = true;
+//         } else {
+//             if (errorMessage) errorMessage.remove();
+//             form.querySelector('button[type="submit"]').disabled = false;
+//         }
+//     }
+// }
+//
+// function cancelEditAmount() {
+//     document.getElementById('amount-display').style.display = 'block';
+//     document.getElementById('amount-input').style.display = 'none';
+//
+//     const errorMessage = document.getElementById('amount-error');
+//     if (errorMessage) errorMessage.remove();
+//     const form = document.getElementById('task-edit-form');
+//     form.querySelector('button[type="submit"]').disabled = false;
+// }
+//
+// function editStatus() {
+//     document.getElementById('status-display').style.display = 'none';
+//     document.getElementById('status-input').style.display = 'block';
+// }
+//
+// function cancelEditStatus() {
+//     document.getElementById('status-display').style.display = 'block';
+//     document.getElementById('status-input').style.display = 'none';
+// }
+//
+// function editDate() {
+//     document.getElementById('date-display').style.display = 'none';
+//     document.getElementById('date-input').style.display = 'block';
+// }
+//
+// function cancelEditDate() {
+//     document.getElementById('date-display').style.display = 'block';
+//     document.getElementById('date-input').style.display = 'none';
+// }
+//
+// function editFile() {
+//     document.getElementById('file-display').style.display = 'none';
+//     document.getElementById('file-input').style.display = 'flex';
+// }
+//
+// function cancelEditFile() {
+//     document.getElementById('file-display').style.display = 'flex';
+//     document.getElementById('file-input').style.display = 'none';
+// }
+//
+// document.addEventListener("DOMContentLoaded", function () {
+//     const paginationContainer = document.querySelector('.pagination-container');
+//
+//     if (paginationContainer) {
+//         paginationContainer.addEventListener('click', function (event) {
+//             const target = event.target.closest('.pagination-link');
+//             if (target) {
+//                 const page = target.getAttribute('data-page');
+//                 if (page !== null) {
+//                     navigateToPage(page);
+//                 }
+//             }
+//         });
+//     }
+//
+//     function navigateToPage(page) {
+//         const searchParams = new URLSearchParams(window.location.search);
+//         searchParams.set("page", page);
+//         window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
+//     }
+// });
+// function setupNavigationButtons() {
+//     const yearMonthColumns = document.querySelectorAll(".year-month-th");
+//
+//     if (yearMonthColumns.length >= 1) {
+//         const urlParams = new URLSearchParams(window.location.search);
+//         const currentYearMonth = urlParams.get("yearMonth") || getCurrentMonth();
+//
+//         const firstColumn = yearMonthColumns[0];
+//         if (!firstColumn.querySelector(".btn-nav-img-prev")) {
+//             const prevButtonImage = document.createElement("img");
+//             prevButtonImage.src = "/images/prev-month.png";
+//             prevButtonImage.alt = "Previous Month";
+//             prevButtonImage.classList.add("btn-nav-img", "btn-nav-img-prev");
+//             prevButtonImage.style.position = "absolute";
+//             prevButtonImage.style.left = "5px";
+//             prevButtonImage.style.top = "0px";
+//             prevButtonImage.style.cursor = "pointer";
+//             prevButtonImage.style.width = "35px";
+//             prevButtonImage.style.height = "35px";
+//
+//             const previousYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, -1);
+//             if (!previousYearMonth) {
+//                 prevButtonImage.style.filter = "grayscale(100%)";
+//                 prevButtonImage.style.cursor = "not-allowed";
+//                 prevButtonImage.classList.add("disabled");
+//             } else {
+//                 prevButtonImage.addEventListener("click", () => {
+//                     window.location.href = updateURLParameter("yearMonth", previousYearMonth);
+//                 });
+//             }
+//
+//             firstColumn.style.position = "relative";
+//             firstColumn.appendChild(prevButtonImage);
+//         }
+//
+//         const lastColumn = yearMonthColumns[yearMonthColumns.length - 1];
+//         if (!lastColumn.querySelector(".btn-nav-img-next")) {
+//             const nextButtonImage = document.createElement("img");
+//             nextButtonImage.src = "/images/next-month.png";
+//             nextButtonImage.alt = "Next Month";
+//             nextButtonImage.classList.add("btn-nav-img", "btn-nav-img-next");
+//             nextButtonImage.style.position = "absolute";
+//             nextButtonImage.style.right = "5px";
+//             nextButtonImage.style.top = "0px";
+//             nextButtonImage.style.cursor = "pointer";
+//             nextButtonImage.style.width = "35px";
+//             nextButtonImage.style.height = "35px";
+//
+//             const nextYearMonth = getAdjacentYearMonth(currentYearMonth, availableYearMonths, 1);
+//             if (!nextYearMonth) {
+//                 nextButtonImage.style.filter = "grayscale(100%)";
+//                 nextButtonImage.style.cursor = "not-allowed";
+//                 nextButtonImage.classList.add("disabled");
+//             } else {
+//                 nextButtonImage.addEventListener("click", () => {
+//                     window.location.href = updateURLParameter("yearMonth", nextYearMonth);
+//                 });
+//             }
+//
+//             lastColumn.style.position = "relative";
+//             lastColumn.appendChild(nextButtonImage);
+//         }
+//     }
+//
+//     function getAdjacentYearMonth(current, yearMonths, delta) {
+//         const currentIndex = yearMonths.indexOf(current);
+//         const newIndex = currentIndex + delta;
+//
+//         if (newIndex >= 0 && newIndex < yearMonths.length) {
+//             return yearMonths[newIndex];
+//         }
+//
+//         return null;
+//     }
+//
+//     function updateURLParameter(key, value) {
+//         const searchParams = new URLSearchParams(window.location.search);
+//         searchParams.set(key, value);
+//         return `${window.location.pathname}?${searchParams.toString()}`;
+//     }
+//
+//     function getCurrentMonth() {
+//         const date = new Date();
+//         return `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+//     }
+// }
+//
+// document.addEventListener("DOMContentLoaded", setupNavigationButtons);
+//
+//
+// function getDate(element) {
+//     var date;
+//     try {
+//         date = $.datepicker.parseDate(dateFormat, element.value);
+//     } catch (error) {
+//         date = null;
+//     }
+//     return date;
+// }
+//
+// function addCollapseButtonToTaskDetails() {
+//     const taskDetailsHeader = document.querySelector('.task-details-header');
+//
+//     if (!taskDetailsHeader.querySelector('.btn-collapse-task-details')) {
+//         const collapseButton = document.createElement('button');
+//         collapseButton.type = 'button';
+//         collapseButton.className = 'btn-collapse-task-details';
+//         collapseButton.style.cssText = `
+//             background: none;
+//             border: none;
+//             position: absolute;
+//             top: 10px;
+//             right: 10px;
+//             cursor: pointer;
+//         `;
+//
+//         collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
+//
+//         collapseButton.addEventListener('click', () => {
+//             const taskDetails = document.getElementById('task-details');
+//             if (taskDetails) {
+//                 taskDetails.style.width = '0';
+//                 taskDetails.overflow = 'hidden';
+//                 taskDetails.padding = '0';
+//                 taskDetails.transition = 'width 0.3s ease, padding 0.3s ease';
+//             }
+//         });
+//
+//         taskDetailsHeader.appendChild(collapseButton);
+//     }
+// }
+// document.addEventListener('DOMContentLoaded', () => {
+//     addCollapseButtonToTaskDetails();
+// });
+//
+// function addCollapseButtonToCreateTask() {
+//     const taskCreateHeader = document.querySelector('.task-create-header');
+//
+//     if (!taskCreateHeader.querySelector('.btn-collapse-task-create')) {
+//         const collapseButton = document.createElement('button');
+//         collapseButton.type = 'button';
+//         collapseButton.className = 'btn-collapse-task-create';
+//         collapseButton.style.cssText = `
+//             background: none;
+//             border: none;
+//             position: absolute;
+//             top: 10px;
+//             right: 10px;
+//             cursor: pointer;
+//         `;
+//
+//         collapseButton.innerHTML = `<img src="/images/company-arrow.png" alt="Collapse" style="width: 24px; height: 24px;">`;
+//
+//         collapseButton.addEventListener('click', () => {
+//             const taskCreate = document.getElementById('task-create');
+//             if (taskCreate) {
+//                 taskCreate.style.width = '0';
+//                 taskCreate.overflow = 'hidden';
+//                 taskCreate.padding = '0';
+//                 taskCreate.transition = 'width 0.3s ease, padding 0.3s ease';
+//             }
+//         });
+//
+//         taskCreateHeader.appendChild(collapseButton);
+//     }
+// }
+// document.addEventListener('DOMContentLoaded', () => {
+//     addCollapseButtonToCreateTask();
+// });
+//
+// function addCreateTaskButton() {
+//     const addTaskButton = document.createElement('button');
+//     addTaskButton.className = 'btn-create-task';
+//     addTaskButton.style.cssText = `
+//         background: none;
+//             border: none;
+//             position: absolute;
+//             top: 2px;
+//             right: 34px;
+//             cursor: pointer;
+//     `;
+//
+//     addTaskButton.innerHTML = `<img src="/images/add.png" alt="Collapse" style="width: 40px; height: 40px;">`;
+//
+//     addTaskButton.addEventListener('click', () => {
+//         toggleCreateTaskForm();
+//     });
+//
+//     document.body.appendChild(addTaskButton);
+// }
+//
+// document.addEventListener('DOMContentLoaded', () => {
+//     addCreateTaskButton();
+// });
+//
+//
+// function toggleCreateTaskForm() {
+//     const createTaskForm = document.getElementById('task-create');
+//     createTaskForm.style.width = '30%';
+//     createTaskForm.style.transition = 'width 0.3s ease, padding 0.3s ease';
+// }
+//
+// function showSecondPage() {
+//     const formPage1 = document.getElementById('formPage1');
+//     const formPage2 = document.getElementById('formPage2');
+//
+//     formPage1.classList.add('slide-out-left');
+//     formPage1.addEventListener('animationend', () => {
+//         formPage1.style.display = 'none';
+//         formPage1.classList.remove('slide-out-left');
+//
+//         formPage2.style.display = 'block';
+//         formPage2.classList.add('slide-in-right');
+//         formPage2.addEventListener('animationend', () => {
+//             formPage2.classList.remove('slide-in-right');
+//         }, { once: true });
+//     }, { once: true });
+// }
+//
+// function showFirstPage() {
+//     const formPage1 = document.getElementById('formPage1');
+//     const formPage2 = document.getElementById('formPage2');
+//
+//     formPage2.classList.add('slide-out-right');
+//     formPage2.addEventListener('animationend', () => {
+//         formPage2.style.display = 'none';
+//         formPage2.classList.remove('slide-out-right');
+//
+//         formPage1.style.display = 'block';
+//         formPage1.classList.add('slide-in-left');
+//         formPage1.addEventListener('animationend', () => {
+//             formPage1.classList.remove('slide-in-left');
+//         }, { once: true });
+//     }, { once: true });
+// }
+//
+// document.addEventListener("DOMContentLoaded", function() {
+//     const openModal = document.getElementById('openModal').value;
+//     if (openModal === 'true') {
+//         toggleCreateTaskForm()
+//     }
+// });
+//
+//
+// document.addEventListener("DOMContentLoaded", function () {
+//     // const form = document.getElementById("task-details");
+//
+//     // form.addEventListener("submit", function (e) {
+//     //     e.preventDefault();
+//     //
+//     //     const editForm = document.getElementById("task-edit-form");
+//     //     const formData = new FormData(editForm);
+//     //     const actionUrl = editForm.getAttribute("action");
+//     //
+//     //     const existingAlert = document.getElementById("alertMessage");
+//     //     if (existingAlert) {
+//     //         existingAlert.remove();
+//     //     }
+//     //
+//     //     fetch(actionUrl, {
+//     //         method: "POST",
+//     //         body: formData,
+//     //         csrfToken: csrfToken
+//     //
+//     //     })
+//     //         .then(response => {
+//     //             if (!response.ok) {
+//     //                 return response.json().then(err => Promise.reject(err));
+//     //             }
+//     //             return response.json();
+//     //         })
+//     //         .then(data => {
+//     //             showAlert(data.success || "Задача успешно обновлена!", "success");
+//     //         })
+//     //         .catch(error => {
+//     //             showAlert(error.error || "Возникла ошибка.", "error");
+//     //         });
+//     // });
+//
+//     // function showAlert(message, type) {
+//     //     const alertDiv = document.createElement("div");
+//     //     alertDiv.id = "alertMessage";
+//     //     alertDiv.textContent = message;
+//     //     alertDiv.style.position = "absolute";
+//     //     alertDiv.style.top = "20px";
+//     //     alertDiv.style.right = "20px";
+//     //     alertDiv.style.padding = "15px 20px";
+//     //     alertDiv.style.borderRadius = "8px";
+//     //     alertDiv.style.color = "#fff";
+//     //     alertDiv.style.fontSize = "14px";
+//     //     alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+//     //     alertDiv.style.zIndex = "1000";
+//     //
+//     //     if (type === "success") {
+//     //         alertDiv.style.backgroundColor = "#28a745";
+//     //     } else {
+//     //         alertDiv.style.backgroundColor = "#dc3545";
+//     //     }
+//     //
+//     //     document.body.appendChild(alertDiv);
+//     //
+//     //     setTimeout(() => {
+//     //         alertDiv.remove();
+//     //         if (type === "success") {
+//     //             window.location.reload();
+//     //         }
+//     //     }, 2000);
+//     // }
+//     const sidebar = document.querySelector('.company-table');
+//     const taskListWrapper = document.querySelector('.tasks-table');
+//     if (!taskListWrapper){
+//         console.log("Не нашел")
+//     }
+//
+//     if (sidebar && taskListWrapper) {
+//         sidebar.addEventListener('scroll', () => {
+//             taskListWrapper.scrollTop = sidebar.scrollTop;
+//             console.log("HHHH")
+//         });
+//
+//         taskListWrapper.addEventListener('scroll', () => {
+//             console.log("hhh")
+//             sidebar.scrollTop = taskListWrapper.scrollTop;
+//         });
+//     } else {
+//         console.error('Ошибка синхронизации скролла');
+//     }
+// });
+//
+// document.addEventListener("DOMContentLoaded", function () {
+//     const createTaskForm = document.getElementById("form-create");
+//
+//     if (createTaskForm) {
+//         createTaskForm.addEventListener("submit", function (e) {
+//             e.preventDefault();
+//
+//             const formData = new FormData(createTaskForm);
+//             const actionUrl = createTaskForm.getAttribute("action");
+//
+//             const existingAlert = document.getElementById("alertMessage");
+//             if (existingAlert) {
+//                 existingAlert.remove();
+//             }
+//
+//             fetch(actionUrl, {
+//                 method: "POST",
+//                 body: formData,
+//             })
+//                 .then((response) => {
+//                     if (!response.ok) {
+//                         return response.json().then((err) => Promise.reject(err));
+//                     }
+//                     return response.json();
+//                 })
+//                 .then((data) => {
+//                     showAlert(data.success || "Задача успешно создана!", "success");
+//                 })
+//                 .catch((error) => {
+//                     showAlert(error.error || "Возникла ошибка при создании задачи.", "error");
+//                 });
+//         });
+//     }
+//
+//     function showAlert(message, type) {
+//         const alertDiv = document.createElement("div");
+//         alertDiv.id = "alertMessage";
+//         alertDiv.textContent = message;
+//         alertDiv.style.position = "absolute";
+//         alertDiv.style.top = "20px";
+//         alertDiv.style.right = "20px";
+//         alertDiv.style.padding = "15px 20px";
+//         alertDiv.style.borderRadius = "8px";
+//         alertDiv.style.color = "#fff";
+//         alertDiv.style.fontSize = "14px";
+//         alertDiv.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+//         alertDiv.style.zIndex = "1000";
+//
+//         if (type === "success") {
+//             alertDiv.style.backgroundColor = "#28a745";
+//         } else {
+//             alertDiv.style.backgroundColor = "#dc3545";
+//         }
+//
+//         document.body.appendChild(alertDiv);
+//
+//         setTimeout(() => {
+//             alertDiv.remove();
+//             if (type === "success") {
+//                 window.location.reload();
+//             }
+//         }, 2000);
+//     }
+// });
+//
+//
+// function openCompanyPopup() {
+//     const modal = document.getElementById("company-modal");
+//     const dropdown = document.getElementById("modal-company-dropdown");
+//     modal.style.display = "block";
+//
+//     populateModalDropdown(companyDtos);
+// }
+//
+// function closeCompanyPopup() {
+//     const modal = document.getElementById("company-modal");
+//     modal.style.display = "none";
+// }
+//
+// function populateModalDropdown(companies) {
+//     const dropdown = document.getElementById("modal-company-dropdown");
+//     dropdown.innerHTML = "";
+//
+//     companies.forEach(company => {
+//         const li = document.createElement("li");
+//         li.textContent = company.name;
+//         li.className = "dropdown-item";
+//         li.dataset.companyId = company.id;
+//
+//         li.addEventListener("click", () => {
+//             selectCompanyFromModal(company);
+//         });
+//
+//         dropdown.appendChild(li);
+//     });
+// }
+//
+// function updateModalDropdown() {
+//     const searchValue = document.getElementById("company-modal-search").value.toLowerCase();
+//     const filteredCompanies = companyDtos.filter(company =>
+//         company.name.toLowerCase().includes(searchValue)
+//     );
+//
+//     populateModalDropdown(filteredCompanies);
+// }
+//
+// function selectCompanyFromModal(company) {
+//     const searchInput = document.getElementById("company-search");
+//     const hiddenInput = document.getElementById("company-id");
+//
+//     searchInput.value = company.name;
+//     hiddenInput.value = company.id;
+//
+//     onCompanySelected(company.id);
+//
+//     closeCompanyPopup();
+// }
+//
+//
+// document.addEventListener("click", event => {
+//     const modal = document.getElementById("company-modal");
+//     if (event.target === modal) {
+//         closeCompanyPopup();
+//     }
+// });
+//
+// let selectedCompanyUsers = [];
+//
+// function openUserPopup() {
+//     const modal = document.getElementById("user-modal");
+//     modal.style.display = "block";
+//
+//     populateUserModalDropdown(selectedCompanyUsers);
+// }
+//
+// // Close User Popup
+// function closeUserPopup() {
+//     const modal = document.getElementById("user-modal");
+//     modal.style.display = "none";
+// }
+//
+// // Populate User Dropdown
+// function populateUserModalDropdown(users) {
+//     const dropdown = document.getElementById("modal-user-dropdown");
+//     dropdown.innerHTML = "";
+//
+//     users.forEach(user => {
+//         const li = document.createElement("li");
+//         li.textContent = `${user.surname} ${user.name}`;
+//         li.className = "dropdown-item";
+//         li.dataset.userId = user.id;
+//
+//         li.addEventListener("click", () => {
+//             selectUserFromModal(user);
+//         });
+//
+//         dropdown.appendChild(li);
+//     });
+// }
+//
+// function updateUserModalDropdown() {
+//     const searchValue = document.getElementById("user-modal-search").value.toLowerCase();
+//     const filteredUsers = selectedCompanyUsers.filter(user =>
+//         `${user.surname} ${user.name}`.toLowerCase().includes(searchValue)
+//     );
+//
+//     populateUserModalDropdown(filteredUsers);
+// }
+//
+// function selectUserFromModal(user) {
+//     const searchInput = document.getElementById("user-search");
+//     const hiddenInput = document.getElementById("user-id");
+//
+//     searchInput.value = `${user.surname} ${user.name}`;
+//     hiddenInput.value = user.id;
+//
+//     closeUserPopup();
+// }
+//
+// function onCompanySelected(companyId) {
+//     const company = companyDtos.find(c => c.id === companyId);
+//     selectedCompanyUsers = company ? company.users : [];
+// }
 
 function toggleAmountEdit() {
     const amountDisplay = document.getElementById('amount');

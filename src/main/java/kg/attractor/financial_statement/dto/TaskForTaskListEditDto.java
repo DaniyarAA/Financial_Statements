@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,5 +20,5 @@ public class TaskForTaskListEditDto {
     private LocalDate from;
     private LocalDate to;
     private String fileName;
-    private List<Long> userIds;
+    private List<Long> userIds = new ArrayList<>();
 }

@@ -192,7 +192,10 @@
                                         <#--                                    <span id="date-range"></span>-->
                                         <#--                                    <i class="bi bi-pencil ms-2"></i>-->
                                     </div>
+
                                 </div>
+                                <p id="date-error" style="display: none; color: red; margin: 0; text-align: center"></p>
+
 
                                 <div class="task-info-item">
                                     <p class="task-info-label">Сумма:</p>
@@ -209,11 +212,13 @@
                                     </div>
 
                                 </div>
+                                <p id="amount-error" style="display: none; color: red; margin: 0; text-align: center"></p>
+
 
                                 <div class="task-info-item">
                                     <p class="task-info-label">Файл:</p>
                                     <div class="task-info-value">
-                                        <span id="filePath" style="display: inline"></span>
+                                        <span id="filePath" class="file-link"></span>
                                         <input type="file" class="form-control" id="file" name="file" style="width: 81%; display: none">
 
                                         <a id="download-task-file"><i class="bi bi-box-arrow-in-down ms 2"></i></a>
@@ -1269,6 +1274,20 @@
             color: #333;
             margin-bottom: 4px;
         }
+
+        .file-link {
+            display: inline-block;     /* или block/flex, главное не inline */
+            max-width: 200px;         /* или любую другую ширину */
+            white-space: nowrap;       /* запрещаем перенос строк */
+            overflow: hidden;          /* скрываем лишний текст */
+            text-overflow: ellipsis;   /* добавляем троеточие */
+            vertical-align: middle;    /* при желании, чтобы лучше выровнять по иконке */
+        }
+
+
+
+
+
 
     </style>
 </@layout.layout>

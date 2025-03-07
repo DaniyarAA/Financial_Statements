@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.DateTimeException;
 import java.util.*;
 
 @Controller
@@ -108,18 +109,35 @@ public class TaskController {
             @PathVariable Long id,
             Authentication authentication
     ) {
-        if (!taskService.checkIsAuthor(authentication.getName(), id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Вы не имеете прав редактировать эту задачу!"));
+
+        try {
+            taskService.editTaskFromTasksList(taskDto, authentication.getName(), id, file);
+            return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
+
+        } catch (DateTimeException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "field", "date",
+                    "error", e.getMessage()
+            ));
+
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                    "field", "auth",
+                    "error", e.getMessage()
+            ));
+
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "field", "amount",
+                    "error", e.getMessage()
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "field", "server",
+                    "error", "Внутренняя ошибка сервера"
+            ));
         }
-
-//        if (!taskService.areValidDates(taskDto.getFrom(), taskDto.getTo())) {
-//            return ResponseEntity.badRequest()
-//                    .body(Map.of("error", "Выбраны неправильные даты!"));
-//        }
-
-        taskService.editTaskFromTasksList(taskDto, authentication.getName(), id, file);
-        return ResponseEntity.ok(Map.of("success", "Успешно обновлено!"));
     }
 
 

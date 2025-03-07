@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
@@ -404,7 +405,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void editTaskFromTasksList(TaskForTaskListEditDto taskDto, String login, Long id, MultipartFile file) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        if (!areValidDates(taskDto.getFrom(), taskDto.getTo())) {
+            throw new DateTimeException("Выбраны неправильные даты!");
+        }
+
+        if (!checkIsAuthor(login, id)) {
+            throw new SecurityException("Вы не имеете права редактировать задачу!");
+        }
+
         Task newVersionOfTask = taskRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Task not found for id: " + id));
         if (taskDto.getStatusId() != null) {
@@ -412,9 +420,10 @@ public class TaskServiceImpl implements TaskService {
         }
         if (taskDto.getAmount() != null) {
             String cleanedValue = taskDto.getAmount().replaceAll("[,\\s]", "");
-            if (isValidBigDecimal(cleanedValue)) {
-                newVersionOfTask.setAmount(new BigDecimal(cleanedValue));
+            if (!isValidBigDecimal(cleanedValue)) {
+                throw new NumberFormatException("Некорректный формат суммы!");
             }
+            newVersionOfTask.setAmount(new BigDecimal(cleanedValue));
         }
         if (taskDto.getDescription() != null) {
             newVersionOfTask.setDescription(taskDto.getDescription());
@@ -427,32 +436,34 @@ public class TaskServiceImpl implements TaskService {
             LocalDate endDate = taskDto.getTo();
             newVersionOfTask.setEndDate(endDate);
         }
-        if (taskDto.getUserIds() != null) {
-            List<User> selectedUsers = userService.findAllById(taskDto.getUserIds());
-            for(User user : selectedUsers){
-                if(!newVersionOfTask.getUsers().contains(user)){
-                    newVersionOfTask.getUsers().add(user);
-                    user.getTasks().add(newVersionOfTask);
-                }
-            }
-            Iterator<User> iterator = newVersionOfTask.getUsers().iterator();
-            while (iterator.hasNext()) {
-                User user = iterator.next();
-                if (!selectedUsers.contains(user)) {
-                    iterator.remove();
-                    user.getTasks().remove(newVersionOfTask);
-                }
-            }
 
-        }
+        updateTaskUsers(taskDto, newVersionOfTask);
+
         if (file != null && !file.isEmpty()) {
-            System.out.println( "ЗЗДЕЕСЬ" + file.getOriginalFilename());
             String filePath = saveFile(file, newVersionOfTask.getCompany().getName());
             newVersionOfTask.setFilePath(filePath);
         }
-        newVersionOfTask.setId(id);
         taskRepository.save(newVersionOfTask);
 
+    }
+
+
+    private void updateTaskUsers(TaskForTaskListEditDto taskDto, Task task) {
+        List<User> selectedUsers = userService.findAllById(taskDto.getUserIds());
+        for(User user : selectedUsers){
+            if(!task.getUsers().contains(user)){
+                task.getUsers().add(user);
+                user.getTasks().add(task);
+            }
+        }
+        Iterator<User> iterator = task.getUsers().iterator();
+        while (iterator.hasNext()) {
+            User user = iterator.next();
+            if (!selectedUsers.contains(user)) {
+                iterator.remove();
+                user.getTasks().remove(task);
+            }
+        }
     }
 
     @Transactional
@@ -690,27 +701,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean areValidDates(String from, String to) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-        try {
-            LocalDate fromDate = LocalDate.parse(from, formatter);
-            LocalDate toDate = LocalDate.parse(to, formatter);
-
-            if (fromDate.getYear() < 2010 || fromDate.getYear() > 2050
-                    || toDate.getYear() < 2010 || toDate.getYear() > 2050) {
-                return false;
-            }
-
-            if (!fromDate.isBefore(toDate)) {
-                return false;
-            }
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-
-        return true;
+    public boolean areValidDates(LocalDate from, LocalDate to) {
+        return from != null && to != null
+                && from.isBefore(to)
+                && from.getYear() >= 2010
+                && to.getYear() <= LocalDate.now().getYear() + 1;
     }
+
 
     @Override
     public boolean isTaskWithThisStatus(Long taskId) {

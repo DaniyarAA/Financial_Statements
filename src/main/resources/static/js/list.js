@@ -13,40 +13,61 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function showTaskDetails(button) {
-    const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     document.getElementById('task-details').style.display = 'block';
-
-
     document.getElementById('document-type').textContent = button.getAttribute("data-document-type");
     document.getElementById('company-name').textContent = button.getAttribute("data-company-name");
     document.getElementById('company-inn').textContent = button.getAttribute("data-company-inn");
-    // document.getElementById('date-range').textContent = `${button.getAttribute("data-start-date")} - ${button.getAttribute("data-end-date")}`;
     document.getElementById('amount').textContent = button.getAttribute("data-amount") + ' сом';
-    const amount = button.getAttribute("data-amount");
-    const amountInput = document.getElementById('amount-input');
-    amountInput.value = formatAmount(amount);
-    document.getElementById('amount').textContent = formatAmount(amount);
-    amountInput.addEventListener('input', function () {
-        this.value = this.value.replace(/[^0-9.]/g, '');
-        if ((this.value.match(/\./g) || []).length > 1) {
-            this.value = this.value.slice(0, -1);
-        }
-    });
-
-
-    document.getElementById('filePath').textContent = button.getAttribute("data-file-path");
     document.getElementById('status').textContent = button.getAttribute("data-status");
-    document.getElementById('description').value = button.getAttribute("data-description");
     document.getElementById('date-range-start-input').value = button.getAttribute("data-start-date");
     document.getElementById('date-range-end-input').value = button.getAttribute("data-end-date");
 
-    const downloadLink = document.getElementById("download-task-file");
+
+    const amountAttr = button.getAttribute("data-amount");
+    const amountElem = document.getElementById('amount');
+    const amountInput = document.getElementById('amount-input');
+
+    if (amountAttr) {
+        amountElem.textContent = formatAmount(amountAttr);
+        amountInput.value = formatAmount(amountAttr);
+
+        amountInput.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+            if ((this.value.match(/\./g) || []).length > 1) {
+                this.value = this.value.slice(0, -1);
+            }
+        });
+    } else {
+        amountElem.textContent = "Не задано";
+        amountInput.value = "";
+    }
+
+    const filePathAttr = button.getAttribute("data-file-path");
+    const filePathElem = document.getElementById('filePath');
+    if (filePathAttr) {
+        filePathElem.textContent = filePathAttr;
+    } else {
+        filePathElem.textContent = "Не загружен";
+    }
+
+    const descriptionAttr = button.getAttribute("data-description");
+    const descriptionElem = document.getElementById('description');
+    if (descriptionAttr) {
+        descriptionElem.value = descriptionAttr;
+    } else {
+        descriptionElem.value = "";
+    }
+
+
     const taskPath = button.getAttribute("data-encoded-file-path");
     const companyId = button.getAttribute("data-company-id");
-    if (taskPath && companyId){
+    const downloadLink = document.getElementById("download-task-file");
+    if (taskPath && companyId) {
         downloadLink.href = `/api/files/download/${companyId}/${taskPath}`;
+    } else {
+        downloadLink.removeAttribute('href');
     }
+
 
 
 
@@ -94,7 +115,7 @@ function showTaskDetails(button) {
 
     usersDisplay.innerHTML = userNames.length > 0 ? userNames.join(", ") : "Не задано";
 
-    let displayText = userNames.slice(0, 2).join(", ");
+    let displayText = userNames.slice(0, 3).join(", ");
     if (displayText.length > maxLength) {
         displayText = displayText.slice(0, maxLength - 3) + "...";
     } else if (userNames.length === 0) {
@@ -254,10 +275,27 @@ function handleFormSubmit(event) {
     })
         .then(response => response.json())
         .then(data => {
-            showNotification("Успешно обновлено!", "green");
-            window.location.reload();
+            if (data.error) {
+                if (data.field === "date") {
+                    const dateError = document.getElementById("date-error");
+                    dateError.innerText = data.error;
+                    dateError.style.display = "block"
+                } else if (data.field === "amount") {
+                    const amountError = document.getElementById("amount-error");
+                    amountError.innerText = data.error;
+                    amountError.style.display = "block"
+                } else {
+                    showNotification(data.error, "red");
+                }
+            } else if (data.success) {
+                showNotification("Успешно обновлено!", "green");
+                window.location.reload();
+            }
         })
-        .catch(error => console.error("Ошибка:", error));
+        .catch(error => {
+            console.error("Ошибка:", error);
+            showNotification("Ошибка", "red");
+        });
 }
 
 // function showTaskDetails(button) {
@@ -825,25 +863,25 @@ function formatAmount(amount) {
 //     //         }
 //     //     }, 2000);
 //     // }
-//     const sidebar = document.querySelector('.company-table');
-//     const taskListWrapper = document.querySelector('.tasks-table');
-//     if (!taskListWrapper){
-//         console.log("Не нашел")
-//     }
-//
-//     if (sidebar && taskListWrapper) {
-//         sidebar.addEventListener('scroll', () => {
-//             taskListWrapper.scrollTop = sidebar.scrollTop;
-//             console.log("HHHH")
-//         });
-//
-//         taskListWrapper.addEventListener('scroll', () => {
-//             console.log("hhh")
-//             sidebar.scrollTop = taskListWrapper.scrollTop;
-//         });
-//     } else {
-//         console.error('Ошибка синхронизации скролла');
-//     }
+    const sidebar = document.querySelector('.company-table');
+    const taskListWrapper = document.querySelector('.tasks-table');
+    if (!taskListWrapper){
+        console.log("Не нашел")
+    }
+
+    if (sidebar && taskListWrapper) {
+        sidebar.addEventListener('scroll', () => {
+            taskListWrapper.scrollTop = sidebar.scrollTop;
+
+        });
+
+        taskListWrapper.addEventListener('scroll', () => {
+
+            sidebar.scrollTop = taskListWrapper.scrollTop;
+        });
+    } else {
+        console.error('Ошибка синхронизации скролла');
+    }
 // });
 //
 // document.addEventListener("DOMContentLoaded", function () {
@@ -1050,11 +1088,11 @@ function toggleAmountEdit() {
 function toggleFileEdit() {
     const fileInput = document.getElementById('file');
     const fileDisplay = document.getElementById('filePath');
-    if (fileInput.style.display === "inline"){
+    if (fileInput.style.display === "inline-block"){
         fileInput.style.display = "none";
-        fileDisplay.style.display = "inline";
+        fileDisplay.style.display = "inline-block";
     } else {
-        fileInput.style.display = "inline";
+        fileInput.style.display = "inline-block";
         fileDisplay.style.display = "none";
     }
 

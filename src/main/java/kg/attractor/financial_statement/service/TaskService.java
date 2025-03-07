@@ -70,7 +70,7 @@ public interface TaskService {
 
     void updateTaskStatus(Long taskId, Long newStatusId);
 
-    boolean areValidDates(String from, String to);
+    boolean areValidDates(LocalDate from, LocalDate to);
 
     boolean isTaskWithThisStatus(Long statusId);
 

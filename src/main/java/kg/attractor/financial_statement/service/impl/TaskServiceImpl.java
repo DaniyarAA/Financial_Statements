@@ -529,6 +529,7 @@ public class TaskServiceImpl implements TaskService {
                 .priorityColor(TaskPriority.getColorByIdOrDefault(task.getPriorityId() != null ? task.getPriorityId().intValue() : null))
                 .tag(task.getTag() != null ? task.getTag().getTag() : null)
                 .filePath(task.getFilePath() != null ? FileUtils.getOriginalFilename(task.getFilePath()) : null)
+                .encodedFilePath(URLEncoder.encode(task.getFilePath(), StandardCharsets.UTF_8))
                 .build();
     }
 

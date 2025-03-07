@@ -41,6 +41,14 @@ function showTaskDetails(button) {
     document.getElementById('date-range-start-input').value = button.getAttribute("data-start-date");
     document.getElementById('date-range-end-input').value = button.getAttribute("data-end-date");
 
+    const downloadLink = document.getElementById("download-task-file");
+    const taskPath = button.getAttribute("data-encoded-file-path");
+    const companyId = button.getAttribute("data-company-id");
+    if (taskPath && companyId){
+        downloadLink.href = `/api/files/download/${companyId}/${taskPath}`;
+    }
+
+
 
     const statusIndicator = document.getElementById('status-indicator');
     const statusSelect = document.getElementById('status-select');
@@ -79,6 +87,21 @@ function showTaskDetails(button) {
         : 'Не задано';
 
 
+
+    const initialUsers = document.getElementById("users-display");
+    const maxLength = 30;
+    let userNames = parsedUsers.map(user => `${user.surname.charAt(0)}. ${user.name}`);
+
+    usersDisplay.innerHTML = userNames.length > 0 ? userNames.join(", ") : "Не задано";
+
+    let displayText = userNames.slice(0, 2).join(", ");
+    if (displayText.length > maxLength) {
+        displayText = displayText.slice(0, maxLength - 3) + "...";
+    } else if (userNames.length === 0) {
+        displayText = "Не задано";
+    }
+
+    initialUsers.innerHTML = displayText;
 
 
     const userCheckboxes = document.getElementById("users-checkboxes");
@@ -120,7 +143,21 @@ function showTaskDetails(button) {
     form.removeEventListener("submit", handleFormSubmit);
     form.addEventListener("submit", handleFormSubmit);
 
-    console.log(document.getElementById("file").value)
+    const usersSearchInput = document.getElementById("assigned-users-search");
+
+
+    usersSearchInput.addEventListener("input", function () {
+        const searchTerm = usersSearchInput.value.toLowerCase();
+
+        Array.from(userCheckboxes.children).forEach(div => {
+            const label = div.querySelector("label");
+            if (label.textContent.toLowerCase().includes(searchTerm)) {
+                div.style.display = "flex";
+            } else {
+                div.style.display = "none";
+            }
+        });
+    });
 
 
     // function handleFormSubmit (event){
@@ -1002,7 +1039,7 @@ function toggleAmountEdit() {
         amountDisplay.innerText = inputValue ? inputValue + " сом" : "Не задано";
         amountDisplay.dataset.value = inputValue;
     } else {
-        amountInput.value = amountDisplay.dataset.value || "";
+        amountInput.value = amountDisplay.innerText.replace(/[^0-9.]/g, '').trim();
         amountInput.focus();
     }
 
@@ -1010,5 +1047,92 @@ function toggleAmountEdit() {
     amountDisplay.style.display = amountDisplay.style.display === 'inline' ? 'none' : 'inline';
 }
 
+function toggleFileEdit() {
+    const fileInput = document.getElementById('file');
+    const fileDisplay = document.getElementById('filePath');
+    if (fileInput.style.display === "inline"){
+        fileInput.style.display = "none";
+        fileDisplay.style.display = "inline";
+    } else {
+        fileInput.style.display = "inline";
+        fileDisplay.style.display = "none";
+    }
+
+}
 
 
+function toggleStatusEdit() {
+    const statusDisplay = document.getElementById('status');
+    const statusSelect = document.getElementById('status-select');
+    if (statusSelect.style.display === 'none') {
+        statusDisplay.style.display = 'none';
+        statusSelect.style.display = 'inline';
+    } else {
+        const selectedOption = statusSelect.options[statusSelect.selectedIndex];
+        statusDisplay.innerText = selectedOption ? selectedOption.textContent : 'Отсутствует';
+        statusDisplay.style.display = 'inline';
+        statusSelect.style.display = 'none';
+    }
+}
+
+
+function toggleUsersEdit() {
+    const initialUsers = document.getElementById('users-display');
+    const usersDropdown = document.getElementById('assigned-users-dropdown');
+    if (usersDropdown.style.display === 'none') {
+        initialUsers.style.display = 'none';
+        usersDropdown.style.display = 'inline-block';
+        attachCheckboxListeners();
+    } else {
+        closeUsersDropdown();
+    }
+}
+
+function attachCheckboxListeners() {
+    const checkboxes = document.querySelectorAll('#users-checkboxes input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateInitialUsers);
+    });
+}
+
+function updateInitialUsers() {
+    const initialUsers = document.getElementById('users-display');
+    const selectedUsers = Array.from(
+        document.querySelectorAll('#users-checkboxes input[type="checkbox"]:checked')
+    ).map(checkbox => {
+        const label = checkbox.parentElement.querySelector('label');
+        return label ? label.textContent.replace(/^\d+\)\s*/, '').trim() : '';
+    });
+
+    const maxLength = 19;
+    if (selectedUsers.length === 0) {
+        initialUsers.innerHTML = 'Не задано';
+    }
+    else {
+        let displayText = selectedUsers.slice(0, 2).join(', ');
+        if (displayText.length > maxLength) {
+            displayText = displayText.slice(0, maxLength - 3) + '...';
+        }
+        initialUsers.textContent = displayText;
+    }
+}
+
+
+function closeUsersDropdown() {
+    const initialUsers = document.getElementById('users-display');
+    const usersDropdown = document.getElementById('assigned-users-dropdown');
+
+    initialUsers.style.display = 'inline-block';
+    usersDropdown.style.display = 'none';
+
+    document.removeEventListener('click', closeUsersDropdown);
+}
+
+document.addEventListener('click', function(event) {
+    const usersDropdown = document.getElementById('assigned-users-dropdown');
+    const editIcon = document.getElementById('edit-users-icon');
+
+    if (!usersDropdown.contains(event.target) && event.target !== editIcon) {
+        closeUsersDropdown();
+    }
+});

@@ -64,6 +64,9 @@
                                                             data-company-inn="${task.company.inn}"
                                                             data-company-name="${task.company.name}"
                                                             data-company-id="${task.company.id}"
+                                                            <#if task.encodedFilePath??>
+                                                                data-encoded-file-path="${task.encodedFilePath}"
+                                                            </#if>
 
                                                             <#if task.filePath??>
                                                                 data-file-path="${task.filePath}"
@@ -195,13 +198,13 @@
                                     <p class="task-info-label">Сумма:</p>
                                     <div class="task-info-value">
                                         <input type="text" id="amount-input" name="amount" style="
-                                    display: inline;
+                                    display: none;
                                     width: 100px;
                                     height: 34px;
                                     border: 1px solid #ccc;
                                     font-size: 18px;
                                     margin-bottom: 0;">
-                                        <span id="amount" style="display: none"></span>
+                                        <span id="amount" style="display: inline">222</span>
                                         <i class="bi bi-pencil ms-2" onclick="toggleAmountEdit()"></i>
                                     </div>
 
@@ -210,35 +213,36 @@
                                 <div class="task-info-item">
                                     <p class="task-info-label">Файл:</p>
                                     <div class="task-info-value">
-                                        <span id="filePath" style="display: none"></span>
-                                        <input type="file" class="form-control" id="file" name="file" style="width: 81%; display: inline">
-                                        <i class="bi bi-box-arrow-in-down ms 2"></i>
-                                        <i class="bi bi-pencil ms-2"></i>
+                                        <span id="filePath" style="display: inline"></span>
+                                        <input type="file" class="form-control" id="file" name="file" style="width: 81%; display: none">
+
+                                        <a id="download-task-file"><i class="bi bi-box-arrow-in-down ms 2"></i></a>
+                                        <i class="bi bi-pencil ms-2" onclick="toggleFileEdit()"></i>
                                     </div>
                                 </div>
 
                                 <div class="task-info-item">
                                     <p class="task-info-label">Статус:</p>
                                     <div class="task-info-value">
-                                        <span id="status" style="display: none"></span>
-                                        <select id="status-select" name="statusId" class="form-select" style="width: 65%; display: inline">
+                                        <span id="status" style="display: inline"></span>
+                                        <select id="status-select" name="statusId" class="form-select" style="width: 65%; display: none">
 
                                         </select>
-                                        <i class="bi bi-pencil ms-2"></i>
+                                        <i class="bi bi-pencil ms-2" onclick="toggleStatusEdit()"></i>
                                     </div>
                                 </div>
                                 <div class="task-info-item">
                                     <p class="task-info-label">Назначено:</p>
                                     <div class="task-info-value" style="align-self: flex-start">
-                                        <span id="users-display" style="display: none"></span>
-                                        <div id="assigned-users-dropdown" style="display: inline; width: 80%">
+                                        <span id="users-display" style="display: inline-block; margin-top: 4px"></span>
+                                        <div id="assigned-users-dropdown" style="display: none; width: 90%">
                                             <input type="text" id="assigned-users-search" placeholder="Поиск пользователей..."
                                                    class="form-control mb-2" style="width: 80%">
-                                            <div id="users-checkboxes" class="dropdown-menu p-3" style="width: 80%">
+                                            <div id="users-checkboxes" class="dropdown-menu p-3" style="width: 90%">
 
                                             </div>
                                         </div>
-                                        <i class="bi bi-pencil ms-2"></i>
+                                        <i class="bi bi-pencil ms-2" id="edit-users-icon" onclick="toggleUsersEdit()"></i>
                                     </div>
 
                                 </div>

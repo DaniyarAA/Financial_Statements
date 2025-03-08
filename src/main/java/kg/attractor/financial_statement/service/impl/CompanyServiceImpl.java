@@ -562,6 +562,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<CompanyForTaskDto> getAllCompaniesForPrivilegedUser() {
+        return convertToCompanyForTaskDtoList(findAll());
+    }
+
+    @Override
     public List<Company> findAll() {
         return companyRepository.findByIsDeleted(Boolean.FALSE);
     }

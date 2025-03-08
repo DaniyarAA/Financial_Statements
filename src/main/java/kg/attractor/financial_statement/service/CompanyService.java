@@ -58,6 +58,8 @@ public interface CompanyService {
 
     void addCompany(CompanyDto companyDto , String login);
 
+    List<CompanyForTaskDto> getAllCompaniesForPrivilegedUser();
+
     List<Company> findAll();
 
     Page<CompanyDto> getDeletedCompaniesByUser(Long userId, Pageable pageable);

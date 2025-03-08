@@ -4,7 +4,7 @@
 <@layout.layout ; spring>
     <#if errorMsg??>
         <div class="alert alert-danger">
-            <p>На вас нет зарегестрированных компаний!</p>
+            <p>На вас нет зарегистрированных компаний!</p>
         </div>
     </#if>
     <div class="container p-3">
@@ -16,7 +16,7 @@
                         <tr class="company-column-tr">
                             <th class="company-column-th">
                                 <div class="company-header">
-                                    <span>Компании</span>
+                                    <input type="text" id="company-task-search" class="form-control" placeholder="Поиск компании..." onkeyup="filterCompaniesAndTasks()">
                                 </div>
                             </th>
                         </tr>

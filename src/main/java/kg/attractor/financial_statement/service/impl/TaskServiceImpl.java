@@ -169,6 +169,14 @@ public class TaskServiceImpl implements TaskService {
         return convertToDtoList(tasks);
     }
 
+    public List<TaskDto> getAllTaskDtosForPrivilegedUser() {
+        List<Company> companies = companyService.findAll();
+        List<Task> tasks = companies.stream()
+                .flatMap(company -> company.getTasks().stream())
+                .toList();
+        return convertToDtoList(tasks);
+    }
+
     private List<Task> getAllTasksForUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("Пользователь не может быть null");
@@ -379,9 +387,20 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Map<String, Object> getTaskListData(User user) {
+        boolean canViewAllTasks = user.getRole().getAuthorities().stream()
+                .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("VIEW_TASK"));
 
-        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
-        List<TaskDto> taskDtos = getAllTaskDtosForUser(user);
+//        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
+        // Если вытаскивать лист задач из компании, то при конвертации происходит рекурсивная зависимость
+        List<CompanyForTaskDto> companyDtos;
+        List<TaskDto> taskDtos;
+        if(canViewAllTasks) {
+            companyDtos = companyService.getAllCompaniesForPrivilegedUser();
+            taskDtos = getAllTaskDtosForPrivilegedUser();
+        } else {
+            companyDtos = companyService.getAllCompaniesForUser(user.getId());
+            taskDtos = getAllTaskDtosForUser(user);
+        }
 
         Map<String, String> monthsMap = mapYearMonthsToReadableFormat(taskDtos);
 

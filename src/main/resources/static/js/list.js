@@ -909,5 +909,21 @@ function onCompanySelected(companyId) {
     selectedCompanyUsers = company ? company.users : [];
 }
 
+function filterCompaniesAndTasks() {
+    let input = document.getElementById("company-task-search").value.toLowerCase();
+    let companyRows = document.querySelectorAll(".company-columns");
+    let taskRows = document.querySelectorAll(".task-columns");
 
+    companyRows.forEach((companyRow, index) => {
+        let companyName = companyRow.textContent.trim().toLowerCase();
+        let taskRow = taskRows[index];
 
+        if (companyName.includes(input)) {
+            companyRow.parentElement.style.display = "";
+            taskRow.style.display = "";
+        } else {
+            companyRow.parentElement.style.display = "none";
+            taskRow.style.display = "none";
+        }
+    });
+}

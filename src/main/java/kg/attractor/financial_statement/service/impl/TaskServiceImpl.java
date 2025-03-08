@@ -151,29 +151,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    //ПОМЕНЯЛ ЛОГИКУ
     @Override
     public List<TaskDto> getAllTaskDtosForUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("Пользователь не может быть null");
         }
-        List<Company> companies = user.getCompanies();
-        List<Task> tasks = new ArrayList<>();
-        for(Company company : companies){
-            if(!taskRepository.findByCompanyId(company.getId()).isEmpty()){
-                List<Task> tasks1 = taskRepository.findByCompanyId(company.getId());
-                tasks.addAll(tasks1);
-            }
-        }
-
+        List<Task> tasks = getTasksByCompanies(user.getCompanies());
         return convertToDtoList(tasks);
     }
 
     public List<TaskDto> getAllTaskDtosForPrivilegedUser() {
-        List<Company> companies = companyService.findAll();
-        List<Task> tasks = companies.stream()
-                .flatMap(company -> company.getTasks().stream())
-                .toList();
+        List<Task> tasks = getTasksByCompanies(companyService.findAll());
         return convertToDtoList(tasks);
     }
 
@@ -181,15 +169,13 @@ public class TaskServiceImpl implements TaskService {
         if (user == null) {
             throw new IllegalArgumentException("Пользователь не может быть null");
         }
-        List<Company> companies = user.getCompanies();
-        List<Task> tasks = new ArrayList<>();
-        for(Company company : companies){
-            if(!taskRepository.findByCompanyId(company.getId()).isEmpty()){
-                List<Task> tasks1 = taskRepository.findByCompanyId(company.getId());
-                tasks.addAll(tasks1);
-            }
-        }
-        return tasks;
+        return getTasksByCompanies(user.getCompanies());
+    }
+
+    private List<Task> getTasksByCompanies(List<Company> companies) {
+        return companies.stream()
+                .flatMap(company -> company.getTasks().stream())
+                .toList();
     }
 
     @Override
@@ -390,7 +376,6 @@ public class TaskServiceImpl implements TaskService {
         boolean canViewAllTasks = user.getRole().getAuthorities().stream()
                 .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase("VIEW_TASK"));
 
-//        List<CompanyForTaskDto> companyDtos = companyService.getAllCompaniesForUser(user.getId());
         // Если вытаскивать лист задач из компании, то при конвертации происходит рекурсивная зависимость
         List<CompanyForTaskDto> companyDtos;
         List<TaskDto> taskDtos;

@@ -300,19 +300,16 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Пароль:</span>
                                         <strong id="password"
-                                              data-password="${company.password!}"><#list 1..(company.password!?length) as i>•</#list></strong>
+                                              data-password="${company.password!}">•••••</strong>
                                         <#if canEdit>
                                             <button id="editBtnpassword" onclick="editText('password', ${company.id})"
                                                     title="Редактировать" class="btn btn-link p-0">
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('password')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'password')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('password', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputpassword"
@@ -379,7 +376,7 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Salyk.kg пароль:</span>
                                         <strong id="kabinetSalykPassword"
-                                              data-password="${company.kabinetSalykPassword!}"><#list 1..(company.kabinetSalykPassword!?length) as i>•</#list></strong>
+                                              data-password="${company.kabinetSalykPassword!}">•••••</strong>
                                         <#if canEdit>
                                             <button id="editBtnkabinetSalykPassword"
                                                     onclick="editText('kabinetSalykPassword', ${company.id})"
@@ -387,12 +384,9 @@
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('kabinetSalykPassword')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'kabinetSalykPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('kabinetSalykPassword', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkabinetSalykPassword"
@@ -638,10 +632,9 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>Пароль от почты:</span> <strong id="emailPassword"
-                                                                                data-password="${company.emailPassword!}"><#if company.emailPassword!?length == 0>
-                                            <#else>
-                                                <#list 1..(company.emailPassword!?length) as i>•</#list>
-                                            </#if></strong>
+                                                                                data-password="${company.emailPassword!}">
+                                            •••••
+                                           </strong>
                                         <#if canEdit>
                                             <button id="editBtnemailPassword"
                                                     onclick="editText('emailPassword', ${company.id})"
@@ -649,12 +642,9 @@
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('emailPassword')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'emailPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('emailPassword', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputemailPassword"
@@ -717,10 +707,9 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭСФ пароль:</span> <strong id="esfPassword"
-                                                                           data-password="${company.esfPassword!}"><#if company.esfPassword!?length == 0>
-                                            <#else>
-                                                <#list 1..(company.esfPassword!?length) as i>•</#list>
-                                            </#if></strong>
+                                                                           data-password="${company.esfPassword!}">
+                                            •••••
+                                           </strong>
                                         <#if canEdit>
                                             <button id="editBtnesfPassword"
                                                     onclick="editText('esfPassword', ${company.id})"
@@ -728,12 +717,9 @@
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('esfPassword')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'esfPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('esfPassword', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputesfPassword"
@@ -772,10 +758,9 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ККМ пароль:</span> <strong id="kkmPassword"
-                                                                           data-password="${company.kkmPassword!}"> <#if company.kkmPassword!?length == 0>
-                                            <#else>
-                                                <#list 1..(company.kkmPassword!?length) as i>•</#list>
-                                            </#if></strong>
+                                                                           data-password="${company.kkmPassword!}">
+                                            •••••
+                                           </strong>
                                         <#if canEdit>
                                             <button id="editBtnkkmPassword"
                                                     onclick="editText('kkmPassword', ${company.id})"
@@ -783,12 +768,9 @@
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('kkmPassword')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'kkmPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('kkmPassword', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputkkmPassword"
@@ -829,10 +811,9 @@
                                     </li>
                                     <li class="list-group-item list-none-line company-info">
                                         <span>1С Фреш пароль:</span> <strong id="fresh1cPassword"
-                                                                               data-password="${company.fresh1cPassword!}"><#if company.fresh1cPassword!?length == 0>
-                                            <#else>
-                                                <#list 1..(company.fresh1cPassword!?length) as i>•</#list>
-                                            </#if></strong>
+                                                                               data-password="${company.fresh1cPassword!}">
+                                            •••••
+                                            </strong>
                                         <#if canEdit>
                                             <button id="editBtnfresh1cPassword"
                                                     onclick="editText('fresh1cPassword', ${company.id})"
@@ -840,12 +821,9 @@
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('fresh1cPassword')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'fresh1cPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('fresh1cPassword', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputfresh1cPassword"
@@ -886,10 +864,9 @@
                                     <li class="list-group-item list-none-line company-info">
                                         <span>ЭТТН пароль:</span>
                                         <strong id="ettnPassword"
-                                              data-password="${company.ettnPassword!}"><#if company.ettnPassword!?length == 0>
-                                            <#else>
-                                                <#list 1..(company.ettnPassword!?length) as i>•</#list>
-                                            </#if></strong>
+                                              data-password="${company.ettnPassword!}">
+                                            •••••
+                                        </strong>
                                         <#if canEdit>
                                             <button id="editBtnettnPassword"
                                                     onclick="editText('ettnPassword', ${company.id})"
@@ -897,12 +874,9 @@
                                                 <i class="bi bi-pencil icon-custom-pencil" style="color: black;"></i>
                                             </button>
                                         </#if>
-                                        <button onclick="copyText('ettnPassword')" title="Скопировать"
+                                        <button onclick="copyPassword(${company.id}, 'ettnPassword')" title="Скопировать"
                                                 class="btn btn-link p-0">
                                             <i class="bi bi-copy icon-custom"></i>
-                                        </button>
-                                        <button onclick="togglePasswordVisibility('ettnPassword', this)" title="Увидеть" class="btn btn-link p-0">
-                                            <i class="bi bi-eye icon-custom-eye" style="color: black;"></i>
                                         </button>
                                         <div class="company-edit">
                                         <input type="text" id="editInputettnPassword"

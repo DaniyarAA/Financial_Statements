@@ -68,6 +68,8 @@ public interface UserService {
 
     void resumeUser(Long id, Long roleId);
 
+    boolean hasPermission(String login, String permission);
+
     List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users);
 
     boolean canEdit(String name);

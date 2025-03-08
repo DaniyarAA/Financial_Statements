@@ -71,4 +71,6 @@ public interface CompanyService {
     CompanyDto findByIdInUserList(List<CompanyDto> allCompanies, Long companyId);
 
     String getCompanyNameById(Long companyId);
+
+    String getDecryptedPassword(Long companyId, String fieldName);
 }

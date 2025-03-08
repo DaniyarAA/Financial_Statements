@@ -9,10 +9,24 @@ function copyText(elementId) {
     }
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-        addNotification(textToCopy + ' Скопировано');
+        addNotification("Скопировано");
     }).catch(err => {
+        addNotification("Ошибка: невозможно скопировать");
         console.error('Ошибка копирования: ', err);
     });
+}
+
+async function copyPassword(companyId, field) {
+    const response = await fetch(`/company/${companyId}/password?field=${field}`, {
+        method: "GET"
+    });
+    if (response.ok) {
+        const data = await response.json();
+        navigator.clipboard.writeText(data.password);
+        addNotification("Скопировано");
+    } else {
+        addNotification("Ошибка: невозможно скопировать");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -185,21 +199,6 @@ function showResponseMessage(message, isSuccess = true) {
     }, 3000);
 }
 
-function togglePasswordVisibility(passwordFieldId, button) {
-    const passwordField = document.getElementById(passwordFieldId);
-    const icon = button.querySelector('i');
-    const password = passwordField.getAttribute('data-password');
-
-    if (passwordField.innerText === '•'.repeat(password.length)) {
-        passwordField.innerText = password;
-        icon.classList.remove('bi-eye');
-        icon.classList.add('bi-eye-slash');
-    } else {
-        passwordField.innerText = '•'.repeat(password.length);
-        icon.classList.remove('bi-eye-slash');
-        icon.classList.add('bi-eye');
-    }
-}
 
 document.addEventListener("DOMContentLoaded", function() {
     loadFilters();

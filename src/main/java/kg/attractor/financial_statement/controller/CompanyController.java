@@ -6,7 +6,9 @@ import kg.attractor.financial_statement.service.CompanyService;
 import kg.attractor.financial_statement.service.TaskService;
 import kg.attractor.financial_statement.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -89,5 +91,21 @@ public class CompanyController {
         companyService.returnCompany(companyId , principal.getName());
         taskService.tasksGenerator();
         return "redirect:/company/all?sort=actual";
+    }
+
+
+    @GetMapping("{id}/password")
+    public ResponseEntity<Map<String, String>> getDecryptedPassword(@PathVariable Long id,
+                                                                    @RequestParam String field,
+                                                                    Principal principal) {
+
+        if (!userService.hasPermission(principal.getName(), "VIEW_SENSITIVE_DATA")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Access Denied"));
+        }
+
+        String decryptedPassword = companyService.getDecryptedPassword(id, field);
+        return ResponseEntity.ok(Map.of("password", decryptedPassword));
+
     }
 }

@@ -552,6 +552,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean hasPermission(String login, String permission) {
+        User user = getUserByLogin(login);
+        return user.getRole().getAuthorities().stream()
+                .anyMatch(authorityDto -> authorityDto.getAuthority().equalsIgnoreCase(permission));
+
+    }
+
+    @Override
     public List<UserForCreateTaskDto> convertToListUserForCreateTaskDto(List<User> users) {
         return users.stream().map(this::convertToUserForCreateTaskDto).collect(Collectors.toList());
     }

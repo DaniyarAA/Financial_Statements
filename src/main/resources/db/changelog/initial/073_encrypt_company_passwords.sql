@@ -1,3 +1,5 @@
+--liquibase formatted sql
+--changeset Daniiar:073
 UPDATE companies
 SET
     password = 't44OkqqUPfzqwJsRyYfBVg==',

@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,6 +34,16 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private TaskService taskService;
     private UserService userService;
+    private final Map<String, Function<Company, String>> companyFieldReader = Map.of(
+            "password", Company::getPassword,
+            "kabinetSalykPassword", Company::getKabinetSalykPassword,
+            "emailPassword", Company::getEmailPassword,
+            "kkmPassword", Company::getKkmPassword,
+            "esfPassword", Company::getEsfPassword,
+            "fresh1cPassword", Company::getFresh1cPassword,
+            "ettnPassword", Company::getEttnPassword
+    );
+
 
     @Autowired
     @Lazy
@@ -392,10 +403,8 @@ public class CompanyServiceImpl implements CompanyService {
                 .companyInn(company.getInn())
                 .directorInn(company.getDirectorInn())
                 .login(company.getLogin())
-                .password(company.getPassword())
                 .ecp(company.getEcp())
                 .kabinetSalyk(company.getKabinetSalyk())
-                .kabinetSalykPassword(company.getKabinetSalykPassword())
                 .taxMode(company.getTaxMode())
                 .opf(company.getOpf())
                 .districtGns(company.getDistrictGns())
@@ -405,16 +414,11 @@ public class CompanyServiceImpl implements CompanyService {
                 .director(company.getDirector())
                 .ked(company.getKed())
                 .email(company.getEmail())
-                .emailPassword(company.getEmailPassword())
                 .phone(company.getPhone())
                 .esf(company.getEsf())
-                .esfPassword(company.getEsfPassword())
                 .kkm(company.getKkm())
-                .kkmPassword(company.getKkmPassword())
                 .fresh1c(company.getFresh1c())
-                .fresh1cPassword(company.getFresh1cPassword())
                 .ettn(company.getEttn())
-                .ettnPassword(company.getEttnPassword())
                 .isDeleted(company.isDeleted())
                 .build();
     }
@@ -620,6 +624,18 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyForTaskCreateDto> getAllCompaniesForCreateTask() {
         List<Company> companyList = companyRepository.findByIsDeleted(Boolean.FALSE);
         return companyList.stream().map(this::convertToCreateTaskDto).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public String getDecryptedPassword(Long companyId, String fieldName){
+        Company company = getCompanyById(companyId);
+        Function<Company, String> reader = companyFieldReader.get(fieldName);
+        if(reader == null){
+            throw new IllegalArgumentException("Invalid field name: " + fieldName);
+        }
+        String encryptedField = reader.apply(company);
+        return EncryptionUtil.decrypt(encryptedField);
     }
 
     private CompanyForTaskCreateDto convertToCreateTaskDto(Company company) {
